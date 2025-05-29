@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   }
 
   // ✅ 直接在這裡放入你的 OpenRouter API 金鑰（僅限於私有專案使用）
-  const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
