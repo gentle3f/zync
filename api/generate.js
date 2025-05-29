@@ -1,35 +1,25 @@
-// api/generate.js
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST method allowed' });
   }
 
-  const { language, type, interests, model } = req.body;
+  const { prompt, model } = req.body;
 
-  if (!language || !type || !interests || !model) {
-    return res.status(400).json({ error: 'Missing required fields in body' });
+  if (!prompt || !model) {
+    return res.status(400).json({ error: 'Missing prompt or model' });
   }
 
   try {
-    const fileURL = `https://raw.githubusercontent.com/gentle3f/zync/main/prompts/${language}${type}.json`;
-    const promptData = await fetch(fileURL).then(res => res.json());
-    const promptText = promptData.prompt.replace('{interests}', interests.join(','));
-
-    const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://zync-hazel.vercel.app',
-        'X-Title': 'Zync App'
+        'Authorization': 'Bearer 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',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model,
+        "model": model,
         messages: [
-          { role: 'user', content: promptText }
+          { role: 'user', content: prompt }
         ]
       })
     });
