@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing promptSource or interests in body' });
   }
 
-  const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
+  const OPENROUTER_API_KEY = process.env.API_KEY
 
   try {
     const githubPromptUrl = `https://raw.githubusercontent.com/gentle3f/zync/main/prompts/${promptSource}.json`;
