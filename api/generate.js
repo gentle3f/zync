@@ -12,7 +12,6 @@ export default async function handler(req, res) {
   }
 
   const OPENROUTER_API_KEY = process.env.API_KEY;
-  console.log("API KEY:", OPENROUTER_API_KEY);
 
 
   try {
@@ -25,21 +24,18 @@ export default async function handler(req, res) {
       .replace('{interests}', interests.join(', '))
       .replace('{asked_questions}', asked_questions ? asked_questions.join('、') : '');
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://zync-inky.vercel.app',
-        'X-Title': 'Zync App'
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'user', content: finalPrompt }
-        ]
-      })
-    });
+const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model,
+    messages: [{ role: 'user', content: finalPrompt }]
+  })
+});
+
 
     const data = await response.json();
     res.status(200).json(data);
