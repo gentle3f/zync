@@ -11,7 +11,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing prompt or model in body' });
   }
 
-  // ✅ 直接在這裡放入你的 OpenRouter API 金鑰（僅限於私有專案使用）
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
   try {
