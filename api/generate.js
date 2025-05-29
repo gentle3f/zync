@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 
   try {
-    const githubPromptUrl = 'https://raw.githubusercontent.com/gentle3f/zync/main/prompts/${promptSource}.json';
+    const githubPromptUrl = `https://raw.githubusercontent.com/gentle3f/zync/main/prompts/${promptSource}.json`;
     const promptResponse = await fetch(githubPromptUrl);
     const promptJson = await promptResponse.json();
 
