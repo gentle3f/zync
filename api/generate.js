@@ -1,5 +1,3 @@
-// api/generate.js
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST method allowed' });
@@ -8,19 +6,15 @@ export default async function handler(req, res) {
   const { prompt, model } = req.body;
 
   if (!prompt || !model) {
-    return res.status(400).json({ error: 'Missing prompt or model in body' });
+    return res.status(400).json({ error: 'Missing prompt or model' });
   }
-
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://zync-hazel.vercel.app',
-        'X-Title': 'Zync App'
+        'Authorization': `Bearer YOUR_KEY`,
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({
         model,
