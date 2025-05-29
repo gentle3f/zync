@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model,
+        "model": model,
         messages: [
           { role: 'user', content: prompt }
         ]
