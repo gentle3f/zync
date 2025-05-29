@@ -26,9 +26,9 @@ export default async function handler(req, res) {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer OPENROUTER_API_KEY`,
+'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://zync-hazel.vercel.app',
+        'HTTP-Referer': 'https://zync-inky.vercel.app',
         'X-Title': 'Zync App'
       },
       body: JSON.stringify({
