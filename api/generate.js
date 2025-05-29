@@ -24,6 +24,11 @@ export default async function handler(req, res) {
       .replace('{interests}', interests.join(', '))
       .replace('{asked_questions}', asked_questions ? asked_questions.join('、') : '');
 
+console.log("Sending Headers:", {
+  'Authorization': 'Bearer ' + OPENROUTER_API_KEY,
+  'Content-Type': 'application/json'
+});
+    
 const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   method: 'POST',
   headers: {
