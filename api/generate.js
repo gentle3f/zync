@@ -18,7 +18,7 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json',
         'HTTP-Referer': 'https://zync-hazel.vercel.app',
         'X-Title': 'Zync App'
       },
