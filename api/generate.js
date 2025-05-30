@@ -36,7 +36,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    model,
+    model: model,
     messages: [{ role: 'user', content: finalPrompt }]
   })
 });
