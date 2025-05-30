@@ -41,6 +41,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log("Raw response from OpenRouter:", JSON.stringify(data, null, 2));
 
     // Normalize and extract final content from known patterns
     let finalText = "";
@@ -51,11 +52,12 @@ export default async function handler(req, res) {
     } else if (data.choices && data.choices[0]?.message && data.choices[0].message?.text) {
       finalText = data.choices[0].message.text;
     } else {
-      throw new Error("Unexpected response format");
+      finalText = "⚠️ AI 回應格式錯誤，請稍後再試。";
     }
 
     res.status(200).json({ result: finalText });
   } catch (err) {
-    res.status(500).json({ error: 'API request failed', details: err.message });
+    console.log("API request failed:", err);
+    res.status(200).json({ result: "❌ 發生錯誤，請稍後再試。" });
   }
 }
