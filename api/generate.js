@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const model = promptJson.model || 'openai/gpt-4';
     const finalPrompt = promptJson.prompt
       .replace('{interests}', interests.join(', '))
-      .replace('{asked_questions}', asked_questions ? asked_questions.join(',') : '');
+      .replace('{asked_questions}', asked_questions ? asked_questions.join('、') : '');
 
     console.log("Sending Headers:", {
       'Authorization': 'Bearer ' + OPENROUTER_API_KEY,
