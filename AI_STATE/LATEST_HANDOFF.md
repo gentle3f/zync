@@ -65,38 +65,46 @@ Other prior green checkpoints: CI #32 `35136450797` (professional UI + free-text
 - Hidden Match reveal has light haptic feedback and subtle newest-card scale/fade animation.
 - `mobile/test/layout_smoke_test.dart` covers 320dp + larger-text layouts for French Home, Portuguese onboarding, French QR, and long French match labels.
 
-## Active QR transport reliability slice
+## Active QR transport + scan-render reliability slice
 Source/design notes: `docs/QR_TRANSPORT_V2.md` and `AI_STATE/MINI_HANDOFF_20260917_QR_COMPRESSION_START.md`.
 
-Implemented code as of branch head before this handoff:
+Implemented:
 1. Existing semantic QR payload remains schema `v:1`.
 2. Small profiles continue to emit legacy compact raw JSON for maximum compatibility.
 3. Larger payloads adaptively emit `Z2:` + URL-safe base64(zlib(compact JSON)) only when above 420 raw UTF-8 bytes and compression is actually smaller.
 4. New decoder accepts both legacy raw JSON and `Z2:` compressed transport.
 5. Compressed transport restores stripped base64 padding and rejects malformed compressed data with `FormatException`.
 6. Decompressed transport has a 64 KiB post-decompression guard.
-7. Added QR tests covering:
-   - small/raw legacy output + round-trip;
-   - explicit legacy raw decoder compatibility;
-   - 80-interest multilingual/custom profile compression + full metadata preservation;
-   - compressed payload target under 2,000 UTF-8 bytes for the regression profile;
-   - malformed compressed transport rejection;
-   - existing custom metadata/canonical matching/zero-match tests remain.
+7. QR transport tests cover raw legacy output/compatibility, 80-interest multilingual/custom compression with full metadata preservation, compressed size regression, malformed transport rejection, custom metadata, canonical matching and zero-match readiness.
+8. `ShowQrScreen` was hardened for real scan rendering:
+   - responsive QR size clamped to 180–300dp;
+   - medium QR error correction (`M`);
+   - gapless modules;
+   - surrounding white card remains the quiet-zone surface;
+   - localized semantics label and render error state.
+9. `layout_smoke_test.dart` now also constructs an 80-custom-interest compressed QR and verifies `ShowQrScreen` renders on a 320dp-wide phone without Flutter exceptions.
 
 Relevant commits:
-- `e0c7894f04e80cb5452a13e934f63e1528ad493b` — initial adaptive compression implementation.
-- `a4ac14715ba585b2e075c31ab1602e0a5ee4d29c` — Dart base64 padding fix.
+- `e0c7894f04e80cb5452a13e934f63e1528ad493b` — initial adaptive compression.
+- `a4ac14715ba585b2e075c31ab1602e0a5ee4d29c` — base64 padding fix.
 - `c083340919f5758552f1fedf42ad03520295149d` — QR transport regression tests.
+- `c6567974ae571f7a4b0ed7ee01aea6bdeb675fac` — scan-reliability QR rendering pass.
+- `dfa3a4a312169bb9ad632973ad4f559984674101` — large compressed QR narrow-phone render test.
 
-Authoritative validation run for this slice: CI #39 `35140541040`. At last check it was **pending/queued** with no jobs started yet. Do NOT claim the compressed QR slice green until analyze + tests + release AAB + artifact upload all succeed.
+### Authoritative current QR validation
+CI #41 `35141089002`, head `dfa3a4a312169bb9ad632973ad4f559984674101`.
+At the latest checkpoint it has already passed wrapper generation, exact Play identity / branding assertions, dependency install, localization generation, `flutter analyze`, and all tests. Release AAB build is still in progress. Do NOT call the complete QR transport/render slice certified until AAB build + artifact upload succeed.
+
+## Vercel/API status
+The Vercel connector was checked during this slice and currently returns no connected teams/projects, so it cannot discover the existing production Zync Vercel base URL. `ZYNC_API_BASE` therefore remains unset in CI; builds intentionally fall back to local questions and cannot AI-normalize unknown interests until the production URL is configured. Do not invent or guess the URL.
 
 ## Immediate next active task
-1. Observe CI #39. If it fails, inspect exact analyzer/test/build logs and fix only evidenced errors until fully green.
-2. Once #39 is green, improve Show QR scan reliability (quiet zone/module rendering/error-correction choice) only if compatible with the large-profile capacity target; add evidence-based QR-size/scan guardrails rather than aesthetic-only changes.
-3. Continue focused visual QA: camera permission/error state, keyboard behavior, accessibility/font scaling and real-device scanner framing.
-4. Obtain/discover production Vercel base URL and set `ZYNC_API_BASE`; currently unset, so CI builds deliberately use local question fallback and cannot AI-normalize unknown interests.
+1. Finish CI #41. If it fails, inspect exact logs and fix only evidenced errors. If green, record artifact metadata here and certify QR compression/render slice.
+2. Next polish slice: explicit localized camera permission/unavailable error UX using mobile_scanner's error callback, while keeping the current branded scanner overlay.
+3. After scanner error UX, review the cross-language conversation path: product spec permits bilingual semantic questions for different-language peers, but current V1 question path only emits the scanning device language. Decide/implement the minimal bilingual display without adding pairing/server state.
+4. Obtain production Vercel base URL and configure `ZYNC_API_BASE` when user/account access makes it available.
 5. Configure production signing via GitHub Secrets with existing keystore alias/password; connector cannot safely write secrets.
-6. Only after signed build + real-device visual/QR/scanner QA succeeds consider Play internal testing. Do not widen into Phase 2.
+6. Only after signed build + real-device QR/scanner/device QA succeeds consider Play internal testing. Do not widen into Phase 2.
 
 ## Safety / scope guard
 - `main` remains untouched; all work is on `zync-v1-rebuild-20260917`.
