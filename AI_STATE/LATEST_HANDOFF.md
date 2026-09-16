@@ -27,19 +27,26 @@ Core: local interest profile, multilingual canonical-interest model, QR peer exc
 ## Current progress
 1. Created branch `zync-v1-rebuild-20260917` from `main`.
 2. Froze V1 product scope in `docs/ZYNC_V1_PRODUCT_SPEC.md`.
-3. Created this durable handoff before implementation to protect against chat/session timeout.
+3. Added durable handoff before implementation.
+4. Added `mobile/pubspec.yaml` at version `1.0.0+6` with Flutter/localization/HTTP/QR/scanner/local-storage dependencies.
+5. Added core domain models in `mobile/lib/core/models.dart`: interest strength, canonical definitions, local profile, compact/versioned QR payload, match result, local Zync history, conversation modes.
+6. Added multilingual seed interest catalog in `mobile/lib/core/interest_catalog.dart` with canonical IDs and labels/aliases across the initial eight target locales.
+7. Added exact canonical-ID local matching in `mobile/lib/core/matching_service.dart`.
+8. Added local-only profile + Zync Again history persistence in `mobile/lib/core/local_store.dart` using SharedPreferences. No account/database/server storage introduced.
+
+## Current implementation checkpoint
+The durable data layer now exists. No UI/QR scanner/API V1 endpoint/CI has been added yet. Nothing has been merged into `main`.
 
 ## Next implementation sequence
-1. Add Flutter project skeleton under `mobile/` with package/application identity locked to `com.gmail.gentle3f.myproject` and version `1.0.0+6`.
-2. Add core domain models and seed interest catalog.
-3. Add local persistence and matching services.
-4. Add onboarding/interests/home UI.
-5. Add QR encode/show/scan.
-6. Add hidden-match reveal + conversation UI.
-7. Add V1 Vercel endpoints for OpenRouter, validated schemas, no runtime mutable-prompt fetch from `main`.
-8. Add localization architecture and initial translations.
-9. Add tests + GitHub Actions analyze/test/build.
-10. Iterate on CI failures until green; only then prepare signed-release path.
+1. Add localization files and app shell.
+2. Add onboarding / interest selection / home UI.
+3. Add QR show + scan using compact payload.
+4. Add hidden-match reveal + Zync Again delta detection.
+5. Add conversation UI + local fallback question engine.
+6. Add V1 Vercel `/api/v1/question` and `/api/v1/normalize-interest` endpoints using server-side OpenRouter env vars.
+7. Add tests.
+8. Add GitHub Actions that generates an Android wrapper with package `com.gmail.gentle3f.myproject`, runs analyze/test, and builds an unsigned AAB.
+9. Iterate on CI failures until green; only then prepare signed-release path.
 
 ## Safety / scope guard
 Do not widen into Phase 2. Do not commit secrets, keystores, API keys, or passwords. Update this handoff after every meaningful implementation slice.
