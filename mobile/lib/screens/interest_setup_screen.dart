@@ -4,6 +4,7 @@ import '../core/ai_service.dart';
 import '../core/interest_catalog.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../ui/zync_design.dart';
 
 class InterestSetupScreen extends StatefulWidget {
   const InterestSetupScreen({
@@ -75,7 +76,14 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.addInterest),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            const ZyncIconTile(icon: Icons.auto_awesome_rounded),
+            const SizedBox(width: 12),
+            Expanded(child: Text(l10n.addInterest)),
+          ],
+        ),
         content: Text(l10n.aiSuggested(result.displayName)),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
@@ -146,119 +154,193 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
 
     return Scaffold(
       appBar: widget.editing ? AppBar(title: Text(l10n.myInterests)) : null,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!widget.editing) ...[
-                    Text('Zync', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 4),
-                    Text(l10n.tagline, style: Theme.of(context).textTheme.bodyLarge),
-                    const SizedBox(height: 22),
-                    TextField(
-                      controller: _nickname,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        labelText: l10n.nicknameOptional,
-                        border: const OutlineInputBorder(),
+      body: ConnectionBackdrop(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!widget.editing) ...[
+                      Row(
+                        children: [
+                          const ZyncMark(size: 46, strokeWidth: 4.5),
+                          const SizedBox(width: 12),
+                          Text('Zync', style: Theme.of(context).textTheme.headlineMedium),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 22),
-                  ],
-                  Text(l10n.pickInterests, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 6),
-                  Text(l10n.pickAtLeastFive),
-                  const SizedBox(height: 14),
-                  SearchBar(
-                    controller: _search,
-                    hintText: l10n.searchAnything,
-                    leading: const Icon(Icons.search),
-                  ),
-                  if (canNormalize || _normalizing) ...[
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: _normalizing ? null : _normalizeAndAdd,
-                        icon: _normalizing
-                            ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                            : const Icon(Icons.auto_awesome),
-                        label: Text(_normalizing ? l10n.normalizing : l10n.addWithAi(query)),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text(l10n.selectedCount(_selected.length), style: const TextStyle(fontWeight: FontWeight.w600)),
-                      const Spacer(),
-                      if (_selected.isNotEmpty)
-                        Wrap(
-                          spacing: 4,
-                          children: InterestStrength.values.map((strength) {
-                            final count = _selected.values.where((value) => value == strength).length;
-                            if (count == 0) return const SizedBox.shrink();
-                            return Text('${_strengthEmoji(strength)}$count');
-                          }).toList(),
+                      const SizedBox(height: 14),
+                      Text(l10n.tagline, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft)),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: _nickname,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          labelText: l10n.nicknameOptional,
+                          prefixIcon: const Icon(Icons.person_outline_rounded),
                         ),
+                      ),
+                      const SizedBox(height: 24),
                     ],
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(12, 4, 12, 100),
-                itemCount: results.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
-                itemBuilder: (context, index) {
-                  final interest = results[index];
-                  final selected = _selected[interest.id];
-                  return ListTile(
-                    onTap: () => _toggle(interest.id),
-                    leading: Icon(
-                      selected == null ? Icons.add_circle_outline : Icons.check_circle,
-                      color: selected == null ? null : Theme.of(context).colorScheme.primary,
+                    Text(l10n.pickInterests, style: Theme.of(context).textTheme.headlineSmall),
+                    const SizedBox(height: 6),
+                    Text(l10n.pickAtLeastFive, style: Theme.of(context).textTheme.bodyMedium),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: _search,
+                      decoration: InputDecoration(
+                        hintText: l10n.searchAnything,
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        suffixIcon: query.isEmpty
+                            ? null
+                            : IconButton(
+                                onPressed: _search.clear,
+                                icon: const Icon(Icons.close_rounded),
+                              ),
+                      ),
                     ),
-                    title: Text(interest.labelFor(locale)),
-                    subtitle: Text(interest.category),
-                    trailing: selected == null
-                        ? null
-                        : PopupMenuButton<InterestStrength>(
-                            tooltip: '',
-                            initialValue: selected,
-                            onSelected: (value) => setState(() {
-                              _selected[interest.id] = value;
-                              final custom = _custom[interest.id];
-                              if (custom != null) _custom[interest.id] = custom.copyWith(strength: value);
-                            }),
-                            itemBuilder: (_) => [
-                              PopupMenuItem(value: InterestStrength.love, child: Text('❤️ ${l10n.love}')),
-                              PopupMenuItem(value: InterestStrength.like, child: Text('👍 ${l10n.like}')),
-                              PopupMenuItem(value: InterestStrength.wantToTry, child: Text('🤔 ${l10n.wantToTry}')),
-                            ],
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Text('${_strengthEmoji(selected)} ${_strengthLabel(l10n, selected)}'),
-                            ),
+                    if (canNormalize || _normalizing) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: _normalizing ? null : _normalizeAndAdd,
+                          icon: _normalizing
+                              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                              : const Icon(Icons.auto_awesome_rounded),
+                          label: Text(_normalizing ? l10n.normalizing : l10n.addWithAi(query)),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: _selected.length >= 5 ? ZyncPalette.mint : ZyncPalette.peach,
+                            borderRadius: BorderRadius.circular(999),
                           ),
-                  );
-                },
+                          child: Text(
+                            l10n.selectedCount(_selected.length),
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: _selected.length >= 5 ? const Color(0xFF176B57) : ZyncPalette.orangeDeep,
+                                ),
+                          ),
+                        ),
+                        const Spacer(),
+                        if (_selected.isNotEmpty)
+                          Wrap(
+                            spacing: 7,
+                            children: InterestStrength.values.map((strength) {
+                              final count = _selected.values.where((value) => value == strength).length;
+                              if (count == 0) return const SizedBox.shrink();
+                              return Text('${_strengthEmoji(strength)} $count', style: Theme.of(context).textTheme.bodySmall);
+                            }).toList(),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              Expanded(
+                child: ListView.separated(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.fromLTRB(20, 6, 20, 24),
+                  itemCount: results.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final interest = results[index];
+                    final selected = _selected[interest.id];
+                    final isCustom = InterestCatalog.byId(interest.id) == null;
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () => _toggle(interest.id),
+                        child: Ink(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: selected == null ? ZyncPalette.surface : const Color(0xFFFFF4ED),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: selected == null ? ZyncPalette.line : ZyncPalette.peach),
+                          ),
+                          child: Row(
+                            children: [
+                              ZyncIconTile(
+                                icon: selected == null ? Icons.add_rounded : Icons.check_rounded,
+                                size: 42,
+                                backgroundColor: selected == null ? const Color(0xFFF1EEEB) : ZyncPalette.peach,
+                                foregroundColor: selected == null ? ZyncPalette.inkSoft : ZyncPalette.orangeDeep,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(interest.labelFor(locale), style: Theme.of(context).textTheme.titleMedium),
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      children: [
+                                        Flexible(child: Text(interest.category, style: Theme.of(context).textTheme.bodySmall)),
+                                        if (isCustom) ...[
+                                          const SizedBox(width: 6),
+                                          const Icon(Icons.auto_awesome_rounded, size: 13, color: ZyncPalette.plum),
+                                        ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (selected != null)
+                                PopupMenuButton<InterestStrength>(
+                                  tooltip: '',
+                                  initialValue: selected,
+                                  onSelected: (value) => setState(() {
+                                    _selected[interest.id] = value;
+                                    final custom = _custom[interest.id];
+                                    if (custom != null) _custom[interest.id] = custom.copyWith(strength: value);
+                                  }),
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem(value: InterestStrength.love, child: Text('❤️ ${l10n.love}')),
+                                    PopupMenuItem(value: InterestStrength.like, child: Text('👍 ${l10n.like}')),
+                                    PopupMenuItem(value: InterestStrength.wantToTry, child: Text('✨ ${l10n.wantToTry}')),
+                                  ],
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(13),
+                                      border: Border.all(color: ZyncPalette.line),
+                                    ),
+                                    child: Text('${_strengthEmoji(selected)} ${_strengthLabel(l10n, selected)}'),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FilledButton.icon(
-        onPressed: _selected.length >= 5 ? _save : null,
-        icon: const Icon(Icons.arrow_forward),
-        label: Text(l10n.saveAndContinue),
-        style: FilledButton.styleFrom(minimumSize: const Size(220, 54)),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+          child: FilledButton.icon(
+            onPressed: _selected.length >= 5 ? _save : null,
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(l10n.saveAndContinue),
+          ),
+        ),
       ),
     );
   }
@@ -266,7 +348,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   String _strengthEmoji(InterestStrength strength) => switch (strength) {
         InterestStrength.love => '❤️',
         InterestStrength.like => '👍',
-        InterestStrength.wantToTry => '🤔',
+        InterestStrength.wantToTry => '✨',
       };
 
   String _strengthLabel(AppLocalizations l10n, InterestStrength strength) => switch (strength) {
