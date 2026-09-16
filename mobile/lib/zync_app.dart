@@ -8,6 +8,7 @@ import 'core/models.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'screens/home_screen.dart';
 import 'screens/interest_setup_screen.dart';
+import 'ui/zync_design.dart';
 
 class ZyncApp extends StatefulWidget {
   const ZyncApp({super.key});
@@ -44,15 +45,7 @@ class _ZyncAppState extends State<ZyncApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Zync',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF6A21),
-          brightness: Brightness.light,
-        ),
-        scaffoldBackgroundColor: const Color(0xFFFFFBF8),
-        cardTheme: const CardThemeData(elevation: 0, margin: EdgeInsets.zero),
-      ),
+      theme: ZyncTheme.light(),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -61,10 +54,39 @@ class _ZyncAppState extends State<ZyncApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: profile == null
-          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+          ? const _ZyncLoadingScreen()
           : profile.interests.length < 5
               ? InterestSetupScreen(profile: profile, onSaved: _save)
               : HomeScreen(profile: profile, onProfileChanged: _save),
     );
   }
+}
+
+class _ZyncLoadingScreen extends StatelessWidget {
+  const _ZyncLoadingScreen();
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: ConnectionBackdrop(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const ZyncMark(size: 72, strokeWidth: 6),
+                const SizedBox(height: 20),
+                Text(
+                  'Zync',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 18),
+                const SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(strokeWidth: 2.6),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
