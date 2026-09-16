@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../ui/zync_design.dart';
 import 'history_screen.dart';
 import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
@@ -22,105 +23,250 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final name = profile.nickname.trim();
+    final greeting = name.isEmpty ? l10n.homeGreeting : '${l10n.homeGreeting} $name';
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Zync', style: TextStyle(fontWeight: FontWeight.w800)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_outlined),
-            tooltip: l10n.edit,
-            onPressed: () async {
-              final result = await Navigator.of(context).push<LocalProfile>(
-                MaterialPageRoute(
-                  builder: (_) => InterestSetupScreen(
-                    profile: profile,
-                    onSaved: onProfileChanged,
-                    editing: true,
-                  ),
-                ),
-              );
-              if (result != null) await onProfileChanged(result);
-            },
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Text(
-            name.isEmpty ? l10n.homeGreeting : '${l10n.homeGreeting} $name',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 6),
-          Text(l10n.interestsCount(profile.interests.length)),
-          const SizedBox(height: 26),
-          Card(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ConnectionBackdrop(
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+            children: [
+              Row(
                 children: [
-                  Text(l10n.zyncWithSomeone, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ShowQrScreen(profile: profile)),
-                    ),
-                    icon: const Icon(Icons.qr_code_2),
-                    label: Text(l10n.showMyQr),
-                  ),
-                  const SizedBox(height: 10),
-                  FilledButton.tonalIcon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => ScanQrScreen(profile: profile)),
-                    ),
-                    icon: const Icon(Icons.qr_code_scanner),
-                    label: Text(l10n.scanSomeone),
+                  const ZyncMark(size: 38, strokeWidth: 4),
+                  const SizedBox(width: 10),
+                  Text('Zync', style: Theme.of(context).textTheme.titleLarge),
+                  const Spacer(),
+                  IconButton.filledTonal(
+                    icon: const Icon(Icons.tune_rounded),
+                    tooltip: l10n.edit,
+                    onPressed: () async {
+                      final result = await Navigator.of(context).push<LocalProfile>(
+                        MaterialPageRoute(
+                          builder: (_) => InterestSetupScreen(
+                            profile: profile,
+                            onSaved: onProfileChanged,
+                            editing: true,
+                          ),
+                        ),
+                      );
+                      if (result != null) await onProfileChanged(result);
+                    },
                   ),
                 ],
               ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          _MenuTile(
-            icon: Icons.favorite_border,
-            title: l10n.myInterests,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => InterestSetupScreen(profile: profile, onSaved: onProfileChanged, editing: true),
+              const SizedBox(height: 30),
+              Text(greeting, style: Theme.of(context).textTheme.headlineLarge),
+              const SizedBox(height: 8),
+              Text(
+                l10n.interestsCount(profile.interests.length),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
               ),
-            ),
+              const SizedBox(height: 24),
+              ZyncSurface(
+                padding: EdgeInsets.zero,
+                borderColor: ZyncPalette.peach,
+                backgroundColor: const Color(0xFFFFF3EB),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(child: IgnorePointer(child: ConnectionBackdrop())),
+                      Padding(
+                        padding: const EdgeInsets.all(22),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const ZyncIconTile(
+                                  icon: Icons.auto_awesome_rounded,
+                                  size: 52,
+                                  backgroundColor: Colors.white,
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(l10n.zyncWithSomeone, style: Theme.of(context).textTheme.titleLarge),
+                                      const SizedBox(height: 5),
+                                      Text(l10n.tagline, style: Theme.of(context).textTheme.bodyMedium),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 22),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _PrimaryAction(
+                                    icon: Icons.qr_code_2_rounded,
+                                    label: l10n.showMyQr,
+                                    onTap: () => Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (_) => ShowQrScreen(profile: profile)),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _SecondaryAction(
+                                    icon: Icons.qr_code_scanner_rounded,
+                                    label: l10n.scanSomeone,
+                                    onTap: () => Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (_) => ScanQrScreen(profile: profile)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              _MenuTile(
+                icon: Icons.favorite_outline_rounded,
+                iconBackground: ZyncPalette.peach,
+                iconForeground: ZyncPalette.orangeDeep,
+                title: l10n.myInterests,
+                subtitle: l10n.interestsCount(profile.interests.length),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => InterestSetupScreen(
+                      profile: profile,
+                      onSaved: onProfileChanged,
+                      editing: true,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _MenuTile(
+                icon: Icons.people_alt_outlined,
+                iconBackground: ZyncPalette.mint,
+                iconForeground: const Color(0xFF167A62),
+                title: l10n.peopleHistory,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _MenuTile(
+                icon: Icons.bubble_chart_outlined,
+                iconBackground: const Color(0xFFE9E5FF),
+                iconForeground: ZyncPalette.plum,
+                title: l10n.interestDna,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => InterestDnaScreen(profile: profile)),
+                ),
+              ),
+            ],
           ),
-          _MenuTile(
-            icon: Icons.people_outline,
-            title: l10n.peopleHistory,
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryScreen())),
-          ),
-          _MenuTile(
-            icon: Icons.bubble_chart_outlined,
-            title: l10n.interestDna,
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => InterestDnaScreen(profile: profile))),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _MenuTile extends StatelessWidget {
-  const _MenuTile({required this.icon, required this.title, required this.onTap});
+class _PrimaryAction extends StatelessWidget {
+  const _PrimaryAction({required this.icon, required this.label, required this.onTap});
+
   final IconData icon;
-  final String title;
+  final String label;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Card(
-        child: ListTile(
-          leading: Icon(icon),
-          title: Text(title),
-          trailing: const Icon(Icons.chevron_right),
+  Widget build(BuildContext context) => FilledButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon),
+        label: Text(label, maxLines: 2, textAlign: TextAlign.center),
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(0, 62),
+          backgroundColor: ZyncPalette.ink,
+          foregroundColor: Colors.white,
+        ),
+      );
+}
+
+class _SecondaryAction extends StatelessWidget {
+  const _SecondaryAction({required this.icon, required this.label, required this.onTap});
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon),
+        label: Text(label, maxLines: 2, textAlign: TextAlign.center),
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size(0, 62),
+          backgroundColor: Colors.white.withValues(alpha: 0.8),
+        ),
+      );
+}
+
+class _MenuTile extends StatelessWidget {
+  const _MenuTile({
+    required this.icon,
+    required this.iconBackground,
+    required this.iconForeground,
+    required this.title,
+    required this.onTap,
+    this.subtitle,
+  });
+
+  final IconData icon;
+  final Color iconBackground;
+  final Color iconForeground;
+  final String title;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
           onTap: onTap,
+          child: Ink(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+            decoration: BoxDecoration(
+              color: ZyncPalette.surface,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: ZyncPalette.line),
+            ),
+            child: Row(
+              children: [
+                ZyncIconTile(
+                  icon: icon,
+                  backgroundColor: iconBackground,
+                  foregroundColor: iconForeground,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: Theme.of(context).textTheme.titleMedium),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(subtitle!, style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: ZyncPalette.inkSoft),
+              ],
+            ),
+          ),
         ),
       );
 }
