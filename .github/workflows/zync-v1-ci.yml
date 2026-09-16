@@ -55,17 +55,35 @@ jobs:
           cp mobile/l10n.yaml build_app/l10n.yaml
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('build_app/android/app/src/main/AndroidManifest.xml')
-          s = p.read_text()
+
+          manifest = Path('build_app/android/app/src/main/AndroidManifest.xml')
+          s = manifest.read_text()
           if 'android.permission.CAMERA' not in s:
               s = s.replace('<application', '<uses-permission android:name="android.permission.CAMERA" />\n    <application', 1)
-          p.write_text(s)
+          s = s.replace('android:label="myproject"', 'android:label="Zync"')
+          manifest.write_text(s)
+
+          for gradle in [
+              Path('build_app/android/app/build.gradle.kts'),
+              Path('build_app/android/app/build.gradle'),
+          ]:
+              if not gradle.exists():
+                  continue
+              g = gradle.read_text()
+              g = g.replace('compileSdk = flutter.compileSdkVersion', 'compileSdk = 36')
+              g = g.replace('targetSdk = flutter.targetSdkVersion', 'targetSdk = 36')
+              g = g.replace('compileSdk flutter.compileSdkVersion', 'compileSdk 36')
+              g = g.replace('targetSdk flutter.targetSdkVersion', 'targetSdk 36')
+              gradle.write_text(g)
           PY
 
-      - name: Verify package identity
+      - name: Verify Play identity and Android requirements
         run: |
           grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
           grep -q "version: 1.0.0+6" build_app/pubspec.yaml
+          grep -q 'android:label="Zync"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -R -E 'compileSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
+          grep -R -E 'targetSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
 
       - name: Install Flutter dependencies
         working-directory: build_app
