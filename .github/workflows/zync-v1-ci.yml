@@ -53,35 +53,18 @@ jobs:
           cp -R mobile/test build_app/test
           cp mobile/pubspec.yaml build_app/pubspec.yaml
           cp mobile/l10n.yaml build_app/l10n.yaml
-          python3 - <<'PY'
-          from pathlib import Path
-
-          manifest = Path('build_app/android/app/src/main/AndroidManifest.xml')
-          s = manifest.read_text()
-          if 'android.permission.CAMERA' not in s:
-              s = s.replace('<application', '<uses-permission android:name="android.permission.CAMERA" />\n    <application', 1)
-          s = s.replace('android:label="myproject"', 'android:label="Zync"')
-          manifest.write_text(s)
-
-          for gradle in [
-              Path('build_app/android/app/build.gradle.kts'),
-              Path('build_app/android/app/build.gradle'),
-          ]:
-              if not gradle.exists():
-                  continue
-              g = gradle.read_text()
-              g = g.replace('compileSdk = flutter.compileSdkVersion', 'compileSdk = 36')
-              g = g.replace('targetSdk = flutter.targetSdkVersion', 'targetSdk = 36')
-              g = g.replace('compileSdk flutter.compileSdkVersion', 'compileSdk 36')
-              g = g.replace('targetSdk flutter.targetSdkVersion', 'targetSdk 36')
-              gradle.write_text(g)
-          PY
+          python3 mobile/tool/apply_android_branding.py build_app
 
       - name: Verify Play identity and Android requirements
         run: |
           grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
           grep -q "version: 1.0.0+6" build_app/pubspec.yaml
           grep -q 'android:label="Zync"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -q 'android:icon="@mipmap/zync_launcher"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -q 'android:theme="@style/ZyncLaunchTheme"' build_app/android/app/src/main/AndroidManifest.xml
+          test -f build_app/android/app/src/main/res/mipmap-anydpi-v26/zync_launcher.xml
+          test -f build_app/android/app/src/main/res/mipmap-anydpi-v33/zync_launcher.xml
+          test -f build_app/android/app/src/main/res/drawable/zync_splash_mark.xml
           grep -R -E 'compileSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
           grep -R -E 'targetSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
 
