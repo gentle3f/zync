@@ -69,6 +69,39 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('large compressed QR renders on a narrow phone', (tester) async {
+    _setPhone(tester, width: 320, height: 680);
+    const categories = ['sports', 'arts', 'travel', 'technology', 'food'];
+    final largeProfile = LocalProfile(
+      localId: 'large-qr-user',
+      nickname: 'International Explorer',
+      language: 'zh-Hant',
+      interests: List.generate(
+        80,
+        (index) => SelectedInterest(
+          id: 'custom.${index.toString().padLeft(4, '0')}abcdefghijkl',
+          strength: InterestStrength.values[index % InterestStrength.values.length],
+          customLabel: 'Interest $index — 週末主題 ${index % 10}',
+          customCategory: categories[index % categories.length],
+        ),
+      ),
+    );
+
+    expect(
+      QrProfilePayload.fromProfile(largeProfile).encode(),
+      startsWith(QrProfilePayload.compressedPrefix),
+    );
+    await tester.pumpWidget(
+      _harness(
+        ShowQrScreen(profile: largeProfile),
+        locale: const Locale('zh', 'HK'),
+        textScale: 1.1,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('hidden-match reveal handles long labels on a small screen', (tester) async {
     _setPhone(tester, width: 320, height: 660);
     const peer = QrProfilePayload(
