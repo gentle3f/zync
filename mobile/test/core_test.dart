@@ -26,6 +26,30 @@ void main() {
     expect(encoded, isNot(contains('phone')));
   });
 
+  test('custom interest QR metadata round-trips with readable label and category', () {
+    const profile = LocalProfile(
+      localId: 'custom-1',
+      nickname: 'Railfan',
+      language: 'en',
+      interests: [
+        SelectedInterest(
+          id: 'custom.1234567890abcdef',
+          strength: InterestStrength.love,
+          customLabel: 'Railway Photography',
+          customCategory: 'transport',
+        ),
+      ],
+    );
+
+    final decoded = QrProfilePayload.decode(QrProfilePayload.fromProfile(profile).encode());
+    final custom = decoded.interests.single;
+
+    expect(custom.id, 'custom.1234567890abcdef');
+    expect(custom.strength, InterestStrength.love);
+    expect(custom.customLabel, 'Railway Photography');
+    expect(custom.customCategory, 'transport');
+  });
+
   test('matching uses canonical IDs and returns non-shared interests separately', () {
     const mine = [
       SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
@@ -42,6 +66,32 @@ void main() {
     expect(result.shared.single.strength, InterestStrength.like);
     expect(result.onlyMine.map((e) => e.id), ['technology.ai']);
     expect(result.onlyTheirs.map((e) => e.id), ['sports.badminton']);
+  });
+
+  test('shared custom interest preserves readable metadata for reveal and AI', () {
+    const mine = [
+      SelectedInterest(
+        id: 'custom.abc',
+        strength: InterestStrength.love,
+        customLabel: 'Urban Sketching',
+        customCategory: 'arts',
+      ),
+    ];
+    const theirs = [
+      SelectedInterest(
+        id: 'custom.abc',
+        strength: InterestStrength.like,
+        customLabel: 'Urban Sketching',
+        customCategory: 'arts',
+      ),
+    ];
+
+    final shared = MatchingService.compare(mine, theirs).shared.single;
+
+    expect(shared.id, 'custom.abc');
+    expect(shared.strength, InterestStrength.like);
+    expect(shared.customLabel, 'Urban Sketching');
+    expect(shared.customCategory, 'arts');
   });
 
   test('zero-match remains a valid result for crossover AI', () {
