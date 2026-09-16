@@ -12,7 +12,12 @@ class MatchingService {
       final a = mineById[id]!;
       final b = theirById[id]!;
       final lower = a.strength.wireValue < b.strength.wireValue ? a.strength : b.strength;
-      return SelectedInterest(id: id, strength: lower);
+      return SelectedInterest(
+        id: id,
+        strength: lower,
+        customLabel: a.customLabel ?? b.customLabel,
+        customCategory: a.customCategory ?? b.customCategory,
+      );
     }).toList()
       ..sort((a, b) => b.strength.wireValue.compareTo(a.strength.wireValue));
 
