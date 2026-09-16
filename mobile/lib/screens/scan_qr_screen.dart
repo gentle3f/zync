@@ -5,6 +5,7 @@ import '../core/local_store.dart';
 import '../core/matching_service.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../ui/zync_design.dart';
 import 'match_screen.dart';
 
 class ScanQrScreen extends StatefulWidget {
@@ -70,38 +71,108 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.scanTitle)),
+      backgroundColor: Colors.black,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        title: Text(
+          l10n.scanTitle,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+        ),
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
           MobileScanner(controller: _controller, onDetect: _handle),
           IgnorePointer(
+            child: Container(color: Colors.black.withValues(alpha: 0.22)),
+          ),
+          IgnorePointer(
+            child: Center(
+              child: SizedBox(
+                width: 278,
+                height: 278,
+                child: CustomPaint(painter: const _ScannerFramePainter()),
+              ),
+            ),
+          ),
+          IgnorePointer(
             child: Center(
               child: Container(
-                width: 260,
-                height: 260,
+                width: 236,
+                height: 2,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 3),
-                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    colors: [
+                      ZyncPalette.orange.withValues(alpha: 0),
+                      ZyncPalette.orange,
+                      ZyncPalette.orange.withValues(alpha: 0),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ZyncPalette.orange.withValues(alpha: 0.5),
+                      blurRadius: 10,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
           Positioned(
-            left: 20,
-            right: 20,
-            bottom: 32,
-            child: Card(
-              color: Colors.black.withValues(alpha: 0.72),
-              child: Padding(
+            left: 18,
+            right: 18,
+            bottom: 26,
+            child: SafeArea(
+              top: false,
+              child: Container(
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                decoration: BoxDecoration(
+                  color: ZyncPalette.ink.withValues(alpha: 0.88),
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      blurRadius: 30,
+                      offset: const Offset(0, 12),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(_error ?? l10n.scanHint, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)),
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: (_error == null ? ZyncPalette.orange : Colors.redAccent).withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        _error == null ? Icons.qr_code_scanner_rounded : Icons.error_outline_rounded,
+                        color: _error == null ? ZyncPalette.orange : Colors.redAccent,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _error ?? l10n.scanHint,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                      ),
+                    ),
                     if (_processing) ...[
-                      const SizedBox(height: 10),
-                      const LinearProgressIndicator(),
+                      const SizedBox(width: 12),
+                      const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.4,
+                          color: ZyncPalette.orange,
+                        ),
+                      ),
                     ],
                   ],
                 ),
@@ -112,6 +183,51 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       ),
     );
   }
+}
+
+class _ScannerFramePainter extends CustomPainter {
+  const _ScannerFramePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const radius = 28.0;
+    const length = 50.0;
+    const stroke = 5.0;
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    final glow = Paint()
+      ..color = ZyncPalette.orange.withValues(alpha: 0.28)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 11
+      ..strokeCap = StrokeCap.round;
+
+    final path = Path()
+      ..moveTo(0, radius + length)
+      ..lineTo(0, radius)
+      ..quadraticBezierTo(0, 0, radius, 0)
+      ..lineTo(radius + length, 0)
+      ..moveTo(size.width - radius - length, 0)
+      ..lineTo(size.width - radius, 0)
+      ..quadraticBezierTo(size.width, 0, size.width, radius)
+      ..lineTo(size.width, radius + length)
+      ..moveTo(size.width, size.height - radius - length)
+      ..lineTo(size.width, size.height - radius)
+      ..quadraticBezierTo(size.width, size.height, size.width - radius, size.height)
+      ..lineTo(size.width - radius - length, size.height)
+      ..moveTo(radius + length, size.height)
+      ..lineTo(radius, size.height)
+      ..quadraticBezierTo(0, size.height, 0, size.height - radius)
+      ..lineTo(0, size.height - radius - length);
+
+    canvas.drawPath(path, glow);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 extension _FirstOrNull<T> on Iterable<T> {
