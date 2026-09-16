@@ -35,21 +35,21 @@ Core: local interest profile, multilingual canonical-interest model, QR peer exc
 13. Added `.gitignore` protection for env files, keystores/JKS/P12, key.properties and generated Flutter files.
 14. Corrected the known invalid `FontWeight.w650` before compile.
 
-## Current compile/CI checkpoint
-- CI run #3 (`35131801550`) failed only at `flutter pub get` because Flutter requires a base `zh` ARB when both `zh_Hans` and `zh_Hant` exist.
-- Fixed that evidenced issue by adding `mobile/lib/l10n/app_zh.arb` in commit `913c380bfebcc78e83f8fcafc2653f32cb51fd68`.
-- Current CI run #4: `35132170500`.
-- Run #4 has passed: Flutter setup, Android wrapper generation, package-identity verification, dependency install, localization generation, `flutter analyze`, and `flutter test`.
-- At last check, run #4 is actively building the unsigned release AAB. Do not yet claim AAB success until build + artifact upload complete.
+## Verified build checkpoint — FIRST GREEN AAB
+- CI run #3 (`35131801550`) exposed one real issue: Flutter requires base `zh` ARB when `zh_Hans` + `zh_Hant` exist.
+- Fixed with `mobile/lib/l10n/app_zh.arb` in commit `913c380bfebcc78e83f8fcafc2653f32cb51fd68`.
+- CI run #4: `35132170500` — **SUCCESS**.
+- Verified success stages: Flutter setup; Android wrapper generation; exact package identity verification; dependency install; `flutter gen-l10n`; `flutter analyze`; `flutter test`; release AAB build; artifact upload.
+- Artifact: `zync-v1-unsigned-aab`, artifact id `10461389685`, 60,292,860 bytes, digest `sha256:c95a3ed56cdae738925b578ab7a59f28f0d6347009afcdd2befb15554a80e900`, expires 2026-09-30.
+- This proves the current V1 source compiles and produces an Android App Bundle. It is not yet the production-signed Play upload artifact.
 
 ## Still missing / next active task
-1. Finish observing CI run #4. If AAB build fails, read exact job logs and fix only evidenced errors until green.
-2. Hook the existing `/api/v1/normalize-interest` endpoint into the interest picker so an unknown typed hobby can be AI-normalized, confirmed by the user, and stored locally. At present the endpoint exists but the UI only searches seed interests.
-3. Improve AI request payload from raw canonical IDs to useful localized labels where appropriate.
-4. Set Android display name to `Zync` in generated wrapper (current generated project label may still say `myproject`).
-5. After CI green, configure signed AAB path via GitHub Secrets using the user's existing keystore; never commit keystore/password. Need verify keystore alias/password separately.
-6. Document/set repository variable `ZYNC_API_BASE` to the existing Vercel deployment URL; builds with it unset deliberately fall back to local questions.
-7. Only after signed build succeeds consider Play internal-test upload. Do not widen to Phase 2.
+1. Hook `/api/v1/normalize-interest` into the interest picker for unknown typed hobbies, with user confirmation and durable local label/category storage so custom interests remain readable after restart/QR exchange.
+2. Improve AI question payload from opaque canonical IDs to useful localized labels while retaining canonical IDs for matching.
+3. Set Android display name to `Zync` in generated wrapper and assert target/compile SDK 36 in CI rather than relying only on current Flutter template defaults.
+4. Configure production signing via GitHub Secrets using the user's existing keystore; never commit keystore/password. Need verify keystore alias/password separately.
+5. Document/set `ZYNC_API_BASE` repository variable to the existing Vercel deployment URL; with it unset the app deliberately falls back to local questions.
+6. Only after signed build succeeds consider Play internal-test upload. Do not widen to Phase 2.
 
 ## Safety / scope guard
 - `main` remains untouched. All rebuild work is on `zync-v1-rebuild-20260917`.
