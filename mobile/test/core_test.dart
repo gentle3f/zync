@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 
 void main() {
-  test('QR payload round-trips without PII expansion', () {
+  test('small QR payload stays legacy JSON and round-trips without PII expansion', () {
     const profile = LocalProfile(
       localId: 'abc-123',
       nickname: 'Gentle',
@@ -14,9 +16,11 @@ void main() {
       ],
     );
 
-    final encoded = QrProfilePayload.fromProfile(profile).encode();
+    final payload = QrProfilePayload.fromProfile(profile);
+    final encoded = payload.encode();
     final decoded = QrProfilePayload.decode(encoded);
 
+    expect(encoded, startsWith('{'));
     expect(decoded.version, QrProfilePayload.currentVersion);
     expect(decoded.localId, profile.localId);
     expect(decoded.nickname, profile.nickname);
@@ -24,6 +28,67 @@ void main() {
     expect(decoded.interests.map((e) => e.id), ['anime.jojo', 'motorsport.formula1']);
     expect(encoded, isNot(contains('email')));
     expect(encoded, isNot(contains('phone')));
+  });
+
+  test('decoder remains backward compatible with legacy raw JSON', () {
+    const profile = LocalProfile(
+      localId: 'legacy-user',
+      nickname: 'Legacy',
+      language: 'en',
+      interests: [
+        SelectedInterest(id: 'sports.badminton', strength: InterestStrength.like),
+      ],
+    );
+
+    final legacy = QrProfilePayload.fromProfile(profile).encodeLegacyJson();
+    final decoded = QrProfilePayload.decode(legacy);
+
+    expect(legacy, startsWith('{'));
+    expect(decoded.localId, 'legacy-user');
+    expect(decoded.interests.single.id, 'sports.badminton');
+  });
+
+  test('large interest profile uses compressed QR transport and preserves all metadata', () {
+    const categories = ['sports', 'arts', 'travel', 'technology', 'food'];
+    final interests = List.generate(
+      80,
+      (index) => SelectedInterest(
+        id: 'custom.${index.toString().padLeft(4, '0')}abcdefghijkl',
+        strength: InterestStrength.values[index % InterestStrength.values.length],
+        customLabel: 'Interest $index — 週末主題 ${index % 10}',
+        customCategory: categories[index % categories.length],
+      ),
+    );
+    final profile = LocalProfile(
+      localId: 'large-profile-12345678',
+      nickname: 'International Explorer',
+      language: 'zh-Hant',
+      interests: interests,
+    );
+
+    final payload = QrProfilePayload.fromProfile(profile);
+    final legacy = payload.encodeLegacyJson();
+    final encoded = payload.encode();
+    final decoded = QrProfilePayload.decode(encoded);
+
+    expect(encoded, startsWith(QrProfilePayload.compressedPrefix));
+    expect(utf8.encode(encoded).length, lessThan(2000));
+    expect(utf8.encode(encoded).length, lessThan(utf8.encode(legacy).length));
+    expect(decoded.localId, profile.localId);
+    expect(decoded.nickname, profile.nickname);
+    expect(decoded.language, profile.language);
+    expect(decoded.interests, hasLength(80));
+    expect(decoded.interests[37].id, interests[37].id);
+    expect(decoded.interests[37].strength, interests[37].strength);
+    expect(decoded.interests[37].customLabel, interests[37].customLabel);
+    expect(decoded.interests[37].customCategory, interests[37].customCategory);
+  });
+
+  test('malformed compressed QR transport is rejected', () {
+    expect(
+      () => QrProfilePayload.decode('${QrProfilePayload.compressedPrefix}not-valid@@'),
+      throwsA(isA<FormatException>()),
+    );
   });
 
   test('custom interest QR metadata round-trips with readable label and category', () {
