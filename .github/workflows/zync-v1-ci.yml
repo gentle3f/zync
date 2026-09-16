@@ -1,0 +1,92 @@
+name: Zync V1 CI
+
+on:
+  push:
+    branches:
+      - zync-v1-rebuild-20260917
+    paths:
+      - 'mobile/**'
+      - 'api/v1/**'
+      - '.github/workflows/zync-v1-ci.yml'
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - 'api/v1/**'
+      - '.github/workflows/zync-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  flutter-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ZYNC_API_BASE: ${{ vars.ZYNC_API_BASE }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show toolchain
+        run: |
+          flutter --version
+          dart --version
+
+      - name: Generate Android wrapper with legacy Play identity
+        run: |
+          rm -rf build_app
+          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
+          rm -rf build_app/lib build_app/test
+          cp -R mobile/lib build_app/lib
+          cp -R mobile/test build_app/test
+          cp mobile/pubspec.yaml build_app/pubspec.yaml
+          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('build_app/android/app/src/main/AndroidManifest.xml')
+          s = p.read_text()
+          if 'android.permission.CAMERA' not in s:
+              s = s.replace('<application', '<uses-permission android:name="android.permission.CAMERA" />\n    <application', 1)
+          p.write_text(s)
+          PY
+
+      - name: Verify package identity
+        run: |
+          grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
+          grep -q "version: 1.0.0+6" build_app/pubspec.yaml
+
+      - name: Install Flutter dependencies
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: build_app
+        run: flutter gen-l10n
+
+      - name: Analyze
+        working-directory: build_app
+        run: flutter analyze
+
+      - name: Test
+        working-directory: build_app
+        run: flutter test
+
+      - name: Build unsigned release AAB
+        working-directory: build_app
+        run: flutter build appbundle --release --dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-v1-unsigned-aab
+          path: build_app/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14
