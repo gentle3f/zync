@@ -65,7 +65,7 @@ class _MatchScreenState extends State<MatchScreen> {
                     itemCount: _revealed,
                     itemBuilder: (context, index) {
                       final item = shared[index];
-                      final label = InterestCatalog.byId(item.id)?.labelFor(locale) ?? item.id;
+                      final label = InterestCatalog.byId(item.id)?.labelFor(locale) ?? item.customLabel ?? item.id;
                       return Card(
                         margin: const EdgeInsets.only(bottom: 10),
                         child: ListTile(
