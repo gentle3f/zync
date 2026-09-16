@@ -15,9 +15,9 @@ class InterestDnaScreen extends StatelessWidget {
     var total = 0;
     for (final selected in profile.interests) {
       final definition = InterestCatalog.byId(selected.id);
-      if (definition == null) continue;
+      final category = definition?.category ?? selected.customCategory ?? 'other';
       final weight = selected.strength.wireValue + 1;
-      categoryScores.update(definition.category, (value) => value + weight, ifAbsent: () => weight);
+      categoryScores.update(category, (value) => value + weight, ifAbsent: () => weight);
       total += weight;
     }
     final entries = categoryScores.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
