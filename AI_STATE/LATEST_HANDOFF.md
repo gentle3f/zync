@@ -22,31 +22,37 @@ Core: local interest profile, multilingual canonical-interest model, QR peer exc
 ## Existing repository facts
 - Repo: `gentle3f/zync`
 - Existing legacy Vercel API files under `api/` call OpenRouter with server-side `process.env.API_KEY`.
-- Legacy `main` must remain untouched while rebuilding.
+- Legacy `main` remains untouched; all rebuild work is on this branch.
 
 ## Current progress
-1. Created branch `zync-v1-rebuild-20260917` from `main`.
-2. Froze V1 product scope in `docs/ZYNC_V1_PRODUCT_SPEC.md`.
-3. Added durable handoff before implementation.
-4. Added `mobile/pubspec.yaml` at version `1.0.0+6` with Flutter/localization/HTTP/QR/scanner/local-storage dependencies.
-5. Added core domain models in `mobile/lib/core/models.dart`: interest strength, canonical definitions, local profile, compact/versioned QR payload, match result, local Zync history, conversation modes.
-6. Added multilingual seed interest catalog in `mobile/lib/core/interest_catalog.dart` with canonical IDs and labels/aliases across the initial eight target locales.
-7. Added exact canonical-ID local matching in `mobile/lib/core/matching_service.dart`.
-8. Added local-only profile + Zync Again history persistence in `mobile/lib/core/local_store.dart` using SharedPreferences. No account/database/server storage introduced.
+1. Frozen product scope in `docs/ZYNC_V1_PRODUCT_SPEC.md` and established this rolling handoff.
+2. Added Flutter package definition `mobile/pubspec.yaml` at `1.0.0+6`.
+3. Added core models, compact/versioned QR payload, local matching, local profile/history storage, and multilingual canonical seed catalog.
+4. Added localization generation config and all eight initial locale files: English, Traditional Chinese, Simplified Chinese, Japanese, Korean, Spanish, French, Portuguese.
+5. Added localized app bootstrap in `mobile/lib/main.dart` + `zync_app.dart`.
+6. Added interest onboarding/editor with search, canonical seed interests and love/like/want-to-try strength.
+7. Added V1 home hub.
+8. Added QR display using local compact profile payload.
+9. Added QR scanner using `mobile_scanner`; scan decodes locally, compares canonical IDs locally, detects Zync Again deltas, and records only local history.
+10. Added hidden-match reveal screen, including zero-exact-match path to conversation rather than a dead end.
+11. Added conversation modes + Vercel AI client with a multilingual local fallback question engine when API is missing/unavailable.
+12. Added local Zync history and descriptive Interest DNA screens.
 
 ## Current implementation checkpoint
-The durable data layer now exists. No UI/QR scanner/API V1 endpoint/CI has been added yet. Nothing has been merged into `main`.
+The first end-to-end app source path now exists in code: interests -> home -> show/scan QR -> local match -> hidden reveal -> conversation. It has NOT yet been compiled, so syntax/package API issues may remain and must be caught by CI. V1 Vercel endpoints and GitHub Actions are still pending. Free-text AI normalization UI is also pending.
 
-## Next implementation sequence
-1. Add localization files and app shell.
-2. Add onboarding / interest selection / home UI.
-3. Add QR show + scan using compact payload.
-4. Add hidden-match reveal + Zync Again delta detection.
-5. Add conversation UI + local fallback question engine.
-6. Add V1 Vercel `/api/v1/question` and `/api/v1/normalize-interest` endpoints using server-side OpenRouter env vars.
-7. Add tests.
-8. Add GitHub Actions that generates an Android wrapper with package `com.gmail.gentle3f.myproject`, runs analyze/test, and builds an unsigned AAB.
-9. Iterate on CI failures until green; only then prepare signed-release path.
+## Immediate next steps
+1. Add `/api/v1/question` Vercel endpoint with strict request validation and server-side OpenRouter key/model env vars.
+2. Add `/api/v1/normalize-interest` endpoint and then hook unknown free-text interest input to it.
+3. Add focused Dart tests for QR round-trip + matching.
+4. Add GitHub Actions that creates the Android platform wrapper with org `com.gmail.gentle3f` / project `myproject`, copies this source, verifies package identity, runs `flutter gen-l10n`, `flutter analyze`, `flutter test`, and builds an unsigned AAB.
+5. Inspect CI errors and iterate until green.
+6. Once green, document signing with GitHub Secrets / existing keystore without committing secrets.
+
+## Known items to verify during CI
+- Flutter version compatibility for `CardThemeData`, `Color.withValues`, `mobile_scanner` API, ARB locale naming, generated localization import path, and any Dart analyzer warnings.
+- Conversation screen currently contains a `FontWeight.w650` usage that should be corrected if analyzer rejects it.
+- Android camera permission must be present in generated wrapper before release build.
 
 ## Safety / scope guard
-Do not widen into Phase 2. Do not commit secrets, keystores, API keys, or passwords. Update this handoff after every meaningful implementation slice.
+Do not widen into Phase 2. Do not commit secrets, keystores, API keys, or passwords. Update this file after every meaningful implementation slice so a timeout/new chat can resume immediately.
