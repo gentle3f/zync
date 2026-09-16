@@ -1,0 +1,22 @@
+# Secrets / signing
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
+key.properties
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub/
+build/
+mobile/.dart_tool/
+mobile/build/
+build_app/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
