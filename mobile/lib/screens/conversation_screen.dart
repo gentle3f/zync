@@ -84,7 +84,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           const SizedBox(height: 18),
                           Text(
                             _result?.question ?? '',
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w650, height: 1.35),
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600, height: 1.35),
                           ),
                           if (_result != null && !_result!.fromAi) ...[
                             const SizedBox(height: 18),
