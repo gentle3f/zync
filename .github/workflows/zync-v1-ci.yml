@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: zync-v1-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   flutter-android:
     runs-on: ubuntu-latest
