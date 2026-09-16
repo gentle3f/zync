@@ -37,60 +37,63 @@ Current visual direction: premium-friendly, warm, modern social product; orange 
 - Vercel `/api/v1/question` and `/api/v1/normalize-interest`, server-side OpenRouter key only.
 - Multilingual local question fallback when AI/API is unavailable.
 - Custom interests preserve readable label/category through local JSON and QR and match on canonical deterministic IDs.
-- Regression tests for QR round-trip, custom metadata, canonical matching and zero-match readiness.
 - `.gitignore` protects env files, keystores/JKS/P12 and key.properties.
 
 ## Professional UI/UX + graphics implemented
 - `mobile/lib/ui/zync_design.dart`: reusable Zync visual system, palette, theme, surfaces, icon tiles, custom-painted overlapping-rings `ZyncMark`, connection backdrop.
-- Branded loading state.
-- Branded Home hub with primary Show QR / Scan actions.
-- Polished onboarding/interest editor with AI-add confirmation, selection/strength states and persistent bottom action.
-- Branded Show QR card and privacy explanation.
-- Full-camera scanner with branded scan frame/line/status panel.
-- Hidden Match signature screen with connection graphics and progressive reveals.
-- Conversation mode chips + branded AI question surface + intentional offline fallback state.
-- Polished History cards/empty state.
-- Visual Interest DNA ranking/progress surface.
+- Branded loading state, Home, onboarding/interest editor, QR handoff, full-camera scanner, Hidden Match reveal, conversation, History and Interest DNA.
 - `docs/ZYNC_V1_VISUAL_SYSTEM.md` defines release visual/QA bar.
+- Native Android launcher/adaptive/monochrome icon and pre-/post-Android-12 splash resources are reproducibly applied by `mobile/tool/apply_android_branding.py`.
 
-## Native Android branding — CERTIFIED
-`mobile/tool/apply_android_branding.py` makes branding reproducible after CI generates the legacy-identity Android wrapper. It controls app label, CAMERA permission, SDK pins, Zync launcher artwork, adaptive icon resources, Android 13 monochrome icon, pre-Android-12 launch background, and Android 12+ system splash styling.
+## Certified build checkpoints
+### Native branding certification
+CI #34 `35137432743` — **SUCCESS**.
+Artifact `10463318979`, digest `sha256:fc0b9a415f9be41c485fc106b99f1b737aa4968b48cae098e908e5ea03a29dff`.
 
-The launcher/splash artwork is source-controlled vector artwork based on the same orange/plum overlapping-rings connection motif; the manifest-selected launcher is no longer Flutter default artwork.
+### UX hardening + narrow-layout certification
+CI #36 `35138218437` on commit `958fedf05cae2da8653ce42c3b26485b9b4d793f` — **SUCCESS**.
+Passed wrapper generation, exact Play identity + Android branding assertions, localization, `flutter analyze`, all tests including 320dp/long-translation smoke tests, release AAB build and artifact upload.
+Artifact `10464092901`, size 60,726,164 bytes, digest `sha256:15b9bc8c86038a480d3e0b19654bdad351591ffe1df28e946194cac7c30ce066`.
 
-CI run #34 `35137432743` on commit `c79f508bb8108801981993540c11458162358f9d` — **SUCCESS**. It passed brand/identity assertions, localization generation, `flutter analyze`, tests, release AAB build and artifact upload.
+Other prior green checkpoints: CI #32 `35136450797` (professional UI + free-text/localization), CI #4 `35132170500` (first green AAB).
 
-Run #34 artifact:
-- id `10463318979`
-- size 60,695,415 bytes
-- digest `sha256:fc0b9a415f9be41c485fc106b99f1b737aa4968b48cae098e908e5ea03a29dff`
-- unsigned / not yet production Play-signed.
+## UX-hardening changes already merged
+- `mobile/lib/core/localized_domain_text.dart`: localized category names across all 8 locales and localized History match/session metadata.
+- Interest editor and Interest DNA no longer expose raw English category keys.
+- History no longer hard-codes English `matches · sessions`.
+- AI normalized-interest category output is constrained server-side to canonical categories.
+- Hidden Match reveal has light haptic feedback and subtle newest-card scale/fade animation.
+- `mobile/test/layout_smoke_test.dart` covers 320dp + larger-text layouts for French Home, Portuguese onboarding, French QR, and long French match labels.
 
-## Other verified build checkpoints
-- CI #32 `35136450797` — SUCCESS for full professional UI + free-text interest + localization slice. Artifact id `10463871361`, digest `sha256:5626dd2149b143b35345ea386afb8d043a46b1e01700f3b5ec2f99e12d06a55a`.
-- First green CI #4 `35132170500`, artifact id `10461389685`.
+## Active QR transport reliability slice
+Source/design notes: `docs/QR_TRANSPORT_V2.md` and `AI_STATE/MINI_HANDOFF_20260917_QR_COMPRESSION_START.md`.
 
-## Current UX-hardening batch
-Functional batch commit: `5c68783bcdaf5a9c2e4bec21d1cbfcb9b8547586`. A later `mobile/BUILD_STATE.md` checkpoint commit (`958fedf05cae2da8653ce42c3b26485b9b4d793f`) exists only to ensure the full batch receives a normal push-triggered CI run.
+Implemented code as of branch head before this handoff:
+1. Existing semantic QR payload remains schema `v:1`.
+2. Small profiles continue to emit legacy compact raw JSON for maximum compatibility.
+3. Larger payloads adaptively emit `Z2:` + URL-safe base64(zlib(compact JSON)) only when above 420 raw UTF-8 bytes and compression is actually smaller.
+4. New decoder accepts both legacy raw JSON and `Z2:` compressed transport.
+5. Compressed transport restores stripped base64 padding and rejects malformed compressed data with `FormatException`.
+6. Decompressed transport has a 64 KiB post-decompression guard.
+7. Added QR tests covering:
+   - small/raw legacy output + round-trip;
+   - explicit legacy raw decoder compatibility;
+   - 80-interest multilingual/custom profile compression + full metadata preservation;
+   - compressed payload target under 2,000 UTF-8 bytes for the regression profile;
+   - malformed compressed transport rejection;
+   - existing custom metadata/canonical matching/zero-match tests remain.
 
-Changes in this batch:
-1. Added `mobile/lib/core/localized_domain_text.dart` with localized category names across all 8 locales and localized History match/session metadata.
-2. Interest editor now shows localized category names rather than raw English category keys.
-3. Interest DNA category labels are localized.
-4. History no longer exposes hard-coded English `matches · sessions` metadata.
-5. `/api/v1/normalize-interest` now constrains model output to the canonical category set (`sports`, `motorsport`, `entertainment`, `gaming`, `music`, `travel`, `food`, `technology`, `arts`, `learning`, `transport`, `outdoors`, `collecting`, `other`), server-validates it, and falls back to `other` instead of allowing arbitrary category strings.
-6. Hidden Match reveal now adds a light haptic and subtle ~220 ms newest-card scale/fade animation without delaying the flow.
-7. Added `mobile/test/layout_smoke_test.dart` covering 320dp narrow layouts / larger text for French Home, Portuguese onboarding, French QR handoff, and long-label French Hidden Match reveal.
+Relevant commits:
+- `e0c7894f04e80cb5452a13e934f63e1528ad493b` — initial adaptive compression implementation.
+- `a4ac14715ba585b2e075c31ab1602e0a5ee4d29c` — Dart base64 padding fix.
+- `c083340919f5758552f1fedf42ad03520295149d` — QR transport regression tests.
 
-Validation: CI run #36 `35138218437` is the authoritative current run. At the latest checkpoint it has PASSED Android wrapper/identity/branding, localization, `flutter analyze`, and **all tests including the new narrow-layout smoke tests**. Release AAB build is still in progress. Do not call this batch fully green until AAB build + artifact upload finish.
-
-## Newly identified core UX risk to address next
-QR payload is currently plain JSON and includes full custom labels/categories. Because the product encourages users to build a large interest profile, a high-interest-count profile can create an unnecessarily dense/large QR and eventually hurt scan reliability or exceed practical QR capacity. Before release, implement a compact/compressed QR payload while retaining decoder compatibility with the current/plain payload and add a payload-size regression test. This is a V1 reliability issue, not Phase 2 scope expansion.
+Authoritative validation run for this slice: CI #39 `35140541040`. At last check it was **pending/queued** with no jobs started yet. Do NOT claim the compressed QR slice green until analyze + tests + release AAB + artifact upload all succeed.
 
 ## Immediate next active task
-1. Finish observing authoritative CI #36. If AAB fails, inspect exact logs and fix only evidenced errors; otherwise record artifact metadata in this handoff.
-2. Implement backward-compatible compact/compressed QR payload and tests for a realistically large profile; preserve local/no-server architecture.
-3. Continue focused visual QA: text overflow, keyboard behavior, accessibility/font scaling, QR quiet zone/scan reliability, and camera permission/error states.
+1. Observe CI #39. If it fails, inspect exact analyzer/test/build logs and fix only evidenced errors until fully green.
+2. Once #39 is green, improve Show QR scan reliability (quiet zone/module rendering/error-correction choice) only if compatible with the large-profile capacity target; add evidence-based QR-size/scan guardrails rather than aesthetic-only changes.
+3. Continue focused visual QA: camera permission/error state, keyboard behavior, accessibility/font scaling and real-device scanner framing.
 4. Obtain/discover production Vercel base URL and set `ZYNC_API_BASE`; currently unset, so CI builds deliberately use local question fallback and cannot AI-normalize unknown interests.
 5. Configure production signing via GitHub Secrets with existing keystore alias/password; connector cannot safely write secrets.
 6. Only after signed build + real-device visual/QR/scanner QA succeeds consider Play internal testing. Do not widen into Phase 2.
