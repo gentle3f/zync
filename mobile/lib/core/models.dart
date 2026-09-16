@@ -217,8 +217,9 @@ class QrProfilePayload {
     }
 
     try {
-      final padding = (4 - encoded.length % 4) % 4;
-      final compressed = base64Url.decode('$encoded${'=' * padding}');
+      final paddingCount = (4 - encoded.length % 4) % 4;
+      final padded = '$encoded${List.filled(paddingCount, '=').join()}';
+      final compressed = base64Url.decode(padded);
       final decoded = zlib.decode(compressed);
       if (decoded.length > maxDecodedTransportBytes) {
         throw const FormatException('Zync QR payload is too large');
