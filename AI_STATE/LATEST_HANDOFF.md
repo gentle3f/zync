@@ -12,9 +12,11 @@ Authoritative product scope: `docs/ZYNC_V1_PRODUCT_SPEC.md`.
 Core: local interest profile, multilingual canonical-interest model, QR peer exchange, local match detection, hidden-match reveal, AI conversation questions, zero-match crossover questions, conversation modes, Zync Again history, Interest DNA, local fallback questions, Vercel/OpenRouter proxy. No login/Firebase/community/chat/location/social-import/commerce in V1.
 
 ## Non-negotiable product-quality bar
-The user explicitly requires the shipped UI/UX to look professional, not like a default Flutter demo or a functional prototype. This is now a first-class V1 requirement, not optional polish.
+The shipped UI/UX must look professional, not like a default Flutter demo or functional prototype. This is a first-class V1 requirement.
 
-Graphics are also in scope. We own the visual system end-to-end: in-app vector graphics/motifs, app icon, splash/launch identity, empty/loading/error states, QR/scanner presentation, and any illustrations or graphical assets needed for a coherent production release. Do not leave graphics for the user to source separately.
+Graphics are also in scope end-to-end: in-app vector graphics/motifs, app icon, splash/launch identity, empty/loading/error states, QR/scanner presentation, and any illustrations/assets needed for a coherent production release. Do not leave graphics for the user to source separately.
+
+Visual source of truth: `docs/ZYNC_V1_VISUAL_SYSTEM.md`.
 
 Current visual direction: premium-friendly, warm, modern social product; orange as the main Zync accent, dark ink typography, warm cream surfaces, plum/mint secondary accents, generous rounded geometry, restrained shadows, and a recurring connection/network motif. Avoid generic Material defaults where a branded treatment materially improves the experience.
 
@@ -40,13 +42,13 @@ Current visual direction: premium-friendly, warm, modern social product; orange 
 10. Free-text interest UI is wired to normalization: unknown typed interests can be AI-normalized, shown for user confirmation, added locally, assigned a strength, persisted, carried through QR, matched canonically, revealed with a readable label, included in Interest DNA, and sent to question generation as a readable label rather than an opaque ID.
 11. `SelectedInterest` preserves optional custom label/category in local JSON and backward-compatible variable-length QR interest tuples; QR schema remains version 1 for existing seed payloads.
 12. Added custom-interest regression tests for QR metadata round-trip and shared-match readable metadata preservation.
-13. AI-interest UI strings are now localized in JA / KO / ES / FR / PT as well as the existing EN / Chinese locales.
+13. AI-interest UI strings are localized in JA / KO / ES / FR / PT as well as EN / Chinese locales.
 14. `.gitignore` protects env files, keystores/JKS/P12, key.properties and generated Flutter files.
 
-## Professional UI/UX + graphics pass now implemented
-- Added `mobile/lib/ui/zync_design.dart` as the reusable visual system.
+## Professional UI/UX + graphics pass implemented so far
+- `mobile/lib/ui/zync_design.dart` is the reusable visual system.
 - Added branded `ZyncTheme`, palette, surface treatment, icon tiles, custom-painted `ZyncMark`, and connection-network background graphics.
-- Reworked the app loading state so it uses Zync branding instead of a generic spinner-only screen.
+- Reworked app loading state so it uses Zync branding instead of a generic spinner-only screen.
 - Rebuilt Home into a branded hub with clear primary/secondary Zync actions and stronger information hierarchy.
 - Rebuilt onboarding / interest editing with branded profile setup, search, AI-add flow, selected-count state, custom-interest indicator, strength control and persistent bottom action.
 - Reworked Show QR into a clean branded handoff card with stronger QR contrast and privacy explanation.
@@ -56,28 +58,40 @@ Current visual direction: premium-friendly, warm, modern social product; orange 
 - Reworked Zync History with polished cards and a designed empty state.
 - Reworked Interest DNA into a more visual ranked profile with branded progress treatments.
 
-This is the beginning of the production polish pass, not the final visual sign-off. Before release, still do real-device/screenshot QA for text overflow, keyboard behavior, accessibility contrast, small/large Android screens, long translations, scanner framing, QR scan reliability, and animation feel. Final app icon + splash/launch graphics still need to be produced and integrated.
-
 ## Verified build history
 ### First green AAB
 - CI run #4: `35132170500` — SUCCESS.
-- Passed wrapper generation, exact package-ID check, pub get, gen-l10n, analyze, tests, release AAB build and artifact upload.
 - Artifact id `10461389685`; digest `sha256:c95a3ed56cdae738925b578ab7a59f28f0d6347009afcdd2befb15554a80e900`.
 
-### Current UI/UX validation checkpoint
-- Latest mobile source head before this handoff-only commit: `30cd10063e0a782dd68bc53c95020afbce28e847`.
-- Latest queued CI run: #32 `35136450797`.
-- Immediately preceding run #31 `35136415408` already passed wrapper generation, Play identity / SDK checks, pub get, localization generation, `flutter analyze`, and `flutter test`; at last check it was building the release AAB.
-- Run #32 was still pending at last check because a previous run was occupying the branch concurrency slot.
-- Do not claim the full latest UI/UX + PT-localization head is green until run #32 completes build + artifact upload successfully.
+### Full UI/free-text/localization green checkpoint
+- CI run #32: `35136450797` — **SUCCESS**.
+- Passed generated Android wrapper, exact Play identity + SDK checks, localization generation, `flutter analyze`, all tests, release AAB build and artifact upload.
+- Artifact id `10463871361`; size 60,696,747 bytes; digest `sha256:5626dd2149b143b35345ea386afb8d043a46b1e01700f3b5ec2f99e12d06a55a`.
+- This certifies the professional UI pass + free-text interest + all current localization code through commit `30cd10063e0a782dd68bc53c95020afbce28e847` compiles into an AAB.
+
+## Current graphics/Android branding active slice
+1. Added `docs/ZYNC_V1_VISUAL_SYSTEM.md` as visual/QA source of truth.
+2. Added `mobile/tool/apply_android_branding.py` to make Android branding reproducible after CI generates the Flutter wrapper.
+3. Branding script now controls app label, CAMERA permission, SDK pins, Zync launcher artwork, adaptive icon resources, Android 13 monochrome icon, pre-Android-12 launch background and Android 12+ system splash styling.
+4. Launcher/splash mark uses source-controlled vector artwork matching the in-app overlapping-rings connection motif; no Flutter default icon should remain as the manifest-selected launcher resource.
+5. CI workflow now calls the branding script and asserts the Zync launcher/splash resources and launch theme before analysis/build.
+6. Branding validation CI run #34: `35137432743` on commit `c79f508bb8108801981993540c11458162358f9d` is currently in progress. At last check wrapper generation, brand/identity assertions, localization, `flutter analyze` and `flutter test` had passed; release AAB build was still running. Do not claim the native icon/splash layer fully certified until this run completes successfully.
+
+## Known polish issues found during static QA
+These should be handled after branding CI is certified:
+- Add small-screen / large-text widget smoke tests for the main non-camera screens.
+- `HistoryScreen` still contains hard-coded English `matches · sessions` metadata.
+- Seed/custom category labels are currently exposed as raw English category keys in some screens; localize category display for all eight initial locales and constrain AI-normalized categories to the canonical category set.
+- Do a final text-overflow/keyboard/accessibility pass before visual sign-off.
 
 ## Immediate next active task
-1. Finish observing CI run #32. If it fails, inspect exact logs and fix only evidenced errors until green.
-2. Perform a focused visual QA pass screen-by-screen after a successful build: onboarding, home, QR, scanner, match, conversation, history, Interest DNA; fix overflow/tap-target/keyboard/accessibility issues before visual sign-off.
-3. Produce and integrate the final Zync app icon and splash/launch graphics, using the same connection-mark visual language rather than generic stock imagery.
-4. Discover or obtain the production Vercel base URL and set repository variable `ZYNC_API_BASE`; it is currently unset in CI, so builds deliberately use local question fallback and cannot AI-normalize unknown interests until configured.
-5. Configure production signing through GitHub Secrets using the user's existing keystore; GitHub connector cannot safely write secrets. Need keystore alias/password handled outside source control.
-6. Only after signed build + visual/device QA succeeds consider Play internal testing. Do not widen into Phase 2.
+1. Finish observing CI run #34. If the AAB build fails, inspect exact logs and fix only evidenced Android resource/branding errors until green.
+2. Add layout regression smoke tests for small-width + long-translation screens.
+3. Localize category display and History metadata; constrain AI category output to canonical category keys.
+4. Add subtle haptic/motion polish to the Hidden Match reveal without slowing the flow.
+5. Discover or obtain the production Vercel base URL and set repository variable `ZYNC_API_BASE`; it is currently unset in CI, so builds deliberately use local question fallback and cannot AI-normalize unknown interests until configured.
+6. Configure production signing through GitHub Secrets using the user's existing keystore; GitHub connector cannot safely write secrets. Need keystore alias/password handled outside source control.
+7. Only after signed build + visual/device QA succeeds consider Play internal testing. Do not widen into Phase 2.
 
 ## Safety / scope guard
 - `main` remains untouched. All work is on `zync-v1-rebuild-20260917`.
