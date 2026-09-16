@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/ai_service.dart';
 import '../core/interest_catalog.dart';
+import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
@@ -285,7 +286,12 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                                     const SizedBox(height: 2),
                                     Row(
                                       children: [
-                                        Flexible(child: Text(interest.category, style: Theme.of(context).textTheme.bodySmall)),
+                                        Flexible(
+                                          child: Text(
+                                            LocalizedDomainText.category(interest.category, locale),
+                                            style: Theme.of(context).textTheme.bodySmall,
+                                          ),
+                                        ),
                                         if (isCustom) ...[
                                           const SizedBox(width: 6),
                                           const Icon(Icons.auto_awesome_rounded, size: 13, color: ZyncPalette.plum),

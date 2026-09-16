@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/local_store.dart';
+import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
@@ -11,6 +12,7 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
     return Scaffold(
       appBar: AppBar(title: Text(l10n.peopleHistory)),
       body: ConnectionBackdrop(
@@ -74,7 +76,11 @@ class HistoryScreen extends StatelessWidget {
                             Text(name, style: Theme.of(context).textTheme.titleMedium),
                             const SizedBox(height: 3),
                             Text(
-                              '${entry.previousSharedIds.length} matches · ${entry.sessionCount} sessions',
+                              LocalizedDomainText.historyMeta(
+                                matches: entry.previousSharedIds.length,
+                                sessions: entry.sessionCount,
+                                locale: locale,
+                              ),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],

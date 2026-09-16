@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/interest_catalog.dart';
+import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
@@ -12,6 +13,7 @@ class InterestDnaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
     final categoryScores = <String, int>{};
     var total = 0;
     for (final selected in profile.interests) {
@@ -85,7 +87,12 @@ class InterestDnaScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Expanded(child: Text(_pretty(entry.key), style: Theme.of(context).textTheme.titleMedium)),
+                          Expanded(
+                            child: Text(
+                              LocalizedDomainText.category(entry.key, locale),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
                           Text(
                             '${(fraction * 100).round()}%',
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(color: color),
@@ -126,6 +133,4 @@ class InterestDnaScreen extends StatelessWidget {
         2 => ZyncPalette.mint,
         _ => const Color(0xFFE5F0FF),
       };
-
-  String _pretty(String raw) => raw.isEmpty ? raw : '${raw[0].toUpperCase()}${raw.substring(1)}';
 }

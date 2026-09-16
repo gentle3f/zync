@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/interest_catalog.dart';
 import '../core/models.dart';
@@ -24,6 +25,13 @@ class MatchScreen extends StatefulWidget {
 
 class _MatchScreenState extends State<MatchScreen> {
   int _revealed = 0;
+
+  Future<void> _revealNext() async {
+    if (_revealed >= widget.match.shared.length) return;
+    await HapticFeedback.lightImpact();
+    if (!mounted) return;
+    setState(() => _revealed += 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +98,8 @@ class _MatchScreenState extends State<MatchScreen> {
                   Expanded(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 220),
+                      switchInCurve: Curves.easeOutCubic,
+                      switchOutCurve: Curves.easeInCubic,
                       child: _revealed == 0
                           ? Center(
                               key: const ValueKey('hidden'),
@@ -118,7 +128,8 @@ class _MatchScreenState extends State<MatchScreen> {
                               itemBuilder: (context, index) {
                                 final item = shared[index];
                                 final label = InterestCatalog.byId(item.id)?.labelFor(locale) ?? item.customLabel ?? item.id;
-                                return ZyncSurface(
+                                final isNewest = index == _revealed - 1;
+                                final card = ZyncSurface(
                                   shadow: false,
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                                   child: Row(
@@ -136,6 +147,18 @@ class _MatchScreenState extends State<MatchScreen> {
                                     ],
                                   ),
                                 );
+                                if (!isNewest) return card;
+                                return TweenAnimationBuilder<double>(
+                                  key: ValueKey('reveal-${item.id}-$_revealed'),
+                                  tween: Tween(begin: 0.96, end: 1),
+                                  duration: const Duration(milliseconds: 220),
+                                  curve: Curves.easeOutBack,
+                                  builder: (context, value, child) => Transform.scale(
+                                    scale: value,
+                                    child: Opacity(opacity: ((value - 0.96) / 0.04).clamp(0, 1), child: child),
+                                  ),
+                                  child: card,
+                                );
                               },
                             ),
                     ),
@@ -147,7 +170,7 @@ class _MatchScreenState extends State<MatchScreen> {
                   width: double.infinity,
                   child: hasMatches && !allRevealed
                       ? FilledButton.icon(
-                          onPressed: () => setState(() => _revealed += 1),
+                          onPressed: _revealNext,
                           icon: const Icon(Icons.visibility_outlined),
                           label: Text(_revealed == 0 ? l10n.reveal : l10n.nextMatch),
                         )
