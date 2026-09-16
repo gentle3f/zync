@@ -56,16 +56,16 @@ class ZyncTheme {
       ),
       headlineSmall: base.textTheme.headlineSmall?.copyWith(
         color: ZyncPalette.ink,
-        fontWeight: FontWeight.w750,
+        fontWeight: FontWeight.w700,
         letterSpacing: -0.25,
       ),
       titleLarge: base.textTheme.titleLarge?.copyWith(
         color: ZyncPalette.ink,
-        fontWeight: FontWeight.w750,
+        fontWeight: FontWeight.w700,
       ),
       titleMedium: base.textTheme.titleMedium?.copyWith(
         color: ZyncPalette.ink,
-        fontWeight: FontWeight.w650,
+        fontWeight: FontWeight.w600,
       ),
       bodyLarge: base.textTheme.bodyLarge?.copyWith(
         color: ZyncPalette.ink,
@@ -80,7 +80,7 @@ class ZyncTheme {
         height: 1.4,
       ),
       labelLarge: base.textTheme.labelLarge?.copyWith(
-        fontWeight: FontWeight.w750,
+        fontWeight: FontWeight.w700,
         letterSpacing: 0.1,
       ),
     );
