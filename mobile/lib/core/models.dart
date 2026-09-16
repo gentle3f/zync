@@ -34,16 +34,42 @@ class InterestDefinition {
 }
 
 class SelectedInterest {
-  const SelectedInterest({required this.id, required this.strength});
+  const SelectedInterest({
+    required this.id,
+    required this.strength,
+    this.customLabel,
+    this.customCategory,
+  });
 
   final String id;
   final InterestStrength strength;
+  final String? customLabel;
+  final String? customCategory;
 
-  Map<String, dynamic> toJson() => {'id': id, 'strength': strength.wireValue};
+  SelectedInterest copyWith({
+    InterestStrength? strength,
+    String? customLabel,
+    String? customCategory,
+  }) =>
+      SelectedInterest(
+        id: id,
+        strength: strength ?? this.strength,
+        customLabel: customLabel ?? this.customLabel,
+        customCategory: customCategory ?? this.customCategory,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'strength': strength.wireValue,
+        if (customLabel != null && customLabel!.isNotEmpty) 'label': customLabel,
+        if (customCategory != null && customCategory!.isNotEmpty) 'category': customCategory,
+      };
 
   factory SelectedInterest.fromJson(Map<String, dynamic> json) => SelectedInterest(
         id: json['id'] as String,
         strength: InterestStrength.fromWire((json['strength'] as num?)?.toInt() ?? 1),
+        customLabel: json['label'] as String?,
+        customCategory: json['category'] as String?,
       );
 }
 
@@ -123,7 +149,17 @@ class QrProfilePayload {
         'id': localId,
         'name': nickname,
         'lang': language,
-        'i': interests.map((item) => [item.id, item.strength.wireValue]).toList(),
+        'i': interests.map((item) {
+          if (item.customLabel == null && item.customCategory == null) {
+            return <dynamic>[item.id, item.strength.wireValue];
+          }
+          return <dynamic>[
+            item.id,
+            item.strength.wireValue,
+            item.customLabel,
+            item.customCategory,
+          ];
+        }).toList(),
       };
 
   String encode() => jsonEncode(toCompactJson());
@@ -136,9 +172,12 @@ class QrProfilePayload {
     }
     final interests = ((json['i'] as List?) ?? const []).map((entry) {
       final pair = List<dynamic>.from(entry as List);
+      if (pair.length < 2) throw const FormatException('Invalid Zync interest payload');
       return SelectedInterest(
         id: pair[0] as String,
         strength: InterestStrength.fromWire((pair[1] as num).toInt()),
+        customLabel: pair.length > 2 ? pair[2] as String? : null,
+        customCategory: pair.length > 3 ? pair[3] as String? : null,
       );
     }).toList();
     return QrProfilePayload(
