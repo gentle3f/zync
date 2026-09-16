@@ -11,10 +11,60 @@ class AiQuestionResult {
   final bool fromAi;
 }
 
+class NormalizedInterestResult {
+  const NormalizedInterestResult({
+    required this.id,
+    required this.canonicalName,
+    required this.displayName,
+    required this.category,
+  });
+
+  final String id;
+  final String canonicalName;
+  final String displayName;
+  final String category;
+}
+
 class AiService {
   const AiService({this.baseUrl = const String.fromEnvironment('ZYNC_API_BASE')});
 
   final String baseUrl;
+
+  String _label(SelectedInterest item, String language) {
+    return InterestCatalog.byId(item.id)?.labelFor(language) ?? item.customLabel ?? item.id;
+  }
+
+  Future<NormalizedInterestResult?> normalizeInterest({
+    required String input,
+    required String language,
+  }) async {
+    final trimmed = input.trim();
+    if (baseUrl.trim().isEmpty || trimmed.length < 2) return null;
+    try {
+      final response = await http
+          .post(
+            Uri.parse('${baseUrl.replaceAll(RegExp(r'/$'), '')}/api/v1/normalize-interest'),
+            headers: const {'content-type': 'application/json'},
+            body: jsonEncode({'input': trimmed, 'language': language}),
+          )
+          .timeout(const Duration(seconds: 12));
+      if (response.statusCode < 200 || response.statusCode >= 300) return null;
+      final json = Map<String, dynamic>.from(jsonDecode(response.body) as Map);
+      final id = (json['id'] as String?)?.trim() ?? '';
+      final canonicalName = (json['canonicalName'] as String?)?.trim() ?? '';
+      final displayName = (json['displayName'] as String?)?.trim() ?? '';
+      final category = (json['category'] as String?)?.trim() ?? 'other';
+      if (id.isEmpty || canonicalName.isEmpty || displayName.isEmpty) return null;
+      return NormalizedInterestResult(
+        id: id,
+        canonicalName: canonicalName,
+        displayName: displayName,
+        category: category.isEmpty ? 'other' : category,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<AiQuestionResult> generateQuestion({
     required String language,
@@ -31,9 +81,9 @@ class AiService {
             body: jsonEncode({
               'language': language,
               'mode': mode.name,
-              'shared': match.shared.map((item) => item.id).take(8).toList(),
-              'personA': match.onlyMine.map((item) => item.id).take(8).toList(),
-              'personB': match.onlyTheirs.map((item) => item.id).take(8).toList(),
+              'shared': match.shared.map((item) => _label(item, language)).take(8).toList(),
+              'personA': match.onlyMine.map((item) => _label(item, language)).take(8).toList(),
+              'personB': match.onlyTheirs.map((item) => _label(item, language)).take(8).toList(),
             }),
           )
           .timeout(const Duration(seconds: 12));
@@ -56,10 +106,10 @@ class AiService {
     required ConversationMode mode,
     required MatchResult match,
   }) {
-    String label(String id) => InterestCatalog.byId(id)?.labelFor(language) ?? id.split('.').last;
+    String label(SelectedInterest item) => _label(item, language);
 
     if (match.shared.isNotEmpty) {
-      final interest = label(match.shared.first.id);
+      final interest = label(match.shared.first);
       final templates = <String, String>{
         'zh-Hant': '你哋第一次對「$interest」產生興趣係幾時？當時發生咗咩？',
         'zh-Hans': '你们第一次对“$interest”产生兴趣是什么时候？当时发生了什么？',
@@ -73,8 +123,8 @@ class AiService {
       return AiQuestionResult(question: templates[language] ?? templates[language.split('-').first] ?? templates['en']!, fromAi: false);
     }
 
-    final a = match.onlyMine.isNotEmpty ? label(match.onlyMine.first.id) : 'your interests';
-    final b = match.onlyTheirs.isNotEmpty ? label(match.onlyTheirs.first.id) : 'their interests';
+    final a = match.onlyMine.isNotEmpty ? label(match.onlyMine.first) : 'your interests';
+    final b = match.onlyTheirs.isNotEmpty ? label(match.onlyTheirs.first) : 'their interests';
     final templates = <String, String>{
       'zh-Hant': '如果將「$a」同「$b」混合成一個週末活動，你哋會點設計？',
       'zh-Hans': '如果把“$a”和“$b”混合成一个周末活动，你们会怎么设计？',
