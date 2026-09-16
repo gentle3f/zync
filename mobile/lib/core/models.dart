@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 enum InterestStrength {
   wantToTry(0),
@@ -130,6 +131,10 @@ class QrProfilePayload {
   });
 
   static const currentVersion = 1;
+  static const compressedPrefix = 'Z2:';
+  static const compressionThresholdBytes = 420;
+  static const maxDecodedTransportBytes = 64 * 1024;
+
   final int version;
   final String localId;
   final String nickname;
@@ -162,10 +167,23 @@ class QrProfilePayload {
         }).toList(),
       };
 
-  String encode() => jsonEncode(toCompactJson());
+  String encodeLegacyJson() => jsonEncode(toCompactJson());
+
+  String encode() {
+    final legacy = encodeLegacyJson();
+    final legacyBytes = utf8.encode(legacy);
+    if (legacyBytes.length < compressionThresholdBytes) return legacy;
+
+    final compressed = zlib.encode(legacyBytes);
+    final encoded = base64UrlEncode(compressed).replaceAll('=', '');
+    final transport = '$compressedPrefix$encoded';
+
+    return utf8.encode(transport).length < legacyBytes.length ? transport : legacy;
+  }
 
   factory QrProfilePayload.decode(String raw) {
-    final json = Map<String, dynamic>.from(jsonDecode(raw) as Map);
+    final jsonText = _decodeTransport(raw);
+    final json = Map<String, dynamic>.from(jsonDecode(jsonText) as Map);
     final version = (json['v'] as num?)?.toInt() ?? 0;
     if (version != currentVersion) {
       throw const FormatException('Unsupported Zync QR version');
@@ -187,6 +205,30 @@ class QrProfilePayload {
       language: (json['lang'] as String?) ?? 'en',
       interests: interests,
     );
+  }
+
+  static String _decodeTransport(String raw) {
+    final trimmed = raw.trim();
+    if (!trimmed.startsWith(compressedPrefix)) return trimmed;
+
+    final encoded = trimmed.substring(compressedPrefix.length);
+    if (encoded.isEmpty) {
+      throw const FormatException('Invalid compressed Zync QR payload');
+    }
+
+    try {
+      final padding = (4 - encoded.length % 4) % 4;
+      final compressed = base64Url.decode('$encoded${'=' * padding}');
+      final decoded = zlib.decode(compressed);
+      if (decoded.length > maxDecodedTransportBytes) {
+        throw const FormatException('Zync QR payload is too large');
+      }
+      return utf8.decode(decoded);
+    } on FormatException {
+      rethrow;
+    } catch (_) {
+      throw const FormatException('Invalid compressed Zync QR payload');
+    }
   }
 }
 
