@@ -20,7 +20,7 @@ class ShowQrScreen extends StatelessWidget {
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(22, 12, 22, 32),
+              padding: const EdgeInsets.fromLTRB(18, 12, 18, 32),
               child: Column(
                 children: [
                   const ZyncMark(size: 58, strokeWidth: 5.5),
@@ -38,30 +38,59 @@ class ShowQrScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
                   ZyncSurface(
-                    padding: const EdgeInsets.all(18),
+                    padding: const EdgeInsets.all(14),
                     radius: 30,
                     child: Column(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(18),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(color: ZyncPalette.line),
                           ),
-                          child: QrImageView(
-                            data: payload,
-                            version: QrVersions.auto,
-                            size: 272,
-                            gapless: false,
-                            eyeStyle: const QrEyeStyle(
-                              eyeShape: QrEyeShape.square,
-                              color: ZyncPalette.ink,
-                            ),
-                            dataModuleStyle: const QrDataModuleStyle(
-                              dataModuleShape: QrDataModuleShape.square,
-                              color: ZyncPalette.ink,
-                            ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              final qrSize = constraints.maxWidth.clamp(180.0, 300.0).toDouble();
+                              return Center(
+                                child: QrImageView(
+                                  data: payload,
+                                  version: QrVersions.auto,
+                                  errorCorrectionLevel: QrErrorCorrectLevel.M,
+                                  size: qrSize,
+                                  padding: EdgeInsets.zero,
+                                  gapless: true,
+                                  semanticsLabel: l10n.showMyQr,
+                                  errorStateBuilder: (context, error) => SizedBox(
+                                    width: qrSize,
+                                    height: qrSize,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.error_outline_rounded, color: ZyncPalette.orangeDeep),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            l10n.invalidQr,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context).textTheme.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  eyeStyle: const QrEyeStyle(
+                                    eyeShape: QrEyeShape.square,
+                                    color: ZyncPalette.ink,
+                                  ),
+                                  dataModuleStyle: const QrDataModuleStyle(
+                                    dataModuleShape: QrDataModuleShape.square,
+                                    color: ZyncPalette.ink,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         if (profile.nickname.isNotEmpty) ...[
