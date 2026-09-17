@@ -54,6 +54,7 @@ jobs:
           node --check api/generate2.js
           node --check api/v1/question.js
           node --check api/v1/normalize-interest.js
+          node --check api/v1/analytics.js
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
