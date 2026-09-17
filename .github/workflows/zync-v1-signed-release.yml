@@ -72,13 +72,18 @@ jobs:
           node --check api/v1/question.js
           node --check api/v1/normalize-interest.js
           node --check api/v1/analytics.js
+          node --check api/v1/relay.js
           node --check .github/scripts/serverless_contracts.mjs
+          node --check .github/scripts/relay_contracts.mjs
           node --check .github/scripts/openrouter_privacy_contracts.mjs
           node --check .github/scripts/live_api_smoke.mjs
           node --check .github/scripts/release_web_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
+
+      - name: Test encrypted relay contracts
+        run: node .github/scripts/relay_contracts.mjs
 
       - name: Test OpenRouter privacy contracts
         run: node .github/scripts/openrouter_privacy_contracts.mjs
