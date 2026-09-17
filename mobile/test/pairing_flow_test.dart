@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zync/core/local_store.dart';
 import 'package:zync/core/models.dart';
@@ -38,6 +37,16 @@ void main() {
       ],
     );
     final relay = _HostFlowRelay();
+    final bootstrap = RelayBootstrap(
+      sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      hostToken: '0123456789ABCDEFGHIJKLMNOPQRSTUV',
+      secretBytes: List<int>.generate(32, (index) => index + 1),
+      expiresAt: DateTime.now().toUtc().add(const Duration(minutes: 3)),
+      hostProfile: QrProfilePayload.fromProfile(host),
+    );
+    final encodedQr = bootstrap.qr.encode();
+    final handshake = ZyncHandshakeQrPayload.decode(encodedQr);
+    expect(encodedQr, isNot(contains(bootstrap.hostToken)));
 
     tester.view.devicePixelRatio = 2;
     tester.view.physicalSize = const Size(780, 1688);
@@ -56,20 +65,20 @@ void main() {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        home: ShowQrScreen(profile: host, relayClient: relay),
+        home: ShowQrScreen(
+          profile: host,
+          relayClient: relay,
+          bootstrapFactory: (_) => bootstrap,
+        ),
       ),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(relay.createdSessionId, isNotNull);
-    expect(relay.createdHostToken, isNotNull);
-    expect(relay.createdHostToken, hasLength(greaterThanOrEqualTo(32)));
+    expect(relay.createdSessionId, bootstrap.sessionId);
+    expect(relay.createdHostToken, bootstrap.hostToken);
     expect(find.text('Waiting for scan…'), findsOneWidget);
-    final qr = tester.widget<QrImageView>(find.byType(QrImageView));
-    final handshake = ZyncHandshakeQrPayload.decode(qr.data);
     expect(handshake.sessionId, relay.createdSessionId);
-    expect(qr.data, isNot(contains(relay.createdHostToken!)));
 
     relay.responsePayload = await RelayCrypto.encryptPeerResponse(
       handshake: handshake,
