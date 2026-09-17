@@ -3,6 +3,7 @@ import fs from 'node:fs';
 
 const read = (path) => fs.readFileSync(path, 'utf8');
 
+const landing = read('index.html');
 const privacy = read('privacy.html');
 const terms = read('terms.html');
 const disclaimer = read('disclaimer.html');
@@ -11,6 +12,7 @@ const analytics = read('mobile/lib/core/analytics_service.dart');
 const signedRelease = read('.github/workflows/zync-v1-signed-release.yml');
 
 for (const [name, html] of [
+  ['landing', landing],
   ['privacy', privacy],
   ['terms', terms],
   ['disclaimer', disclaimer],
@@ -19,6 +21,21 @@ for (const [name, html] of [
   assert.match(html, /<meta name="viewport"/i, `${name} page must be mobile readable`);
   assert.ok(!/RELEASE_BLOCKER|\[[A-Z][A-Z _-]{4,}\]|__ZYNC_/i.test(html), `${name} page contains a release placeholder`);
 }
+
+assert.match(landing, /<title>Zync — Discover what connects you<\/title>/i);
+assert.match(landing, /Discover what <span>connects<\/span> you\./i);
+assert.match(landing, /No account required/i);
+assert.match(landing, /QR matching/i);
+assert.match(landing, /hidden matches/i);
+assert.match(landing, /Zero match isn't a dead end/i);
+assert.match(landing, /Zync Again/i);
+assert.match(landing, /Interest DNA/i);
+assert.match(landing, /eight interface languages/i);
+assert.match(landing, /Analytics off for the public V1 release/i);
+assert.match(landing, /href="\/privacy"/i);
+assert.match(landing, /href="\/terms"/i);
+assert.match(landing, /href="\/disclaimer"/i);
+assert.ok(!/download now|available now|join the community|nearby people|create an account/i.test(landing), 'landing page contains a claim outside the frozen V1 scope');
 
 assert.match(privacy, /<title>Zync Privacy Policy<\/title>/i);
 assert.match(privacy, /com\.gmail\.gentle3f\.myproject/);
@@ -54,6 +71,7 @@ assert.match(signedRelease, /ZYNC_PRIVACY_URL/);
 assert.match(signedRelease, /--dart-define=ZYNC_ANALYTICS_ENABLED=false/);
 assert.match(signedRelease, /jarsigner -verify -strict/);
 
+console.log('✓ Zync landing page matches the frozen local-first V1 product scope');
 console.log('✓ public legal pages are browser-readable and release-complete');
 console.log('✓ stable /privacy, /terms and /disclaimer routes are configured');
 console.log('✓ public V1 analytics posture is explicitly default-off');
