@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../core/analytics_service.dart';
 import '../core/local_store.dart';
 import '../core/matching_service.dart';
 import '../core/models.dart';
@@ -68,6 +71,33 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
       );
+
+      final analytics = <Future<void>>[
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.qrScanned,
+          properties: {
+            'transport': raw.startsWith(QrProfilePayload.compressedPrefix) ? 'compressed' : 'legacy',
+          },
+        ),
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.matchComplete,
+          properties: {
+            'has_match': match.shared.isNotEmpty,
+            'repeat_peer': previous != null,
+          },
+        ),
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.matchCount,
+          properties: {'count': match.shared.length},
+        ),
+        if (previous != null)
+          ZyncAnalytics.instance.track(
+            AnalyticsEvent.zyncAgain,
+            properties: {'prior_sessions': previous.sessionCount},
+          ),
+      ];
+      unawaited(Future.wait(analytics));
+
       await _controller.stop();
       if (!mounted) return;
       await Navigator.of(context).pushReplacement(
