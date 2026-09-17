@@ -88,6 +88,42 @@ class LocalizedDomainText {
     },
   };
 
+  static const Map<String, Map<String, String>> _taxonomy = {
+    'movies': {'en':'Movies','zh-Hant':'電影','zh-Hans':'电影','ja':'映画','ko':'영화','es':'Películas','fr':'Films','pt':'Filmes'},
+    'tv_drama': {'en':'TV & Drama','zh-Hant':'電視與劇集','zh-Hans':'电视与剧集','ja':'TV・ドラマ','ko':'TV·드라마','es':'TV y series','fr':'TV et séries','pt':'TV e séries'},
+    'anime_manga': {'en':'Anime & Manga','zh-Hant':'動漫與漫畫','zh-Hans':'动漫与漫画','ja':'アニメ・漫画','ko':'애니·만화','es':'Anime y manga','fr':'Anime et manga','pt':'Anime e mangá'},
+    'franchises': {'en':'Franchises','zh-Hant':'系列與世界觀','zh-Hans':'系列与世界观','ja':'シリーズ','ko':'프랜차이즈','es':'Franquicias','fr':'Franchises','pt':'Franquias'},
+    'video_games': {'en':'Video Games','zh-Hant':'電子遊戲','zh-Hans':'电子游戏','ja':'ビデオゲーム','ko':'비디오 게임','es':'Videojuegos','fr':'Jeux vidéo','pt':'Videogames'},
+    'tabletop': {'en':'Tabletop','zh-Hant':'桌遊與TRPG','zh-Hans':'桌游与TRPG','ja':'ボードゲーム・TRPG','ko':'보드게임·TRPG','es':'Juegos de mesa','fr':'Jeux de table','pt':'Jogos de mesa'},
+    'genres_styles': {'en':'Genres & Styles','zh-Hant':'曲風與類型','zh-Hans':'曲风与类型','ja':'ジャンル・スタイル','ko':'장르·스타일','es':'Géneros y estilos','fr':'Genres et styles','pt':'Gêneros e estilos'},
+    'artists': {'en':'Artists','zh-Hant':'歌手與樂隊','zh-Hans':'歌手与乐队','ja':'アーティスト','ko':'아티스트','es':'Artistas','fr':'Artistes','pt':'Artistas'},
+    'making': {'en':'Making & Playing','zh-Hant':'演奏與創作','zh-Hans':'演奏与创作','ja':'演奏・制作','ko':'연주·제작','es':'Interpretación y creación','fr':'Pratique et création','pt':'Tocar e criar'},
+    'books': {'en':'Books','zh-Hant':'書籍','zh-Hans':'书籍','ja':'本','ko':'책','es':'Libros','fr':'Livres','pt':'Livros'},
+    'cuisines': {'en':'Cuisines','zh-Hant':'菜系','zh-Hans':'菜系','ja':'料理ジャンル','ko':'요리 종류','es':'Cocinas','fr':'Cuisines','pt':'Culinárias'},
+    'dishes': {'en':'Dishes','zh-Hant':'料理與菜式','zh-Hans':'料理与菜式','ja':'料理','ko':'음식','es':'Platos','fr':'Plats','pt':'Pratos'},
+    'drinks': {'en':'Drinks','zh-Hant':'飲品','zh-Hans':'饮品','ja':'ドリンク','ko':'음료','es':'Bebidas','fr':'Boissons','pt':'Bebidas'},
+    'cooking': {'en':'Cooking','zh-Hant':'烹飪','zh-Hans':'烹饪','ja':'料理・調理','ko':'요리','es':'Cocina','fr':'Cuisine','pt':'Culinária'},
+    'destinations': {'en':'Destinations','zh-Hant':'目的地','zh-Hans':'目的地','ja':'旅行先','ko':'여행지','es':'Destinos','fr':'Destinations','pt':'Destinos'},
+    'styles': {'en':'Travel Styles','zh-Hant':'旅行方式','zh-Hans':'旅行方式','ja':'旅のスタイル','ko':'여행 스타일','es':'Estilos de viaje','fr':'Styles de voyage','pt':'Estilos de viagem'},
+    'general': {'en':'General','zh-Hant':'綜合','zh-Hans':'综合','ja':'一般','ko':'일반','es':'General','fr':'Général','pt':'Geral'},
+    'subgenres': {'en':'Genres & Subgenres','zh-Hant':'類型與細分類','zh-Hans':'类型与细分类','ja':'ジャンル','ko':'장르','es':'Géneros','fr':'Genres','pt':'Gêneros'},
+    'classics': {'en':'Classics','zh-Hant':'經典','zh-Hans':'经典','ja':'クラシック','ko':'고전','es':'Clásicos','fr':'Classiques','pt':'Clássicos'},
+    'modern_evergreen': {'en':'Modern Favorites','zh-Hant':'現代長青作品','zh-Hans':'现代长青作品','ja':'現代の名作','ko':'현대 명작','es':'Favoritos modernos','fr':'Classiques modernes','pt':'Favoritos modernos'},
+    'drama': {'en':'Drama Series','zh-Hant':'劇集','zh-Hans':'剧集','ja':'ドラマ','ko':'드라마','es':'Series dramáticas','fr':'Séries dramatiques','pt':'Séries dramáticas'},
+    'comedy_variety': {'en':'Comedy & Variety','zh-Hant':'喜劇、綜藝與真人秀','zh-Hans':'喜剧、综艺与真人秀','ja':'コメディ・バラエティ','ko':'코미디·예능','es':'Comedia y variedades','fr':'Comédie et variété','pt':'Comédia e variedades'},
+    'titles_franchises': {'en':'Titles & Franchises','zh-Hant':'作品與系列','zh-Hans':'作品与系列','ja':'作品・シリーズ','ko':'작품·시리즈','es':'Títulos y franquicias','fr':'Titres et franchises','pt':'Títulos e franquias'},
+    'franchises': {'en':'Franchises','zh-Hant':'系列作品','zh-Hans':'系列作品','ja':'シリーズ','ko':'시리즈','es':'Franquicias','fr':'Franchises','pt':'Franquias'},
+    'categories_mechanics': {'en':'Types & Mechanics','zh-Hant':'類型與機制','zh-Hans':'类型与机制','ja':'種類・メカニクス','ko':'유형·메커니즘','es':'Tipos y mecánicas','fr':'Types et mécaniques','pt':'Tipos e mecânicas'},
+    'boardgame_titles': {'en':'Board Game Titles','zh-Hant':'桌遊作品','zh-Hans':'桌游作品','ja':'ボードゲーム作品','ko':'보드게임 타이틀','es':'Juegos de mesa','fr':'Titres de jeux','pt':'Títulos de jogos'},
+    'ttrpg': {'en':'Tabletop RPG','zh-Hant':'桌上角色扮演','zh-Hans':'桌上角色扮演','ja':'TRPG','ko':'TRPG','es':'Rol de mesa','fr':'JDR sur table','pt':'RPG de mesa'},
+    'artists_global': {'en':'Global Artists','zh-Hant':'國際歌手與樂隊','zh-Hans':'国际歌手与乐队','ja':'海外アーティスト','ko':'글로벌 아티스트','es':'Artistas globales','fr':'Artistes internationaux','pt':'Artistas globais'},
+    'kpop_artists': {'en':'K-Pop Artists','zh-Hant':'K-Pop 歌手','zh-Hans':'K-Pop 歌手','ja':'K-Popアーティスト','ko':'K-Pop 아티스트','es':'Artistas K-Pop','fr':'Artistes K-Pop','pt':'Artistas K-Pop'},
+    'japanese_artists': {'en':'Japanese Artists','zh-Hant':'日本歌手與樂隊','zh-Hans':'日本歌手与乐队','ja':'日本のアーティスト','ko':'일본 아티스트','es':'Artistas japoneses','fr':'Artistes japonais','pt':'Artistas japoneses'},
+    'hk_cantopop': {'en':'Hong Kong / Cantopop','zh-Hant':'香港與廣東歌','zh-Hans':'香港与粤语歌','ja':'香港・C-Pop','ko':'홍콩·캔토팝','es':'Hong Kong / Cantopop','fr':'Hong Kong / Cantopop','pt':'Hong Kong / Cantopop'},
+    'mandopop_artists': {'en':'Mandopop Artists','zh-Hant':'華語歌手與樂隊','zh-Hans':'华语歌手与乐队','ja':'Mandopopアーティスト','ko':'만도팝 아티스트','es':'Artistas Mandopop','fr':'Artistes Mandopop','pt':'Artistas Mandopop'},
+    'evergreen_titles': {'en':'Evergreen Titles','zh-Hant':'長青作品','zh-Hans':'长青作品','ja':'名作','ko':'명작','es':'Títulos clásicos','fr':'Titres incontournables','pt':'Títulos clássicos'},
+  };
+
   static String category(String raw, String locale) {
     final key = raw.trim().toLowerCase();
     final labels = _categories[key];
@@ -96,9 +132,22 @@ class LocalizedDomainText {
     return labels[code] ?? labels[code.split('-').first] ?? labels['en']!;
   }
 
+  static String taxonomy(String raw, String locale) {
+    final key = raw.trim().toLowerCase();
+    final labels = _taxonomy[key];
+    if (labels == null) return _titleize(raw);
+    final code = _localeCode(locale);
+    return labels[code] ?? labels[code.split('-').first] ?? labels['en']!;
+  }
+
   static String allInterests(String locale) => _pick(locale, {
         'en': 'Popular', 'zh-Hant': '熱門', 'zh-Hans': '热门', 'ja': '人気', 'ko': '인기',
         'es': 'Popular', 'fr': 'Populaires', 'pt': 'Populares',
+      });
+
+  static String allInSection(String locale) => _pick(locale, {
+        'en': 'All', 'zh-Hant': '全部', 'zh-Hans': '全部', 'ja': 'すべて', 'ko': '전체',
+        'es': 'Todo', 'fr': 'Tout', 'pt': 'Tudo',
       });
 
   static String suggestedForYou(String locale) => _pick(locale, {
