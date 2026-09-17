@@ -144,6 +144,10 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model,
+        provider: {
+          zdr: true,
+          data_collection: 'deny',
+        },
         messages: [
           {
             role: 'system',
