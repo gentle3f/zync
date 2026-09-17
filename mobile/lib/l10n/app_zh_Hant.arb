@@ -62,6 +62,8 @@
   "love": "超鍾意",
   "like": "鍾意",
   "wantToTry": "想試",
+  "privacyPolicy": "私隱政策",
+  "privacyPolicyUnavailable": "暫時未能開啟私隱政策，請稍後再試。",
   "edit": "編輯",
   "done": "完成",
   "retry": "再試",
