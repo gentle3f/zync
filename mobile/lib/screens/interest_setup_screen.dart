@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../core/ai_service.dart';
+import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
@@ -51,13 +54,25 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   }
 
   void _toggle(String id) {
+    final adding = !_selected.containsKey(id);
     setState(() {
-      if (_selected.containsKey(id)) {
+      if (!adding) {
         _selected.remove(id);
       } else {
         _selected[id] = InterestStrength.like;
       }
     });
+    if (adding) {
+      unawaited(
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.interestAdded,
+          properties: {
+            'source': _custom.containsKey(id) ? 'saved_custom' : 'seed',
+            'selected_count': _selected.length,
+          },
+        ),
+      );
+    }
   }
 
   Future<void> _normalizeAndAdd() async {
@@ -94,6 +109,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     );
     if (confirmed != true || !mounted) return;
 
+    final adding = !_selected.containsKey(result.id);
     setState(() {
       _selected[result.id] = InterestStrength.like;
       _custom[result.id] = SelectedInterest(
@@ -104,6 +120,17 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       );
       _search.clear();
     });
+    if (adding) {
+      unawaited(
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.interestAdded,
+          properties: {
+            'source': 'ai_normalized',
+            'selected_count': _selected.length,
+          },
+        ),
+      );
+    }
   }
 
   Future<void> _save() async {
@@ -123,6 +150,14 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       }).toList(),
     );
     await widget.onSaved(profile);
+    if (!widget.editing) {
+      unawaited(
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.interestSetupComplete,
+          properties: {'selected_count': _selected.length},
+        ),
+      );
+    }
     if (widget.editing && mounted) Navigator.of(context).pop(profile);
   }
 
