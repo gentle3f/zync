@@ -88,6 +88,7 @@ class AiService {
     final primary = ZyncLanguage.canonical(language);
     final secondary = secondaryLanguage == null ? null : ZyncLanguage.canonical(secondaryLanguage);
     final wantsSecondary = secondary != null && secondary != primary;
+    final boundedSessionSeed = sessionSeed.length > 64 ? sessionSeed.substring(0, 64) : sessionSeed;
 
     if (baseUrl.trim().isEmpty) {
       return _fallback(
@@ -109,7 +110,7 @@ class AiService {
               'shared': match.shared.map((item) => _label(item, primary)).take(8).toList(),
               'personA': match.onlyMine.map((item) => _label(item, primary)).take(8).toList(),
               'personB': match.onlyTheirs.map((item) => _label(item, primary)).take(8).toList(),
-              if (sessionSeed.isNotEmpty) 'sessionSeed': sessionSeed.substring(0, sessionSeed.length.clamp(0, 64)),
+              if (boundedSessionSeed.isNotEmpty) 'sessionSeed': boundedSessionSeed,
             }),
           )
           .timeout(const Duration(seconds: 12));
