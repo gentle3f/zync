@@ -18,9 +18,17 @@ function json(res, status, body) {
   return res.status(status).json(body);
 }
 
+function firstEnv(...names) {
+  for (const name of names) {
+    const value = (process.env[name] || '').trim();
+    if (value) return value;
+  }
+  return '';
+}
+
 function configuration() {
-  const url = (process.env.UPSTASH_REDIS_REST_URL || '').trim().replace(/\/$/, '');
-  const token = (process.env.UPSTASH_REDIS_REST_TOKEN || '').trim();
+  const url = firstEnv('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL').replace(/\/$/, '');
+  const token = firstEnv('UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN');
   const rateSecret = (process.env.ZYNC_RELAY_RATE_LIMIT_SECRET || '').trim();
   if (!url.startsWith('https://') || !token || rateSecret.length < 24) return null;
   return { url, token, rateSecret };
