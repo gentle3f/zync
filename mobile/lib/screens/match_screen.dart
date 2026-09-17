@@ -176,7 +176,12 @@ class _MatchScreenState extends State<MatchScreen> {
                         )
                       : FilledButton.icon(
                           onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => ConversationScreen(match: widget.match)),
+                            MaterialPageRoute(
+                              builder: (_) => ConversationScreen(
+                                match: widget.match,
+                                peerLanguage: widget.peer.language,
+                              ),
+                            ),
                           ),
                           icon: const Icon(Icons.chat_bubble_outline_rounded),
                           label: Text(l10n.startConversation),
