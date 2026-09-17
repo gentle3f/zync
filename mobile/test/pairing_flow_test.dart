@@ -63,10 +63,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(relay.createdSessionId, isNotNull);
+    expect(relay.createdHostToken, isNotNull);
+    expect(relay.createdHostToken, hasLength(greaterThanOrEqualTo(32)));
     expect(find.text('Waiting for scan…'), findsOneWidget);
     final qr = tester.widget<QrImageView>(find.byType(QrImageView));
     final handshake = ZyncHandshakeQrPayload.decode(qr.data);
     expect(handshake.sessionId, relay.createdSessionId);
+    expect(qr.data, isNot(contains(relay.createdHostToken!)));
 
     relay.responsePayload = await RelayCrypto.encryptPeerResponse(
       handshake: handshake,
@@ -79,6 +82,7 @@ void main() {
     expect(find.text('YOU ZYNC!'), findsOneWidget);
     expect(find.text('Scanner'), findsOneWidget);
     expect(relay.consumedSessionId, handshake.sessionId);
+    expect(relay.consumedHostToken, relay.createdHostToken);
     expect(relay.cancelledSessionId, isNull);
 
     final history = await LocalStore.findHistory(scanner.localId);
@@ -91,19 +95,27 @@ void main() {
 
 class _HostFlowRelay implements RelayClient {
   String? createdSessionId;
+  String? createdHostToken;
   String? consumedSessionId;
+  String? consumedHostToken;
   String? cancelledSessionId;
   String? responsePayload;
 
   @override
-  Future<void> createSession({required String sessionId, required DateTime expiresAt}) async {
+  Future<void> createSession({
+    required String sessionId,
+    required String hostToken,
+    required DateTime expiresAt,
+  }) async {
     createdSessionId = sessionId;
+    createdHostToken = hostToken;
     expect(expiresAt.isAfter(DateTime.now().toUtc()), isTrue);
   }
 
   @override
-  Future<RelayTakeResult> take({required String sessionId}) async {
+  Future<RelayTakeResult> take({required String sessionId, required String hostToken}) async {
     expect(sessionId, createdSessionId);
+    expect(hostToken, createdHostToken);
     final response = responsePayload;
     return response == null ? const RelayTakeResult.waiting() : RelayTakeResult.ready(response);
   }
@@ -114,12 +126,14 @@ class _HostFlowRelay implements RelayClient {
   }
 
   @override
-  Future<void> consume({required String sessionId}) async {
+  Future<void> consume({required String sessionId, required String hostToken}) async {
     consumedSessionId = sessionId;
+    consumedHostToken = hostToken;
   }
 
   @override
-  Future<void> cancel({required String sessionId}) async {
+  Future<void> cancel({required String sessionId, required String hostToken}) async {
     cancelledSessionId = sessionId;
+    expect(hostToken, createdHostToken);
   }
 }
