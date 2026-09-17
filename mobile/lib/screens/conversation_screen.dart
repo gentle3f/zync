@@ -52,6 +52,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final secondaryQuestion = _result?.secondaryQuestion;
     final modes = <ConversationMode, ({String label, IconData icon})>{
       ConversationMode.easy: (label: l10n.modeEasy, icon: Icons.waving_hand_outlined),
       ConversationMode.fun: (label: l10n.modeFun, icon: Icons.celebration_outlined),
@@ -159,7 +160,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                     _result?.question ?? '',
                                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(height: 1.35),
                                   ),
-                                  if (_result?.secondaryQuestion case final secondaryQuestion?) ...[
+                                  if (secondaryQuestion != null && secondaryQuestion.isNotEmpty) ...[
                                     const SizedBox(height: 22),
                                     Divider(color: ZyncPalette.line.withValues(alpha: 0.9)),
                                     const SizedBox(height: 14),
