@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'core/analytics_service.dart';
 import 'core/language_support.dart';
 import 'core/local_store.dart';
 import 'core/models.dart';
@@ -30,6 +32,15 @@ class _ZyncAppState extends State<ZyncApp> {
   Future<void> _load() async {
     final locale = ZyncLanguage.canonical(PlatformDispatcher.instance.locale.toLanguageTag());
     final profile = await LocalStore.loadOrCreateProfile(language: locale);
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.appOpen,
+        properties: {
+          'locale': locale,
+          'profile_ready': profile.interests.length >= 5,
+        },
+      ),
+    );
     if (!mounted) return;
     setState(() => _profile = profile);
   }
