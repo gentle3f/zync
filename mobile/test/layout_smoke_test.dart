@@ -38,6 +38,27 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('configured privacy policy is visible from Home', (tester) async {
+    const privacyUrl = String.fromEnvironment('ZYNC_PRIVACY_URL');
+    if (privacyUrl.isEmpty) return;
+
+    _setPhone(tester, width: 360, height: 800);
+    await tester.pumpWidget(
+      _harness(
+        HomeScreen(profile: profile, onProfileChanged: (_) async {}),
+        locale: const Locale('fr'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Politique de confidentialité'),
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Politique de confidentialité'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('interest onboarding survives narrow Portuguese layout', (tester) async {
     _setPhone(tester, width: 320, height: 700);
     const emptyProfile = LocalProfile(
