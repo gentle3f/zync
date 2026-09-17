@@ -22,6 +22,23 @@ void main() {
     }
   });
 
+  test('same category never exposes two canonical IDs with the same English concept', () {
+    final seen = <String, String>{};
+    final collisions = <String>[];
+    for (final item in InterestCatalog.seed) {
+      final label = InterestCatalog.normalizeText(item.labels['en'] ?? '');
+      if (label.isEmpty) continue;
+      final key = '${item.category}|$label';
+      final previous = seen[key];
+      if (previous == null) {
+        seen[key] = item.id;
+      } else if (previous != item.id) {
+        collisions.add('$label: $previous <> ${item.id}');
+      }
+    }
+    expect(collisions, isEmpty, reason: collisions.take(60).join('\n'));
+  });
+
   test('search handles aliases, Chinese terms, prefixes, titles and niche interests locally', () {
     expect(InterestCatalog.search('F1', 'en').first.id, 'motorsport.formula1');
     expect(InterestCatalog.search('羽球', 'zh-Hant').first.id, 'sports.badminton');
@@ -54,18 +71,17 @@ void main() {
       '愛的迫降',
     );
     expect(
-      InterestCatalog.byId('entertainment.anime_title.spirited_away')?.labelFor('zh-HK') ??
-          InterestCatalog.byId('entertainment.modern_film.spirited_away')!.labelFor('zh-HK'),
+      InterestCatalog.byId('entertainment.modern_film.spirited_away')!.labelFor('zh-HK'),
       '千與千尋',
     );
   });
 
-  test('two and three-level taxonomy can be browsed without affecting canonical matching', () {
+  test('normalized two and three-level taxonomy browses old and deep catalog together', () {
     final entertainmentL2 = InterestCatalog.clustersForCategory('entertainment');
-    expect(entertainmentL2, containsAll(<String>['movies', 'tv', 'anime']));
+    expect(entertainmentL2, containsAll(<String>['movies', 'tv_drama', 'anime_manga', 'franchises']));
 
     final movieL3 = InterestCatalog.subclustersFor('entertainment', 'movies');
-    expect(movieL3, containsAll(<String>['subgenres', 'classics', 'modern_evergreen']));
+    expect(movieL3, containsAll(<String>['general', 'subgenres', 'classics', 'modern_evergreen', 'making']));
 
     final classics = InterestCatalog.popular(
       category: 'entertainment',
@@ -74,7 +90,11 @@ void main() {
       limit: 200,
     );
     expect(classics.map((item) => item.id), contains('entertainment.classic_film.casablanca'));
-    expect(classics.every((item) => item.cluster == 'movies/classics'), isTrue);
+
+    final musicL2 = InterestCatalog.clustersForCategory('music');
+    expect(musicL2, containsAll(<String>['genres_styles', 'artists', 'making']));
+    final artistL3 = InterestCatalog.subclustersFor('music', 'artists');
+    expect(artistL3, containsAll(<String>['artists_global', 'kpop_artists', 'japanese_artists', 'hk_cantopop', 'mandopop_artists']));
   });
 
   test('instant custom interests need no AI and normalize to a stable cross-device ID', () {
