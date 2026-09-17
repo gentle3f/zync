@@ -5,6 +5,7 @@ import 'package:zync/core/ai_service.dart';
 import 'package:zync/core/language_support.dart';
 import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
+import 'package:zync/core/relay_service.dart';
 
 void main() {
   test('small QR payload stays legacy JSON and round-trips without PII expansion', () {
@@ -172,6 +173,136 @@ void main() {
     expect(result.onlyTheirs, hasLength(1));
   });
 
+  test('seeded shared-interest reveal order is deterministic for both devices', () {
+    const host = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+      SelectedInterest(id: 'technology.ai', strength: InterestStrength.like),
+    ];
+    const scanner = [
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      SelectedInterest(id: 'technology.ai', strength: InterestStrength.like),
+    ];
+    const seed = 'ABCDEFGHIJKLMNOPQRSTUVWX';
+
+    final onScanner = MatchingService.compare(host, scanner, sessionSeed: seed);
+    final onHost = MatchingService.compare(host, scanner, sessionSeed: seed);
+
+    expect(onScanner.shared.map((item) => item.id).toList(), onHost.shared.map((item) => item.id).toList());
+    expect(onScanner.onlyMine.map((item) => item.id).toList(), onHost.onlyMine.map((item) => item.id).toList());
+    expect(onScanner.onlyTheirs.map((item) => item.id).toList(), onHost.onlyTheirs.map((item) => item.id).toList());
+  });
+
+  test('handshake QR carries a short-lived session and round-trips the host profile', () {
+    final now = DateTime.utc(2026, 9, 17, 12);
+    const host = LocalProfile(
+      localId: 'host-123',
+      nickname: 'Host',
+      language: 'zh-Hant',
+      interests: [SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love)],
+    );
+    final bootstrap = RelayBootstrap(
+      sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      secretBytes: List<int>.generate(32, (index) => index),
+      expiresAt: now.add(const Duration(minutes: 3)),
+      hostProfile: QrProfilePayload.fromProfile(host),
+    );
+
+    final encoded = bootstrap.qr.encode();
+    final decoded = ZyncHandshakeQrPayload.decode(encoded, now: now);
+
+    expect(encoded, startsWith('ZH2:'));
+    expect(decoded.protocolVersion, zyncRelayProtocolVersion);
+    expect(decoded.sessionId, bootstrap.sessionId);
+    expect(decoded.secretBytes, bootstrap.secretBytes);
+    expect(decoded.expiresAt, bootstrap.expiresAt);
+    expect(decoded.hostProfile.localId, host.localId);
+    expect(decoded.hostProfile.nickname, host.nickname);
+    expect(encoded, isNot(contains('email')));
+    expect(encoded, isNot(contains('phone')));
+  });
+
+  test('expired handshake QR is rejected before pairing', () {
+    final now = DateTime.utc(2026, 9, 17, 12);
+    const host = LocalProfile(
+      localId: 'host-123',
+      nickname: '',
+      language: 'en',
+      interests: [SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like)],
+    );
+    final bootstrap = RelayBootstrap(
+      sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      secretBytes: List<int>.filled(32, 7),
+      expiresAt: now.add(const Duration(minutes: 3)),
+      hostProfile: QrProfilePayload.fromProfile(host),
+    );
+
+    expect(
+      () => ZyncHandshakeQrPayload.decode(bootstrap.qr.encode(), now: now.add(const Duration(minutes: 4))),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('scanner profile is AES-GCM encrypted and only the host secret can decrypt it', () async {
+    final now = DateTime.utc(2026, 9, 17, 12);
+    const host = LocalProfile(
+      localId: 'host-123',
+      nickname: 'Host',
+      language: 'en',
+      interests: [SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like)],
+    );
+    const scanner = LocalProfile(
+      localId: 'scanner-456',
+      nickname: 'Scanner',
+      language: 'ja',
+      interests: [
+        SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+        SelectedInterest(id: 'travel.japan', strength: InterestStrength.like),
+      ],
+    );
+    final bootstrap = RelayBootstrap(
+      sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      secretBytes: List<int>.generate(32, (index) => 255 - index),
+      expiresAt: now.add(const Duration(minutes: 3)),
+      hostProfile: QrProfilePayload.fromProfile(host),
+    );
+    final handshake = ZyncHandshakeQrPayload.decode(bootstrap.qr.encode(), now: now);
+
+    final opaque = await RelayCrypto.encryptPeerResponse(
+      handshake: handshake,
+      scannerProfile: scanner,
+    );
+    expect(opaque, isNot(contains('Scanner')));
+    expect(opaque, isNot(contains('scanner-456')));
+    expect(opaque, matches(RegExp(r'^[A-Za-z0-9_-]+$')));
+
+    final peer = await RelayCrypto.decryptPeerResponse(
+      bootstrap: bootstrap,
+      opaquePayload: opaque,
+      now: now.add(const Duration(seconds: 30)),
+    );
+    expect(peer.localId, scanner.localId);
+    expect(peer.nickname, scanner.nickname);
+    expect(peer.language, scanner.language);
+    expect(peer.interests.map((item) => item.id).toList(), ['anime.jojo', 'travel.japan']);
+
+    final wrongSecret = RelayBootstrap(
+      sessionId: bootstrap.sessionId,
+      secretBytes: List<int>.filled(32, 1),
+      expiresAt: bootstrap.expiresAt,
+      hostProfile: bootstrap.hostProfile,
+    );
+    await expectLater(
+      RelayCrypto.decryptPeerResponse(
+        bootstrap: wrongSecret,
+        opaquePayload: opaque,
+        now: now.add(const Duration(seconds: 30)),
+      ),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
   test('V1 language canonicalization preserves Chinese script distinction', () {
     expect(ZyncLanguage.canonical('zh-HK'), 'zh-Hant');
     expect(ZyncLanguage.canonical('zh_CN'), 'zh-Hans');
@@ -194,6 +325,7 @@ void main() {
       secondaryLanguage: 'ja-JP',
       mode: ConversationMode.fun,
       match: match,
+      sessionSeed: 'ABCDEFGHIJKLMNOPQRSTUVWX',
     );
 
     expect(result.fromAi, isFalse);
