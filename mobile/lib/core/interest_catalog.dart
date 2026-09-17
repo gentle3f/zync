@@ -74,14 +74,16 @@ class InterestCatalog {
     return scored.map((row) => row.item).take(limit).toList(growable: false);
   }
 
-  /// L2 taxonomy groups inside one L1 category.
+  /// L2 taxonomy groups inside one L1 category. Legacy 553-item cluster names
+  /// are normalized into the same browse paths as the deep catalog without
+  /// changing their canonical IDs.
   static List<String> clustersForCategory(String category) {
     final bestRank = <String, int>{};
     for (final item in seed.where((item) => item.category == category)) {
-      if (item.cluster.isEmpty) continue;
-      final root = item.cluster.split('/').first;
-      final current = bestRank[root];
-      if (current == null || item.rank < current) bestRank[root] = item.rank;
+      final path = _taxonomyPath(item);
+      if (path.l2.isEmpty) continue;
+      final current = bestRank[path.l2];
+      if (current == null || item.rank < current) bestRank[path.l2] = item.rank;
     }
     final rows = bestRank.entries.toList()
       ..sort((a, b) {
@@ -91,16 +93,15 @@ class InterestCatalog {
     return rows.map((entry) => entry.key).toList(growable: false);
   }
 
-  /// L3 taxonomy groups below an L2 cluster. Older catalog rows simply have no
-  /// L3 and remain fully browseable at category/L2 level.
+  /// L3 taxonomy groups below an L2 cluster. Domains that do not need a third
+  /// level simply return an empty list and remain two-level browseable.
   static List<String> subclustersFor(String category, String cluster) {
     final bestRank = <String, int>{};
     for (final item in seed.where((item) => item.category == category)) {
-      final segments = item.cluster.split('/');
-      if (segments.length < 2 || segments.first != cluster) continue;
-      final subcluster = segments[1];
-      final current = bestRank[subcluster];
-      if (current == null || item.rank < current) bestRank[subcluster] = item.rank;
+      final path = _taxonomyPath(item);
+      if (path.l2 != cluster || path.l3 == null || path.l3!.isEmpty) continue;
+      final current = bestRank[path.l3!];
+      if (current == null || item.rank < current) bestRank[path.l3!] = item.rank;
     }
     final rows = bestRank.entries.toList()
       ..sort((a, b) {
@@ -122,10 +123,10 @@ class InterestCatalog {
     }
     if (cluster != null && cluster.isNotEmpty) {
       items = items.where((item) {
-        final segments = item.cluster.split('/');
-        if (segments.isEmpty || segments.first != cluster) return false;
+        final path = _taxonomyPath(item);
+        if (path.l2 != cluster) return false;
         if (subcluster == null || subcluster.isEmpty) return true;
-        return segments.length > 1 && segments[1] == subcluster;
+        return path.l3 == subcluster;
       });
     }
     final sorted = items.toList()..sort(_rankCompare);
@@ -147,18 +148,20 @@ class InterestCatalog {
     final rootClusters = <String, int>{};
     final categories = <String, int>{};
     for (final item in selectedDefs) {
-      if (item.cluster.isNotEmpty) {
-        fullClusters[item.cluster] = (fullClusters[item.cluster] ?? 0) + 1;
-        final root = item.cluster.split('/').first;
-        rootClusters[root] = (rootClusters[root] ?? 0) + 1;
-      }
+      final path = _taxonomyPath(item);
+      final root = '${item.category}/${path.l2}';
+      final full = path.l3 == null ? root : '$root/${path.l3}';
+      fullClusters[full] = (fullClusters[full] ?? 0) + 1;
+      rootClusters[root] = (rootClusters[root] ?? 0) + 1;
       categories[item.category] = (categories[item.category] ?? 0) + 1;
     }
 
     final candidates = seed.where((item) => !selected.contains(item.id)).map((item) {
-      final fullHits = item.cluster.isEmpty ? 0 : (fullClusters[item.cluster] ?? 0);
-      final root = item.cluster.isEmpty ? '' : item.cluster.split('/').first;
-      final rootHits = root.isEmpty ? 0 : (rootClusters[root] ?? 0);
+      final path = _taxonomyPath(item);
+      final root = '${item.category}/${path.l2}';
+      final full = path.l3 == null ? root : '$root/${path.l3}';
+      final fullHits = fullClusters[full] ?? 0;
+      final rootHits = rootClusters[root] ?? 0;
       final categoryHits = categories[item.category] ?? 0;
       final relationship = fullHits > 0
           ? 0 - (fullHits * 30)
@@ -250,6 +253,88 @@ class InterestCatalog {
     final category = normalizeText(item.category);
     if (category.contains(q)) return 50;
     return null;
+  }
+
+  static ({String l2, String? l3}) _taxonomyPath(InterestDefinition item) {
+    final raw = item.cluster.trim();
+    final segments = raw.isEmpty ? <String>[] : raw.split('/');
+    final root = segments.isEmpty ? 'general' : segments.first;
+    final leaf = segments.length > 1 ? segments[1] : null;
+
+    switch (item.category) {
+      case 'entertainment':
+        if (root == 'movies') return (l2: 'movies', l3: leaf);
+        if (root == 'tv') return (l2: 'tv_drama', l3: leaf);
+        if (root == 'anime') return (l2: 'anime_manga', l3: leaf);
+        if (root == 'screen') {
+          if (item.id == 'media.tv') return (l2: 'tv_drama', l3: 'general');
+          if (item.id == 'entertainment.film_making' || item.id == 'entertainment.screenwriting') {
+            return (l2: 'movies', l3: 'making');
+          }
+          return (l2: 'movies', l3: 'general');
+        }
+        if (root == 'anime_manga') {
+          const franchiseIds = {
+            'anime.jojo',
+            'entertainment.ghibli',
+            'entertainment.one_piece',
+            'entertainment.naruto',
+            'entertainment.dragon_ball',
+            'entertainment.demon_slayer',
+            'entertainment.attack_on_titan',
+            'entertainment.jujutsu_kaisen',
+            'entertainment.spy_x_family',
+            'entertainment.pokemon_anime',
+            'entertainment.gundam',
+          };
+          return (l2: 'anime_manga', l3: franchiseIds.contains(item.id) ? 'titles_franchises' : 'general');
+        }
+        if (root == 'pop_culture') {
+          if (const {'entertainment.k_drama', 'entertainment.c_drama', 'entertainment.j_drama'}.contains(item.id)) {
+            return (l2: 'tv_drama', l3: 'drama');
+          }
+          if (const {'entertainment.reality_tv', 'entertainment.variety_shows'}.contains(item.id)) {
+            return (l2: 'tv_drama', l3: 'comedy_variety');
+          }
+          return (l2: 'franchises', l3: null);
+        }
+        break;
+      case 'music':
+        if (root == 'music_genres') return (l2: 'genres_styles', l3: null);
+        if (root == 'music_making') return (l2: 'making', l3: null);
+        if (root == 'music') {
+          if (leaf == 'styles') return (l2: 'genres_styles', l3: null);
+          if (leaf != null && leaf.endsWith('artists') || leaf == 'artists_global' || leaf == 'hk_cantopop' || leaf == 'mandopop_artists') {
+            return (l2: 'artists', l3: leaf);
+          }
+        }
+        break;
+      case 'gaming':
+        if (root == 'gaming') return (l2: 'video_games', l3: leaf);
+        if (root == 'gaming_general') return (l2: 'video_games', l3: 'general');
+        if (root == 'game_genres') return (l2: 'video_games', l3: 'subgenres');
+        if (root == 'game_titles') return (l2: 'video_games', l3: 'franchises');
+        if (root == 'tabletop') return (l2: 'tabletop', l3: leaf ?? 'general');
+        break;
+      case 'learning':
+        if (root == 'books') return (l2: 'books', l3: leaf ?? 'general');
+        break;
+      case 'food':
+        if (root == 'food') return (l2: leaf ?? 'general', l3: null);
+        if (root == 'cuisines') return (l2: 'cuisines', l3: null);
+        if (root == 'food_types') return (l2: 'dishes', l3: null);
+        if (root == 'coffee') return (l2: 'drinks', l3: null);
+        if (root == 'cooking') return (l2: 'cooking', l3: null);
+        break;
+      case 'travel':
+        if (root == 'travel') return (l2: leaf ?? 'general', l3: null);
+        if (root == 'travel_destinations') return (l2: 'destinations', l3: null);
+        if (root == 'travel_styles') return (l2: 'styles', l3: null);
+        if (root == 'travel_general') return (l2: 'general', l3: null);
+        break;
+    }
+
+    return (l2: root, l3: leaf);
   }
 
   static String _stableId(String normalized) {
