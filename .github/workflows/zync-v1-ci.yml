@@ -58,6 +58,9 @@ jobs:
           cp mobile/l10n.yaml build_app/l10n.yaml
           python3 mobile/tool/apply_android_branding.py build_app
 
+      - name: Verify signing patch matches generated Flutter template
+        run: python3 mobile/tool/configure_android_signing.py --check-template build_app
+
       - name: Verify Play identity and Android requirements
         run: |
           grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
