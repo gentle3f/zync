@@ -137,28 +137,24 @@ async function take(res, config, body) {
   if (body.protocolVersion !== PROTOCOL_VERSION || !validSessionId(body.sessionId)) {
     return json(res, 400, { error: 'relay_session_invalid' });
   }
-  const script = [
-    "local current=redis.call('GET',KEYS[1])",
-    "if not current then return 'missing' end",
-    "if current=='P' then return 'waiting' end",
-    "if string.sub(current,1,2)~='R:' then redis.call('DEL',KEYS[1]); return 'invalid' end",
-    "redis.call('DEL',KEYS[1])",
-    "return current",
-  ].join('\n');
-  const result = await redis(config, ['EVAL', script, 1, sessionKey(body.sessionId)]);
-  if (result === 'waiting') return json(res, 200, { status: 'waiting' });
-  if (result === 'missing') return json(res, 410, { error: 'relay_session_expired' });
-  if (result === 'invalid' || typeof result !== 'string' || !result.startsWith('R:')) {
+  const result = await redis(config, ['GET', sessionKey(body.sessionId)]);
+  if (result == null) return json(res, 410, { error: 'relay_session_expired' });
+  if (result === 'P') return json(res, 200, { status: 'waiting' });
+  if (typeof result !== 'string' || !result.startsWith('R:')) {
+    await redis(config, ['DEL', sessionKey(body.sessionId)]);
     return json(res, 502, { error: 'relay_response_invalid' });
   }
   const payload = result.slice(2);
   if (!payload || payload.length > MAX_RESPONSE_CHARS || !OPAQUE_RE.test(payload)) {
+    await redis(config, ['DEL', sessionKey(body.sessionId)]);
     return json(res, 502, { error: 'relay_response_invalid' });
   }
+  // Deliberately non-destructive. If the HTTP response is lost, the host can poll again.
+  // The host calls consume only after authenticated decryption succeeds; TTL is the fallback.
   return json(res, 200, { status: 'ready', payload });
 }
 
-async function cancel(res, config, body) {
+async function deleteSession(res, config, body) {
   if (body.protocolVersion !== PROTOCOL_VERSION || !validSessionId(body.sessionId)) {
     return json(res, 400, { error: 'relay_session_invalid' });
   }
@@ -180,7 +176,8 @@ export default async function handler(req, res) {
       case 'create': return await createSession(req, res, config, body);
       case 'respond': return await respond(req, res, config, body);
       case 'take': return await take(res, config, body);
-      case 'cancel': return await cancel(res, config, body);
+      case 'consume': return await deleteSession(res, config, body);
+      case 'cancel': return await deleteSession(res, config, body);
       default: return json(res, 400, { error: 'relay_action_invalid' });
     }
   } catch (_) {
