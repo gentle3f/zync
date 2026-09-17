@@ -214,6 +214,7 @@ abstract class RelayClient {
   Future<void> createSession({required String sessionId, required DateTime expiresAt});
   Future<void> respond({required String sessionId, required String payload});
   Future<RelayTakeResult> take({required String sessionId});
+  Future<void> consume({required String sessionId});
   Future<void> cancel({required String sessionId});
 }
 
@@ -294,14 +295,28 @@ class HttpRelayClient implements RelayClient {
     return RelayTakeResult.ready(payload);
   }
 
+  Future<void> _delete(String action, String sessionId) async {
+    final result = await _post({
+      'action': action,
+      'protocolVersion': zyncRelayProtocolVersion,
+      'sessionId': sessionId,
+    });
+    if (result.status != 200) throw _mapFailure(result.status);
+  }
+
+  @override
+  Future<void> consume({required String sessionId}) async {
+    try {
+      await _delete('consume', sessionId);
+    } catch (_) {
+      // Best effort after authenticated decrypt. TTL remains the hard cleanup guarantee.
+    }
+  }
+
   @override
   Future<void> cancel({required String sessionId}) async {
     try {
-      await _post({
-        'action': 'cancel',
-        'protocolVersion': zyncRelayProtocolVersion,
-        'sessionId': sessionId,
-      });
+      await _delete('cancel', sessionId);
     } catch (_) {
       // Best effort only. Server-side TTL is the hard cleanup guarantee.
     }
