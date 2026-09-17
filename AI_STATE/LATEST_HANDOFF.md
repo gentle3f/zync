@@ -2,9 +2,13 @@
 
 Authoritative handoff: `AI_STATE/HANDOFF_20260917_PLAY_INTERNAL_RELEASE_AUTOMATION.md`
 
+Canonical business/product narrative: `docs/ZYNC_BUSINESS_PROPOSAL_AND_VISION.md`
+
 Branch: `zync-v1-rebuild-20260917`
 
 Read the authoritative handoff in full and continue directly from its **Recommended continuation order**. Do not restart repository discovery or old Thunkable archaeology. This handoff is additive on top of `AI_STATE/HANDOFF_20260917_1545_RELEASE_WEB_ONE_SHOT_READY.md`, whose external blockers (Vercel quota/promotion, production env vars, signed AAB certification, real Play QA) remain open and unaddressed.
+
+For any product-strategy, funding, positioning, roadmap, retention, go-to-market, community or long-term-vision discussion, also read `docs/ZYNC_BUSINESS_PROPOSAL_AND_VISION.md` before proposing major changes. It records the product story developed through the long user/assistant discussion: the hidden-common-interest magic moment, why QR and AI belong in V1, why V1 stays local-first/low-cost, the episodic retention model, Phase 1 validation logic, and the longer-term Person ↔ Interest ↔ Place ↔ Intent / hobbies-economy vision.
 
 Current production integration facts:
 
