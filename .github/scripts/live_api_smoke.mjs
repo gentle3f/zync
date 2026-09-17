@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 const rawBase = (process.env.ZYNC_API_BASE || '').trim();
 assert.ok(rawBase.startsWith('https://'), 'ZYNC_API_BASE must be a production https:// origin');
 const base = rawBase.replace(/\/$/, '');
+
+const rawPrivacyUrl = (process.env.ZYNC_PRIVACY_URL || '').trim();
+assert.ok(rawPrivacyUrl.startsWith('https://'), 'ZYNC_PRIVACY_URL must be a public https:// URL');
+
 const timeoutMs = 20000;
 
 async function post(path, body) {
@@ -27,6 +31,23 @@ function assertAiPrivacyHeaders(response, route) {
     'zdr-data-collection-deny',
     `${route} is not serving the required ZDR/data-collection-deny handler`,
   );
+}
+
+{
+  const response = await fetch(rawPrivacyUrl, {
+    method: 'GET',
+    redirect: 'follow',
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  assert.ok(response.ok, `privacy policy live smoke failed with HTTP ${response.status}`);
+  assert.ok(response.url.startsWith('https://'), 'privacy policy must remain on HTTPS after redirects');
+  const contentType = (response.headers.get('content-type') || '').toLowerCase();
+  assert.ok(!contentType.includes('application/pdf'), 'Google Play privacy policy must not be a PDF');
+  assert.ok(
+    contentType.includes('text/html') || contentType.includes('text/plain'),
+    `privacy policy should be a browser-readable page, got content-type ${contentType || '(missing)'}`,
+  );
+  console.log('✓ public privacy policy URL is reachable over HTTPS and browser-readable');
 }
 
 {
@@ -76,4 +97,4 @@ function assertAiPrivacyHeaders(response, route) {
   }
 }
 
-console.log('\nProduction Zync V1 API smoke passed.');
+console.log('\nProduction Zync V1 release smoke passed.');
