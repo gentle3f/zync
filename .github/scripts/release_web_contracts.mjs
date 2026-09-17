@@ -8,6 +8,7 @@ const terms = read('terms.html');
 const disclaimer = read('disclaimer.html');
 const vercel = JSON.parse(read('vercel.json'));
 const analytics = read('mobile/lib/core/analytics_service.dart');
+const signedRelease = read('.github/workflows/zync-v1-signed-release.yml');
 
 for (const [name, html] of [
   ['privacy', privacy],
@@ -47,6 +48,13 @@ assert.match(analytics, /ZYNC_ANALYTICS_ENABLED/);
 assert.match(analytics, /defaultValue:\s*false/);
 assert.match(analytics, /if \(!enabled\) return;/);
 
+assert.match(signedRelease, /Smoke production API and privacy policy/);
+assert.match(signedRelease, /live_api_smoke\.mjs/);
+assert.match(signedRelease, /ZYNC_PRIVACY_URL/);
+assert.match(signedRelease, /--dart-define=ZYNC_ANALYTICS_ENABLED=false/);
+assert.match(signedRelease, /jarsigner -verify -strict/);
+
 console.log('✓ public legal pages are browser-readable and release-complete');
 console.log('✓ stable /privacy, /terms and /disclaimer routes are configured');
 console.log('✓ public V1 analytics posture is explicitly default-off');
+console.log('✓ signed release keeps live smoke, privacy URL, analytics-off and strict signature verification');
