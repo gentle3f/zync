@@ -106,8 +106,6 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     if (_selected.length < 5) return;
     final locale = Localizations.localeOf(context).toLanguageTag();
 
-    // Migrate older custom entries into newly bundled canonical entries when
-    // their saved label is now an exact catalog label/alias.
     final normalized = <String, SelectedInterest>{};
     for (final entry in _selected.entries) {
       final custom = _custom[entry.key];
@@ -209,252 +207,186 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       body: ConnectionBackdrop(
         child: SafeArea(
           bottom: false,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!widget.editing) ...[
-                      Row(
-                        children: [
-                          const ZyncMark(size: 46, strokeWidth: 4.5),
-                          const SizedBox(width: 12),
-                          Text('Zync', style: Theme.of(context).textTheme.headlineMedium),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      Text(l10n.tagline, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft)),
-                      const SizedBox(height: 20),
-                      TextField(
-                        controller: _nickname,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          labelText: l10n.nicknameOptional,
-                          prefixIcon: const Icon(Icons.person_outline_rounded),
+          child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!widget.editing) ...[
+                        Row(
+                          children: [
+                            const ZyncMark(size: 46, strokeWidth: 4.5),
+                            const SizedBox(width: 12),
+                            Text('Zync', style: Theme.of(context).textTheme.headlineMedium),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 22),
-                    ],
-                    Text(l10n.pickInterests, style: Theme.of(context).textTheme.headlineSmall),
-                    const SizedBox(height: 5),
-                    Text(l10n.pickAtLeastFive, style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 3),
-                    Text(
-                      LocalizedDomainText.catalogCount(InterestCatalog.count, locale),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _search,
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (_) {
-                        if (showInstantAdd) _addInstantInterest();
-                      },
-                      decoration: InputDecoration(
-                        hintText: l10n.searchAnything,
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: query.isEmpty
-                            ? null
-                            : IconButton(
-                                onPressed: _search.clear,
-                                icon: const Icon(Icons.close_rounded),
-                              ),
-                      ),
-                    ),
-                    if (showInstantAdd) ...[
-                      const SizedBox(height: 9),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: _addInstantInterest,
-                          borderRadius: BorderRadius.circular(16),
-                          child: Ink(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF4F0FF),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFD9CCF5)),
-                            ),
-                            child: Row(
-                              children: [
-                                const ZyncIconTile(
-                                  icon: Icons.add_rounded,
-                                  size: 38,
-                                  backgroundColor: Color(0xFFE7DDF8),
-                                  foregroundColor: ZyncPalette.plum,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        LocalizedDomainText.addExactly(query, locale),
-                                        style: Theme.of(context).textTheme.titleSmall,
-                                      ),
-                                      const SizedBox(height: 1),
-                                      Text(
-                                        LocalizedDomainText.noAiNeeded(locale),
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                        const SizedBox(height: 14),
+                        Text(l10n.tagline, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft)),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: _nickname,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: l10n.nicknameOptional,
+                            prefixIcon: const Icon(Icons.person_outline_rounded),
                           ),
                         ),
-                      ),
-                    ],
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 38,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: InterestCatalog.categories.length + 1,
-                        separatorBuilder: (_, __) => const SizedBox(width: 7),
-                        itemBuilder: (context, index) {
-                          final category = index == 0 ? null : InterestCatalog.categories[index - 1];
-                          final selected = _selectedCategory == category && query.isEmpty;
-                          return ChoiceChip(
-                            selected: selected,
-                            label: Text(
-                              category == null
-                                  ? LocalizedDomainText.allInterests(locale)
-                                  : LocalizedDomainText.category(category, locale),
-                            ),
-                            onSelected: (_) {
-                              setState(() {
-                                _selectedCategory = category;
-                                _search.clear();
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: _selected.length >= 5 ? ZyncPalette.mint : ZyncPalette.peach,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            l10n.selectedCount(_selected.length),
-                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                  color: _selected.length >= 5 ? const Color(0xFF176B57) : ZyncPalette.orangeDeep,
-                                ),
-                          ),
-                        ),
-                        const Spacer(),
-                        if (_selected.isNotEmpty)
-                          Wrap(
-                            spacing: 7,
-                            children: InterestStrength.values.map((strength) {
-                              final count = _selected.values.where((value) => value == strength).length;
-                              if (count == 0) return const SizedBox.shrink();
-                              return Text('${_strengthEmoji(strength)} $count', style: Theme.of(context).textTheme.bodySmall);
-                            }).toList(),
-                          ),
+                        const SizedBox(height: 22),
                       ],
-                    ),
-                    if (sectionTitle != null) ...[
-                      const SizedBox(height: 10),
-                      Text(sectionTitle, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: ZyncPalette.inkSoft)),
-                    ],
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: const EdgeInsets.fromLTRB(20, 6, 20, 24),
-                  itemCount: results.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final interest = results[index];
-                    final selected = _selected[interest.id];
-                    final isCustom = InterestCatalog.byId(interest.id) == null;
-                    return Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () => _toggle(interest.id),
-                        child: Ink(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: selected == null ? ZyncPalette.surface : const Color(0xFFFFF4ED),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: selected == null ? ZyncPalette.line : ZyncPalette.peach),
-                          ),
-                          child: Row(
-                            children: [
-                              ZyncIconTile(
-                                icon: selected == null ? Icons.add_rounded : Icons.check_rounded,
-                                size: 42,
-                                backgroundColor: selected == null ? const Color(0xFFF1EEEB) : ZyncPalette.peach,
-                                foregroundColor: selected == null ? ZyncPalette.inkSoft : ZyncPalette.orangeDeep,
+                      Text(l10n.pickInterests, style: Theme.of(context).textTheme.headlineSmall),
+                      const SizedBox(height: 5),
+                      Text(l10n.pickAtLeastFive, style: Theme.of(context).textTheme.bodyMedium),
+                      const SizedBox(height: 3),
+                      Text(
+                        LocalizedDomainText.catalogCount(InterestCatalog.count, locale),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _search,
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (_) {
+                          if (showInstantAdd) _addInstantInterest();
+                        },
+                        decoration: InputDecoration(
+                          hintText: l10n.searchAnything,
+                          prefixIcon: const Icon(Icons.search_rounded),
+                          suffixIcon: query.isEmpty
+                              ? null
+                              : IconButton(
+                                  onPressed: _search.clear,
+                                  icon: const Icon(Icons.close_rounded),
+                                ),
+                        ),
+                      ),
+                      if (showInstantAdd) ...[
+                        const SizedBox(height: 9),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _addInstantInterest,
+                            borderRadius: BorderRadius.circular(16),
+                            child: Ink(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF4F0FF),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: const Color(0xFFD9CCF5)),
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(interest.labelFor(locale), style: Theme.of(context).textTheme.titleMedium),
-                                    const SizedBox(height: 2),
-                                    Row(
+                              child: Row(
+                                children: [
+                                  const ZyncIconTile(
+                                    icon: Icons.add_rounded,
+                                    size: 38,
+                                    backgroundColor: Color(0xFFE7DDF8),
+                                    foregroundColor: ZyncPalette.plum,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Flexible(
-                                          child: Text(
-                                            LocalizedDomainText.category(interest.category, locale),
-                                            style: Theme.of(context).textTheme.bodySmall,
-                                          ),
+                                        Text(
+                                          LocalizedDomainText.addExactly(query, locale),
+                                          style: Theme.of(context).textTheme.titleSmall,
                                         ),
-                                        if (isCustom) ...[
-                                          const SizedBox(width: 6),
-                                          const Icon(Icons.edit_rounded, size: 13, color: ZyncPalette.plum),
-                                        ],
+                                        const SizedBox(height: 1),
+                                        Text(
+                                          LocalizedDomainText.noAiNeeded(locale),
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+                                        ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              if (selected != null)
-                                PopupMenuButton<InterestStrength>(
-                                  tooltip: '',
-                                  initialValue: selected,
-                                  onSelected: (value) => setState(() {
-                                    _selected[interest.id] = value;
-                                    final custom = _custom[interest.id];
-                                    if (custom != null) _custom[interest.id] = custom.copyWith(strength: value);
-                                  }),
-                                  itemBuilder: (_) => [
-                                    PopupMenuItem(value: InterestStrength.love, child: Text('❤️ ${l10n.love}')),
-                                    PopupMenuItem(value: InterestStrength.like, child: Text('👍 ${l10n.like}')),
-                                    PopupMenuItem(value: InterestStrength.wantToTry, child: Text('✨ ${l10n.wantToTry}')),
-                                  ],
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(13),
-                                      border: Border.all(color: ZyncPalette.line),
-                                    ),
-                                    child: Text('${_strengthEmoji(selected)} ${_strengthLabel(l10n, selected)}'),
                                   ),
-                                ),
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
                         ),
+                      ],
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 38,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: InterestCatalog.categories.length + 1,
+                          separatorBuilder: (_, __) => const SizedBox(width: 7),
+                          itemBuilder: (context, index) {
+                            final category = index == 0 ? null : InterestCatalog.categories[index - 1];
+                            final selected = _selectedCategory == category && query.isEmpty;
+                            return ChoiceChip(
+                              selected: selected,
+                              label: Text(
+                                category == null
+                                    ? LocalizedDomainText.allInterests(locale)
+                                    : LocalizedDomainText.category(category, locale),
+                              ),
+                              onSelected: (_) {
+                                setState(() {
+                                  _selectedCategory = category;
+                                  _search.clear();
+                                });
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    );
-                  },
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: _selected.length >= 5 ? ZyncPalette.mint : ZyncPalette.peach,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              l10n.selectedCount(_selected.length),
+                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color: _selected.length >= 5 ? const Color(0xFF176B57) : ZyncPalette.orangeDeep,
+                                  ),
+                            ),
+                          ),
+                          const Spacer(),
+                          if (_selected.isNotEmpty)
+                            Wrap(
+                              spacing: 7,
+                              children: InterestStrength.values.map((strength) {
+                                final count = _selected.values.where((value) => value == strength).length;
+                                if (count == 0) return const SizedBox.shrink();
+                                return Text('${_strengthEmoji(strength)} $count', style: Theme.of(context).textTheme.bodySmall);
+                              }).toList(),
+                            ),
+                        ],
+                      ),
+                      if (sectionTitle != null) ...[
+                        const SizedBox(height: 10),
+                        Text(sectionTitle, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: ZyncPalette.inkSoft)),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 6, 20, 24),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => Padding(
+                      padding: EdgeInsets.only(bottom: index == results.length - 1 ? 0 : 8),
+                      child: _interestTile(
+                        context: context,
+                        interest: results[index],
+                        locale: locale,
+                        l10n: l10n,
+                      ),
+                    ),
+                    childCount: results.length,
+                  ),
                 ),
               ),
             ],
@@ -469,6 +401,89 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
             onPressed: _selected.length >= 5 ? _save : null,
             icon: const Icon(Icons.arrow_forward_rounded),
             label: Text(l10n.saveAndContinue),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _interestTile({
+    required BuildContext context,
+    required InterestDefinition interest,
+    required String locale,
+    required AppLocalizations l10n,
+  }) {
+    final selected = _selected[interest.id];
+    final isCustom = InterestCatalog.byId(interest.id) == null;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => _toggle(interest.id),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: selected == null ? ZyncPalette.surface : const Color(0xFFFFF4ED),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: selected == null ? ZyncPalette.line : ZyncPalette.peach),
+          ),
+          child: Row(
+            children: [
+              ZyncIconTile(
+                icon: selected == null ? Icons.add_rounded : Icons.check_rounded,
+                size: 42,
+                backgroundColor: selected == null ? const Color(0xFFF1EEEB) : ZyncPalette.peach,
+                foregroundColor: selected == null ? ZyncPalette.inkSoft : ZyncPalette.orangeDeep,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(interest.labelFor(locale), style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            LocalizedDomainText.category(interest.category, locale),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                        if (isCustom) ...[
+                          const SizedBox(width: 6),
+                          const Icon(Icons.edit_rounded, size: 13, color: ZyncPalette.plum),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              if (selected != null)
+                PopupMenuButton<InterestStrength>(
+                  tooltip: '',
+                  initialValue: selected,
+                  onSelected: (value) => setState(() {
+                    _selected[interest.id] = value;
+                    final custom = _custom[interest.id];
+                    if (custom != null) _custom[interest.id] = custom.copyWith(strength: value);
+                  }),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(value: InterestStrength.love, child: Text('❤️ ${l10n.love}')),
+                    PopupMenuItem(value: InterestStrength.like, child: Text('👍 ${l10n.like}')),
+                    PopupMenuItem(value: InterestStrength.wantToTry, child: Text('✨ ${l10n.wantToTry}')),
+                  ],
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(13),
+                      border: Border.all(color: ZyncPalette.line),
+                    ),
+                    child: Text('${_strengthEmoji(selected)} ${_strengthLabel(l10n, selected)}'),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
