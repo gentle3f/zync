@@ -2,6 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/analytics_service.dart';
 
 void main() {
+  test('analytics is disabled by default unless explicitly enabled at build time', () {
+    final analytics = ZyncAnalytics(baseUrl: 'https://example.test');
+    expect(analytics.enabled, isFalse);
+  });
+
   test('analytics client strips raw content and unknown properties', () {
     final clean = ZyncAnalytics.sanitizeProperties({
       'mode': 'fun',
