@@ -32,13 +32,23 @@ List<InterestDefinition> parseInterestCatalogRows(String raw) {
 /// Builds a curated family of interests with one shared taxonomy path.
 ///
 /// [cluster] may contain `/` to express L2/L3 hierarchy, for example
-/// `movies/drama` or `gaming/strategy`. The compact row format is:
+/// `movies/drama` or `gaming/strategy`.
 ///
-///   English label|aliases (; separated)|zh-Hant|zh-Hans
+/// Compact rows deliberately support two authoring forms:
+/// - `English`
+/// - `English|aliases`
+/// - `English|zh-Hant|zh-Hans`
+/// - `English|zh-Hant|native/alternate aliases|zh-Hans`
 ///
-/// Only the English label is required. IDs are generated once from the frozen
-/// English label plus [idPrefix]. Do not rename an existing row after release;
-/// add aliases or display translations instead so canonical IDs stay stable.
+/// The four-column form is useful for Asian titles: the native Japanese/Korean
+/// title stays searchable as an alias while Chinese UI gets the correct script.
+/// Explicit six-column rows are also accepted as
+/// `English|aliases|zh-Hant|zh-Hans|ja|ko` for entries that need localized
+/// display labels in all four bundled Asian locales.
+///
+/// IDs are generated once from the frozen English label plus [idPrefix]. Do not
+/// rename an existing row after release; add aliases/translations instead so
+/// canonical IDs remain stable.
 List<InterestDefinition> parseInterestFamily({
   required String idPrefix,
   required String category,
@@ -51,17 +61,57 @@ List<InterestDefinition> parseInterestFamily({
   for (final line in raw.split('\n')) {
     final trimmed = line.trim();
     if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
-    final parts = trimmed.split('|');
-    if (parts.length > 4) {
+    final parts = trimmed.split('|').map((part) => part.trim()).toList();
+    if (parts.isEmpty || parts.length > 6) {
       throw StateError('Invalid interest family row: $trimmed');
     }
-    final en = parts[0].trim();
+    final en = parts[0];
     if (en.isEmpty) throw StateError('Interest family label is empty');
     final slug = _catalogSlug(en);
     if (slug.isEmpty) throw StateError('Interest family slug is empty: $en');
+
     final labels = <String, String>{'en': en};
-    if (parts.length > 2 && parts[2].trim().isNotEmpty) labels['zh-Hant'] = parts[2].trim();
-    if (parts.length > 3 && parts[3].trim().isNotEmpty) labels['zh-Hans'] = parts[3].trim();
+    final aliases = <String>{};
+
+    switch (parts.length) {
+      case 1:
+        break;
+      case 2:
+        aliases.addAll(_splitAliases(parts[1]));
+        break;
+      case 3:
+        if (parts[1].isNotEmpty) {
+          labels['zh-Hant'] = parts[1];
+          aliases.add(parts[1]);
+        }
+        if (parts[2].isNotEmpty) {
+          labels['zh-Hans'] = parts[2];
+          aliases.add(parts[2]);
+        }
+        break;
+      case 4:
+        if (parts[1].isNotEmpty) {
+          labels['zh-Hant'] = parts[1];
+          aliases.add(parts[1]);
+        }
+        aliases.addAll(_splitAliases(parts[2]));
+        if (parts[3].isNotEmpty) {
+          labels['zh-Hans'] = parts[3];
+          aliases.add(parts[3]);
+        }
+        break;
+      case 5:
+      case 6:
+        aliases.addAll(_splitAliases(parts[1]));
+        if (parts[2].isNotEmpty) labels['zh-Hant'] = parts[2];
+        if (parts[3].isNotEmpty) labels['zh-Hans'] = parts[3];
+        if (parts.length > 4 && parts[4].isNotEmpty) labels['ja'] = parts[4];
+        if (parts.length > 5 && parts[5].isNotEmpty) labels['ko'] = parts[5];
+        break;
+    }
+
+    aliases.remove(en);
+    aliases.removeWhere((value) => value.isEmpty);
     result.add(
       InterestDefinition(
         id: '$idPrefix.$slug',
@@ -69,15 +119,16 @@ List<InterestDefinition> parseInterestFamily({
         cluster: cluster,
         rank: rankStart + offset,
         labels: labels,
-        aliases: parts.length > 1 && parts[1].trim().isNotEmpty
-            ? parts[1].split(';').map((value) => value.trim()).where((value) => value.isNotEmpty).toList(growable: false)
-            : const [],
+        aliases: aliases.toList(growable: false),
       ),
     );
     offset++;
   }
   return List.unmodifiable(result);
 }
+
+Iterable<String> _splitAliases(String value) =>
+    value.split(';').map((item) => item.trim()).where((item) => item.isNotEmpty);
 
 String _catalogSlug(String value) {
   var text = value.toLowerCase().replaceAll('&', ' and ');
