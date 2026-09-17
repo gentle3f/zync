@@ -3,12 +3,21 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'interest_catalog.dart';
+import 'language_support.dart';
 import 'models.dart';
 
 class AiQuestionResult {
-  const AiQuestionResult({required this.question, required this.fromAi});
+  const AiQuestionResult({
+    required this.question,
+    required this.fromAi,
+    this.secondaryQuestion,
+    this.secondaryLanguage,
+  });
+
   final String question;
   final bool fromAi;
+  final String? secondaryQuestion;
+  final String? secondaryLanguage;
 }
 
 class NormalizedInterestResult {
@@ -45,7 +54,10 @@ class AiService {
           .post(
             Uri.parse('${baseUrl.replaceAll(RegExp(r'/$'), '')}/api/v1/normalize-interest'),
             headers: const {'content-type': 'application/json'},
-            body: jsonEncode({'input': trimmed, 'language': language}),
+            body: jsonEncode({
+              'input': trimmed,
+              'language': ZyncLanguage.canonical(language),
+            }),
           )
           .timeout(const Duration(seconds: 12));
       if (response.statusCode < 200 || response.statusCode >= 300) return null;
@@ -70,8 +82,19 @@ class AiService {
     required String language,
     required ConversationMode mode,
     required MatchResult match,
+    String? secondaryLanguage,
   }) async {
-    if (baseUrl.trim().isEmpty) return _fallback(language: language, mode: mode, match: match);
+    final primary = ZyncLanguage.canonical(language);
+    final secondary = secondaryLanguage == null ? null : ZyncLanguage.canonical(secondaryLanguage);
+    final wantsSecondary = secondary != null && secondary != primary;
+
+    if (baseUrl.trim().isEmpty) {
+      return _fallback(
+        language: primary,
+        secondaryLanguage: wantsSecondary ? secondary : null,
+        match: match,
+      );
+    }
 
     try {
       final response = await http
@@ -79,31 +102,64 @@ class AiService {
             Uri.parse('${baseUrl.replaceAll(RegExp(r'/$'), '')}/api/v1/question'),
             headers: const {'content-type': 'application/json'},
             body: jsonEncode({
-              'language': language,
+              'language': primary,
+              if (wantsSecondary) 'secondaryLanguage': secondary,
               'mode': mode.name,
-              'shared': match.shared.map((item) => _label(item, language)).take(8).toList(),
-              'personA': match.onlyMine.map((item) => _label(item, language)).take(8).toList(),
-              'personB': match.onlyTheirs.map((item) => _label(item, language)).take(8).toList(),
+              'shared': match.shared.map((item) => _label(item, primary)).take(8).toList(),
+              'personA': match.onlyMine.map((item) => _label(item, primary)).take(8).toList(),
+              'personB': match.onlyTheirs.map((item) => _label(item, primary)).take(8).toList(),
             }),
           )
           .timeout(const Duration(seconds: 12));
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        return _fallback(language: language, mode: mode, match: match);
+        return _fallback(
+          language: primary,
+          secondaryLanguage: wantsSecondary ? secondary : null,
+          match: match,
+        );
       }
       final json = Map<String, dynamic>.from(jsonDecode(response.body) as Map);
       final question = (json['question'] as String?)?.trim();
-      if (question == null || question.isEmpty) {
-        return _fallback(language: language, mode: mode, match: match);
+      final secondaryQuestion = (json['secondaryQuestion'] as String?)?.trim();
+      if (question == null || question.isEmpty || (wantsSecondary && (secondaryQuestion == null || secondaryQuestion.isEmpty))) {
+        return _fallback(
+          language: primary,
+          secondaryLanguage: wantsSecondary ? secondary : null,
+          match: match,
+        );
       }
-      return AiQuestionResult(question: question, fromAi: true);
+      return AiQuestionResult(
+        question: question,
+        fromAi: true,
+        secondaryQuestion: wantsSecondary ? secondaryQuestion : null,
+        secondaryLanguage: wantsSecondary ? secondary : null,
+      );
     } catch (_) {
-      return _fallback(language: language, mode: mode, match: match);
+      return _fallback(
+        language: primary,
+        secondaryLanguage: wantsSecondary ? secondary : null,
+        match: match,
+      );
     }
   }
 
   AiQuestionResult _fallback({
     required String language,
-    required ConversationMode mode,
+    required String? secondaryLanguage,
+    required MatchResult match,
+  }) {
+    return AiQuestionResult(
+      question: _fallbackQuestion(language: language, match: match),
+      fromAi: false,
+      secondaryQuestion: secondaryLanguage == null
+          ? null
+          : _fallbackQuestion(language: secondaryLanguage, match: match),
+      secondaryLanguage: secondaryLanguage,
+    );
+  }
+
+  String _fallbackQuestion({
+    required String language,
     required MatchResult match,
   }) {
     String label(SelectedInterest item) => _label(item, language);
@@ -120,7 +176,7 @@ class AiService {
         'pt': 'O que fez cada um de vocês se interessar por $interest pela primeira vez?',
         'en': 'What first got each of you interested in $interest?',
       };
-      return AiQuestionResult(question: templates[language] ?? templates[language.split('-').first] ?? templates['en']!, fromAi: false);
+      return templates[ZyncLanguage.canonical(language)] ?? templates['en']!;
     }
 
     final a = match.onlyMine.isNotEmpty ? label(match.onlyMine.first) : 'your interests';
@@ -135,6 +191,6 @@ class AiService {
       'pt': 'Se vocês combinassem $a e $b em uma atividade de fim de semana, como seria?',
       'en': 'If $a and $b were combined into one weekend activity, what would it look like?',
     };
-    return AiQuestionResult(question: templates[language] ?? templates[language.split('-').first] ?? templates['en']!, fromAi: false);
+    return templates[ZyncLanguage.canonical(language)] ?? templates['en']!;
   }
 }
