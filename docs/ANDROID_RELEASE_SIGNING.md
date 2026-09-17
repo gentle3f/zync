@@ -1,6 +1,6 @@
 # Zync V1 — Android Release Signing
 
-This repo keeps signing material out of source control. The manual workflow `.github/workflows/zync-v1-signed-release.yml` produces a Play-ready signed AAB only after the required GitHub Actions secrets are configured.
+This repo keeps signing material out of source control. The manual workflow `.github/workflows/zync-v1-signed-release.yml` produces a Play-ready signed AAB only after the required GitHub Actions secrets **and** the production API base are configured.
 
 ## Required GitHub Actions secrets
 
@@ -13,11 +13,17 @@ Create these repository secrets in GitHub Settings → Secrets and variables →
 
 Do not commit the keystore, passwords, `key.properties`, or generated release credentials.
 
-## Optional repository variable
+## Required production repository variable
 
-- `ZYNC_API_BASE` — production Vercel base URL, for example the project production origin without a trailing API path.
+For a **production signed release**, configure this repository variable in GitHub Settings → Secrets and variables → Actions → Variables:
 
-If `ZYNC_API_BASE` is absent, the app still builds and remains usable through local fallback conversation questions, but unknown-interest AI normalization and OpenRouter-generated questions will not be available.
+- `ZYNC_API_BASE` — the actual production Vercel origin, using `https://` and no trailing API path.
+
+The signed-release workflow intentionally rejects an empty, non-HTTPS, or otherwise invalid production API base. Do not guess this value and do not substitute the OpenRouter HTTP-Referer placeholder for the real deployed API origin.
+
+Normal development and ordinary CI may still build with an empty `ZYNC_API_BASE`. In that state the app remains usable through local fallback conversation questions, but unknown-interest AI normalization and OpenRouter-generated questions are unavailable. That fallback behavior is for development/testing resilience only; it is **not** the production signed-release configuration.
+
+Do not run **Zync V1 Signed Release** until both the production `ZYNC_API_BASE` and all four signing secrets above are configured.
 
 ## Encoding the keystore safely
 
@@ -37,7 +43,7 @@ PowerShell:
 
 ## Building the signed AAB
 
-After all four signing secrets are present:
+After the production `ZYNC_API_BASE` and all four signing secrets are present:
 
 1. Open GitHub → Actions → **Zync V1 Signed Release**.
 2. Choose **Run workflow** on branch `zync-v1-rebuild-20260917`.
