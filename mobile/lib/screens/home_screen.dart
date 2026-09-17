@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -8,6 +9,27 @@ import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
 import 'scan_qr_screen.dart';
 import 'show_qr_screen.dart';
+
+const _privacyUrl = String.fromEnvironment('ZYNC_PRIVACY_URL');
+
+Uri? _configuredPrivacyUri() {
+  final uri = Uri.tryParse(_privacyUrl.trim());
+  if (uri == null || uri.scheme != 'https' || uri.host.isEmpty) return null;
+  return uri;
+}
+
+Future<void> _openPrivacyPolicy(BuildContext context, Uri uri, String failureMessage) async {
+  try {
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(failureMessage)));
+    }
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(failureMessage)));
+    }
+  }
+}
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -24,6 +46,7 @@ class HomeScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final name = profile.nickname.trim();
     final greeting = name.isEmpty ? l10n.homeGreeting : '${l10n.homeGreeting} $name';
+    final privacyUri = _configuredPrivacyUri();
 
     return Scaffold(
       body: ConnectionBackdrop(
@@ -166,6 +189,18 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => InterestDnaScreen(profile: profile)),
                 ),
               ),
+              if (privacyUri != null) ...[
+                const SizedBox(height: 12),
+                _MenuTile(
+                  icon: Icons.privacy_tip_outlined,
+                  iconBackground: const Color(0xFFE8F0FF),
+                  iconForeground: const Color(0xFF315F9E),
+                  title: l10n.privacyPolicy,
+                  onTap: () {
+                    _openPrivacyPolicy(context, privacyUri, l10n.privacyPolicyUnavailable);
+                  },
+                ),
+              ],
             ],
           ),
         ),
