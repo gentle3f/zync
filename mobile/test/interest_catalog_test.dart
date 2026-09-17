@@ -4,8 +4,9 @@ import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 
 void main() {
-  test('bundled catalog is broad, unique, and preserves legacy canonical IDs', () {
-    expect(InterestCatalog.count, greaterThanOrEqualTo(500));
+  test('bundled catalog reaches deep V1 coverage, stays unique, and preserves legacy IDs', () {
+    expect(InterestCatalog.count, greaterThanOrEqualTo(2500));
+    expect(InterestCatalog.count, lessThanOrEqualTo(3200));
     expect(InterestCatalog.seed.map((item) => item.id).toSet(), hasLength(InterestCatalog.count));
 
     for (final legacyId in const [
@@ -21,17 +22,50 @@ void main() {
     }
   });
 
-  test('search handles aliases, Chinese terms, prefixes and niche interests locally', () {
+  test('search handles aliases, Chinese terms, prefixes, titles and niche interests locally', () {
     expect(InterestCatalog.search('F1', 'en').first.id, 'motorsport.formula1');
     expect(InterestCatalog.search('羽球', 'zh-Hant').first.id, 'sports.badminton');
     expect(InterestCatalog.search('韓劇', 'zh-Hant').first.id, 'entertainment.k_drama');
     expect(InterestCatalog.search('bould', 'en').map((item) => item.id), contains('outdoors.bouldering'));
     expect(InterestCatalog.search('手沖咖啡', 'zh-Hant').first.id, 'food.pour_over');
+    expect(
+      InterestCatalog.search('琅琊榜', 'zh-Hant').map((item) => item.id),
+      contains('entertainment.tv_drama.nirvana_in_fire'),
+    );
+    expect(
+      InterestCatalog.search('shoegaze', 'en').map((item) => item.id),
+      contains('music.style.shoegaze'),
+    );
+    expect(
+      InterestCatalog.search('The Godfather', 'en').map((item) => item.id),
+      contains('entertainment.classic_film.the_godfather'),
+    );
   });
 
   test('Hong Kong Chinese locale resolves Traditional Chinese labels', () {
     expect(InterestCatalog.byId('sports.tennis')!.labelFor('zh-HK'), '網球');
     expect(InterestCatalog.byId('food.coffee')!.labelFor('zh-Hant'), '咖啡');
+    expect(
+      InterestCatalog.byId('entertainment.tv_drama.crash_landing_on_you')!.labelFor('zh-HK'),
+      '愛的迫降',
+    );
+  });
+
+  test('two and three-level taxonomy can be browsed without affecting canonical matching', () {
+    final entertainmentL2 = InterestCatalog.clustersForCategory('entertainment');
+    expect(entertainmentL2, containsAll(<String>['movies', 'tv', 'anime']));
+
+    final movieL3 = InterestCatalog.subclustersFor('entertainment', 'movies');
+    expect(movieL3, containsAll(<String>['subgenres', 'classics', 'modern_evergreen']));
+
+    final classics = InterestCatalog.popular(
+      category: 'entertainment',
+      cluster: 'movies',
+      subcluster: 'classics',
+      limit: 200,
+    );
+    expect(classics.map((item) => item.id), contains('entertainment.classic_film.casablanca'));
+    expect(classics.every((item) => item.cluster == 'movies/classics'), isTrue);
   });
 
   test('instant custom interests need no AI and normalize to a stable cross-device ID', () {
@@ -69,7 +103,7 @@ void main() {
     expect(match.onlyTheirs.single.id, 'sports.tennis');
   });
 
-  test('category discovery remains bounded even with the large catalog', () {
+  test('category discovery remains bounded even with the deep catalog', () {
     expect(InterestCatalog.categories.length, greaterThanOrEqualTo(15));
     expect(InterestCatalog.popular(limit: 36), hasLength(36));
     expect(InterestCatalog.search('', 'en', limit: 40).length, lessThanOrEqualTo(40));
