@@ -71,6 +71,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'method_not_allowed' });
   }
 
+  res.setHeader('X-Zync-API-Version', 'v1');
+  res.setHeader('X-Zync-AI-Privacy', 'zdr-data-collection-deny');
+
   const input = typeof req.body?.input === 'string' ? req.body.input.trim() : '';
   const language = canonicalLanguage(req.body?.language);
 
