@@ -143,13 +143,58 @@ test('relay rejects non-POST and does not cache responses', async () => {
   assert.equal(r.headers['cache-control'], 'no-store');
 });
 
-test('relay refuses to run without the shared-store configuration', async () => {
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+test('relay refuses to run without any supported shared-store configuration', async () => {
+  const saved = {
+    upstashUrl: process.env.UPSTASH_REDIS_REST_URL,
+    upstashToken: process.env.UPSTASH_REDIS_REST_TOKEN,
+    kvUrl: process.env.KV_REST_API_URL,
+    kvToken: process.env.KV_REST_API_TOKEN,
+  };
+  delete process.env.UPSTASH_REDIS_REST_URL;
   delete process.env.UPSTASH_REDIS_REST_TOKEN;
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
   const r = await invoke({ action: 'create', ...hostBase, expiresAt: expiry() });
-  process.env.UPSTASH_REDIS_REST_TOKEN = token;
+  process.env.UPSTASH_REDIS_REST_URL = saved.upstashUrl;
+  process.env.UPSTASH_REDIS_REST_TOKEN = saved.upstashToken;
+  if (saved.kvUrl == null) delete process.env.KV_REST_API_URL; else process.env.KV_REST_API_URL = saved.kvUrl;
+  if (saved.kvToken == null) delete process.env.KV_REST_API_TOKEN; else process.env.KV_REST_API_TOKEN = saved.kvToken;
   assert.equal(r.status, 503);
   assert.deepEqual(r.body, { error: 'relay_not_configured' });
+});
+
+test('relay accepts Vercel Upstash integration KV_REST_API aliases', async () => {
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  delete process.env.UPSTASH_REDIS_REST_URL;
+  delete process.env.UPSTASH_REDIS_REST_TOKEN;
+  process.env.KV_REST_API_URL = 'https://fake-upstash.example';
+  process.env.KV_REST_API_TOKEN = 'unit-test-token';
+
+  const aliasSessionId = 'KVRELAYABCDEFGHIJKLMNOPQ';
+  const aliasHostToken = 'AA23456789ABCDEFGHIJKLMNOPQRSTUV';
+  let r = await invoke({
+    action: 'create',
+    protocolVersion: 2,
+    sessionId: aliasSessionId,
+    hostToken: aliasHostToken,
+    expiresAt: expiry(),
+  });
+  assert.equal(r.status, 201);
+  assert.equal(r.body.status, 'created');
+
+  r = await invoke({
+    action: 'cancel',
+    protocolVersion: 2,
+    sessionId: aliasSessionId,
+    hostToken: aliasHostToken,
+  });
+  assert.equal(r.status, 200);
+
+  process.env.UPSTASH_REDIS_REST_URL = upstashUrl;
+  process.env.UPSTASH_REDIS_REST_TOKEN = upstashToken;
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
 });
 
 test('create stores only a short-lived host capability hash and is retry-safe', async () => {
@@ -242,6 +287,7 @@ test('TTL removes abandoned sessions without scheduled cleanup', async () => {
 test('source never logs relay payloads or secrets', async () => {
   assert.equal(/console\.(log|error|warn)/.test(source), false);
   assert.equal(source.includes('UPSTASH_REDIS_REST_TOKEN'), true);
+  assert.equal(source.includes('KV_REST_API_TOKEN'), true);
   assert.equal(source.includes("createHmac('sha256'"), true);
   assert.equal(source.includes("createHash('sha256'"), true);
 });
