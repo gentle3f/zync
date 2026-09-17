@@ -17,7 +17,13 @@ class LocalStore {
     final raw = prefs.getString(_profileKey);
     if (raw != null) {
       try {
-        return LocalProfile.fromJson(Map<String, dynamic>.from(jsonDecode(raw) as Map));
+        final stored = LocalProfile.fromJson(Map<String, dynamic>.from(jsonDecode(raw) as Map));
+        if (stored.language != language) {
+          final updated = stored.copyWith(language: language);
+          await saveProfile(updated);
+          return updated;
+        }
+        return stored;
       } catch (_) {
         // Fall through and create a clean local profile if old local data is malformed.
       }
