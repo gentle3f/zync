@@ -4,6 +4,10 @@ import 'interest_catalog_part3.dart';
 import 'interest_catalog_part4.dart';
 import 'interest_catalog_part5.dart';
 import 'interest_catalog_part6.dart';
+import 'interest_catalog_part7.dart';
+import 'interest_catalog_part8.dart';
+import 'interest_catalog_part9.dart';
+import 'interest_catalog_part10.dart';
 import 'models.dart';
 
 class InterestCatalog {
@@ -16,6 +20,10 @@ class InterestCatalog {
     ...kInterestCatalogPart4,
     ...kInterestCatalogPart5,
     ...kInterestCatalogPart6,
+    ...kInterestCatalogPart7,
+    ...kInterestCatalogPart8,
+    ...kInterestCatalogPart9,
+    ...kInterestCatalogPart10,
   ]);
 
   static final Map<String, InterestDefinition> _byId = {
@@ -66,13 +74,62 @@ class InterestCatalog {
     return scored.map((row) => row.item).take(limit).toList(growable: false);
   }
 
-  static List<InterestDefinition> popular({String? category, int limit = 36}) {
-    final items = (category == null || category.isEmpty
-            ? seed
-            : seed.where((item) => item.category == category))
-        .toList()
-      ..sort(_rankCompare);
-    return items.take(limit).toList(growable: false);
+  /// L2 taxonomy groups inside one L1 category.
+  static List<String> clustersForCategory(String category) {
+    final bestRank = <String, int>{};
+    for (final item in seed.where((item) => item.category == category)) {
+      if (item.cluster.isEmpty) continue;
+      final root = item.cluster.split('/').first;
+      final current = bestRank[root];
+      if (current == null || item.rank < current) bestRank[root] = item.rank;
+    }
+    final rows = bestRank.entries.toList()
+      ..sort((a, b) {
+        final rank = a.value.compareTo(b.value);
+        return rank != 0 ? rank : a.key.compareTo(b.key);
+      });
+    return rows.map((entry) => entry.key).toList(growable: false);
+  }
+
+  /// L3 taxonomy groups below an L2 cluster. Older catalog rows simply have no
+  /// L3 and remain fully browseable at category/L2 level.
+  static List<String> subclustersFor(String category, String cluster) {
+    final bestRank = <String, int>{};
+    for (final item in seed.where((item) => item.category == category)) {
+      final segments = item.cluster.split('/');
+      if (segments.length < 2 || segments.first != cluster) continue;
+      final subcluster = segments[1];
+      final current = bestRank[subcluster];
+      if (current == null || item.rank < current) bestRank[subcluster] = item.rank;
+    }
+    final rows = bestRank.entries.toList()
+      ..sort((a, b) {
+        final rank = a.value.compareTo(b.value);
+        return rank != 0 ? rank : a.key.compareTo(b.key);
+      });
+    return rows.map((entry) => entry.key).toList(growable: false);
+  }
+
+  static List<InterestDefinition> popular({
+    String? category,
+    String? cluster,
+    String? subcluster,
+    int limit = 36,
+  }) {
+    Iterable<InterestDefinition> items = seed;
+    if (category != null && category.isNotEmpty) {
+      items = items.where((item) => item.category == category);
+    }
+    if (cluster != null && cluster.isNotEmpty) {
+      items = items.where((item) {
+        final segments = item.cluster.split('/');
+        if (segments.isEmpty || segments.first != cluster) return false;
+        if (subcluster == null || subcluster.isEmpty) return true;
+        return segments.length > 1 && segments[1] == subcluster;
+      });
+    }
+    final sorted = items.toList()..sort(_rankCompare);
+    return sorted.take(limit).toList(growable: false);
   }
 
   /// Returns discovery suggestions only. Related interests are never considered
@@ -86,23 +143,32 @@ class InterestCatalog {
     final selectedDefs = selected.map(byId).whereType<InterestDefinition>().toList();
     if (selectedDefs.isEmpty) return popular(limit: limit);
 
-    final clusters = <String, int>{};
+    final fullClusters = <String, int>{};
+    final rootClusters = <String, int>{};
     final categories = <String, int>{};
     for (final item in selectedDefs) {
-      if (item.cluster.isNotEmpty) clusters[item.cluster] = (clusters[item.cluster] ?? 0) + 1;
+      if (item.cluster.isNotEmpty) {
+        fullClusters[item.cluster] = (fullClusters[item.cluster] ?? 0) + 1;
+        final root = item.cluster.split('/').first;
+        rootClusters[root] = (rootClusters[root] ?? 0) + 1;
+      }
       categories[item.category] = (categories[item.category] ?? 0) + 1;
     }
 
     final candidates = seed.where((item) => !selected.contains(item.id)).map((item) {
-      final clusterHits = item.cluster.isEmpty ? 0 : (clusters[item.cluster] ?? 0);
+      final fullHits = item.cluster.isEmpty ? 0 : (fullClusters[item.cluster] ?? 0);
+      final root = item.cluster.isEmpty ? '' : item.cluster.split('/').first;
+      final rootHits = root.isEmpty ? 0 : (rootClusters[root] ?? 0);
       final categoryHits = categories[item.category] ?? 0;
-      final relationship = clusterHits > 0
-          ? 0 - (clusterHits * 20)
-          : categoryHits > 0
-              ? 100 - (categoryHits * 5)
-              : 1000;
+      final relationship = fullHits > 0
+          ? 0 - (fullHits * 30)
+          : rootHits > 0
+              ? 70 - (rootHits * 15)
+              : categoryHits > 0
+                  ? 160 - (categoryHits * 5)
+                  : 1000;
       return (item: item, score: relationship + item.rank);
-    }).where((row) => row.score < 1000 + 120).toList()
+    }).where((row) => row.score < 1120).toList()
       ..sort((a, b) {
         final score = a.score.compareTo(b.score);
         if (score != 0) return score;
