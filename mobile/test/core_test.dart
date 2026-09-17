@@ -194,7 +194,7 @@ void main() {
     expect(onScanner.onlyTheirs.map((item) => item.id).toList(), onHost.onlyTheirs.map((item) => item.id).toList());
   });
 
-  test('handshake QR carries a short-lived session and round-trips the host profile', () {
+  test('handshake QR carries a short-lived session but never the private host capability', () {
     final now = DateTime.utc(2026, 9, 17, 12);
     const host = LocalProfile(
       localId: 'host-123',
@@ -204,6 +204,7 @@ void main() {
     );
     final bootstrap = RelayBootstrap(
       sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      hostToken: '0123456789ABCDEFGHIJKLMNOPQRSTUV',
       secretBytes: List<int>.generate(32, (index) => index),
       expiresAt: now.add(const Duration(minutes: 3)),
       hostProfile: QrProfilePayload.fromProfile(host),
@@ -219,6 +220,7 @@ void main() {
     expect(decoded.expiresAt, bootstrap.expiresAt);
     expect(decoded.hostProfile.localId, host.localId);
     expect(decoded.hostProfile.nickname, host.nickname);
+    expect(encoded, isNot(contains(bootstrap.hostToken)));
     expect(encoded, isNot(contains('email')));
     expect(encoded, isNot(contains('phone')));
   });
@@ -233,6 +235,7 @@ void main() {
     );
     final bootstrap = RelayBootstrap(
       sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      hostToken: '0123456789ABCDEFGHIJKLMNOPQRSTUV',
       secretBytes: List<int>.filled(32, 7),
       expiresAt: now.add(const Duration(minutes: 3)),
       hostProfile: QrProfilePayload.fromProfile(host),
@@ -263,6 +266,7 @@ void main() {
     );
     final bootstrap = RelayBootstrap(
       sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      hostToken: '0123456789ABCDEFGHIJKLMNOPQRSTUV',
       secretBytes: List<int>.generate(32, (index) => 255 - index),
       expiresAt: now.add(const Duration(minutes: 3)),
       hostProfile: QrProfilePayload.fromProfile(host),
@@ -289,6 +293,7 @@ void main() {
 
     final wrongSecret = RelayBootstrap(
       sessionId: bootstrap.sessionId,
+      hostToken: bootstrap.hostToken,
       secretBytes: List<int>.filled(32, 1),
       expiresAt: bootstrap.expiresAt,
       hostProfile: bootstrap.hostProfile,
