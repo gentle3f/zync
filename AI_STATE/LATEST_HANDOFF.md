@@ -1,15 +1,17 @@
 # Zync V1 — Latest Handoff
 
-Authoritative handoff: `AI_STATE/HANDOFF_20260918_RELAY_PAIRING_RESPONSIVE_CERTIFIED.md`
+Authoritative continuation checkpoint: `AI_STATE/MINI_HANDOFF_20260918_UPSTASH_PREVIEW_SMOKE_PASS.md`
+
+Previous certified implementation handoff: `AI_STATE/HANDOFF_20260918_RELAY_PAIRING_RESPONSIVE_CERTIFIED.md`
 
 Canonical business/product narrative: `docs/ZYNC_BUSINESS_PROPOSAL_AND_VISION.md`
 
 Branch: `zync-v1-rebuild-20260917`
 
-Read the authoritative handoff in full and continue directly from its **Recommended continuation order**. Do not restart repository discovery or old Thunkable archaeology. This handoff is additive on top of `AI_STATE/HANDOFF_20260917_ENCRYPTED_RELAY_INTEGRATION_IN_PROGRESS.md`, `AI_STATE/HANDOFF_20260917_PLAY_INTERNAL_RELEASE_AUTOMATION.md`, and all earlier release/privacy lineage.
+Read the continuation checkpoint first, then the previous certified handoff only if more implementation context is needed. Do not restart repository discovery or old Thunkable archaeology. Preserve all earlier additive handoff lineage.
 
-The one-scan encrypted relay + responsive normal-phone UI code is certified at code SHA `ee2d8409f8e1719fd9be035ecdba0e076425132d` by Zync V1 CI run #157 / `35246251340`, including analyze, Flutter tests and unsigned AAB build/upload.
+Current state: the encrypted one-scan relay code remains certified; the user has now linked the existing Upstash Redis database to Vercel `zync`, added the required rate-limit secret, and a controlled preview deployment passed a real Vercel -> Upstash relay lifecycle smoke including host-only authorization, duplicate protection, consume/delete and Redis TTL cleanup. Stable production remains unchanged.
 
-The relay is **not live**. Upstash has been user-approved but is not yet provisioned/connected and the required server-only Vercel environment values have not been set. Stable production is still the old 2025 deployment. Do not deploy, promote, publish or claim production readiness until the controlled preview/live-smoke + two-device physical QA gates in the authoritative handoff are completed.
+Current active task is the two-device Android physical QA gate. A separate-install `Zync QA` APK is being built against the controlled preview in GitHub Actions run `35249635868`. Continue directly from that run; do not redeploy production or upload Play.
 
-Keep branch auto-deploy disabled. Preserve package/version/signing/Play guards, privacy posture and the frozen V1 product scope.
+Branch auto-deploy is disabled again. Preview Vercel Authentication is temporarily off only for controlled QA and should be re-enabled after physical QA. Preserve package/version/signing/Play guards, privacy posture and the frozen V1 product scope.
