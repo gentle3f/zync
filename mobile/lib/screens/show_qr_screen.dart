@@ -17,10 +17,12 @@ class ShowQrScreen extends StatefulWidget {
     super.key,
     required this.profile,
     this.relayClient,
+    this.bootstrapFactory,
   });
 
   final LocalProfile profile;
   final RelayClient? relayClient;
+  final RelayBootstrap Function(LocalProfile profile)? bootstrapFactory;
 
   @override
   State<ShowQrScreen> createState() => _ShowQrScreenState();
@@ -77,7 +79,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
       unawaited(_relay.cancel(sessionId: old.sessionId, hostToken: old.hostToken));
     }
 
-    final bootstrap = RelayBootstrap.generate(widget.profile);
+    final bootstrap = widget.bootstrapFactory?.call(widget.profile) ?? RelayBootstrap.generate(widget.profile);
     if (!mounted) return;
     setState(() {
       _bootstrap = bootstrap;
