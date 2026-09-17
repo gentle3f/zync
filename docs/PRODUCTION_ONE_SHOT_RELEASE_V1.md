@@ -1,0 +1,218 @@
+# Zync V1 — One-Shot Production Release Manifest
+
+Date: 2026-09-17  
+Branch: `zync-v1-rebuild-20260917`
+
+## Objective
+
+When the Vercel Hobby rolling deployment quota releases capacity, create **one intentional V1 preview deployment** from the fully prepared branch, verify it, promote that exact deployment to production, then build/sign the Play AAB. Do not return to per-commit Vercel previews.
+
+## Frozen production identity
+
+- Vercel project: `zync`
+- Project ID: `prj_GayyH1E1oWeliJew8P2gWLiiqH0A`
+- Vercel team ID: `team_jynHypQ0VPNT6nwooTRyFG4B`
+- Team scope: `gens-projects-4f99f8b9`
+- Stable production origin: `https://zync-inky.vercel.app`
+- Android application ID: `com.gmail.gentle3f.myproject`
+- Android release version: `1.0.0+6`
+- Production privacy URL: `https://zync-inky.vercel.app/privacy`
+- Terms URL: `https://zync-inky.vercel.app/terms`
+- Disclaimer URL: `https://zync-inky.vercel.app/disclaimer`
+
+## Current production state before cutover
+
+The stable production domain still points to the old 2025 `main` deployment/commit and does not serve the rebuilt V1 API. `/api/v1/question` on that old production deployment returns 404.
+
+Do not treat the current production alias as proof that V1 is live until the cutover steps below are completed.
+
+## Vercel environment expected before the new deployment
+
+Already configured by the release owner in Vercel:
+
+- `OPENROUTER_API_KEY` — secret value, never commit or paste into repo/chat logs;
+- `OPENROUTER_MODEL=openrouter/free`;
+- `ZYNC_PUBLIC_URL=https://zync-inky.vercel.app`.
+
+These should apply to the environment(s) used for the final preview and production deployment. A deployment created before these variables were added does not retroactively receive them.
+
+## Git deployment-quota protection
+
+`vercel.json` intentionally contains:
+
+```json
+"git": {
+  "deploymentEnabled": {
+    "zync-v1-rebuild-20260917": false
+  }
+}
+```
+
+This prevents ordinary branch commits, docs, handoffs and mobile-only changes from consuming Vercel preview quota.
+
+Keep this protection on during normal development.
+
+## Public V1 analytics posture
+
+The Android V1 release is explicitly analytics-off:
+
+```text
+ZYNC_ANALYTICS_ENABLED=false
+```
+
+Both normal CI and the signed-release workflow pass this build define explicitly. With analytics disabled, the client exits before creating analytics IDs or sending analytics requests.
+
+Do not add PostHog as a release blocker for this V1.
+
+## One-shot deployment procedure after quota capacity returns
+
+### 1. Freeze branch head
+
+Before deployment, confirm all intended release files are committed and CI is green, including:
+
+- `api/v1/question.js`
+- `api/v1/normalize-interest.js`
+- `api/v1/analytics.js`
+- `privacy.html`
+- `terms.html`
+- `disclaimer.html`
+- `vercel.json`
+- mobile V1 source/tests
+- release workflows/scripts
+
+Record the exact Git commit SHA in the final release evidence.
+
+### 2. Intentionally allow exactly one branch deployment
+
+Change only the branch rule in `vercel.json` from `false` to `true` and commit it once. That incoming commit should create the single fresh preview deployment containing all accumulated branch changes and the newly configured Vercel environment variables.
+
+Do not make unrelated commits while that deployment is being created.
+
+### 3. Immediately restore auto-deploy protection
+
+After the preview deployment is created/identified, commit `vercel.json` back to:
+
+```json
+"zync-v1-rebuild-20260917": false
+```
+
+Because the restoring commit itself carries `deploymentEnabled: false`, it should not create another branch deployment. Verify the Vercel deployment list rather than assuming.
+
+### 4. Verify the fresh preview build identity
+
+Record:
+
+- deployment ID;
+- deployment URL;
+- Git SHA shown in Vercel metadata;
+- READY state;
+- that the build contains Node V1 functions and the legal static pages.
+
+The fresh deployment must be newer than the environment-variable changes. Do not promote an older preview.
+
+### 5. AI/live behavior check
+
+Before or immediately after promotion, verify with fixed synthetic test inputs:
+
+- `POST /api/v1/normalize-interest`
+  - HTTP 200;
+  - `X-Zync-API-Version: v1`;
+  - `X-Zync-AI-Privacy: zdr-data-collection-deny`;
+  - valid normalized interest payload.
+
+- `POST /api/v1/question`
+  - HTTP 200;
+  - same V1/privacy headers;
+  - non-empty question.
+
+- `POST /api/v1/analytics`
+  - endpoint exists;
+  - 503 `analytics_not_configured` is acceptable for the analytics-off V1.
+
+AI tests must use dummy interests only, never real user/profile data.
+
+If `openrouter/free` has no route satisfying `zdr:true` + `data_collection:"deny"`, treat that as an AI availability failure. Do not weaken the privacy routing just to make the smoke pass.
+
+### 6. Verify legal pages on the fresh deployment
+
+Required browser-readable pages:
+
+- `/privacy`
+- `/terms`
+- `/disclaimer`
+
+Check that `/privacy` is public HTTPS, non-PDF, readable without authentication and identifies Zync/package/data handling accurately.
+
+### 7. Promote the verified fresh deployment
+
+Promote that exact deployment to production. Promotion does not rebuild the deployment, so only promote the fresh deployment that already contains the new environment and release files.
+
+After promotion, verify `https://zync-inky.vercel.app` now resolves to that deployment/Git SHA.
+
+### 8. Production smoke
+
+Run `.github/scripts/live_api_smoke.mjs` against:
+
+```text
+ZYNC_API_BASE=https://zync-inky.vercel.app
+ZYNC_PRIVACY_URL=https://zync-inky.vercel.app/privacy
+```
+
+The smoke must confirm the public privacy page plus both AI endpoints and the analytics endpoint behavior.
+
+### 9. Set GitHub release variables
+
+Repository variables for the signed workflow:
+
+- `ZYNC_API_BASE=https://zync-inky.vercel.app`
+- `ZYNC_PRIVACY_URL=https://zync-inky.vercel.app/privacy`
+
+### 10. Run signed release
+
+Required existing Play upload-key secrets:
+
+- `ZYNC_ANDROID_KEYSTORE_BASE64`
+- `ZYNC_ANDROID_STORE_PASSWORD`
+- `ZYNC_ANDROID_KEY_ALIAS`
+- `ZYNC_ANDROID_KEY_PASSWORD`
+
+Run `Zync V1 Signed Release` only after production smoke passes.
+
+The workflow must:
+
+- run serverless/privacy/web contracts;
+- live-smoke production API/privacy page;
+- build with `ZYNC_ANALYTICS_ENABLED=false`;
+- sign using the existing accepted Play upload key;
+- pass `jarsigner -verify -strict`;
+- upload the signed AAB artifact.
+
+Record final artifact ID, byte size and SHA-256 digest in `AI_STATE`.
+
+## Play Console after signed AAB
+
+Before public rollout:
+
+- replace old login/remote-matching listing text/screenshots;
+- set Privacy Policy to `https://zync-inky.vercel.app/privacy`;
+- complete Data Safety using `docs/PLAY_DATA_SAFETY_V1_RELEASE_ANSWERS.md` and the current Play form;
+- provide reviewer QR/access instructions;
+- run two-device real Android QA;
+- upload first to an appropriate test track before wider rollout.
+
+## Rollback rule
+
+If production smoke fails after promotion, do not patch live by relaxing privacy controls. Roll back the production alias to the prior known deployment, fix on the protected branch, then repeat a controlled deployment when quota allows.
+
+## Release evidence to preserve
+
+- final branch SHA;
+- Vercel deployment ID/URL;
+- production alias mapping;
+- production API/privacy smoke output;
+- OpenRouter model setting (`openrouter/free`);
+- analytics state (`false`);
+- signed workflow run ID;
+- signed AAB artifact ID/size/SHA-256;
+- real-device QA result;
+- Play Data Safety/privacy/listing review completion.
