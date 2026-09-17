@@ -89,9 +89,15 @@ async function createSession(req, res, config, body) {
     return json(res, 429, { error: 'relay_rate_limited' });
   }
 
-  const result = await redis(config, ['SET', sessionKey(body.sessionId), 'P', 'EX', ttl, 'NX']);
-  if (result !== 'OK') return json(res, 409, { error: 'relay_session_exists' });
-  return json(res, 201, { ok: true, expiresInSeconds: ttl });
+  const key = sessionKey(body.sessionId);
+  const result = await redis(config, ['SET', key, 'P', 'EX', ttl, 'NX']);
+  if (result === 'OK') return json(res, 201, { ok: true, status: 'created', expiresInSeconds: ttl });
+
+  // A create request can succeed upstream while the phone times out locally. Treat a
+  // retry for the same high-entropy session ID as idempotent only while it is still pending.
+  const existing = await redis(config, ['GET', key]);
+  if (existing === 'P') return json(res, 200, { ok: true, status: 'already_created', expiresInSeconds: ttl });
+  return json(res, 409, { error: 'relay_session_exists' });
 }
 
 async function respond(req, res, config, body) {
