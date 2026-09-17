@@ -62,6 +62,8 @@
   "love": "J'adore",
   "like": "J'aime",
   "wantToTry": "Je veux essayer",
+  "privacyPolicy": "Politique de confidentialité",
+  "privacyPolicyUnavailable": "Impossible d’ouvrir la politique de confidentialité. Réessayez.",
   "edit": "Modifier",
   "done": "Terminé",
   "retry": "Réessayer",
