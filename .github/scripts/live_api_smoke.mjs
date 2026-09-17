@@ -12,6 +12,7 @@ const timeoutMs = 20000;
 const protocolVersion = 2;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const sessionId = () => randomBytes(18).toString('base64url');
+const hostToken = () => randomBytes(24).toString('base64url');
 
 async function post(path, body) {
   const response = await fetch(`${base}${path}`, {
@@ -66,63 +67,77 @@ async function relay(body) {
 
 {
   const sid = sessionId();
-  const baseRelay = { protocolVersion, sessionId: sid };
+  const token = hostToken();
+  const wrongToken = hostToken();
+  const peerRelay = { protocolVersion, sessionId: sid };
+  const hostRelay = { ...peerRelay, hostToken: token };
   const expiresAt = new Date(Date.now() + 120000).toISOString();
   const opaque = randomBytes(48).toString('base64url');
   const otherOpaque = randomBytes(48).toString('base64url');
 
-  let r = await relay({ action: 'create', ...baseRelay, expiresAt });
+  let r = await relay({ action: 'create', ...hostRelay, expiresAt });
   assert.equal(r.response.status, 201, `relay create failed: HTTP ${r.response.status} ${JSON.stringify(r.json)}`);
   assert.equal(r.json.status, 'created');
 
-  r = await relay({ action: 'create', ...baseRelay, expiresAt });
+  r = await relay({ action: 'create', ...hostRelay, expiresAt });
   assert.equal(r.response.status, 200, 'relay create retry should be idempotent while pending');
   assert.equal(r.json.status, 'already_created');
 
-  r = await relay({ action: 'take', ...baseRelay });
+  r = await relay({ action: 'take', ...peerRelay, hostToken: wrongToken });
+  assert.equal(r.response.status, 403, 'a scanner or observer without the private host token must not poll');
+  assert.deepEqual(r.json, { error: 'relay_host_not_authorized' });
+
+  r = await relay({ action: 'take', ...hostRelay });
   assert.equal(r.response.status, 200);
   assert.equal(r.json.status, 'waiting');
 
-  r = await relay({ action: 'respond', ...baseRelay, payload: opaque });
+  r = await relay({ action: 'respond', ...peerRelay, payload: opaque });
   assert.equal(r.response.status, 200);
   assert.equal(r.json.status, 'received');
 
-  r = await relay({ action: 'respond', ...baseRelay, payload: opaque });
+  r = await relay({ action: 'respond', ...peerRelay, payload: opaque });
   assert.equal(r.response.status, 200);
   assert.equal(r.json.status, 'already_received');
 
-  r = await relay({ action: 'respond', ...baseRelay, payload: otherOpaque });
+  r = await relay({ action: 'respond', ...peerRelay, payload: otherOpaque });
   assert.equal(r.response.status, 409, 'a different second scanner response must be rejected');
   assert.deepEqual(r.json, { error: 'relay_already_answered' });
 
-  r = await relay({ action: 'take', ...baseRelay });
+  r = await relay({ action: 'take', ...peerRelay, hostToken: wrongToken });
+  assert.equal(r.response.status, 403, 'wrong host token must not read the encrypted scanner response');
+
+  r = await relay({ action: 'take', ...hostRelay });
   assert.equal(r.response.status, 200);
   assert.equal(r.json.status, 'ready');
   assert.equal(r.json.payload, opaque);
 
-  r = await relay({ action: 'take', ...baseRelay });
+  r = await relay({ action: 'take', ...hostRelay });
   assert.equal(r.response.status, 200, 'host retry must remain possible after a lost poll response');
   assert.equal(r.json.payload, opaque);
 
-  r = await relay({ action: 'consume', ...baseRelay });
+  r = await relay({ action: 'consume', ...peerRelay, hostToken: wrongToken });
+  assert.equal(r.response.status, 403, 'wrong host token must not consume another host session');
+
+  r = await relay({ action: 'consume', ...hostRelay });
   assert.equal(r.response.status, 200);
   assert.deepEqual(r.json, { ok: true });
 
-  r = await relay({ action: 'take', ...baseRelay });
+  r = await relay({ action: 'take', ...hostRelay });
   assert.equal(r.response.status, 410);
   assert.deepEqual(r.json, { error: 'relay_session_expired' });
 
-  console.log('✓ live encrypted relay supports idempotent create/respond, non-destructive polling and explicit consume');
+  console.log('✓ live encrypted relay enforces host-only polling/consume and idempotent scanner response');
 }
 
 {
   const sid = sessionId();
-  const baseRelay = { protocolVersion, sessionId: sid };
+  const token = hostToken();
+  const hostRelay = { protocolVersion, sessionId: sid, hostToken: token };
   const expiresAt = new Date(Date.now() + 15000).toISOString();
-  let r = await relay({ action: 'create', ...baseRelay, expiresAt });
+  let r = await relay({ action: 'create', ...hostRelay, expiresAt });
   assert.equal(r.response.status, 201, 'short-lived TTL smoke session should be created');
   await sleep(16500);
-  r = await relay({ action: 'take', ...baseRelay });
+  r = await relay({ action: 'take', ...hostRelay });
   assert.equal(r.response.status, 410, 'abandoned relay session must disappear by TTL without scheduled cleanup');
   console.log('✓ live relay TTL removes abandoned sessions without a cleanup schedule');
 }
