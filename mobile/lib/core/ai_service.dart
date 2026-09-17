@@ -83,6 +83,7 @@ class AiService {
     required ConversationMode mode,
     required MatchResult match,
     String? secondaryLanguage,
+    String sessionSeed = '',
   }) async {
     final primary = ZyncLanguage.canonical(language);
     final secondary = secondaryLanguage == null ? null : ZyncLanguage.canonical(secondaryLanguage);
@@ -108,6 +109,7 @@ class AiService {
               'shared': match.shared.map((item) => _label(item, primary)).take(8).toList(),
               'personA': match.onlyMine.map((item) => _label(item, primary)).take(8).toList(),
               'personB': match.onlyTheirs.map((item) => _label(item, primary)).take(8).toList(),
+              if (sessionSeed.isNotEmpty) 'sessionSeed': sessionSeed.substring(0, sessionSeed.length.clamp(0, 64)),
             }),
           )
           .timeout(const Duration(seconds: 12));
