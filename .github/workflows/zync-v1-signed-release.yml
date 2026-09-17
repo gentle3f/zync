@@ -56,6 +56,18 @@ jobs:
             exit 1
           fi
 
+      - name: Check serverless JavaScript syntax
+        run: |
+          node --check api/generate.js
+          node --check api/generate1.js
+          node --check api/generate2.js
+          node --check api/v1/question.js
+          node --check api/v1/normalize-interest.js
+          node --check api/v1/analytics.js
+
+      - name: Test V1 serverless contracts
+        run: node .github/scripts/serverless_contracts.mjs
+
       - name: Setup Flutter stable
         uses: subosito/flutter-action@v2
         with:
