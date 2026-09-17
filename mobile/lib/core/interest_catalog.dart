@@ -30,6 +30,23 @@ class InterestCatalog {
     for (final item in seed) item.id: item,
   };
 
+  /// Pre-normalized once per process so typing into search never has to rebuild
+  /// thousands of normalized label/alias strings on every keystroke.
+  static final List<_InterestSearchRow> _searchIndex = [
+    for (final item in seed)
+      _InterestSearchRow(
+        item: item,
+        terms: _searchTerms(item),
+        normalizedId: normalizeText(item.id.replaceAll('.', ' ').replaceAll('_', ' ')),
+        normalizedCategory: normalizeText(item.category),
+      ),
+  ];
+
+  /// Earlier bundled IDs win when a label/alias is shared. The semantic audit
+  /// prevents same-category duplicate concepts, while cross-category terms can
+  /// still intentionally point to the first long-lived canonical definition.
+  static final Map<String, InterestDefinition> _exactIndex = _buildExactIndex();
+
   static final List<String> categories = _buildCategories();
 
   static InterestDefinition? byId(String id) => _byId[id];
@@ -39,10 +56,7 @@ class InterestCatalog {
   static InterestDefinition? exact(String input) {
     final q = normalizeText(input);
     if (q.isEmpty) return null;
-    for (final item in seed) {
-      if (_exactTerms(item).contains(q)) return item;
-    }
-    return null;
+    return _exactIndex[q];
   }
 
   static List<InterestDefinition> search(
@@ -52,19 +66,20 @@ class InterestCatalog {
     int limit = 80,
   }) {
     final q = normalizeText(query);
-    final pool = category == null || category.isEmpty
-        ? seed
-        : seed.where((item) => item.category == category);
-
     if (q.isEmpty) {
-      final items = pool.toList()..sort(_rankCompare);
+      final items = (category == null || category.isEmpty
+              ? seed
+              : seed.where((item) => item.category == category))
+          .toList()
+        ..sort(_rankCompare);
       return items.take(limit).toList(growable: false);
     }
 
     final scored = <({InterestDefinition item, int score})>[];
-    for (final item in pool) {
-      final score = _searchScore(item, q);
-      if (score != null) scored.add((item: item, score: score));
+    for (final row in _searchIndex) {
+      if (category != null && category.isNotEmpty && row.item.category != category) continue;
+      final score = _searchScore(row, q);
+      if (score != null) scored.add((item: row.item, score: score));
     }
     scored.sort((a, b) {
       final score = a.score.compareTo(b.score);
@@ -74,9 +89,6 @@ class InterestCatalog {
     return scored.map((row) => row.item).take(limit).toList(growable: false);
   }
 
-  /// L2 taxonomy groups inside one L1 category. Legacy 553-item cluster names
-  /// are normalized into the same browse paths as the deep catalog without
-  /// changing their canonical IDs.
   static List<String> clustersForCategory(String category) {
     final bestRank = <String, int>{};
     for (final item in seed.where((item) => item.category == category)) {
@@ -93,8 +105,6 @@ class InterestCatalog {
     return rows.map((entry) => entry.key).toList(growable: false);
   }
 
-  /// L3 taxonomy groups below an L2 cluster. Domains that do not need a third
-  /// level simply return an empty list and remain two-level browseable.
   static List<String> subclustersFor(String category, String cluster) {
     final bestRank = <String, int>{};
     for (final item in seed.where((item) => item.category == category)) {
@@ -133,8 +143,8 @@ class InterestCatalog {
     return sorted.take(limit).toList(growable: false);
   }
 
-  /// Returns discovery suggestions only. Related interests are never considered
-  /// exact matches; matching continues to use canonical IDs exclusively.
+  /// Related interests are discovery-only. Matching still uses exact canonical
+  /// IDs, so nearby concepts are never falsely reported as shared interests.
   static List<InterestDefinition> relatedTo(
     Iterable<String> selectedIds, {
     int limit = 18,
@@ -181,10 +191,6 @@ class InterestCatalog {
     return candidates.map((row) => row.item).take(limit).toList(growable: false);
   }
 
-  /// Creates an immediately usable local interest without any network/AI gate.
-  /// Exact catalog labels/aliases resolve to their canonical ID. Otherwise the
-  /// same normalized free text deterministically maps to the same custom ID on
-  /// different devices.
   static SelectedInterest instantSelection(String input) {
     final known = exact(input);
     if (known != null) {
@@ -192,9 +198,7 @@ class InterestCatalog {
     }
     final display = input.trim().replaceAll(RegExp(r'\s+'), ' ');
     final normalized = normalizeText(display);
-    if (normalized.length < 2) {
-      throw const FormatException('Interest is too short');
-    }
+    if (normalized.length < 2) throw const FormatException('Interest is too short');
     return SelectedInterest(
       id: 'custom.${_stableId(normalized)}',
       strength: InterestStrength.like,
@@ -225,33 +229,41 @@ class InterestCatalog {
 
   static int _rankCompare(InterestDefinition a, InterestDefinition b) {
     final rank = a.rank.compareTo(b.rank);
-    if (rank != 0) return rank;
-    return a.id.compareTo(b.id);
+    return rank != 0 ? rank : a.id.compareTo(b.id);
+  }
+
+  static Set<String> _searchTerms(InterestDefinition item) {
+    return {
+      ...item.labels.values.map(normalizeText),
+      ...item.aliases.map(normalizeText),
+      normalizeText(item.id.split('.').last.replaceAll('_', ' ')),
+    }..remove('');
   }
 
   static Set<String> _exactTerms(InterestDefinition item) {
     return {
       normalizeText(item.id),
-      normalizeText(item.id.split('.').last.replaceAll('_', ' ')),
-      ...item.labels.values.map(normalizeText),
-      ...item.aliases.map(normalizeText),
+      ..._searchTerms(item),
     }..remove('');
   }
 
-  static int? _searchScore(InterestDefinition item, String q) {
-    final terms = <String>{
-      ...item.labels.values.map(normalizeText),
-      ...item.aliases.map(normalizeText),
-      normalizeText(item.id.split('.').last.replaceAll('_', ' ')),
-    }..remove('');
-    if (terms.contains(q)) return 0;
-    if (terms.any((term) => term.startsWith(q))) return 10;
-    if (terms.any((term) => term.split(' ').any((token) => token.startsWith(q)))) return 20;
-    if (terms.any((term) => term.contains(q))) return 30;
-    final id = normalizeText(item.id.replaceAll('.', ' ').replaceAll('_', ' '));
-    if (id.contains(q)) return 40;
-    final category = normalizeText(item.category);
-    if (category.contains(q)) return 50;
+  static Map<String, InterestDefinition> _buildExactIndex() {
+    final result = <String, InterestDefinition>{};
+    for (final item in seed) {
+      for (final term in _exactTerms(item)) {
+        result.putIfAbsent(term, () => item);
+      }
+    }
+    return Map.unmodifiable(result);
+  }
+
+  static int? _searchScore(_InterestSearchRow row, String q) {
+    if (row.terms.contains(q)) return 0;
+    if (row.terms.any((term) => term.startsWith(q))) return 10;
+    if (row.terms.any((term) => term.split(' ').any((token) => token.startsWith(q)))) return 20;
+    if (row.terms.any((term) => term.contains(q))) return 30;
+    if (row.normalizedId.contains(q)) return 40;
+    if (row.normalizedCategory.contains(q)) return 50;
     return null;
   }
 
@@ -275,17 +287,11 @@ class InterestCatalog {
         }
         if (root == 'anime_manga') {
           const franchiseIds = {
-            'anime.jojo',
-            'entertainment.ghibli',
-            'entertainment.one_piece',
-            'entertainment.naruto',
-            'entertainment.dragon_ball',
-            'entertainment.demon_slayer',
-            'entertainment.attack_on_titan',
-            'entertainment.jujutsu_kaisen',
-            'entertainment.spy_x_family',
-            'entertainment.pokemon_anime',
-            'entertainment.gundam',
+            'anime.jojo', 'entertainment.ghibli', 'entertainment.one_piece',
+            'entertainment.naruto', 'entertainment.dragon_ball',
+            'entertainment.demon_slayer', 'entertainment.attack_on_titan',
+            'entertainment.jujutsu_kaisen', 'entertainment.spy_x_family',
+            'entertainment.pokemon_anime', 'entertainment.gundam',
           };
           return (l2: 'anime_manga', l3: franchiseIds.contains(item.id) ? 'titles_franchises' : 'general');
         }
@@ -304,7 +310,11 @@ class InterestCatalog {
         if (root == 'music_making') return (l2: 'making', l3: null);
         if (root == 'music') {
           if (leaf == 'styles') return (l2: 'genres_styles', l3: null);
-          if (leaf != null && leaf.endsWith('artists') || leaf == 'artists_global' || leaf == 'hk_cantopop' || leaf == 'mandopop_artists') {
+          if (leaf != null &&
+              (leaf.endsWith('artists') ||
+                  leaf == 'artists_global' ||
+                  leaf == 'hk_cantopop' ||
+                  leaf == 'mandopop_artists')) {
             return (l2: 'artists', l3: leaf);
           }
         }
@@ -333,7 +343,6 @@ class InterestCatalog {
         if (root == 'travel_general') return (l2: 'general', l3: null);
         break;
     }
-
     return (l2: root, l3: leaf);
   }
 
@@ -346,7 +355,6 @@ class InterestCatalog {
       }
       return hash;
     }
-
     final a = fnv(normalized, 0x811c9dc5);
     final b = fnv(normalized.split('').reversed.join(), 0x9e3779b9);
     return '${a.toRadixString(16).padLeft(8, '0')}${b.toRadixString(16).padLeft(8, '0')}';
@@ -354,28 +362,26 @@ class InterestCatalog {
 
   static List<String> _buildCategories() {
     const preferred = [
-      'sports',
-      'wellness',
-      'outdoors',
-      'gaming',
-      'music',
-      'entertainment',
-      'food',
-      'travel',
-      'arts',
-      'crafts',
-      'technology',
-      'science',
-      'learning',
-      'transport',
-      'motorsport',
-      'collecting',
-      'fashion',
-      'lifestyle',
-      'pets',
+      'sports', 'wellness', 'outdoors', 'gaming', 'music', 'entertainment',
+      'food', 'travel', 'arts', 'crafts', 'technology', 'science', 'learning',
+      'transport', 'motorsport', 'collecting', 'fashion', 'lifestyle', 'pets',
       'business',
     ];
     final available = seed.map((item) => item.category).toSet();
     return preferred.where(available.contains).toList(growable: false);
   }
+}
+
+class _InterestSearchRow {
+  const _InterestSearchRow({
+    required this.item,
+    required this.terms,
+    required this.normalizedId,
+    required this.normalizedCategory,
+  });
+
+  final InterestDefinition item;
+  final Set<String> terms;
+  final String normalizedId;
+  final String normalizedCategory;
 }
