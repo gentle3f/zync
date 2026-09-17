@@ -37,6 +37,10 @@ class AnalyticsEvent {
 class ZyncAnalytics {
   ZyncAnalytics({
     this.baseUrl = const String.fromEnvironment('ZYNC_API_BASE'),
+    this.enabled = const bool.fromEnvironment(
+      'ZYNC_ANALYTICS_ENABLED',
+      defaultValue: false,
+    ),
     http.Client? client,
   }) : _client = client ?? http.Client();
 
@@ -60,6 +64,7 @@ class ZyncAnalytics {
   };
 
   final String baseUrl;
+  final bool enabled;
   final http.Client _client;
   String? _sessionId;
 
@@ -67,6 +72,10 @@ class ZyncAnalytics {
     String event, {
     Map<String, Object?> properties = const {},
   }) async {
+    // V1 ships analytics OFF by default. This check happens before any
+    // installation/session identifier is created or any network request is made.
+    if (!enabled) return;
+
     final root = baseUrl.trim();
     if (root.isEmpty || !AnalyticsEvent.values.contains(event)) return;
 
