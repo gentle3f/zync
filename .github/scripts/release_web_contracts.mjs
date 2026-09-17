@@ -9,6 +9,8 @@ const terms = read('terms.html');
 const disclaimer = read('disclaimer.html');
 const vercel = JSON.parse(read('vercel.json'));
 const analytics = read('mobile/lib/core/analytics_service.dart');
+const relay = read('api/v1/relay.js');
+const relayClient = read('mobile/lib/core/relay_service.dart');
 const signedRelease = read('.github/workflows/zync-v1-signed-release.yml');
 
 for (const [name, html] of [
@@ -40,15 +42,26 @@ assert.ok(!/download now|available now|join the community|nearby people|create a
 assert.match(privacy, /<title>Zync Privacy Policy<\/title>/i);
 assert.match(privacy, /com\.gmail\.gentle3f\.myproject/);
 assert.match(privacy, /Vercel/);
+assert.match(privacy, /Upstash Redis/i);
 assert.match(privacy, /OpenRouter/);
+assert.match(privacy, /AES-GCM/i);
+assert.match(privacy, /one-time 256-bit secret/i);
+assert.match(privacy, /about three minutes/i);
+assert.match(privacy, /opaque encrypted response/i);
+assert.match(privacy, /does not receive the one-time decryption secret/i);
 assert.match(privacy, /Zero Data Retention/i);
 assert.match(privacy, /Product analytics are disabled by default/i);
 assert.match(privacy, /play\.google\.com\/store\/apps\/details\?id=com\.gmail\.gentle3f\.myproject/);
 assert.match(privacy, /Retention and deletion/i);
 assert.match(privacy, /Security/i);
+assert.ok(
+  !/QR body is not uploaded to Zync's backend as part of scanning or matching/i.test(privacy),
+  'privacy policy has regressed to the obsolete direct-transfer-only statement',
+);
 
 assert.match(terms, /<title>Zync Terms of Use<\/title>/i);
 assert.match(terms, /AI-assisted features/i);
+assert.match(terms, /short-lived encrypted relay/i);
 assert.match(terms, /Privacy Policy/i);
 
 assert.match(disclaimer, /<title>Zync Disclaimer<\/title>/i);
@@ -65,6 +78,17 @@ assert.match(analytics, /ZYNC_ANALYTICS_ENABLED/);
 assert.match(analytics, /defaultValue:\s*false/);
 assert.match(analytics, /if \(!enabled\) return;/);
 
+assert.match(relay, /UPSTASH_REDIS_REST_URL/);
+assert.match(relay, /UPSTASH_REDIS_REST_TOKEN/);
+assert.match(relay, /ZYNC_RELAY_RATE_LIMIT_SECRET/);
+assert.match(relay, /'EX', ttl, 'NX'/);
+assert.match(relay, /case 'consume'/);
+assert.match(relay, /Cache-Control', 'no-store'/);
+assert.ok(!/console\.(log|error|warn)/.test(relay), 'relay must not log opaque pairing payloads or secrets');
+assert.match(relayClient, /AesGcm\.with256bits\(\)/);
+assert.match(relayClient, /Random\.secure\(\)/);
+assert.match(relayClient, /Future<void> consume/);
+
 assert.match(signedRelease, /Smoke production API and privacy policy/);
 assert.match(signedRelease, /live_api_smoke\.mjs/);
 assert.match(signedRelease, /ZYNC_PRIVACY_URL/);
@@ -72,7 +96,8 @@ assert.match(signedRelease, /--dart-define=ZYNC_ANALYTICS_ENABLED=false/);
 assert.match(signedRelease, /jarsigner -verify -strict/);
 
 console.log('✓ Zync landing page matches the frozen local-first V1 product scope');
-console.log('✓ public legal pages are browser-readable and release-complete');
+console.log('✓ public legal pages disclose the short-lived encrypted relay and remain browser-readable');
+console.log('✓ relay source keeps TTL, server-only configuration, no payload logging and on-device AES-GCM');
 console.log('✓ stable /privacy, /terms and /disclaimer routes are configured');
 console.log('✓ public V1 analytics posture is explicitly default-off');
 console.log('✓ signed release keeps live smoke, privacy URL, analytics-off and strict signature verification');
