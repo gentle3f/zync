@@ -1,0 +1,121 @@
+name: Zync V1 Signed Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zync-v1-signed-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  signed-android-aab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ZYNC_API_BASE: ${{ vars.ZYNC_API_BASE }}
+      KEYSTORE_B64: ${{ secrets.ZYNC_ANDROID_KEYSTORE_BASE64 }}
+      STORE_PASSWORD: ${{ secrets.ZYNC_ANDROID_STORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.ZYNC_ANDROID_KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.ZYNC_ANDROID_KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Require release signing secrets
+        shell: bash
+        run: |
+          missing=0
+          for name in KEYSTORE_B64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub secret for $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Configure the Zync Android signing secrets before running this workflow."
+            exit 1
+          fi
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Android wrapper with legacy Play identity
+        run: |
+          rm -rf build_app
+          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
+          rm -rf build_app/lib build_app/test
+          cp -R mobile/lib build_app/lib
+          cp -R mobile/test build_app/test
+          cp mobile/pubspec.yaml build_app/pubspec.yaml
+          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 mobile/tool/apply_android_branding.py build_app
+
+      - name: Install ephemeral upload keystore
+        shell: bash
+        run: |
+          keystore_path="$GITHUB_WORKSPACE/build_app/android/app/zync-upload-keystore.jks"
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$keystore_path"
+          chmod 600 "$keystore_path"
+          {
+            printf 'storePassword=%s\n' "$STORE_PASSWORD"
+            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'storeFile=%s\n' "$keystore_path"
+          } > build_app/android/key.properties
+          chmod 600 build_app/android/key.properties
+          python3 mobile/tool/configure_android_signing.py build_app
+
+      - name: Verify Play identity and release-signing config
+        shell: bash
+        run: |
+          grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
+          grep -q "version: 1.0.0+6" build_app/pubspec.yaml
+          grep -q 'android:label="Zync"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -R "zyncRelease" build_app/android/app/build.gradle* >/dev/null
+          if grep -R 'signingConfig = signingConfigs.getByName("debug")' build_app/android/app/build.gradle* >/dev/null; then
+            echo "Release build still references debug signing"
+            exit 1
+          fi
+
+      - name: Install Flutter dependencies
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: build_app
+        run: flutter gen-l10n
+
+      - name: Analyze
+        working-directory: build_app
+        run: flutter analyze
+
+      - name: Test
+        working-directory: build_app
+        run: flutter test
+
+      - name: Build Play release AAB
+        working-directory: build_app
+        run: flutter build appbundle --release --dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}
+
+      - name: Verify AAB signature
+        shell: bash
+        run: |
+          aab="build_app/build/app/outputs/bundle/release/app-release.aab"
+          test -s "$aab"
+          jarsigner -verify -strict "$aab" >/dev/null
+          echo "AAB JAR signature verification passed"
+
+      - name: Upload signed Play AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-v1-play-signed-aab
+          path: build_app/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14
