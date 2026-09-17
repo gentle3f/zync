@@ -62,6 +62,8 @@
   "love": "정말 좋아해요",
   "like": "좋아해요",
   "wantToTry": "해보고 싶어요",
+  "privacyPolicy": "개인정보 처리방침",
+  "privacyPolicyUnavailable": "개인정보 처리방침을 열 수 없습니다. 다시 시도해 주세요.",
   "edit": "편집",
   "done": "완료",
   "retry": "다시 시도",
