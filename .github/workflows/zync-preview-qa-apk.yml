@@ -1,0 +1,89 @@
+name: Zync Preview QA APK
+
+on:
+  push:
+    branches:
+      - zync-v1-rebuild-20260917
+    paths:
+      - '.github/workflows/zync-preview-qa-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-qa-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ZYNC_PREVIEW_BASE: https://zync-rkrlbekvu-gens-projects-4f99f8b9.vercel.app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Android wrapper
+        run: |
+          rm -rf build_app
+          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
+          rm -rf build_app/lib build_app/test
+          cp -R mobile/lib build_app/lib
+          cp -R mobile/test build_app/test
+          cp mobile/pubspec.yaml build_app/pubspec.yaml
+          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 mobile/tool/apply_android_branding.py build_app
+
+      - name: Give QA build a separate install identity
+        shell: python
+        run: |
+          from pathlib import Path
+          candidates = [Path('build_app/android/app/build.gradle.kts'), Path('build_app/android/app/build.gradle')]
+          changed = False
+          for path in candidates:
+              if not path.exists():
+                  continue
+              text = path.read_text()
+              new = text.replace('applicationId = "com.gmail.gentle3f.myproject"', 'applicationId = "com.gmail.gentle3f.myproject.qa"')
+              new = new.replace("applicationId 'com.gmail.gentle3f.myproject'", "applicationId 'com.gmail.gentle3f.myproject.qa'")
+              if new != text:
+                  path.write_text(new)
+                  changed = True
+          if not changed:
+              raise SystemExit('Could not patch QA applicationId')
+          manifest = Path('build_app/android/app/src/main/AndroidManifest.xml')
+          text = manifest.read_text()
+          if 'android:label="Zync"' not in text:
+              raise SystemExit('Expected Zync label not found')
+          manifest.write_text(text.replace('android:label="Zync"', 'android:label="Zync QA"'))
+
+      - name: Install dependencies and generate localization
+        working-directory: build_app
+        run: |
+          flutter pub get
+          flutter gen-l10n
+
+      - name: Build installable QA APK
+        working-directory: build_app
+        run: >-
+          flutter build apk --debug
+          "--dart-define=ZYNC_API_BASE=${ZYNC_PREVIEW_BASE}"
+          "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PREVIEW_BASE}/privacy"
+          "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
+
+      - name: Verify QA APK exists
+        run: |
+          apk=build_app/build/app/outputs/flutter-apk/app-debug.apk
+          test -s "$apk"
+          echo "QA APK size: $(stat -c%s "$apk") bytes"
+
+      - name: Upload QA APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-preview-qa-apk
+          path: build_app/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
