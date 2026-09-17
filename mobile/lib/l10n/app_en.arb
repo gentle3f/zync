@@ -62,6 +62,8 @@
   "love": "Love it",
   "like": "Like it",
   "wantToTry": "Want to try",
+  "privacyPolicy": "Privacy policy",
+  "privacyPolicyUnavailable": "The privacy policy could not be opened. Please try again.",
   "edit": "Edit",
   "done": "Done",
   "retry": "Retry",
