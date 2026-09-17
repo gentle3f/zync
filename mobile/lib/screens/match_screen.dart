@@ -13,11 +13,13 @@ class MatchScreen extends StatefulWidget {
     required this.peer,
     required this.match,
     required this.newMatchCount,
+    this.sessionSeed = '',
   });
 
   final QrProfilePayload peer;
   final MatchResult match;
   final int newMatchCount;
+  final String sessionSeed;
 
   @override
   State<MatchScreen> createState() => _MatchScreenState();
@@ -180,6 +182,7 @@ class _MatchScreenState extends State<MatchScreen> {
                               builder: (_) => ConversationScreen(
                                 match: widget.match,
                                 peerLanguage: widget.peer.language,
+                                sessionSeed: widget.sessionSeed,
                               ),
                             ),
                           ),
