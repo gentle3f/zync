@@ -6,7 +6,7 @@ import 'package:zync/core/models.dart';
 void main() {
   test('bundled catalog reaches deep V1 coverage, stays unique, and preserves legacy IDs', () {
     expect(InterestCatalog.count, greaterThanOrEqualTo(2500));
-    expect(InterestCatalog.count, lessThanOrEqualTo(3200));
+    expect(InterestCatalog.count, lessThanOrEqualTo(3600));
     expect(InterestCatalog.seed.map((item) => item.id).toSet(), hasLength(InterestCatalog.count));
 
     for (final legacyId in const [
@@ -33,6 +33,10 @@ void main() {
       contains('entertainment.tv_drama.nirvana_in_fire'),
     );
     expect(
+      InterestCatalog.search('사랑의 불시착', 'ko').map((item) => item.id),
+      contains('entertainment.tv_drama.crash_landing_on_you'),
+    );
+    expect(
       InterestCatalog.search('shoegaze', 'en').map((item) => item.id),
       contains('music.style.shoegaze'),
     );
@@ -48,6 +52,11 @@ void main() {
     expect(
       InterestCatalog.byId('entertainment.tv_drama.crash_landing_on_you')!.labelFor('zh-HK'),
       '愛的迫降',
+    );
+    expect(
+      InterestCatalog.byId('entertainment.anime_title.spirited_away')?.labelFor('zh-HK') ??
+          InterestCatalog.byId('entertainment.modern_film.spirited_away')!.labelFor('zh-HK'),
+      '千與千尋',
     );
   });
 
