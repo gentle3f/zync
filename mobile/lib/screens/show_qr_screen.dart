@@ -1,18 +1,42 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../core/analytics_service.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 
-class ShowQrScreen extends StatelessWidget {
+class ShowQrScreen extends StatefulWidget {
   const ShowQrScreen({super.key, required this.profile});
   final LocalProfile profile;
 
   @override
+  State<ShowQrScreen> createState() => _ShowQrScreenState();
+}
+
+class _ShowQrScreenState extends State<ShowQrScreen> {
+  late final String _payload;
+
+  @override
+  void initState() {
+    super.initState();
+    _payload = QrProfilePayload.fromProfile(widget.profile).encode();
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.qrGenerated,
+        properties: {
+          'interest_count': widget.profile.interests.length,
+          'transport': _payload.startsWith(QrProfilePayload.compressedPrefix) ? 'compressed' : 'legacy',
+        },
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final payload = QrProfilePayload.fromProfile(profile).encode();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.showMyQr)),
@@ -55,7 +79,7 @@ class ShowQrScreen extends StatelessWidget {
                               final qrSize = constraints.maxWidth.clamp(180.0, 300.0).toDouble();
                               return Center(
                                 child: QrImageView(
-                                  data: payload,
+                                  data: _payload,
                                   version: QrVersions.auto,
                                   errorCorrectionLevel: QrErrorCorrectLevel.M,
                                   size: qrSize,
@@ -93,9 +117,9 @@ class ShowQrScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        if (profile.nickname.isNotEmpty) ...[
+                        if (widget.profile.nickname.isNotEmpty) ...[
                           const SizedBox(height: 18),
-                          Text(profile.nickname, style: Theme.of(context).textTheme.titleLarge),
+                          Text(widget.profile.nickname, style: Theme.of(context).textTheme.titleLarge),
                         ],
                         const SizedBox(height: 12),
                         Container(
