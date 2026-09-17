@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/core/ai_service.dart';
+import 'package:zync/core/language_support.dart';
 import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 
@@ -168,5 +170,55 @@ void main() {
     expect(result.shared, isEmpty);
     expect(result.onlyMine, hasLength(1));
     expect(result.onlyTheirs, hasLength(1));
+  });
+
+  test('V1 language canonicalization preserves Chinese script distinction', () {
+    expect(ZyncLanguage.canonical('zh-HK'), 'zh-Hant');
+    expect(ZyncLanguage.canonical('zh_CN'), 'zh-Hans');
+    expect(ZyncLanguage.canonical('ja-JP'), 'ja');
+    expect(ZyncLanguage.canonical('pt-BR'), 'pt');
+    expect(ZyncLanguage.needsSecondary('zh-Hant', 'ja-JP'), isTrue);
+    expect(ZyncLanguage.needsSecondary('en-US', 'en-GB'), isFalse);
+  });
+
+  test('offline fallback returns paired questions when peer language differs', () async {
+    const match = MatchResult(
+      shared: [SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love)],
+      onlyMine: [],
+      onlyTheirs: [],
+    );
+    const service = AiService(baseUrl: '');
+
+    final result = await service.generateQuestion(
+      language: 'zh-Hant',
+      secondaryLanguage: 'ja-JP',
+      mode: ConversationMode.fun,
+      match: match,
+    );
+
+    expect(result.fromAi, isFalse);
+    expect(result.question, isNotEmpty);
+    expect(result.secondaryQuestion, isNotNull);
+    expect(result.secondaryQuestion, isNotEmpty);
+    expect(result.secondaryLanguage, 'ja');
+  });
+
+  test('same-language peers do not render a duplicate secondary fallback', () async {
+    const match = MatchResult(
+      shared: [SelectedInterest(id: 'sports.badminton', strength: InterestStrength.like)],
+      onlyMine: [],
+      onlyTheirs: [],
+    );
+    const service = AiService(baseUrl: '');
+
+    final result = await service.generateQuestion(
+      language: 'en-US',
+      secondaryLanguage: 'en-GB',
+      mode: ConversationMode.easy,
+      match: match,
+    );
+
+    expect(result.secondaryQuestion, isNull);
+    expect(result.secondaryLanguage, isNull);
   });
 }
