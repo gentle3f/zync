@@ -6,12 +6,12 @@ on:
       - zync-v1-rebuild-20260917
     paths:
       - 'mobile/**'
-      - 'api/v1/**'
+      - 'api/**'
       - '.github/workflows/zync-v1-ci.yml'
   pull_request:
     paths:
       - 'mobile/**'
-      - 'api/v1/**'
+      - 'api/**'
       - '.github/workflows/zync-v1-ci.yml'
   workflow_dispatch:
 
@@ -43,6 +43,15 @@ jobs:
         run: |
           flutter --version
           dart --version
+          node --version
+
+      - name: Check serverless JavaScript syntax
+        run: |
+          node --check api/generate.js
+          node --check api/generate1.js
+          node --check api/generate2.js
+          node --check api/v1/question.js
+          node --check api/v1/normalize-interest.js
 
       - name: Test release-signing configurator
         run: python3 mobile/tool/configure_android_signing.py --self-test
