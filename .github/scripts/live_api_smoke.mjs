@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { randomBytes } from 'node:crypto';
 
 const rawBase = (process.env.ZYNC_API_BASE || '').trim();
 assert.ok(rawBase.startsWith('https://'), 'ZYNC_API_BASE must be a production https:// origin');
@@ -8,6 +9,9 @@ const rawPrivacyUrl = (process.env.ZYNC_PRIVACY_URL || '').trim();
 assert.ok(rawPrivacyUrl.startsWith('https://'), 'ZYNC_PRIVACY_URL must be a public https:// URL');
 
 const timeoutMs = 20000;
+const protocolVersion = 2;
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sessionId = () => randomBytes(18).toString('base64url');
 
 async function post(path, body) {
   const response = await fetch(`${base}${path}`, {
@@ -33,6 +37,12 @@ function assertAiPrivacyHeaders(response, route) {
   );
 }
 
+async function relay(body) {
+  const result = await post('/api/v1/relay', body);
+  assert.equal(result.response.headers.get('cache-control'), 'no-store');
+  return result;
+}
+
 {
   const response = await fetch(rawPrivacyUrl, {
     method: 'GET',
@@ -47,7 +57,74 @@ function assertAiPrivacyHeaders(response, route) {
     contentType.includes('text/html') || contentType.includes('text/plain'),
     `privacy policy should be a browser-readable page, got content-type ${contentType || '(missing)'}`,
   );
-  console.log('✓ public privacy policy URL is reachable over HTTPS and browser-readable');
+  const privacyText = await response.text();
+  assert.match(privacyText, /Upstash Redis/i);
+  assert.match(privacyText, /AES-GCM/i);
+  assert.match(privacyText, /about three minutes/i);
+  console.log('✓ public privacy policy URL is reachable and discloses the encrypted relay');
+}
+
+{
+  const sid = sessionId();
+  const baseRelay = { protocolVersion, sessionId: sid };
+  const expiresAt = new Date(Date.now() + 120000).toISOString();
+  const opaque = randomBytes(48).toString('base64url');
+  const otherOpaque = randomBytes(48).toString('base64url');
+
+  let r = await relay({ action: 'create', ...baseRelay, expiresAt });
+  assert.equal(r.response.status, 201, `relay create failed: HTTP ${r.response.status} ${JSON.stringify(r.json)}`);
+  assert.equal(r.json.status, 'created');
+
+  r = await relay({ action: 'create', ...baseRelay, expiresAt });
+  assert.equal(r.response.status, 200, 'relay create retry should be idempotent while pending');
+  assert.equal(r.json.status, 'already_created');
+
+  r = await relay({ action: 'take', ...baseRelay });
+  assert.equal(r.response.status, 200);
+  assert.equal(r.json.status, 'waiting');
+
+  r = await relay({ action: 'respond', ...baseRelay, payload: opaque });
+  assert.equal(r.response.status, 200);
+  assert.equal(r.json.status, 'received');
+
+  r = await relay({ action: 'respond', ...baseRelay, payload: opaque });
+  assert.equal(r.response.status, 200);
+  assert.equal(r.json.status, 'already_received');
+
+  r = await relay({ action: 'respond', ...baseRelay, payload: otherOpaque });
+  assert.equal(r.response.status, 409, 'a different second scanner response must be rejected');
+  assert.deepEqual(r.json, { error: 'relay_already_answered' });
+
+  r = await relay({ action: 'take', ...baseRelay });
+  assert.equal(r.response.status, 200);
+  assert.equal(r.json.status, 'ready');
+  assert.equal(r.json.payload, opaque);
+
+  r = await relay({ action: 'take', ...baseRelay });
+  assert.equal(r.response.status, 200, 'host retry must remain possible after a lost poll response');
+  assert.equal(r.json.payload, opaque);
+
+  r = await relay({ action: 'consume', ...baseRelay });
+  assert.equal(r.response.status, 200);
+  assert.deepEqual(r.json, { ok: true });
+
+  r = await relay({ action: 'take', ...baseRelay });
+  assert.equal(r.response.status, 410);
+  assert.deepEqual(r.json, { error: 'relay_session_expired' });
+
+  console.log('✓ live encrypted relay supports idempotent create/respond, non-destructive polling and explicit consume');
+}
+
+{
+  const sid = sessionId();
+  const baseRelay = { protocolVersion, sessionId: sid };
+  const expiresAt = new Date(Date.now() + 15000).toISOString();
+  let r = await relay({ action: 'create', ...baseRelay, expiresAt });
+  assert.equal(r.response.status, 201, 'short-lived TTL smoke session should be created');
+  await sleep(16500);
+  r = await relay({ action: 'take', ...baseRelay });
+  assert.equal(r.response.status, 410, 'abandoned relay session must disappear by TTL without scheduled cleanup');
+  console.log('✓ live relay TTL removes abandoned sessions without a cleanup schedule');
 }
 
 {
@@ -71,6 +148,7 @@ function assertAiPrivacyHeaders(response, route) {
     language: 'en',
     mode: 'easy',
     shared: ['Badminton'],
+    sessionSeed: sessionId(),
   });
   assertAiPrivacyHeaders(response, '/api/v1/question');
   assert.ok(response.ok, `question live smoke failed with HTTP ${response.status}`);
