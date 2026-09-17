@@ -35,6 +35,16 @@ function disableTestAi() {
   delete process.env.API_KEY;
 }
 
+function enableTestAnalytics() {
+  process.env.POSTHOG_PROJECT_API_KEY = 'phc_unit_test';
+  process.env.POSTHOG_HOST = 'https://us.i.posthog.com';
+}
+
+function disableTestAnalytics() {
+  delete process.env.POSTHOG_PROJECT_API_KEY;
+  delete process.env.POSTHOG_HOST;
+}
+
 function mockFetch(data, { ok = true, status = 200, capture } = {}) {
   globalThis.fetch = async (url, options) => {
     capture?.(url, options);
@@ -44,6 +54,7 @@ function mockFetch(data, { ok = true, status = 200, capture } = {}) {
 
 const question = await loadHandler('api/v1/question.js');
 const normalize = await loadHandler('api/v1/normalize-interest.js');
+const analytics = await loadHandler('api/v1/analytics.js');
 const cases = [];
 const test = (name, fn) => cases.push({ name, fn });
 
@@ -194,6 +205,124 @@ test('normalization maps provider failure to stable error', async () => {
   assert.deepEqual(r.body, { error: 'ai_upstream_error' });
 });
 
+test('analytics rejects non-POST and unknown events', async () => {
+  enableTestAnalytics();
+  let r = await invoke(analytics, {}, 'GET');
+  assert.equal(r.status, 405);
+  assert.equal(r.headers.allow, 'POST');
+  r = await invoke(analytics, {
+    event: 'interest_name_uploaded',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+  });
+  assert.equal(r.status, 400);
+  assert.deepEqual(r.body, { error: 'analytics_event_invalid' });
+});
+
+test('analytics rejects invalid anonymous identity', async () => {
+  enableTestAnalytics();
+  const r = await invoke(analytics, {
+    event: 'app_open',
+    installId: 'email@example.com',
+    sessionId: 'session',
+  });
+  assert.equal(r.status, 400);
+  assert.deepEqual(r.body, { error: 'analytics_identity_invalid' });
+});
+
+test('analytics reports missing provider configuration without breaking handler contract', async () => {
+  disableTestAnalytics();
+  const r = await invoke(analytics, {
+    event: 'app_open',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+    properties: { locale: 'en' },
+  });
+  assert.equal(r.status, 503);
+  assert.deepEqual(r.body, { error: 'analytics_not_configured' });
+});
+
+test('analytics forwards only allowlisted coarse properties and attaches timeout signal', async () => {
+  enableTestAnalytics();
+  let request;
+  mockFetch({}, { capture: (url, options) => { request = { url, options }; } });
+  const r = await invoke(analytics, {
+    event: 'question_generated',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+    properties: {
+      mode: 'fun',
+      source: 'ai',
+      match_type: 'shared',
+      bilingual: true,
+      interest_name: 'Anime',
+      canonical_interest_id: 'anime.jojo',
+      peer_id: 'secret-peer-id',
+      nickname: 'Gentle',
+    },
+  });
+  assert.equal(r.status, 200);
+  assert.deepEqual(r.body, { ok: true });
+  assert.equal(r.headers['cache-control'], 'no-store');
+  assert.equal(request.url, 'https://us.i.posthog.com/capture/');
+  assert.ok(request.options.signal);
+
+  const upstream = JSON.parse(request.options.body);
+  assert.equal(upstream.api_key, 'phc_unit_test');
+  assert.equal(upstream.event, 'question_generated');
+  assert.equal(upstream.properties.distinct_id, 'zync:11111111-1111-1111-1111-111111111111');
+  assert.equal(upstream.properties.zync_session_id, '22222222-2222-2222-2222-222222222222');
+  assert.equal(upstream.properties.zync_schema_version, 1);
+  assert.equal(upstream.properties.$process_person_profile, false);
+  assert.equal(upstream.properties.mode, 'fun');
+  assert.equal(upstream.properties.source, 'ai');
+  assert.equal(upstream.properties.match_type, 'shared');
+  assert.equal(upstream.properties.bilingual, true);
+  assert.equal('interest_name' in upstream.properties, false);
+  assert.equal('canonical_interest_id' in upstream.properties, false);
+  assert.equal('peer_id' in upstream.properties, false);
+  assert.equal('nickname' in upstream.properties, false);
+});
+
+test('analytics canonicalizes supported locale and bounds counts', async () => {
+  enableTestAnalytics();
+  let request;
+  mockFetch({}, { capture: (url, options) => { request = { url, options }; } });
+  let r = await invoke(analytics, {
+    event: 'app_open',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+    properties: { locale: 'zh-HK', profile_ready: true },
+  });
+  assert.equal(r.status, 200);
+  let upstream = JSON.parse(request.options.body);
+  assert.equal(upstream.properties.locale, 'zh-Hant');
+  assert.equal(upstream.properties.profile_ready, true);
+
+  r = await invoke(analytics, {
+    event: 'match_count',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+    properties: { count: 99999 },
+  });
+  assert.equal(r.status, 200);
+  upstream = JSON.parse(request.options.body);
+  assert.equal(upstream.properties.count, 1000);
+});
+
+test('analytics maps provider failure to stable error', async () => {
+  enableTestAnalytics();
+  mockFetch({ error: 'down' }, { ok: false, status: 503 });
+  const r = await invoke(analytics, {
+    event: 'qr_generated',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+    properties: { interest_count: 8, transport: 'legacy' },
+  });
+  assert.equal(r.status, 502);
+  assert.deepEqual(r.body, { error: 'analytics_upstream_error' });
+});
+
 let failures = 0;
 for (const entry of cases) {
   try {
@@ -207,5 +336,6 @@ for (const entry of cases) {
 }
 
 disableTestAi();
+disableTestAnalytics();
 if (failures) process.exit(1);
 console.log(`\n${cases.length} serverless contract tests passed.`);
