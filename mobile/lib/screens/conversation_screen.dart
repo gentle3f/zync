@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../core/ai_service.dart';
+import '../core/analytics_service.dart';
 import '../core/language_support.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -34,12 +37,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Future<void> _generate() async {
     if (_loading) return;
+    final requestedMode = _mode;
     setState(() => _loading = true);
     final language = Localizations.localeOf(context).toLanguageTag();
     final result = await _ai.generateQuestion(
       language: language,
       secondaryLanguage: widget.peerLanguage,
-      mode: _mode,
+      mode: requestedMode,
       match: widget.match,
     );
     if (!mounted) return;
@@ -47,6 +51,27 @@ class _ConversationScreenState extends State<ConversationScreen> {
       _result = result;
       _loading = false;
     });
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.questionGenerated,
+        properties: {
+          'mode': requestedMode.name,
+          'source': result.fromAi ? 'ai' : 'fallback',
+          'match_type': widget.match.shared.isEmpty ? 'crossover' : 'shared',
+          'bilingual': result.secondaryQuestion?.isNotEmpty ?? false,
+        },
+      ),
+    );
+  }
+
+  void _nextQuestion() {
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.questionNext,
+        properties: {'mode': _mode.name},
+      ),
+    );
+    _generate();
   }
 
   @override
@@ -95,11 +120,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       label: Text(entry.value.label),
                       selected: selected,
                       showCheckmark: false,
-                      onSelected: (_) {
-                        if (_mode == entry.key) return;
-                        setState(() => _mode = entry.key);
-                        _generate();
-                      },
+                      onSelected: _loading
+                          ? null
+                          : (_) {
+                              if (_mode == entry.key) return;
+                              setState(() => _mode = entry.key);
+                              unawaited(
+                                ZyncAnalytics.instance.track(
+                                  AnalyticsEvent.modeSelected,
+                                  properties: {'mode': entry.key.name},
+                                ),
+                              );
+                              _generate();
+                            },
                     ),
                   );
                 }).toList(),
@@ -217,7 +250,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: _loading ? null : _generate,
+                onPressed: _loading ? null : _nextQuestion,
                 icon: const Icon(Icons.refresh_rounded),
                 label: Text(l10n.anotherQuestion),
               ),
