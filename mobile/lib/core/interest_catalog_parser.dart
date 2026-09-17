@@ -1,5 +1,18 @@
 import 'models.dart';
 
+/// Existing V1 canonical concepts that predate the deep taxonomy. New curated
+/// family rows may mention them for completeness, but must never mint a second
+/// canonical ID for the same concept. This list is intentionally explicit: any
+/// other same-category duplicate still fails the catalog semantic audit.
+const Set<String> _legacyCanonicalConcepts = {
+  'gaming|sandbox_games',
+  'music|reggae',
+  'music|jazz',
+  'music|world_music',
+  'learning|science_fiction_books',
+  'learning|business_books',
+};
+
 /// Parses compact, bundled interest rows.
 ///
 /// Format: id|category|cluster|rank|en|zh-Hant|zh-Hans|aliases(; separated)
@@ -69,6 +82,12 @@ List<InterestDefinition> parseInterestFamily({
     if (en.isEmpty) throw StateError('Interest family label is empty');
     final slug = _catalogSlug(en);
     if (slug.isEmpty) throw StateError('Interest family slug is empty: $en');
+    final rank = rankStart + offset;
+    offset++;
+
+    if (_legacyCanonicalConcepts.contains('$category|$slug')) {
+      continue;
+    }
 
     final labels = <String, String>{'en': en};
     final aliases = <String>{};
@@ -117,12 +136,11 @@ List<InterestDefinition> parseInterestFamily({
         id: '$idPrefix.$slug',
         category: category,
         cluster: cluster,
-        rank: rankStart + offset,
+        rank: rank,
         labels: labels,
         aliases: aliases.toList(growable: false),
       ),
     );
-    offset++;
   }
   return List.unmodifiable(result);
 }
