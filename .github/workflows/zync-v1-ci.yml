@@ -44,6 +44,9 @@ jobs:
           flutter --version
           dart --version
 
+      - name: Test release-signing configurator
+        run: python3 mobile/tool/configure_android_signing.py --self-test
+
       - name: Generate Android wrapper with legacy Play identity
         run: |
           rm -rf build_app
