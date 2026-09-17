@@ -15,15 +15,12 @@ import sys
 from pathlib import Path
 
 
-KTS_PREFIX = """import java.io.FileInputStream
-import java.util.Properties
-
-val zyncKeystoreProperties = Properties()
+KTS_PROPERTIES = """val zyncKeystoreProperties = java.util.Properties()
 val zyncKeystorePropertiesFile = rootProject.file("key.properties")
 if (!zyncKeystorePropertiesFile.exists()) {
-    throw GradleException("Missing android/key.properties for Zync release signing")
+    throw org.gradle.api.GradleException("Missing android/key.properties for Zync release signing")
 }
-zyncKeystoreProperties.load(FileInputStream(zyncKeystorePropertiesFile))
+zyncKeystoreProperties.load(java.io.FileInputStream(zyncKeystorePropertiesFile))
 
 """
 
@@ -39,15 +36,12 @@ KTS_SIGNING = """
 
 """
 
-GROOVY_PREFIX = """import java.io.FileInputStream
-import java.util.Properties
-
-def zyncKeystoreProperties = new Properties()
+GROOVY_PROPERTIES = """def zyncKeystoreProperties = new java.util.Properties()
 def zyncKeystorePropertiesFile = rootProject.file('key.properties')
 if (!zyncKeystorePropertiesFile.exists()) {
-    throw new GradleException('Missing android/key.properties for Zync release signing')
+    throw new org.gradle.api.GradleException('Missing android/key.properties for Zync release signing')
 }
-zyncKeystoreProperties.load(new FileInputStream(zyncKeystorePropertiesFile))
+zyncKeystoreProperties.load(new java.io.FileInputStream(zyncKeystorePropertiesFile))
 
 """
 
@@ -74,8 +68,10 @@ def patch_kts(text: str) -> str:
     if 'signingConfig = signingConfigs.getByName("debug")' not in text:
         raise ValueError("Could not find Flutter template debug release signing line")
 
-    text = KTS_PREFIX + text
-    text = text.replace("android {", "android {\n" + KTS_SIGNING, 1)
+    # Keep the Gradle `plugins {}` block at the beginning of the script. Gradle
+    # does not allow arbitrary top-level statements before it, so the signing
+    # properties are inserted immediately before the android block instead.
+    text = text.replace("android {", KTS_PROPERTIES + "android {\n" + KTS_SIGNING, 1)
     text = text.replace(
         'signingConfig = signingConfigs.getByName("debug")',
         'signingConfig = signingConfigs.getByName("zyncRelease")',
@@ -92,8 +88,7 @@ def patch_groovy(text: str) -> str:
     if "signingConfig signingConfigs.debug" not in text:
         raise ValueError("Could not find Flutter template debug release signing line")
 
-    text = GROOVY_PREFIX + text
-    text = text.replace("android {", "android {\n" + GROOVY_SIGNING, 1)
+    text = text.replace("android {", GROOVY_PROPERTIES + "android {\n" + GROOVY_SIGNING, 1)
     text = text.replace(
         "signingConfig signingConfigs.debug",
         "signingConfig signingConfigs.zyncRelease",
@@ -147,15 +142,19 @@ def configure(root: Path) -> None:
 def self_test() -> None:
     kts = """plugins { id(\"com.android.application\") }\nandroid {\n    buildTypes {\n        release {\n            signingConfig = signingConfigs.getByName(\"debug\")\n        }\n    }\n}\n"""
     patched_kts = patch_kts(kts)
+    assert patched_kts.startswith('plugins {')
     assert 'create("zyncRelease")' in patched_kts
     assert 'signingConfig = signingConfigs.getByName("zyncRelease")' in patched_kts
     assert 'signingConfig = signingConfigs.getByName("debug")' not in patched_kts
+    assert patched_kts.index("zyncKeystoreProperties") < patched_kts.index("android {")
 
     groovy = """plugins { id 'com.android.application' }\nandroid {\n    buildTypes {\n        release {\n            signingConfig signingConfigs.debug\n        }\n    }\n}\n"""
     patched_groovy = patch_groovy(groovy)
+    assert patched_groovy.startswith('plugins {')
     assert "zyncRelease" in patched_groovy
     assert "signingConfig signingConfigs.zyncRelease" in patched_groovy
     assert "signingConfig signingConfigs.debug" not in patched_groovy
+    assert patched_groovy.index("zyncKeystoreProperties") < patched_groovy.index("android {")
 
     print("Zync signing-config helper self-test passed")
 
