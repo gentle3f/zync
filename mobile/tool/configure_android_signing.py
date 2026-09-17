@@ -6,7 +6,11 @@ GitHub Actions writes android/key.properties and the keystore into the ephemeral
 runner workspace, then this script patches the generated Flutter Gradle file to
 use a dedicated `zyncRelease` signing config.
 
-Run with --self-test to validate the Gradle transforms without any secrets.
+Modes:
+- `--self-test` validates the transform fixtures without secrets.
+- `--check-template <root>` validates that the current generated Flutter wrapper
+  still matches the transform, without writing files or requiring secrets.
+- `<root>` performs the real signing-config patch after key.properties exists.
 """
 
 from __future__ import annotations
@@ -68,9 +72,9 @@ def patch_kts(text: str) -> str:
     if 'signingConfig = signingConfigs.getByName("debug")' not in text:
         raise ValueError("Could not find Flutter template debug release signing line")
 
-    # Keep the Gradle `plugins {}` block at the beginning of the script. Gradle
-    # does not allow arbitrary top-level statements before it, so the signing
-    # properties are inserted immediately before the android block instead.
+    # Keep Gradle's plugins block first. Arbitrary top-level statements before
+    # plugins are rejected, so signing properties are inserted just before the
+    # android block instead.
     text = text.replace("android {", KTS_PROPERTIES + "android {\n" + KTS_SIGNING, 1)
     text = text.replace(
         'signingConfig = signingConfigs.getByName("debug")',
@@ -97,6 +101,17 @@ def patch_groovy(text: str) -> str:
     return text
 
 
+def gradle_file(root: Path) -> tuple[Path, str]:
+    android = root / "android"
+    kts = android / "app/build.gradle.kts"
+    groovy = android / "app/build.gradle"
+    if kts.exists():
+        return kts, "kts"
+    if groovy.exists():
+        return groovy, "groovy"
+    raise SystemExit("No Android app Gradle file found")
+
+
 def validate_key_properties(path: Path) -> None:
     if not path.exists():
         raise SystemExit(f"Signing properties not found: {path}")
@@ -120,23 +135,25 @@ def validate_key_properties(path: Path) -> None:
         raise SystemExit(f"Keystore file not found: {store_file}")
 
 
+def check_template(root: Path) -> None:
+    path, flavor = gradle_file(root)
+    original = path.read_text(encoding="utf-8")
+    patched = patch_kts(original) if flavor == "kts" else patch_groovy(original)
+    if patched == original:
+        raise SystemExit("Signing transform made no change to generated Gradle template")
+    if "zyncRelease" not in patched:
+        raise SystemExit("Signing transform did not create zyncRelease config")
+    print(f"Zync signing transform matches generated template: {path}")
+
+
 def configure(root: Path) -> None:
     android = root / "android"
     validate_key_properties(android / "key.properties")
-
-    kts = android / "app/build.gradle.kts"
-    groovy = android / "app/build.gradle"
-    if kts.exists():
-        original = kts.read_text(encoding="utf-8")
-        kts.write_text(patch_kts(original), encoding="utf-8")
-        print(f"Configured Zync release signing: {kts}")
-        return
-    if groovy.exists():
-        original = groovy.read_text(encoding="utf-8")
-        groovy.write_text(patch_groovy(original), encoding="utf-8")
-        print(f"Configured Zync release signing: {groovy}")
-        return
-    raise SystemExit("No Android app Gradle file found")
+    path, flavor = gradle_file(root)
+    original = path.read_text(encoding="utf-8")
+    patched = patch_kts(original) if flavor == "kts" else patch_groovy(original)
+    path.write_text(patched, encoding="utf-8")
+    print(f"Configured Zync release signing: {path}")
 
 
 def self_test() -> None:
@@ -162,6 +179,10 @@ def self_test() -> None:
 def main() -> None:
     if len(sys.argv) > 1 and sys.argv[1] == "--self-test":
         self_test()
+        return
+    if len(sys.argv) > 1 and sys.argv[1] == "--check-template":
+        root = Path(sys.argv[2] if len(sys.argv) > 2 else "build_app")
+        check_template(root)
         return
     root = Path(sys.argv[1] if len(sys.argv) > 1 else "build_app")
     configure(root)
