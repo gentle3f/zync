@@ -62,6 +62,8 @@
   "love": "超喜欢",
   "like": "喜欢",
   "wantToTry": "想试",
+  "privacyPolicy": "隐私政策",
+  "privacyPolicyUnavailable": "暂时无法打开隐私政策，请稍后重试。",
   "edit": "编辑",
   "done": "完成",
   "retry": "重试",
