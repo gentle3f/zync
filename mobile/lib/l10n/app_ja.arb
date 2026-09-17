@@ -62,6 +62,8 @@
   "love": "大好き",
   "like": "好き",
   "wantToTry": "やってみたい",
+  "privacyPolicy": "プライバシーポリシー",
+  "privacyPolicyUnavailable": "プライバシーポリシーを開けませんでした。もう一度お試しください。",
   "edit": "編集",
   "done": "完了",
   "retry": "再試行",
