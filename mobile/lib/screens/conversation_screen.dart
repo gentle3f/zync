@@ -14,10 +14,12 @@ class ConversationScreen extends StatefulWidget {
     super.key,
     required this.match,
     this.peerLanguage,
+    this.sessionSeed = '',
   });
 
   final MatchResult match;
   final String? peerLanguage;
+  final String sessionSeed;
 
   @override
   State<ConversationScreen> createState() => _ConversationScreenState();
@@ -45,6 +47,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       secondaryLanguage: widget.peerLanguage,
       mode: requestedMode,
       match: widget.match,
+      sessionSeed: widget.sessionSeed,
     );
     if (!mounted) return;
     setState(() {
