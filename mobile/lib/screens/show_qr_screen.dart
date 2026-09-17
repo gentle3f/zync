@@ -65,7 +65,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
     _pollTimer?.cancel();
     final bootstrap = _bootstrap;
     if (bootstrap != null && _sessionCreated && !_leavingForMatch) {
-      unawaited(_relay.cancel(sessionId: bootstrap.sessionId));
+      unawaited(_relay.cancel(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken));
     }
     super.dispose();
   }
@@ -74,7 +74,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
     _pollTimer?.cancel();
     final old = _bootstrap;
     if (old != null && _sessionCreated) {
-      unawaited(_relay.cancel(sessionId: old.sessionId));
+      unawaited(_relay.cancel(sessionId: old.sessionId, hostToken: old.hostToken));
     }
 
     final bootstrap = RelayBootstrap.generate(widget.profile);
@@ -90,6 +90,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
     try {
       await _relay.createSession(
         sessionId: bootstrap.sessionId,
+        hostToken: bootstrap.hostToken,
         expiresAt: bootstrap.expiresAt,
       );
       if (!mounted || _bootstrap?.sessionId != bootstrap.sessionId) return;
@@ -145,7 +146,10 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
     _polling = true;
     _pollAttempt += 1;
     try {
-      final result = await _relay.take(sessionId: bootstrap.sessionId);
+      final result = await _relay.take(
+        sessionId: bootstrap.sessionId,
+        hostToken: bootstrap.hostToken,
+      );
       if (!mounted || _bootstrap?.sessionId != bootstrap.sessionId) return;
       if (!result.isReady) {
         if (_status != _HostRelayStatus.waiting) {
@@ -160,7 +164,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
         opaquePayload: result.payload!,
       );
       if (peer.localId == widget.profile.localId) {
-        await _relay.consume(sessionId: bootstrap.sessionId);
+        await _relay.consume(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken);
         if (!mounted) return;
         setState(() => _status = _HostRelayStatus.startIssue);
         return;
@@ -180,7 +184,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
       );
-      await _relay.consume(sessionId: bootstrap.sessionId);
+      await _relay.consume(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken);
 
       final analytics = <Future<void>>[
         ZyncAnalytics.instance.track(
@@ -229,7 +233,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
       }
     } on FormatException {
       if (!mounted || _bootstrap?.sessionId != bootstrap.sessionId) return;
-      await _relay.consume(sessionId: bootstrap.sessionId);
+      await _relay.consume(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken);
       if (!mounted) return;
       setState(() => _status = _HostRelayStatus.startIssue);
     } catch (_) {
