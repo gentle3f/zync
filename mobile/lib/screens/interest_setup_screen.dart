@@ -31,6 +31,8 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   late Map<String, InterestStrength> _selected;
   late Map<String, SelectedInterest> _custom;
   String? _selectedCategory;
+  String? _selectedCluster;
+  String? _selectedSubcluster;
 
   @override
   void initState() {
@@ -88,6 +90,8 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       if (selection.customLabel != null) _custom[selection.id] = selection;
       _search.clear();
       _selectedCategory = null;
+      _selectedCluster = null;
+      _selectedSubcluster = null;
     });
     if (adding) {
       unawaited(
@@ -167,9 +171,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     }
 
     addAll(_selected.keys.map(InterestCatalog.byId));
-    if (_selected.isNotEmpty) {
-      addAll(InterestCatalog.relatedTo(_selected.keys, limit: 28));
-    }
+    if (_selected.isNotEmpty) addAll(InterestCatalog.relatedTo(_selected.keys, limit: 28));
     addAll(InterestCatalog.popular(limit: 60));
     return result.take(80).toList(growable: false);
   }
@@ -180,11 +182,23 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final query = _search.text.trim();
 
+    final clusters = query.isEmpty && _selectedCategory != null
+        ? InterestCatalog.clustersForCategory(_selectedCategory!)
+        : const <String>[];
+    final subclusters = query.isEmpty && _selectedCategory != null && _selectedCluster != null
+        ? InterestCatalog.subclustersFor(_selectedCategory!, _selectedCluster!)
+        : const <String>[];
+
     final catalogResults = query.isNotEmpty
         ? InterestCatalog.search(query, locale, limit: 80)
         : _selectedCategory == null
             ? _discoveryResults()
-            : InterestCatalog.popular(category: _selectedCategory, limit: 80);
+            : InterestCatalog.popular(
+                category: _selectedCategory,
+                cluster: _selectedCluster,
+                subcluster: _selectedSubcluster,
+                limit: 80,
+              );
     final customResults = _customResults(query, locale);
     final results = <InterestDefinition>[];
     final seen = <String>{};
@@ -196,11 +210,15 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     final showInstantAdd = query.length >= 2 && exact == null;
     final sectionTitle = query.isNotEmpty
         ? null
-        : _selectedCategory != null
-            ? LocalizedDomainText.category(_selectedCategory!, locale)
-            : _selected.isNotEmpty
-                ? LocalizedDomainText.suggestedForYou(locale)
-                : LocalizedDomainText.popularInterests(locale);
+        : _selectedSubcluster != null
+            ? LocalizedDomainText.taxonomy(_selectedSubcluster!, locale)
+            : _selectedCluster != null
+                ? LocalizedDomainText.taxonomy(_selectedCluster!, locale)
+                : _selectedCategory != null
+                    ? LocalizedDomainText.category(_selectedCategory!, locale)
+                    : _selected.isNotEmpty
+                        ? LocalizedDomainText.suggestedForYou(locale)
+                        : LocalizedDomainText.popularInterests(locale);
 
     return Scaffold(
       appBar: widget.editing ? AppBar(title: Text(l10n.myInterests)) : null,
@@ -230,10 +248,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         TextField(
                           controller: _nickname,
                           textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            labelText: l10n.nicknameOptional,
-                            prefixIcon: const Icon(Icons.person_outline_rounded),
-                          ),
+                          decoration: InputDecoration(labelText: l10n.nicknameOptional, prefixIcon: const Icon(Icons.person_outline_rounded)),
                         ),
                         const SizedBox(height: 22),
                       ],
@@ -255,12 +270,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         decoration: InputDecoration(
                           hintText: l10n.searchAnything,
                           prefixIcon: const Icon(Icons.search_rounded),
-                          suffixIcon: query.isEmpty
-                              ? null
-                              : IconButton(
-                                  onPressed: _search.clear,
-                                  icon: const Icon(Icons.close_rounded),
-                                ),
+                          suffixIcon: query.isEmpty ? null : IconButton(onPressed: _search.clear, icon: const Icon(Icons.close_rounded)),
                         ),
                       ),
                       if (showInstantAdd) ...[
@@ -280,26 +290,15 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  const ZyncIconTile(
-                                    icon: Icons.add_rounded,
-                                    size: 38,
-                                    backgroundColor: Color(0xFFE7DDF8),
-                                    foregroundColor: ZyncPalette.plum,
-                                  ),
+                                  const ZyncIconTile(icon: Icons.add_rounded, size: 38, backgroundColor: Color(0xFFE7DDF8), foregroundColor: ZyncPalette.plum),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          LocalizedDomainText.addExactly(query, locale),
-                                          style: Theme.of(context).textTheme.titleSmall,
-                                        ),
+                                        Text(LocalizedDomainText.addExactly(query, locale), style: Theme.of(context).textTheme.titleSmall),
                                         const SizedBox(height: 1),
-                                        Text(
-                                          LocalizedDomainText.noAiNeeded(locale),
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
-                                        ),
+                                        Text(LocalizedDomainText.noAiNeeded(locale), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft)),
                                       ],
                                     ),
                                   ),
@@ -310,32 +309,61 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         ),
                       ],
                       const SizedBox(height: 10),
-                      SizedBox(
-                        height: 38,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: InterestCatalog.categories.length + 1,
-                          separatorBuilder: (_, __) => const SizedBox(width: 7),
-                          itemBuilder: (context, index) {
-                            final category = index == 0 ? null : InterestCatalog.categories[index - 1];
-                            final selected = _selectedCategory == category && query.isEmpty;
+                      _chipStrip(
+                        itemCount: InterestCatalog.categories.length + 1,
+                        itemBuilder: (index) {
+                          final category = index == 0 ? null : InterestCatalog.categories[index - 1];
+                          return ChoiceChip(
+                            selected: _selectedCategory == category && query.isEmpty,
+                            label: Text(category == null ? LocalizedDomainText.allInterests(locale) : LocalizedDomainText.category(category, locale)),
+                            onSelected: (_) {
+                              setState(() {
+                                _selectedCategory = category;
+                                _selectedCluster = null;
+                                _selectedSubcluster = null;
+                                _search.clear();
+                              });
+                            },
+                          );
+                        },
+                      ),
+                      if (query.isEmpty && _selectedCategory != null && clusters.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _chipStrip(
+                          key: const ValueKey('interest-l2-strip'),
+                          itemCount: clusters.length + 1,
+                          itemBuilder: (index) {
+                            final cluster = index == 0 ? null : clusters[index - 1];
                             return ChoiceChip(
-                              selected: selected,
-                              label: Text(
-                                category == null
-                                    ? LocalizedDomainText.allInterests(locale)
-                                    : LocalizedDomainText.category(category, locale),
-                              ),
+                              key: cluster == null ? const ValueKey('interest-l2-all') : ValueKey('interest-l2-$cluster'),
+                              selected: _selectedCluster == cluster,
+                              label: Text(cluster == null ? LocalizedDomainText.allInSection(locale) : LocalizedDomainText.taxonomy(cluster, locale)),
                               onSelected: (_) {
                                 setState(() {
-                                  _selectedCategory = category;
-                                  _search.clear();
+                                  _selectedCluster = cluster;
+                                  _selectedSubcluster = null;
                                 });
                               },
                             );
                           },
                         ),
-                      ),
+                      ],
+                      if (query.isEmpty && _selectedCluster != null && subclusters.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _chipStrip(
+                          key: const ValueKey('interest-l3-strip'),
+                          itemCount: subclusters.length + 1,
+                          itemBuilder: (index) {
+                            final subcluster = index == 0 ? null : subclusters[index - 1];
+                            return ChoiceChip(
+                              key: subcluster == null ? const ValueKey('interest-l3-all') : ValueKey('interest-l3-$subcluster'),
+                              selected: _selectedSubcluster == subcluster,
+                              label: Text(subcluster == null ? LocalizedDomainText.allInSection(locale) : LocalizedDomainText.taxonomy(subcluster, locale)),
+                              onSelected: (_) => setState(() => _selectedSubcluster = subcluster),
+                            );
+                          },
+                        ),
+                      ],
                       const SizedBox(height: 10),
                       Row(
                         children: [
@@ -347,9 +375,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                             ),
                             child: Text(
                               l10n.selectedCount(_selected.length),
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                    color: _selected.length >= 5 ? const Color(0xFF176B57) : ZyncPalette.orangeDeep,
-                                  ),
+                              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: _selected.length >= 5 ? const Color(0xFF176B57) : ZyncPalette.orangeDeep),
                             ),
                           ),
                           const Spacer(),
@@ -378,12 +404,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) => Padding(
                       padding: EdgeInsets.only(bottom: index == results.length - 1 ? 0 : 8),
-                      child: _interestTile(
-                        context: context,
-                        interest: results[index],
-                        locale: locale,
-                        l10n: l10n,
-                      ),
+                      child: _interestTile(context: context, interest: results[index], locale: locale, l10n: l10n),
                     ),
                     childCount: results.length,
                   ),
@@ -403,6 +424,19 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
             label: Text(l10n.saveAndContinue),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _chipStrip({Key? key, required int itemCount, required Widget Function(int index) itemBuilder}) {
+    return SizedBox(
+      key: key,
+      height: 38,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: itemCount,
+        separatorBuilder: (_, __) => const SizedBox(width: 7),
+        itemBuilder: (_, index) => itemBuilder(index),
       ),
     );
   }
@@ -444,12 +478,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        Flexible(
-                          child: Text(
-                            LocalizedDomainText.category(interest.category, locale),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
+                        Flexible(child: Text(LocalizedDomainText.category(interest.category, locale), style: Theme.of(context).textTheme.bodySmall)),
                         if (isCustom) ...[
                           const SizedBox(width: 6),
                           const Icon(Icons.edit_rounded, size: 13, color: ZyncPalette.plum),
@@ -475,11 +504,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                   ],
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(13),
-                      border: Border.all(color: ZyncPalette.line),
-                    ),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: ZyncPalette.line)),
                     child: Text('${_strengthEmoji(selected)} ${_strengthLabel(l10n, selected)}'),
                   ),
                 ),
