@@ -30,6 +30,7 @@ jobs:
     timeout-minutes: 20
     env:
       ZYNC_API_BASE: ${{ vars.ZYNC_API_BASE }}
+      ZYNC_PRIVACY_URL: ${{ vars.ZYNC_PRIVACY_URL }}
 
     steps:
       - name: Checkout
@@ -109,11 +110,14 @@ jobs:
 
       - name: Test
         working-directory: build_app
-        run: flutter test
+        run: flutter test --dart-define=ZYNC_PRIVACY_URL=https://example.com/zync-privacy-policy
 
       - name: Build unsigned release AAB
         working-directory: build_app
-        run: flutter build appbundle --release --dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}
+        run: >-
+          flutter build appbundle --release
+          "--dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}"
+          "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PRIVACY_URL}"
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
