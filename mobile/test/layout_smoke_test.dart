@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/models.dart';
 import 'package:zync/l10n/generated/app_localizations.dart';
+import 'package:zync/screens/conversation_screen.dart';
 import 'package:zync/screens/home_screen.dart';
 import 'package:zync/screens/interest_setup_screen.dart';
 import 'package:zync/screens/match_screen.dart';
@@ -139,6 +140,29 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.visibility_outlined));
     await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('bilingual conversation fallback fits a narrow phone', (tester) async {
+    _setPhone(tester, width: 320, height: 700);
+    const match = MatchResult(
+      shared: [
+        SelectedInterest(id: 'motorsport.formula1', strength: InterestStrength.love),
+      ],
+      onlyMine: [],
+      onlyTheirs: [],
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        const ConversationScreen(match: match, peerLanguage: 'ja-JP'),
+        locale: Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+        textScale: 1.15,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('日本語'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
