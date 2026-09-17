@@ -7,11 +7,13 @@ on:
     paths:
       - 'mobile/**'
       - 'api/**'
+      - '.github/scripts/serverless_contracts.mjs'
       - '.github/workflows/zync-v1-ci.yml'
   pull_request:
     paths:
       - 'mobile/**'
       - 'api/**'
+      - '.github/scripts/serverless_contracts.mjs'
       - '.github/workflows/zync-v1-ci.yml'
   workflow_dispatch:
 
@@ -52,6 +54,9 @@ jobs:
           node --check api/generate2.js
           node --check api/v1/question.js
           node --check api/v1/normalize-interest.js
+
+      - name: Test V1 serverless contracts
+        run: node .github/scripts/serverless_contracts.mjs
 
       - name: Test release-signing configurator
         run: python3 mobile/tool/configure_android_signing.py --self-test
