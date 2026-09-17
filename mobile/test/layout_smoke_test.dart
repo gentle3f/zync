@@ -157,7 +157,7 @@ void main() {
     await tester.pumpWidget(
       _harness(
         ShowQrScreen(profile: largeProfile, relayClient: relay),
-        locale: const Locale('zh', 'HK'),
+        locale: const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
         textScale: 1.1,
       ),
     );
