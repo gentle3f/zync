@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../core/ai_service.dart';
 import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
 import '../core/localized_domain_text.dart';
@@ -29,10 +28,9 @@ class InterestSetupScreen extends StatefulWidget {
 class _InterestSetupScreenState extends State<InterestSetupScreen> {
   late final TextEditingController _nickname;
   final _search = TextEditingController();
-  final _ai = const AiService();
   late Map<String, InterestStrength> _selected;
   late Map<String, SelectedInterest> _custom;
-  bool _normalizing = false;
+  String? _selectedCategory;
 
   @override
   void initState() {
@@ -67,7 +65,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         ZyncAnalytics.instance.track(
           AnalyticsEvent.interestAdded,
           properties: {
-            'source': _custom.containsKey(id) ? 'saved_custom' : 'seed',
+            'source': _custom.containsKey(id) ? 'saved_custom' : 'catalog',
             'selected_count': _selected.length,
           },
         ),
@@ -75,57 +73,28 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     }
   }
 
-  Future<void> _normalizeAndAdd() async {
+  void _addInstantInterest() {
     final input = _search.text.trim();
-    if (input.length < 2 || _normalizing) return;
-    final l10n = AppLocalizations.of(context);
-    final language = Localizations.localeOf(context).toLanguageTag();
-    setState(() => _normalizing = true);
-    final result = await _ai.normalizeInterest(input: input, language: language);
-    if (!mounted) return;
-    setState(() => _normalizing = false);
-    if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.aiUnavailable)));
+    if (input.length < 2) return;
+    SelectedInterest selection;
+    try {
+      selection = InterestCatalog.instantSelection(input);
+    } on FormatException {
       return;
     }
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Row(
-          children: [
-            const ZyncIconTile(icon: Icons.auto_awesome_rounded),
-            const SizedBox(width: 12),
-            Expanded(child: Text(l10n.addInterest)),
-          ],
-        ),
-        content: Text(l10n.aiSuggested(result.displayName)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.addInterest)),
-        ],
-      ),
-    );
-    if (confirmed != true || !mounted) return;
-
-    final adding = !_selected.containsKey(result.id);
+    final adding = !_selected.containsKey(selection.id);
     setState(() {
-      _selected[result.id] = InterestStrength.like;
-      _custom[result.id] = SelectedInterest(
-        id: result.id,
-        strength: InterestStrength.like,
-        customLabel: result.displayName,
-        customCategory: result.category,
-      );
+      _selected[selection.id] = selection.strength;
+      if (selection.customLabel != null) _custom[selection.id] = selection;
       _search.clear();
+      _selectedCategory = null;
     });
     if (adding) {
       unawaited(
         ZyncAnalytics.instance.track(
           AnalyticsEvent.interestAdded,
           properties: {
-            'source': 'ai_normalized',
+            'source': selection.customLabel == null ? 'catalog_exact' : 'local_custom',
             'selected_count': _selected.length,
           },
         ),
@@ -136,25 +105,35 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   Future<void> _save() async {
     if (_selected.length < 5) return;
     final locale = Localizations.localeOf(context).toLanguageTag();
+
+    // Migrate older custom entries into newly bundled canonical entries when
+    // their saved label is now an exact catalog label/alias.
+    final normalized = <String, SelectedInterest>{};
+    for (final entry in _selected.entries) {
+      final custom = _custom[entry.key];
+      final known = custom?.customLabel == null ? null : InterestCatalog.exact(custom!.customLabel!);
+      final item = known == null
+          ? SelectedInterest(
+              id: entry.key,
+              strength: entry.value,
+              customLabel: custom?.customLabel,
+              customCategory: custom?.customCategory,
+            )
+          : SelectedInterest(id: known.id, strength: entry.value);
+      normalized[item.id] = item;
+    }
+
     final profile = widget.profile.copyWith(
       nickname: _nickname.text.trim(),
       language: locale,
-      interests: _selected.entries.map((entry) {
-        final custom = _custom[entry.key];
-        return SelectedInterest(
-          id: entry.key,
-          strength: entry.value,
-          customLabel: custom?.customLabel,
-          customCategory: custom?.customCategory,
-        );
-      }).toList(),
+      interests: normalized.values.toList(),
     );
     await widget.onSaved(profile);
     if (!widget.editing) {
       unawaited(
         ZyncAnalytics.instance.track(
           AnalyticsEvent.interestSetupComplete,
-          properties: {'selected_count': _selected.length},
+          properties: {'selected_count': normalized.length},
         ),
       );
     }
@@ -162,20 +141,39 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   }
 
   List<InterestDefinition> _customResults(String query, String locale) {
-    final q = query.trim().toLowerCase();
+    final q = InterestCatalog.normalizeText(query);
     return _custom.values
         .where((item) {
           if (q.isEmpty) return true;
-          return (item.customLabel ?? '').toLowerCase().contains(q) ||
-              (item.customCategory ?? '').toLowerCase().contains(q) ||
-              item.id.toLowerCase().contains(q);
+          return InterestCatalog.normalizeText(item.customLabel ?? '').contains(q) ||
+              InterestCatalog.normalizeText(item.customCategory ?? '').contains(q) ||
+              InterestCatalog.normalizeText(item.id).contains(q);
         })
         .map((item) => InterestDefinition(
               id: item.id,
               category: item.customCategory ?? 'other',
               labels: {'en': item.customLabel ?? item.id, locale: item.customLabel ?? item.id},
+              rank: 0,
             ))
         .toList();
+  }
+
+  List<InterestDefinition> _discoveryResults() {
+    final result = <InterestDefinition>[];
+    final seen = <String>{};
+
+    void addAll(Iterable<InterestDefinition?> items) {
+      for (final item in items.whereType<InterestDefinition>()) {
+        if (seen.add(item.id)) result.add(item);
+      }
+    }
+
+    addAll(_selected.keys.map(InterestCatalog.byId));
+    if (_selected.isNotEmpty) {
+      addAll(InterestCatalog.relatedTo(_selected.keys, limit: 28));
+    }
+    addAll(InterestCatalog.popular(limit: 60));
+    return result.take(80).toList(growable: false);
   }
 
   @override
@@ -183,10 +181,28 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final query = _search.text.trim();
-    final seedResults = InterestCatalog.search(query, locale);
+
+    final catalogResults = query.isNotEmpty
+        ? InterestCatalog.search(query, locale, limit: 80)
+        : _selectedCategory == null
+            ? _discoveryResults()
+            : InterestCatalog.popular(category: _selectedCategory, limit: 80);
     final customResults = _customResults(query, locale);
-    final results = <InterestDefinition>[...customResults, ...seedResults];
-    final canNormalize = query.length >= 2 && results.isEmpty;
+    final results = <InterestDefinition>[];
+    final seen = <String>{};
+    for (final item in [...customResults, ...catalogResults]) {
+      if (seen.add(item.id)) results.add(item);
+    }
+
+    final exact = query.length < 2 ? null : InterestCatalog.exact(query);
+    final showInstantAdd = query.length >= 2 && exact == null;
+    final sectionTitle = query.isNotEmpty
+        ? null
+        : _selectedCategory != null
+            ? LocalizedDomainText.category(_selectedCategory!, locale)
+            : _selected.isNotEmpty
+                ? LocalizedDomainText.suggestedForYou(locale)
+                : LocalizedDomainText.popularInterests(locale);
 
     return Scaffold(
       appBar: widget.editing ? AppBar(title: Text(l10n.myInterests)) : null,
@@ -196,7 +212,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -219,14 +235,23 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                           prefixIcon: const Icon(Icons.person_outline_rounded),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 22),
                     ],
                     Text(l10n.pickInterests, style: Theme.of(context).textTheme.headlineSmall),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 5),
                     Text(l10n.pickAtLeastFive, style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 3),
+                    Text(
+                      LocalizedDomainText.catalogCount(InterestCatalog.count, locale),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+                    ),
+                    const SizedBox(height: 12),
                     TextField(
                       controller: _search,
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (_) {
+                        if (showInstantAdd) _addInstantInterest();
+                      },
                       decoration: InputDecoration(
                         hintText: l10n.searchAnything,
                         prefixIcon: const Icon(Icons.search_rounded),
@@ -238,20 +263,80 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                               ),
                       ),
                     ),
-                    if (canNormalize || _normalizing) ...[
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: _normalizing ? null : _normalizeAndAdd,
-                          icon: _normalizing
-                              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                              : const Icon(Icons.auto_awesome_rounded),
-                          label: Text(_normalizing ? l10n.normalizing : l10n.addWithAi(query)),
+                    if (showInstantAdd) ...[
+                      const SizedBox(height: 9),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _addInstantInterest,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Ink(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF4F0FF),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFFD9CCF5)),
+                            ),
+                            child: Row(
+                              children: [
+                                const ZyncIconTile(
+                                  icon: Icons.add_rounded,
+                                  size: 38,
+                                  backgroundColor: Color(0xFFE7DDF8),
+                                  foregroundColor: ZyncPalette.plum,
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        LocalizedDomainText.addExactly(query, locale),
+                                        style: Theme.of(context).textTheme.titleSmall,
+                                      ),
+                                      const SizedBox(height: 1),
+                                      Text(
+                                        LocalizedDomainText.noAiNeeded(locale),
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 38,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: InterestCatalog.categories.length + 1,
+                        separatorBuilder: (_, __) => const SizedBox(width: 7),
+                        itemBuilder: (context, index) {
+                          final category = index == 0 ? null : InterestCatalog.categories[index - 1];
+                          final selected = _selectedCategory == category && query.isEmpty;
+                          return ChoiceChip(
+                            selected: selected,
+                            label: Text(
+                              category == null
+                                  ? LocalizedDomainText.allInterests(locale)
+                                  : LocalizedDomainText.category(category, locale),
+                            ),
+                            onSelected: (_) {
+                              setState(() {
+                                _selectedCategory = category;
+                                _search.clear();
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Container(
@@ -279,6 +364,10 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                           ),
                       ],
                     ),
+                    if (sectionTitle != null) ...[
+                      const SizedBox(height: 10),
+                      Text(sectionTitle, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: ZyncPalette.inkSoft)),
+                    ],
                   ],
                 ),
               ),
@@ -329,7 +418,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                                         ),
                                         if (isCustom) ...[
                                           const SizedBox(width: 6),
-                                          const Icon(Icons.auto_awesome_rounded, size: 13, color: ZyncPalette.plum),
+                                          const Icon(Icons.edit_rounded, size: 13, color: ZyncPalette.plum),
                                         ],
                                       ],
                                     ),
