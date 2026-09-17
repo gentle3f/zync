@@ -94,7 +94,7 @@ export default async function handler(req, res) {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': process.env.ZYNC_PUBLIC_URL || 'https://zync.app',
+        'HTTP-Referer': process.env.ZYNC_PUBLIC_URL || 'https://zync-inky.vercel.app',
         'X-Title': 'Zync',
       },
       body: JSON.stringify({
