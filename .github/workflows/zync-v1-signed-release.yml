@@ -25,6 +25,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Require production API base
+        shell: bash
+        run: |
+          if [ -z "$ZYNC_API_BASE" ]; then
+            echo "ZYNC_API_BASE repository variable is required for a production Zync release."
+            echo "Normal CI may use the local fallback, but the Play release must keep AI normalization/questions enabled."
+            exit 1
+          fi
+          case "$ZYNC_API_BASE" in
+            https://*) ;;
+            *)
+              echo "ZYNC_API_BASE must be an https:// URL."
+              exit 1
+              ;;
+          esac
+
       - name: Require release signing secrets
         shell: bash
         run: |
