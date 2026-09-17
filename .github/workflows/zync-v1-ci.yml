@@ -7,12 +7,20 @@ on:
     paths:
       - 'mobile/**'
       - 'api/**'
+      - 'privacy.html'
+      - 'terms.html'
+      - 'disclaimer.html'
+      - 'vercel.json'
       - '.github/scripts/*.mjs'
       - '.github/workflows/zync-v1-ci.yml'
   pull_request:
     paths:
       - 'mobile/**'
       - 'api/**'
+      - 'privacy.html'
+      - 'terms.html'
+      - 'disclaimer.html'
+      - 'vercel.json'
       - '.github/scripts/*.mjs'
       - '.github/workflows/zync-v1-ci.yml'
   workflow_dispatch:
@@ -59,12 +67,16 @@ jobs:
           node --check .github/scripts/serverless_contracts.mjs
           node --check .github/scripts/openrouter_privacy_contracts.mjs
           node --check .github/scripts/live_api_smoke.mjs
+          node --check .github/scripts/release_web_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
 
       - name: Test OpenRouter privacy contracts
         run: node .github/scripts/openrouter_privacy_contracts.mjs
+
+      - name: Test public release web contracts
+        run: node .github/scripts/release_web_contracts.mjs
 
       - name: Test release-signing configurator
         run: python3 mobile/tool/configure_android_signing.py --self-test
@@ -118,6 +130,7 @@ jobs:
           flutter build appbundle --release
           "--dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}"
           "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PRIVACY_URL}"
+          "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
