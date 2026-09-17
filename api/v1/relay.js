@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 
 const PROTOCOL_VERSION = 2;
 const MAX_SESSION_SECONDS = 300;
@@ -7,7 +7,11 @@ const MAX_RESPONSE_CHARS = 24 * 1024;
 const CREATE_LIMIT_PER_MINUTE = 30;
 const RESPONSE_LIMIT_PER_MINUTE = 90;
 const SESSION_RE = /^[A-Za-z0-9_-]{22,64}$/;
+const HOST_TOKEN_RE = /^[A-Za-z0-9_-]{32,64}$/;
 const OPAQUE_RE = /^[A-Za-z0-9_-]+$/;
+const HASH_RE = /^[a-f0-9]{64}$/;
+const PENDING_PREFIX = 'P|';
+const RESPONSE_PREFIX = 'R|';
 
 function json(res, status, body) {
   res.setHeader('Cache-Control', 'no-store');
@@ -33,6 +37,10 @@ function clientIp(req) {
 function rateKey(prefix, ip, secret) {
   const digest = createHmac('sha256', secret).update(ip).digest('hex').slice(0, 32);
   return `zync:relay:rl:${prefix}:${digest}`;
+}
+
+function hostAuthHash(hostToken) {
+  return createHash('sha256').update(hostToken).digest('hex');
 }
 
 async function redis(config, command) {
@@ -67,6 +75,14 @@ function validSessionId(value) {
   return typeof value === 'string' && SESSION_RE.test(value);
 }
 
+function validHostToken(value) {
+  return typeof value === 'string' && HOST_TOKEN_RE.test(value);
+}
+
+function validHostRequest(body) {
+  return body.protocolVersion === PROTOCOL_VERSION && validSessionId(body.sessionId) && validHostToken(body.hostToken);
+}
+
 function sessionKey(sessionId) {
   return `zync:relay:v2:${sessionId}`;
 }
@@ -79,8 +95,26 @@ function ttlFor(expiresAt) {
   return seconds;
 }
 
+function parseStored(value) {
+  if (typeof value !== 'string') return null;
+  if (value.startsWith(PENDING_PREFIX)) {
+    const authHash = value.slice(PENDING_PREFIX.length);
+    if (!HASH_RE.test(authHash)) return null;
+    return { status: 'waiting', authHash, payload: null };
+  }
+  if (value.startsWith(RESPONSE_PREFIX)) {
+    const separator = value.indexOf('|', RESPONSE_PREFIX.length);
+    if (separator < 0) return null;
+    const authHash = value.slice(RESPONSE_PREFIX.length, separator);
+    const payload = value.slice(separator + 1);
+    if (!HASH_RE.test(authHash) || !payload || payload.length > MAX_RESPONSE_CHARS || !OPAQUE_RE.test(payload)) return null;
+    return { status: 'ready', authHash, payload };
+  }
+  return null;
+}
+
 async function createSession(req, res, config, body) {
-  if (body.protocolVersion !== PROTOCOL_VERSION || !validSessionId(body.sessionId)) {
+  if (!validHostRequest(body)) {
     return json(res, 400, { error: 'relay_session_invalid' });
   }
   const ttl = ttlFor(body.expiresAt);
@@ -90,13 +124,14 @@ async function createSession(req, res, config, body) {
   }
 
   const key = sessionKey(body.sessionId);
-  const result = await redis(config, ['SET', key, 'P', 'EX', ttl, 'NX']);
+  const pending = `${PENDING_PREFIX}${hostAuthHash(body.hostToken)}`;
+  const result = await redis(config, ['SET', key, pending, 'EX', ttl, 'NX']);
   if (result === 'OK') return json(res, 201, { ok: true, status: 'created', expiresInSeconds: ttl });
 
   // A create request can succeed upstream while the phone times out locally. Treat a
-  // retry for the same high-entropy session ID as idempotent only while it is still pending.
+  // retry as idempotent only when both the random session ID and private host capability match.
   const existing = await redis(config, ['GET', key]);
-  if (existing === 'P') return json(res, 200, { ok: true, status: 'already_created', expiresInSeconds: ttl });
+  if (existing === pending) return json(res, 200, { ok: true, status: 'already_created', expiresInSeconds: ttl });
   return json(res, 409, { error: 'relay_session_exists' });
 }
 
@@ -112,54 +147,74 @@ async function respond(req, res, config, body) {
     return json(res, 429, { error: 'relay_rate_limited' });
   }
 
-  const value = `R:${payload}`;
   const script = [
     "local current=redis.call('GET',KEYS[1])",
     "if not current then return 'missing' end",
-    "if current=='P' then",
+    "if string.sub(current,1,2)=='P|' then",
+    "  local auth=string.sub(current,3)",
+    "  if string.len(auth)~=64 then return 'invalid' end",
     "  local ttl=redis.call('TTL',KEYS[1])",
     "  if ttl<=0 then return 'missing' end",
-    "  redis.call('SET',KEYS[1],ARGV[1],'EX',ttl,'XX')",
+    "  redis.call('SET',KEYS[1],'R|'..auth..'|'..ARGV[1],'EX',ttl,'XX')",
     "  return 'accepted'",
     "end",
-    "if current==ARGV[1] then return 'same' end",
-    "return 'duplicate'",
+    "if string.sub(current,1,2)=='R|' then",
+    "  if string.len(current)<68 or string.sub(current,67,67)~='|' then return 'invalid' end",
+    "  if string.sub(current,68)==ARGV[1] then return 'same' end",
+    "  return 'duplicate'",
+    "end",
+    "return 'invalid'",
   ].join('\n');
-  const result = await redis(config, ['EVAL', script, 1, sessionKey(body.sessionId), value]);
+  const result = await redis(config, ['EVAL', script, 1, sessionKey(body.sessionId), payload]);
   if (result === 'accepted' || result === 'same') {
     return json(res, 200, { ok: true, status: result === 'same' ? 'already_received' : 'received' });
   }
   if (result === 'duplicate') return json(res, 409, { error: 'relay_already_answered' });
+  if (result === 'invalid') return json(res, 502, { error: 'relay_response_invalid' });
   return json(res, 410, { error: 'relay_session_expired' });
 }
 
 async function take(res, config, body) {
-  if (body.protocolVersion !== PROTOCOL_VERSION || !validSessionId(body.sessionId)) {
+  if (!validHostRequest(body)) {
     return json(res, 400, { error: 'relay_session_invalid' });
   }
-  const result = await redis(config, ['GET', sessionKey(body.sessionId)]);
-  if (result == null) return json(res, 410, { error: 'relay_session_expired' });
-  if (result === 'P') return json(res, 200, { status: 'waiting' });
-  if (typeof result !== 'string' || !result.startsWith('R:')) {
+  const value = await redis(config, ['GET', sessionKey(body.sessionId)]);
+  if (value == null) return json(res, 410, { error: 'relay_session_expired' });
+  const stored = parseStored(value);
+  if (stored == null) {
     await redis(config, ['DEL', sessionKey(body.sessionId)]);
     return json(res, 502, { error: 'relay_response_invalid' });
   }
-  const payload = result.slice(2);
-  if (!payload || payload.length > MAX_RESPONSE_CHARS || !OPAQUE_RE.test(payload)) {
-    await redis(config, ['DEL', sessionKey(body.sessionId)]);
-    return json(res, 502, { error: 'relay_response_invalid' });
+  if (stored.authHash !== hostAuthHash(body.hostToken)) {
+    return json(res, 403, { error: 'relay_host_not_authorized' });
   }
+  if (stored.status === 'waiting') return json(res, 200, { status: 'waiting' });
+
   // Deliberately non-destructive. If the HTTP response is lost, the host can poll again.
   // The host calls consume only after authenticated decryption succeeds; TTL is the fallback.
-  return json(res, 200, { status: 'ready', payload });
+  return json(res, 200, { status: 'ready', payload: stored.payload });
 }
 
 async function deleteSession(res, config, body) {
-  if (body.protocolVersion !== PROTOCOL_VERSION || !validSessionId(body.sessionId)) {
+  if (!validHostRequest(body)) {
     return json(res, 400, { error: 'relay_session_invalid' });
   }
-  await redis(config, ['DEL', sessionKey(body.sessionId)]);
-  return json(res, 200, { ok: true });
+  const expectedAuth = hostAuthHash(body.hostToken);
+  const script = [
+    "local current=redis.call('GET',KEYS[1])",
+    "if not current then return 'missing' end",
+    "local auth=nil",
+    "if string.sub(current,1,2)=='P|' then auth=string.sub(current,3) end",
+    "if string.sub(current,1,2)=='R|' then auth=string.sub(current,3,66) end",
+    "if not auth or string.len(auth)~=64 then redis.call('DEL',KEYS[1]); return 'invalid' end",
+    "if auth~=ARGV[1] then return 'forbidden' end",
+    "redis.call('DEL',KEYS[1])",
+    "return 'deleted'",
+  ].join('\n');
+  const result = await redis(config, ['EVAL', script, 1, sessionKey(body.sessionId), expectedAuth]);
+  if (result === 'deleted' || result === 'missing') return json(res, 200, { ok: true });
+  if (result === 'forbidden') return json(res, 403, { error: 'relay_host_not_authorized' });
+  return json(res, 502, { error: 'relay_response_invalid' });
 }
 
 export default async function handler(req, res) {
