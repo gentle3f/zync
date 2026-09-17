@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
 const source = await readFile('api/v1/relay.js', 'utf8');
@@ -76,13 +77,36 @@ function fakeRedis(command) {
       const key = keys[0];
       const entry = alive(key);
       if (!entry) return 'missing';
-      if (entry.value === 'P') {
-        entry.value = argv[0];
+      if (entry.value.startsWith('P|')) {
+        const auth = entry.value.slice(2);
+        if (auth.length !== 64) return 'invalid';
+        entry.value = `R|${auth}|${argv[0]}`;
         return 'accepted';
       }
-      if (entry.value === argv[0]) return 'same';
-      return 'duplicate';
+      if (entry.value.startsWith('R|')) {
+        if (entry.value.length < 68 || entry.value[66] !== '|') return 'invalid';
+        if (entry.value.slice(67) === argv[0]) return 'same';
+        return 'duplicate';
+      }
+      return 'invalid';
     }
+
+    if (script.includes("return 'deleted'")) {
+      const key = keys[0];
+      const entry = alive(key);
+      if (!entry) return 'missing';
+      let auth = null;
+      if (entry.value.startsWith('P|')) auth = entry.value.slice(2);
+      if (entry.value.startsWith('R|')) auth = entry.value.slice(2, 66);
+      if (!auth || auth.length !== 64) {
+        store.delete(key);
+        return 'invalid';
+      }
+      if (auth !== argv[0]) return 'forbidden';
+      store.delete(key);
+      return 'deleted';
+    }
+
     throw new Error(`Unsupported fake EVAL: ${script}`);
   }
   throw new Error(`Unsupported fake Redis command: ${op}`);
@@ -101,8 +125,12 @@ process.env.UPSTASH_REDIS_REST_TOKEN = 'unit-test-token';
 process.env.ZYNC_RELAY_RATE_LIMIT_SECRET = 'unit-test-rate-secret-1234567890';
 
 const sid = 'ABCDEFGHIJKLMNOPQRSTUVWX';
+const hostToken = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
+const wrongHostToken = 'ZYXWVUTSRQPONMLKJIHGFEDCBA987654';
+const hostHash = createHash('sha256').update(hostToken).digest('hex');
 const expiry = () => new Date(nowMs + 180000).toISOString();
-const base = { protocolVersion: 2, sessionId: sid };
+const peerBase = { protocolVersion: 2, sessionId: sid };
+const hostBase = { ...peerBase, hostToken };
 
 let failures = 0;
 const cases = [];
@@ -118,72 +146,96 @@ test('relay rejects non-POST and does not cache responses', async () => {
 test('relay refuses to run without the shared-store configuration', async () => {
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   delete process.env.UPSTASH_REDIS_REST_TOKEN;
-  const r = await invoke({ action: 'create', ...base, expiresAt: expiry() });
+  const r = await invoke({ action: 'create', ...hostBase, expiresAt: expiry() });
   process.env.UPSTASH_REDIS_REST_TOKEN = token;
   assert.equal(r.status, 503);
   assert.deepEqual(r.body, { error: 'relay_not_configured' });
 });
 
-test('create establishes only a short-lived pending session and is retry-safe', async () => {
+test('create stores only a short-lived host capability hash and is retry-safe', async () => {
   store.clear();
-  let r = await invoke({ action: 'create', ...base, expiresAt: expiry() });
+  let r = await invoke({ action: 'create', ...hostBase, expiresAt: expiry() });
   assert.equal(r.status, 201);
   assert.equal(r.body.status, 'created');
   const entry = alive(`zync:relay:v2:${sid}`);
-  assert.equal(entry.value, 'P');
+  assert.equal(entry.value, `P|${hostHash}`);
+  assert.equal(entry.value.includes(hostToken), false);
   assert.ok(entry.expiresAt - nowMs <= 180000);
   assert.ok(entry.expiresAt - nowMs >= 15000);
 
-  r = await invoke({ action: 'create', ...base, expiresAt: expiry() });
+  r = await invoke({ action: 'create', ...hostBase, expiresAt: expiry() });
   assert.equal(r.status, 200);
   assert.equal(r.body.status, 'already_created');
+
+  r = await invoke({ action: 'create', ...peerBase, hostToken: wrongHostToken, expiresAt: expiry() });
+  assert.equal(r.status, 409);
+  assert.deepEqual(r.body, { error: 'relay_session_exists' });
 });
 
-test('only one encrypted response wins but identical retry is idempotent', async () => {
+test('scanner can write without the host capability and only one encrypted response wins', async () => {
   const payload = 'AbCdEf0123_-';
-  let r = await invoke({ action: 'respond', ...base, payload });
+  let r = await invoke({ action: 'respond', ...peerBase, payload });
   assert.equal(r.status, 200);
   assert.equal(r.body.status, 'received');
 
-  r = await invoke({ action: 'respond', ...base, payload });
+  r = await invoke({ action: 'respond', ...peerBase, payload });
   assert.equal(r.status, 200);
   assert.equal(r.body.status, 'already_received');
 
-  r = await invoke({ action: 'respond', ...base, payload: 'DifferentOpaquePayload_123' });
+  r = await invoke({ action: 'respond', ...peerBase, payload: 'DifferentOpaquePayload_123' });
   assert.equal(r.status, 409);
   assert.deepEqual(r.body, { error: 'relay_already_answered' });
 });
 
-test('host polling is non-destructive until authenticated consume', async () => {
-  let r = await invoke({ action: 'take', ...base });
+test('wrong host capability cannot poll or consume the scanner response', async () => {
+  let r = await invoke({ action: 'take', ...peerBase, hostToken: wrongHostToken });
+  assert.equal(r.status, 403);
+  assert.deepEqual(r.body, { error: 'relay_host_not_authorized' });
+
+  r = await invoke({ action: 'consume', ...peerBase, hostToken: wrongHostToken });
+  assert.equal(r.status, 403);
+  assert.deepEqual(r.body, { error: 'relay_host_not_authorized' });
+});
+
+test('authorized host polling is non-destructive until consume', async () => {
+  let r = await invoke({ action: 'take', ...hostBase });
   assert.equal(r.status, 200);
   assert.equal(r.body.status, 'ready');
   assert.equal(r.body.payload, 'AbCdEf0123_-');
 
-  r = await invoke({ action: 'take', ...base });
+  r = await invoke({ action: 'take', ...hostBase });
   assert.equal(r.status, 200);
   assert.equal(r.body.payload, 'AbCdEf0123_-');
 
-  r = await invoke({ action: 'consume', ...base });
+  r = await invoke({ action: 'consume', ...hostBase });
   assert.equal(r.status, 200);
-  r = await invoke({ action: 'take', ...base });
+  r = await invoke({ action: 'take', ...hostBase });
   assert.equal(r.status, 410);
   assert.deepEqual(r.body, { error: 'relay_session_expired' });
 });
 
-test('malformed session and plaintext-like payload shapes are rejected', async () => {
-  let r = await invoke({ action: 'create', protocolVersion: 2, sessionId: 'short', expiresAt: expiry() });
+test('malformed session, missing host auth and plaintext-like payload shapes are rejected', async () => {
+  let r = await invoke({ action: 'create', protocolVersion: 2, sessionId: 'short', hostToken, expiresAt: expiry() });
   assert.equal(r.status, 400);
-  r = await invoke({ action: 'respond', ...base, payload: '{"profile":"plaintext"}' });
+  r = await invoke({ action: 'create', ...peerBase, expiresAt: expiry() });
+  assert.equal(r.status, 400);
+  r = await invoke({ action: 'respond', ...peerBase, payload: '{"profile":"plaintext"}' });
   assert.equal(r.status, 413);
 });
 
-test('TTL removes abandoned pending or answered sessions without scheduled cleanup', async () => {
+test('TTL removes abandoned sessions without scheduled cleanup', async () => {
   const ttlSid = 'ZYXWVUTSRQPONMLKJIHGFEDC';
-  let r = await invoke({ action: 'create', protocolVersion: 2, sessionId: ttlSid, expiresAt: new Date(nowMs + 15000).toISOString() });
+  const ttlToken = 'ABCDEFGHIJKLMNOPQRSTUV0123456789';
+  let r = await invoke({
+    action: 'create',
+    protocolVersion: 2,
+    sessionId: ttlSid,
+    hostToken: ttlToken,
+    expiresAt: new Date(nowMs + 15000).toISOString(),
+  });
   assert.equal(r.status, 201);
   nowMs += 16000;
-  r = await invoke({ action: 'take', protocolVersion: 2, sessionId: ttlSid });
+  r = await invoke({ action: 'take', protocolVersion: 2, sessionId: ttlSid, hostToken: ttlToken });
   assert.equal(r.status, 410);
 });
 
@@ -191,6 +243,7 @@ test('source never logs relay payloads or secrets', async () => {
   assert.equal(/console\.(log|error|warn)/.test(source), false);
   assert.equal(source.includes('UPSTASH_REDIS_REST_TOKEN'), true);
   assert.equal(source.includes("createHmac('sha256'"), true);
+  assert.equal(source.includes("createHash('sha256'"), true);
 });
 
 for (const entry of cases) {
