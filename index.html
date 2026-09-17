@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFFAF6">
+  <meta name="description" content="Zync is a local-first social icebreaker that helps two people discover shared interests, reveal hidden matches and start better conversations face to face.">
+  <meta property="og:title" content="Zync — Discover what connects you">
+  <meta property="og:description" content="Find the thing you didn't know you had in common. No account. Just your interests, a QR code and a real conversation.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zync-inky.vercel.app/">
+  <title>Zync — Discover what connects you</title>
+  <style>
+    :root {
+      --ink: #17181c;
+      --ink-soft: #5f626b;
+      --orange: #ff6a21;
+      --orange-deep: #e65310;
+      --peach: #ffe5d6;
+      --cream: #fffaf6;
+      --surface: #fff;
+      --line: #e9e4df;
+      --mint: #bdecdd;
+      --blue: #9fc8ff;
+      --plum: #6e5ae6;
+      --shadow: 0 24px 70px rgba(23, 24, 28, .09);
+      --max: 1160px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(255,250,246,.84); backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(233,228,223,.76);
+    }
+    .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-weight: 800; font-size: 21px; letter-spacing: -.35px; }
+    .mark { position: relative; width: 38px; height: 38px; }
+    .mark::before, .mark::after { content: ""; position: absolute; top: 7px; width: 21px; height: 21px; border-radius: 50%; border: 4px solid; }
+    .mark::before { left: 2px; border-color: var(--orange); }
+    .mark::after { right: 2px; border-color: var(--plum); }
+    .mark i { position: absolute; left: 17px; top: 17px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink); z-index: 2; }
+    .nav-links { display: flex; align-items: center; gap: 26px; font-size: 14px; color: var(--ink-soft); }
+    .nav-links a { text-decoration: none; }
+    .nav-links a:hover { color: var(--ink); }
+    .pill { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border-radius: 16px; font-weight: 760; text-decoration: none; border: 1px solid transparent; }
+    .pill.dark { color: white; background: var(--ink); }
+    .pill.light { background: white; border-color: var(--line); }
+    .pill.disabled { cursor: default; color: var(--ink-soft); background: #f1eeeb; border-color: var(--line); }
+
+    .hero { position: relative; overflow: hidden; padding: 92px 0 80px; }
+    .hero::before {
+      content: ""; position: absolute; width: 560px; height: 560px; border-radius: 50%;
+      right: -160px; top: -190px; background: radial-gradient(circle, rgba(255,106,33,.15), rgba(255,106,33,0) 68%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 470px; height: 470px; border-radius: 50%;
+      left: -220px; bottom: -250px; background: radial-gradient(circle, rgba(110,90,230,.11), rgba(110,90,230,0) 70%);
+      pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.02fr .98fr; align-items: center; gap: 70px; position: relative; z-index: 1; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: white; border: 1px solid var(--line); color: var(--ink-soft); font-size: 13px; font-weight: 700; }
+    .eyebrow b { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); display: inline-block; }
+    h1 { margin: 24px 0 22px; max-width: 760px; font-size: clamp(52px, 6.4vw, 86px); line-height: .98; letter-spacing: -4.3px; font-weight: 850; }
+    h1 span { color: var(--orange); }
+    .lead { max-width: 650px; margin: 0; color: var(--ink-soft); font-size: 20px; line-height: 1.55; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .micro { margin-top: 15px; color: var(--ink-soft); font-size: 13px; }
+
+    .phone-stage { position: relative; min-height: 560px; display: grid; place-items: center; }
+    .orbit { position: absolute; border: 1px solid rgba(255,106,33,.17); border-radius: 50%; }
+    .orbit.one { width: 500px; height: 500px; }
+    .orbit.two { width: 390px; height: 390px; border-color: rgba(110,90,230,.14); }
+    .phone {
+      width: 310px; min-height: 554px; padding: 12px; border-radius: 40px; background: #111216; box-shadow: 0 32px 80px rgba(23,24,28,.24); transform: rotate(2deg); position: relative; z-index: 3;
+    }
+    .phone-screen { min-height: 530px; border-radius: 31px; padding: 27px 20px; background: var(--cream); overflow: hidden; position: relative; }
+    .phone-top { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+    .mini-mark { position: relative; width: 28px; height: 28px; }
+    .mini-mark::before, .mini-mark::after { content: ""; position: absolute; top: 5px; width: 14px; height: 14px; border: 3px solid; border-radius: 50%; }
+    .mini-mark::before { left: 1px; border-color: var(--orange); }
+    .mini-mark::after { right: 1px; border-color: var(--plum); }
+    .phone h3 { margin: 35px 0 7px; font-size: 29px; letter-spacing: -1.2px; }
+    .phone p { margin: 0; font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+    .match-card { margin-top: 24px; padding: 18px; border-radius: 24px; border: 1px solid #ffd1b7; background: #fff3eb; }
+    .match-card .spark { font-size: 22px; }
+    .match-card strong { display: block; margin-top: 8px; font-size: 17px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tag { padding: 9px 11px; border-radius: 999px; border: 1px solid var(--line); background: white; font-size: 12px; font-weight: 700; }
+    .tag.hot { background: var(--peach); border-color: #ffd1b7; color: var(--orange-deep); }
+    .reveal-card { margin-top: 14px; padding: 16px; border-radius: 20px; background: var(--ink); color: white; }
+    .reveal-card small { color: #bdbfc6; }
+    .reveal-card strong { display: block; margin-top: 7px; font-size: 19px; }
+    .float-chip { position: absolute; z-index: 5; padding: 13px 16px; border-radius: 16px; background: white; border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 13px; font-weight: 780; }
+    .float-chip.a { left: 2px; top: 110px; transform: rotate(-6deg); }
+    .float-chip.b { right: -5px; bottom: 112px; transform: rotate(5deg); background: #f4f0ff; border-color: #ded7ff; }
+
+    section { padding: 92px 0; }
+    .section-kicker { margin-bottom: 12px; color: var(--orange-deep); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
+    .section-title { margin: 0; max-width: 780px; font-size: clamp(38px, 4.5vw, 62px); line-height: 1.04; letter-spacing: -2.7px; }
+    .section-copy { max-width: 690px; margin: 20px 0 0; color: var(--ink-soft); font-size: 18px; line-height: 1.62; }
+
+    .steps { margin-top: 48px; display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .step { min-height: 270px; padding: 24px; border: 1px solid var(--line); border-radius: 26px; background: white; }
+    .step:nth-child(2) { background: #fff3eb; border-color: #ffd8c2; }
+    .step:nth-child(3) { background: #f1edff; border-color: #dfd9ff; }
+    .step:nth-child(4) { background: #ebf8f3; border-color: #d0eee3; }
+    .step-num { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: var(--ink); color: white; font-weight: 850; }
+    .step h3 { margin: 28px 0 10px; font-size: 21px; letter-spacing: -.5px; }
+    .step p { margin: 0; color: var(--ink-soft); line-height: 1.58; font-size: 15px; }
+
+    .feature-grid { margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .feature { padding: 30px; border-radius: 28px; border: 1px solid var(--line); background: white; min-height: 250px; }
+    .feature.large { grid-row: span 2; min-height: 518px; background: var(--ink); color: white; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+    .feature-icon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 18px; background: var(--peach); font-size: 24px; }
+    .feature h3 { margin: 22px 0 9px; font-size: 25px; letter-spacing: -.75px; }
+    .feature p { margin: 0; color: var(--ink-soft); line-height: 1.62; }
+    .feature.large p { color: #c4c5ca; max-width: 480px; }
+    .mode-cloud { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 44px; }
+    .mode-cloud span { padding: 11px 14px; border-radius: 999px; background: #292a31; color: white; border: 1px solid #3a3b43; font-size: 13px; font-weight: 750; }
+    .mode-cloud span:nth-child(2n) { background: #3d356b; border-color: #5d4fa7; }
+    .mode-cloud span:nth-child(3n) { background: #683a25; border-color: #8d4d2d; }
+
+    .privacy-band { background: var(--ink); color: white; }
+    .privacy-grid { display: grid; grid-template-columns: .86fr 1.14fr; gap: 70px; align-items: start; }
+    .privacy-band .section-kicker { color: #ff9b6a; }
+    .privacy-band .section-copy { color: #c7c8cd; }
+    .privacy-points { display: grid; gap: 13px; }
+    .privacy-point { padding: 20px; border: 1px solid #35363d; background: #222329; border-radius: 21px; }
+    .privacy-point strong { display: block; margin-bottom: 6px; font-size: 16px; }
+    .privacy-point span { color: #bdbfc5; line-height: 1.5; font-size: 14px; }
+
+    .language-row { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .language-row span { padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: white; font-size: 13px; font-weight: 700; }
+
+    .faq { max-width: 830px; }
+    details { border-top: 1px solid var(--line); padding: 22px 0; }
+    details:last-child { border-bottom: 1px solid var(--line); }
+    summary { cursor: pointer; list-style: none; font-weight: 780; font-size: 18px; }
+    summary::-webkit-details-marker { display: none; }
+    details p { margin: 13px 0 0; color: var(--ink-soft); line-height: 1.65; }
+
+    .final-card { padding: 56px; border-radius: 34px; background: linear-gradient(135deg,#fff1e8,#f0edff 64%,#ebf8f3); border: 1px solid #e8ded8; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+    .final-card h2 { margin: 0; font-size: clamp(36px,4vw,58px); letter-spacing: -2.3px; line-height: 1.03; }
+    .final-card p { margin: 14px 0 0; color: var(--ink-soft); max-width: 560px; line-height: 1.6; }
+
+    footer { padding: 32px 0 44px; border-top: 1px solid var(--line); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 22px; color: var(--ink-soft); font-size: 13px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
+    .footer-links a { text-decoration: none; }
+    .footer-links a:hover { color: var(--ink); }
+
+    @media (max-width: 900px) {
+      .nav-links a:not(.pill) { display: none; }
+      .hero { padding-top: 68px; }
+      .hero-grid, .privacy-grid { grid-template-columns: 1fr; gap: 44px; }
+      .hero-copy { text-align: center; }
+      .eyebrow { margin-inline: auto; }
+      .lead { margin-inline: auto; }
+      .hero-actions { justify-content: center; }
+      .phone-stage { min-height: 510px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature.large { grid-row: auto; min-height: 390px; }
+      .final-card { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 28px, var(--max)); }
+      .nav-inner { height: 64px; }
+      .nav .pill { display: none; }
+      .hero { padding: 52px 0 52px; }
+      h1 { font-size: 52px; letter-spacing: -3px; }
+      .lead { font-size: 17px; }
+      .phone-stage { min-height: 480px; transform: scale(.9); margin: -28px -20px; }
+      .float-chip.a { left: 5px; }
+      .float-chip.b { right: 4px; }
+      section { padding: 68px 0; }
+      .steps { grid-template-columns: 1fr; }
+      .step { min-height: 0; }
+      .feature { padding: 24px; }
+      .final-card { padding: 34px 26px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top" aria-label="Zync home"><span class="mark" aria-hidden="true"><i></i></span><span>Zync</span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a class="pill light" href="#get-zync">Get Zync</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><b></b> Face-to-face, not another social feed</div>
+          <h1>Discover what <span>connects</span> you.</h1>
+          <p class="lead">Zync helps two people find the interests they didn't know they shared — then turns that spark into a real conversation.</p>
+          <div class="hero-actions">
+            <a class="pill dark" href="#how">See how Zync works</a>
+            <span class="pill disabled" aria-label="Android release coming soon">Android release coming soon</span>
+          </div>
+          <p class="micro">No account required · Local-first profile · QR matching</p>
+        </div>
+
+        <div class="phone-stage" aria-label="Illustration of the Zync experience">
+          <div class="orbit one"></div><div class="orbit two"></div>
+          <div class="float-chip a">🏸 Badminton</div>
+          <div class="float-chip b">🎧 Live music</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="phone-top"><span class="mini-mark" aria-hidden="true"></span> Zync</div>
+              <h3>Ready to Zync?</h3>
+              <p>Your interests stay with you until you choose to share your QR.</p>
+              <div class="match-card">
+                <div class="spark">✨</div>
+                <strong>YOU ZYNC!</strong>
+                <p>3 hidden matches found.</p>
+                <div class="tags"><span class="tag hot">Reveal</span><span class="tag">One at a time</span></div>
+              </div>
+              <div class="reveal-card"><small>Shared interest revealed</small><strong>🏸 Badminton</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap">
+        <div class="section-kicker">How it works</div>
+        <h2 class="section-title">From “what do we talk about?” to something real.</h2>
+        <p class="section-copy">Zync is built for the moment two people are already in the same place. Your phone helps find the connection; the conversation stays between you.</p>
+        <div class="steps">
+          <article class="step"><div class="step-num">1</div><h3>Build your interest profile</h3><p>Pick what you love, like or want to try. Add niche interests too — AI can normalize unfamiliar ones for matching.</p></article>
+          <article class="step"><div class="step-num">2</div><h3>Show or scan a QR</h3><p>One person shows a Zync QR. The other scans it. No usernames to search and no account exchange required.</p></article>
+          <article class="step"><div class="step-num">3</div><h3>Reveal hidden matches</h3><p>Zync compares the two profiles locally and reveals shared interests progressively instead of dumping a list on screen.</p></article>
+          <article class="step"><div class="step-num">4</div><h3>Start the conversation</h3><p>Pick a vibe and get a contextual question. No exact match? Zync looks for an interesting crossover instead.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-kicker">Built for real interaction</div>
+        <h2 class="section-title">Less profile browsing. More reasons to actually talk.</h2>
+        <div class="feature-grid">
+          <article class="feature large">
+            <div>
+              <div class="feature-icon" style="background:#34353c">💬</div>
+              <h3>Pick the vibe</h3>
+              <p>Conversation prompts can stay easy, get playful, invite a friendly debate, go deeper, turn into a guessing game or surprise you.</p>
+            </div>
+            <div class="mode-cloud"><span>Easy</span><span>Fun</span><span>Debate</span><span>Deep</span><span>Guess</span><span>Surprise me</span></div>
+          </article>
+          <article class="feature"><div class="feature-icon">🧩</div><h3>Zero match isn't a dead end</h3><p>If there is no exact shared interest, Zync can bridge one interest from each person into a plausible crossover question.</p></article>
+          <article class="feature"><div class="feature-icon" style="background:var(--mint)">↻</div><h3>Zync Again</h3><p>Your local history helps you reconnect later and notice what changed — including new matches since the last time you Zynced.</p></article>
+          <article class="feature"><div class="feature-icon" style="background:#e9e5ff">◎</div><h3>Interest DNA</h3><p>A descriptive view of your own interests and patterns. It is designed for curiosity, not personality scoring or judging people.</p></article>
+          <article class="feature"><div class="feature-icon" style="background:#e8f0ff">🌐</div><h3>Built to cross languages</h3><p>Zync supports eight interface languages and can return equivalent bilingual conversation prompts when two people use different supported languages.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="privacy-band" id="privacy">
+      <div class="wrap privacy-grid">
+        <div>
+          <div class="section-kicker">Local-first by design</div>
+          <h2 class="section-title">Your social graph doesn't belong on our server.</h2>
+          <p class="section-copy">Zync V1 does not require login or a cloud profile. Matching happens on the scanning device, and your history stays local.</p>
+          <div class="hero-actions"><a class="pill light" href="/privacy">Read the Privacy Policy</a></div>
+        </div>
+        <div class="privacy-points">
+          <div class="privacy-point"><strong>No account required</strong><span>Your interest profile and Zync Again history are stored locally on your device.</span></div>
+          <div class="privacy-point"><strong>QR sharing is deliberate</strong><span>Your selected profile information is shared when you choose to show another person your QR.</span></div>
+          <div class="privacy-point"><strong>AI is limited and optional to the flow</strong><span>Only bounded interest text needed for normalization or a conversation question is sent to the Zync API. AI requests enforce Zero Data Retention-compatible routing and deny provider data collection.</span></div>
+          <div class="privacy-point"><strong>Analytics off for the public V1 release</strong><span>The release build is configured not to send product analytics events or create an analytics installation identifier.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-kicker">Made for more conversations</div>
+        <h2 class="section-title">One idea, eight interface languages.</h2>
+        <p class="section-copy">Zync V1 supports English, Traditional Chinese, Simplified Chinese, Japanese, Korean, Spanish, French and Portuguese.</p>
+        <div class="language-row"><span>English</span><span>繁體中文</span><span>简体中文</span><span>日本語</span><span>한국어</span><span>Español</span><span>Français</span><span>Português</span></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap faq">
+        <div class="section-kicker">FAQ</div>
+        <h2 class="section-title">The short version.</h2>
+        <details><summary>Do I need an account?</summary><p>No. Zync V1 is designed without login or registration. Your core profile is local to your device.</p></details>
+        <details><summary>Does Zync match me with strangers online?</summary><p>No. V1 is a face-to-face icebreaker. One person shows a QR and the other scans it while you are together.</p></details>
+        <details><summary>What if we have no interests in common?</summary><p>Zync can use limited interest labels from both profiles to find a plausible crossover and turn it into a question both people can discuss.</p></details>
+        <details><summary>Does Zync need AI to work?</summary><p>No. AI improves custom-interest normalization and conversation prompts, but the app has local fallback questions if the AI service is unavailable.</p></details>
+        <details><summary>Where is my data stored?</summary><p>Your profile, matching history and Interest DNA remain local in V1. Some bounded interest text leaves the device only when an AI-assisted feature is used. See the Privacy Policy for full details.</p></details>
+      </div>
+    </section>
+
+    <section id="get-zync">
+      <div class="wrap">
+        <div class="final-card">
+          <div><h2>Ready to find the thing you didn't know you shared?</h2><p>Zync V1 for Android is preparing for release. The first version is intentionally simple: interests, QR matching and better face-to-face conversations.</p></div>
+          <span class="pill dark" aria-label="Android release coming soon">Android release coming soon</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div class="brand"><span class="mark" aria-hidden="true"><i></i></span><span>Zync</span></div>
+      <div class="footer-links"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/disclaimer">Disclaimer</a></div>
+      <div>© 2026 Zync</div>
+    </div>
+  </footer>
+</body>
+</html>
