@@ -9,16 +9,19 @@ The old placeholder-heavy privacy-policy draft has been replaced by the actual b
 
 The current public-V1 posture is:
 
-- no account or cloud user profile;
+- no account or permanent cloud user profile;
 - local profile/history and local matching;
-- direct QR sharing between participants;
+- host profile shared visually through the QR;
+- one-scan completion uses a short-lived encrypted relay for the scanner response;
+- the scanner response is AES-GCM encrypted on-device with a one-time QR secret that the relay does not receive;
+- relay state uses Vercel + Upstash Redis, is designed to expire after about three minutes, and is deleted earlier after successful authenticated host decryption when possible;
 - bounded AI feature data sent through the Zync Vercel API and OpenRouter;
 - OpenRouter requests enforce `zdr: true` and `data_collection: "deny"`;
 - `openrouter/free` is the configured model router;
 - product analytics are explicitly disabled in the public V1 Android build with `ZYNC_ANALYTICS_ENABLED=false`;
 - privacy inquiries use the official Google Play listing's Developer contact mechanism.
 
-Do not restore or publish the earlier placeholders. Edit `privacy.html` if the shipped privacy practice changes, and update Play Data Safety at the same time.
+Do not restore or publish the earlier placeholders, and do not describe V1 as "direct peer transfer only". Edit `privacy.html` if the shipped privacy practice changes, and update Play Data Safety at the same time.
 
 Release-facing Data Safety answers are in:
 
