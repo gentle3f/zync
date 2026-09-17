@@ -64,9 +64,13 @@ jobs:
           node --check api/v1/question.js
           node --check api/v1/normalize-interest.js
           node --check api/v1/analytics.js
+          node --check .github/scripts/openrouter_privacy_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
+
+      - name: Test OpenRouter privacy contracts
+        run: node .github/scripts/openrouter_privacy_contracts.mjs
 
       - name: Setup Flutter stable
         uses: subosito/flutter-action@v2
