@@ -29,12 +29,14 @@ List<int> _randomBytes(int length) {
 class RelayBootstrap {
   const RelayBootstrap({
     required this.sessionId,
+    required this.hostToken,
     required this.secretBytes,
     required this.expiresAt,
     required this.hostProfile,
   });
 
   final String sessionId;
+  final String hostToken;
   final List<int> secretBytes;
   final DateTime expiresAt;
   final QrProfilePayload hostProfile;
@@ -43,6 +45,7 @@ class RelayBootstrap {
     final current = (now ?? DateTime.now()).toUtc();
     return RelayBootstrap(
       sessionId: _base64UrlNoPad(_randomBytes(18)),
+      hostToken: _base64UrlNoPad(_randomBytes(24)),
       secretBytes: _randomBytes(32),
       expiresAt: current.add(zyncRelaySessionLifetime),
       hostProfile: QrProfilePayload.fromProfile(profile),
@@ -211,11 +214,15 @@ class RelayTakeResult {
 }
 
 abstract class RelayClient {
-  Future<void> createSession({required String sessionId, required DateTime expiresAt});
+  Future<void> createSession({
+    required String sessionId,
+    required String hostToken,
+    required DateTime expiresAt,
+  });
   Future<void> respond({required String sessionId, required String payload});
-  Future<RelayTakeResult> take({required String sessionId});
-  Future<void> consume({required String sessionId});
-  Future<void> cancel({required String sessionId});
+  Future<RelayTakeResult> take({required String sessionId, required String hostToken});
+  Future<void> consume({required String sessionId, required String hostToken});
+  Future<void> cancel({required String sessionId, required String hostToken});
 }
 
 class HttpRelayClient implements RelayClient {
@@ -253,16 +260,23 @@ class HttpRelayClient implements RelayClient {
   RelayException _mapFailure(int status) {
     if (status == 409) return const RelayException(RelayFailureKind.alreadyAnswered);
     if (status == 410) return const RelayException(RelayFailureKind.expired);
-    if (status == 400 || status == 413 || status == 502) return const RelayException(RelayFailureKind.invalid);
+    if (status == 400 || status == 403 || status == 413 || status == 502) {
+      return const RelayException(RelayFailureKind.invalid);
+    }
     return const RelayException(RelayFailureKind.unavailable);
   }
 
   @override
-  Future<void> createSession({required String sessionId, required DateTime expiresAt}) async {
+  Future<void> createSession({
+    required String sessionId,
+    required String hostToken,
+    required DateTime expiresAt,
+  }) async {
     final result = await _post({
       'action': 'create',
       'protocolVersion': zyncRelayProtocolVersion,
       'sessionId': sessionId,
+      'hostToken': hostToken,
       'expiresAt': expiresAt.toUtc().toIso8601String(),
     });
     if (result.status != 201 && result.status != 200) throw _mapFailure(result.status);
@@ -280,11 +294,12 @@ class HttpRelayClient implements RelayClient {
   }
 
   @override
-  Future<RelayTakeResult> take({required String sessionId}) async {
+  Future<RelayTakeResult> take({required String sessionId, required String hostToken}) async {
     final result = await _post({
       'action': 'take',
       'protocolVersion': zyncRelayProtocolVersion,
       'sessionId': sessionId,
+      'hostToken': hostToken,
     });
     if (result.status != 200) throw _mapFailure(result.status);
     if (result.body['status'] == 'waiting') return const RelayTakeResult.waiting();
@@ -295,28 +310,29 @@ class HttpRelayClient implements RelayClient {
     return RelayTakeResult.ready(payload);
   }
 
-  Future<void> _delete(String action, String sessionId) async {
+  Future<void> _delete(String action, String sessionId, String hostToken) async {
     final result = await _post({
       'action': action,
       'protocolVersion': zyncRelayProtocolVersion,
       'sessionId': sessionId,
+      'hostToken': hostToken,
     });
     if (result.status != 200) throw _mapFailure(result.status);
   }
 
   @override
-  Future<void> consume({required String sessionId}) async {
+  Future<void> consume({required String sessionId, required String hostToken}) async {
     try {
-      await _delete('consume', sessionId);
+      await _delete('consume', sessionId, hostToken);
     } catch (_) {
       // Best effort after authenticated decrypt. TTL remains the hard cleanup guarantee.
     }
   }
 
   @override
-  Future<void> cancel({required String sessionId}) async {
+  Future<void> cancel({required String sessionId, required String hostToken}) async {
     try {
-      await _delete('cancel', sessionId);
+      await _delete('cancel', sessionId, hostToken);
     } catch (_) {
       // Best effort only. Server-side TTL is the hard cleanup guarantee.
     }
