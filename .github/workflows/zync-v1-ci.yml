@@ -13,8 +13,10 @@ on:
       - 'disclaimer.html'
       - 'vercel.json'
       - '.github/scripts/*.mjs'
+      - '.github/scripts/*.py'
       - '.github/workflows/zync-v1-ci.yml'
       - '.github/workflows/zync-v1-signed-release.yml'
+      - '.github/workflows/zync-play-internal-release.yml'
   pull_request:
     paths:
       - 'mobile/**'
@@ -25,8 +27,10 @@ on:
       - 'disclaimer.html'
       - 'vercel.json'
       - '.github/scripts/*.mjs'
+      - '.github/scripts/*.py'
       - '.github/workflows/zync-v1-ci.yml'
       - '.github/workflows/zync-v1-signed-release.yml'
+      - '.github/workflows/zync-play-internal-release.yml'
   workflow_dispatch:
 
 permissions:
@@ -72,6 +76,7 @@ jobs:
           node --check .github/scripts/openrouter_privacy_contracts.mjs
           node --check .github/scripts/live_api_smoke.mjs
           node --check .github/scripts/release_web_contracts.mjs
+          node --check .github/scripts/play_internal_release_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
@@ -82,8 +87,14 @@ jobs:
       - name: Test public release web contracts
         run: node .github/scripts/release_web_contracts.mjs
 
+      - name: Test Play internal-release workflow contracts
+        run: node .github/scripts/play_internal_release_contracts.mjs
+
       - name: Test release-signing configurator
         run: python3 mobile/tool/configure_android_signing.py --self-test
+
+      - name: Test Play internal-release publishing guards
+        run: python3 .github/scripts/play_internal_release.py --self-test
 
       - name: Generate Android wrapper with legacy Play identity
         run: |

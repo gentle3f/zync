@@ -1,10 +1,10 @@
 # Zync V1 — Latest Handoff
 
-Authoritative handoff: `AI_STATE/HANDOFF_20260917_1545_RELEASE_WEB_ONE_SHOT_READY.md`
+Authoritative handoff: `AI_STATE/HANDOFF_20260917_PLAY_INTERNAL_RELEASE_AUTOMATION.md`
 
 Branch: `zync-v1-rebuild-20260917`
 
-Read the authoritative handoff in full and continue directly from its **Recommended continuation order**. Do not restart repository discovery or old Thunkable archaeology.
+Read the authoritative handoff in full and continue directly from its **Recommended continuation order**. Do not restart repository discovery or old Thunkable archaeology. This handoff is additive on top of `AI_STATE/HANDOFF_20260917_1545_RELEASE_WEB_ONE_SHOT_READY.md`, whose external blockers (Vercel quota/promotion, production env vars, signed AAB certification, real Play QA) remain open and unaddressed.
 
 Current production integration facts:
 

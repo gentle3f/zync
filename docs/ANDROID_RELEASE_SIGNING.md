@@ -60,6 +60,22 @@ The release workflow keeps:
 
 The workflow explicitly fails if the generated release build still points at Flutter's debug signing config.
 
+## Publishing a signed AAB to Google Play Internal Testing
+
+`.github/workflows/zync-play-internal-release.yml` is a separate, later-stage workflow that **only** publishes an already-signed AAB to the Play **Internal Testing** track. It never builds, signs, or generates a signing key itself — it downloads the `zync-v1-play-signed-aab` artifact from a completed **Zync V1 Signed Release** run and uploads that exact file through the Android Publisher API.
+
+Required GitHub Actions secret:
+
+- `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` — the Play Developer API service-account key JSON for the `androidpublisher` scope. Never commit this file; it is only ever read from the secret at runtime and written to an ephemeral, workflow-run-local file that is deleted at the end of the job.
+
+To run it:
+
+1. Run **Zync V1 Signed Release** first and note its run ID (from the Actions run URL) once it succeeds.
+2. Open GitHub → Actions → **Zync Play Internal Release** → **Run workflow**.
+3. Provide that run ID as `signed_release_run_id`, type `UPLOAD_TO_INTERNAL_TESTING` in `confirm_internal_upload`, and optionally set `release_notes`.
+
+The workflow and `.github/scripts/play_internal_release.py` both hard-code the track as `internal` and the package as `com.gmail.gentle3f.myproject`; there is no input that can select production, beta, alpha, or any other track. `.github/scripts/play_internal_release_contracts.mjs` statically checks this invariant in CI.
+
 ## Important Play signing note
 
 A signed AAB is only an update to the existing Play listing if the keystore/alias used here is the correct upload key accepted by that Play Console app. Do not rotate or replace the existing upload key merely to make CI pass. If Play App Signing is enabled and the old upload key is unavailable, use the Play Console upload-key reset process rather than creating an unrelated key and assuming it will update the app.
