@@ -7,13 +7,20 @@ import '../core/analytics_service.dart';
 import '../core/local_store.dart';
 import '../core/matching_service.dart';
 import '../core/models.dart';
+import '../core/relay_service.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 import 'match_screen.dart';
 
 class ScanQrScreen extends StatefulWidget {
-  const ScanQrScreen({super.key, required this.profile});
+  const ScanQrScreen({
+    super.key,
+    required this.profile,
+    this.relayClient,
+  });
+
   final LocalProfile profile;
+  final RelayClient? relayClient;
 
   @override
   State<ScanQrScreen> createState() => _ScanQrScreenState();
@@ -21,8 +28,17 @@ class ScanQrScreen extends StatefulWidget {
 
 class _ScanQrScreenState extends State<ScanQrScreen> {
   final MobileScannerController _controller = MobileScannerController();
+  late final RelayClient _relay;
   bool _processing = false;
   String? _error;
+  String? _pendingHandshakeRaw;
+  String? _pendingEncryptedResponse;
+
+  @override
+  void initState() {
+    super.initState();
+    _relay = widget.relayClient ?? HttpRelayClient();
+  }
 
   @override
   void dispose() {
@@ -56,6 +72,124 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       _error = null;
     });
 
+    if (raw.trim().startsWith('ZH2:')) {
+      await _handleHandshake(raw.trim());
+    } else {
+      await _handleLegacy(raw);
+    }
+  }
+
+  Future<void> _handleHandshake(String raw) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final handshake = ZyncHandshakeQrPayload.decode(raw);
+      final peer = handshake.hostProfile;
+      if (peer.localId == widget.profile.localId) {
+        throw const FormatException('Cannot Zync with yourself');
+      }
+
+      final match = MatchingService.compare(
+        peer.interests,
+        widget.profile.interests,
+        sessionSeed: handshake.sessionId,
+      );
+      final previous = await LocalStore.findHistory(peer.localId);
+      final previousIds = previous?.previousSharedIds.toSet() ?? <String>{};
+      final currentIds = match.shared.map((item) => item.id).toSet();
+      final newCount = currentIds.difference(previousIds).length;
+
+      String encrypted;
+      if (_pendingHandshakeRaw == raw && _pendingEncryptedResponse != null) {
+        encrypted = _pendingEncryptedResponse!;
+      } else {
+        encrypted = await RelayCrypto.encryptPeerResponse(
+          handshake: handshake,
+          scannerProfile: widget.profile,
+        );
+        _pendingHandshakeRaw = raw;
+        _pendingEncryptedResponse = encrypted;
+      }
+
+      await _relay.respond(sessionId: handshake.sessionId, payload: encrypted);
+      await LocalStore.recordZync(
+        peerId: peer.localId,
+        peerNickname: peer.nickname,
+        sharedIds: currentIds.toList(),
+      );
+      _pendingHandshakeRaw = null;
+      _pendingEncryptedResponse = null;
+
+      final analytics = <Future<void>>[
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.qrScanned,
+          properties: const {'transport': 'handshake_v2'},
+        ),
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.matchComplete,
+          properties: {
+            'has_match': match.shared.isNotEmpty,
+            'repeat_peer': previous != null,
+          },
+        ),
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.matchCount,
+          properties: {'count': match.shared.length},
+        ),
+        if (previous != null)
+          ZyncAnalytics.instance.track(
+            AnalyticsEvent.zyncAgain,
+            properties: {'prior_sessions': previous.sessionCount},
+          ),
+      ];
+      unawaited(Future.wait(analytics));
+
+      await _controller.stop();
+      if (!mounted) return;
+      await Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => MatchScreen(
+            peer: peer,
+            match: match,
+            newMatchCount: previous == null ? 0 : newCount,
+            sessionSeed: handshake.sessionId,
+          ),
+        ),
+      );
+    } on RelayException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.kind) {
+        RelayFailureKind.expired => l10n.relayExpired,
+        RelayFailureKind.alreadyAnswered => l10n.qrAlreadyUsed,
+        RelayFailureKind.invalid => l10n.invalidQr,
+        RelayFailureKind.unavailable => l10n.scanConnectionIssue,
+      };
+      if (error.kind != RelayFailureKind.unavailable) {
+        _pendingHandshakeRaw = null;
+        _pendingEncryptedResponse = null;
+      }
+      setState(() {
+        _processing = false;
+        _error = message;
+      });
+    } on FormatException catch (error) {
+      if (!mounted) return;
+      _pendingHandshakeRaw = null;
+      _pendingEncryptedResponse = null;
+      final expired = error.message.toString().toLowerCase().contains('expired');
+      setState(() {
+        _processing = false;
+        _error = expired ? l10n.relayExpired : l10n.invalidQr;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _processing = false;
+        _error = l10n.scanConnectionIssue;
+      });
+    }
+  }
+
+  Future<void> _handleLegacy(String raw) async {
     try {
       final peer = QrProfilePayload.decode(raw);
       if (peer.localId == widget.profile.localId) {
@@ -236,7 +370,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                _error ?? l10n.scanHint,
+                                _processing ? l10n.zyncing : (_error ?? l10n.scanHint),
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
                               ),
                             ),
