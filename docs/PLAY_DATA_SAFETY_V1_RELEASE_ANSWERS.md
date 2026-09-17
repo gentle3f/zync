@@ -8,9 +8,12 @@ This file is the release-facing answer sheet for the rebuilt local-first V1. It 
 
 ## Frozen public-V1 privacy posture
 
-- No login or cloud user account.
-- Local interest profile and Zync Again history remain on-device.
-- QR profile exchange is direct device-to-device visual transfer; the QR body is not uploaded to Zync for matching.
+- No login or permanent cloud user account/profile.
+- Local interest profile and Zync Again history remain primarily on-device.
+- The host's selected profile is shared visually through the QR and is not uploaded to create the relay session.
+- One-scan pairing uses a short-lived encrypted relay: the scanner encrypts the limited profile response needed by the host with AES-GCM using a one-time key carried in the QR; the Zync relay receives only the random session ID plus opaque ciphertext/status and does not receive that decryption key.
+- Relay state is designed for about a three-minute maximum lifetime and is deleted earlier after successful authenticated host decryption where possible.
+- The relay path is Android -> Zync Vercel API -> Upstash Redis. Matching itself remains on-device on both phones.
 - AI is optional and used only for unknown-interest normalization and conversation-question generation.
 - AI requests go through the Zync Vercel API and OpenRouter.
 - Every OpenRouter request requires `provider.zdr: true` and `provider.data_collection: "deny"`.
@@ -24,21 +27,24 @@ This file is the release-facing answer sheet for the rebuilt local-first V1. It 
 
 **Yes — collect.**
 
-Reason: Google defines collection broadly as transmitting user data off the device. When a user invokes an AI feature, limited interest text / relevant interest labels and language/mode information are transmitted to the Zync API and AI processing path. Zero Data Retention does not make that transmission disappear for Data Safety purposes.
+There are now two feature-dependent off-device paths that must be considered:
 
-Do **not** answer "No data collected" for this V1.
+1. AI-assisted features transmit bounded interest/conversation content to the Zync API and AI processing path.
+2. One-scan QR pairing transmits an AES-GCM-encrypted scanner profile response to the short-lived Zync relay so the host phone can complete the same local match automatically.
+
+Encryption, opacity to the application server, short retention, and ephemeral processing do **not** make an off-device transmission disappear for Data Safety analysis. Do **not** answer "No data collected" for this V1.
 
 ### Is all user data encrypted in transit?
 
-**Yes for the Zync-controlled production network paths.**
+**Yes for the Zync-controlled production network paths, subject to final production verification.**
 
-The release gate requires an HTTPS `ZYNC_API_BASE`, and the Zync server calls OpenRouter over HTTPS.
+The release gate requires an HTTPS `ZYNC_API_BASE`. AI server calls use HTTPS. The pairing response is additionally encrypted and authenticated on the scanning phone using AES-GCM before being transmitted through the HTTPS relay path.
 
 ### Does the app support account creation?
 
 **No.**
 
-Zync V1 has no user account, login or registration flow, so Google Play's account-deletion requirement for apps that let users create accounts is not applicable to this release.
+Zync V1 has no user account, login or registration flow, so Google's account-deletion requirement for apps that let users create accounts is not applicable to this release.
 
 ## Data type 1 — interest / conversation content sent for AI functionality
 
@@ -53,13 +59,14 @@ Zync V1 has no user account, login or registration flow, so Google Play's accoun
 
 - bounded relevant interest labels needed for that conversation;
 - conversation mode;
-- primary/secondary supported language where needed.
+- primary/secondary supported language where needed;
+- a random bounded session-context value where present.
 
 ### What is deliberately not required by the AI endpoints
 
 - nickname;
 - peer local ID;
-- QR payload/body;
+- QR body;
 - email address;
 - phone number;
 - precise or coarse location;
@@ -82,7 +89,7 @@ This category name must be checked against the actual current Play Console UI be
 
 ### Is collection required or optional?
 
-The AI transmission is **feature-dependent**: it occurs only when the user invokes the relevant AI-assisted feature. Core local profile creation, QR matching and local fallback conversation content can operate without a successful AI request.
+The AI transmission is **feature-dependent**: it occurs only when the user invokes the relevant AI-assisted feature. Local profile creation, pairing/matching and local fallback conversation content do not require a successful AI request.
 
 Use the current Play form's definition of optional collection carefully. Do not claim user-configurable opt-out controls that do not exist.
 
@@ -90,17 +97,69 @@ Use the current Play form's definition of optional collection carefully. Do not 
 
 OpenRouter requests enforce ZDR-compatible routing and deny non-transient provider data collection. Zync application code does not intentionally persist AI request text in a user database.
 
-Google's current Data Safety guidance still requires off-device ephemeral processing to be declared in the form. Apply the current Play UI's ephemeral-processing question based on the final provider configuration and Google's definition at submission time.
+Google's Data Safety guidance still requires off-device ephemeral processing to be declared. Apply the current Play UI's ephemeral-processing question based on the final provider configuration and Google's definition at submission time.
+
+## Data type 2 — encrypted scanner profile response used for one-scan pairing
+
+### What leaves the scanning phone
+
+After the scanner reads the host QR, the app prepares only the profile fields the host needs to perform the same local comparison. Depending on the profile, the encrypted cleartext can include:
+
+- random local Zync profile identifier;
+- optional nickname;
+- supported language;
+- selected interest IDs and Love / Like / Want to try strength;
+- custom-interest labels/categories needed to interpret those interests;
+- relay protocol/session/expiry metadata.
+
+Before transmission, that response is encrypted and authenticated on the scanning device with AES-GCM using the one-time 256-bit secret carried in the host QR. The relay endpoint receives the random session ID and an opaque encrypted envelope; it does not receive the one-time decryption secret.
+
+### Relay retention and processing
+
+- The Redis relay key is configured with a short TTL of about three minutes.
+- The host polls non-destructively so a lost HTTP response does not destroy the pending encrypted response.
+- After the host successfully decrypts and authenticates the response locally, it sends a consume request to delete the relay session early.
+- If the flow is abandoned or consume cannot complete, TTL expiry is the hard cleanup guarantee.
+- The relay is not used as a permanent user/profile/history database.
+
+### Purpose
+
+- **App functionality** — specifically, allowing one QR scan to complete pairing on both phones automatically.
+
+### Play category
+
+The cleartext represents user/profile content but the Zync-controlled relay stores only ciphertext. Google's Data Safety form classifications are based on what user data leaves the device, not merely what the first-party server can read. Before submission, inspect the current Play taxonomy and classify this encrypted profile response conservatively under the closest applicable user-content/profile category or categories.
+
+Do **not** omit this transmission merely because the server lacks the decryption key.
+
+### Is collection required or optional?
+
+This transmission is feature-dependent: it occurs when users choose the one-scan Zync pairing flow. It is required for the host phone to auto-advance without a second QR scan.
+
+### Is the data processed ephemerally?
+
+Yes at the application-design level: the relay is intentionally short-lived and TTL-backed, with early deletion after successful consume. Still disclose the off-device collection and answer the Play Console's current ephemeral-processing question according to Google's current wording.
+
+## Technical network / abuse-prevention metadata
+
+The relay is hosted on Vercel and backed by Upstash Redis. Hosting/network providers may necessarily process technical request information such as IP address under their applicable service terms.
+
+At the Zync application layer, relay rate limiting derives a short-lived HMAC-based key from the request IP and a server secret. The application-level Redis rate key does not need to store the raw IP; the counter itself has a brief expiry.
+
+Before Play submission, verify the current Data Safety treatment of provider-processed network identifiers and whether any Device or other IDs category is triggered by the final production/provider configuration. Do not label the dormant analytics identifier as collected: analytics remain disabled in public V1.
 
 ## Shared vs collected — final Play Console decision
 
-The data above is definitely **collected** under Google's off-device definition.
+The feature data described above is **collected** under Google's broad off-device definition.
 
-Whether it must also be marked **shared** depends on whether Vercel, OpenRouter and the routed model provider qualify for Google's service-provider exception under the actual terms/configuration used for this release.
+Whether either path must also be marked **shared** depends on whether the relevant providers qualify for Google's service-provider exception under the actual terms/configuration used for this release:
 
-Before answering "not shared", verify the current provider terms/DPA and Google's current service-provider exception wording. If that conclusion cannot be supported, use the conservative Play answer and declare the relevant content as shared as well.
+- pairing path: Vercel and Upstash;
+- AI path: Vercel, OpenRouter and the routed model provider.
 
-Do not infer "not shared" merely from ZDR.
+Before answering "not shared", verify the current provider terms/DPA and Google's current service-provider exception wording. If that conclusion cannot be supported, use the conservative Play answer and declare the relevant data as shared as well.
+
+Do not infer "not shared" merely from encryption, AES-GCM, TTL, or OpenRouter ZDR.
 
 ## Analytics — public V1 answer
 
@@ -110,7 +169,7 @@ For this release:
 - the client returns before creating analytics IDs or making an analytics request;
 - PostHog is not required for the public V1 release.
 
-Therefore the optional analytics design does **not** add App interactions or Device/other IDs to the public V1 Data Safety answers.
+Therefore the optional analytics design does **not** itself add App interactions or an analytics Device/other ID to the public V1 Data Safety answers.
 
 If analytics are enabled in a future release, re-open Data Safety before publishing. At minimum review:
 
@@ -119,17 +178,16 @@ If analytics are enabled in a future release, re-open Data Safety before publish
 - purpose Analytics;
 - actual provider/retention/sharing terms.
 
-## Local data that is not uploaded as part of normal V1 matching
+## Data that remains local / is not persisted as a cloud profile
 
-- stored local interest profile as a whole;
-- nickname persistence;
+- host profile/history as a permanent cloud object;
 - Zync Again/history records;
-- peer local IDs/history;
 - Interest DNA calculations;
-- local match calculation;
-- QR body as part of scanner/matching backend traffic.
+- local match calculation and reveal state;
+- the host QR profile body as part of relay-session creation;
+- the one-time QR decryption secret.
 
-The fact that these remain local does not change the separate AI collection disclosure above.
+Important distinction: the scanner's limited profile response **does** leave the scanner device during one-scan pairing, but only after application-layer encryption and only for the short relay flow described above. Do not describe V1 as "direct peer transfer only".
 
 ## Privacy policy URLs
 
@@ -139,19 +197,22 @@ Intended public URLs after the one-shot Vercel deployment:
 - Terms: `https://zync-inky.vercel.app/terms`
 - Disclaimer: `https://zync-inky.vercel.app/disclaimer`
 
-The Privacy Policy is plain static HTML, contains the Zync/package identity, explains AI/provider processing, security, retention/deletion and a privacy inquiry mechanism through the official Google Play Developer contact.
+The Privacy Policy is plain static HTML, contains the Zync/package identity, explains the temporary encrypted relay, Vercel/Upstash/OpenRouter processing, security, retention/deletion and a privacy inquiry mechanism through the official Google Play Developer contact.
 
 ## Final submission checklist
 
 Before saving the Data Safety form:
 
 1. Confirm the production deployment is the new V1 and not the old 2025 `main` deployment.
-2. Live-smoke both AI endpoints with the real OpenRouter key and `openrouter/free` under enforced ZDR/data-collection-deny routing.
-3. Confirm `/privacy` is public, HTTPS, non-PDF, non-geofenced and readable without login/JavaScript.
-4. Confirm the signed AAB was built with `ZYNC_ANALYTICS_ENABLED=false`.
-5. Verify the current Play Console category wording for the AI content type.
-6. Verify the provider/service-provider exception before deciding the final "shared" answer.
-7. Ensure the Play listing no longer says "No data collected" if the V1 AI features are included.
+2. Confirm the production relay has valid `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, and `ZYNC_RELAY_RATE_LIMIT_SECRET` server environment values without exposing them to the Android build.
+3. Live-smoke the relay create -> respond -> repeated take -> consume -> expired/not-found sequence with synthetic opaque data.
+4. Live-smoke both AI endpoints with the real OpenRouter key and `openrouter/free` under enforced ZDR/data-collection-deny routing.
+5. Confirm `/privacy` is public, HTTPS, non-PDF, non-geofenced and readable without login/JavaScript.
+6. Confirm the signed AAB was built with `ZYNC_ANALYTICS_ENABLED=false`.
+7. Verify the current Play Console category wording for both AI content and the encrypted pairing-response data.
+8. Verify provider/service-provider exceptions before deciding the final "shared" answers, including Upstash for the pairing path.
+9. Review current Play treatment of IP/network identifiers in the final hosting configuration.
+10. Ensure the Play listing no longer says "No data collected".
 
 ## Current official policy references checked 2026-09-17
 
