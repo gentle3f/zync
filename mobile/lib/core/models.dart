@@ -21,6 +21,8 @@ class InterestDefinition {
     required this.category,
     required this.labels,
     this.aliases = const [],
+    this.cluster = '',
+    this.rank = 9999,
   });
 
   final String id;
@@ -28,9 +30,22 @@ class InterestDefinition {
   final Map<String, String> labels;
   final List<String> aliases;
 
+  /// Related-interest neighborhood. This is deliberately separate from the
+  /// canonical ID: sharing a cluster never makes two interests an exact match.
+  final String cluster;
+
+  /// Lower values are more useful during empty-query discovery.
+  final int rank;
+
   String labelFor(String locale) {
     final normalized = locale.replaceAll('_', '-');
-    return labels[normalized] ?? labels[normalized.split('-').first] ?? labels['en'] ?? id;
+    final lower = normalized.toLowerCase();
+    final canonical = lower.startsWith('zh')
+        ? (lower.contains('hant') || lower.contains('-hk') || lower.contains('-tw') || lower.contains('-mo')
+            ? 'zh-Hant'
+            : 'zh-Hans')
+        : normalized.split('-').first;
+    return labels[normalized] ?? labels[canonical] ?? labels[canonical.split('-').first] ?? labels['en'] ?? id;
   }
 }
 
@@ -270,7 +285,7 @@ class ZyncHistoryEntry {
   factory ZyncHistoryEntry.fromJson(Map<String, dynamic> json) => ZyncHistoryEntry(
         peerId: json['peerId'] as String,
         peerNickname: (json['peerNickname'] as String?) ?? '',
-        previousSharedIds: ((json['previousSharedIds'] as List?) ?? const []).cast<String>(),
+        previousSharedIds: ((json['previousSharedIds'] as List?) ?? const []).whereType<String>().toList(),
         firstZyncAt: DateTime.parse(json['firstZyncAt'] as String),
         lastZyncAt: DateTime.parse(json['lastZyncAt'] as String),
         sessionCount: (json['sessionCount'] as num?)?.toInt() ?? 1,
