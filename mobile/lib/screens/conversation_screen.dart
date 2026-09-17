@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../core/ai_service.dart';
+import '../core/language_support.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 
 class ConversationScreen extends StatefulWidget {
-  const ConversationScreen({super.key, required this.match});
+  const ConversationScreen({
+    super.key,
+    required this.match,
+    this.peerLanguage,
+  });
+
   final MatchResult match;
+  final String? peerLanguage;
 
   @override
   State<ConversationScreen> createState() => _ConversationScreenState();
@@ -29,7 +36,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
     if (_loading) return;
     setState(() => _loading = true);
     final language = Localizations.localeOf(context).toLanguageTag();
-    final result = await _ai.generateQuestion(language: language, mode: _mode, match: widget.match);
+    final result = await _ai.generateQuestion(
+      language: language,
+      secondaryLanguage: widget.peerLanguage,
+      mode: _mode,
+      match: widget.match,
+    );
     if (!mounted) return;
     setState(() {
       _result = result;
@@ -129,7 +141,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                 ),
                               )
                             : Column(
-                                key: ValueKey(_result?.question),
+                                key: ValueKey('${_result?.question}|${_result?.secondaryQuestion}'),
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
@@ -147,6 +159,33 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                     _result?.question ?? '',
                                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(height: 1.35),
                                   ),
+                                  if (_result?.secondaryQuestion case final secondaryQuestion?) ...[
+                                    const SizedBox(height: 22),
+                                    Divider(color: ZyncPalette.line.withValues(alpha: 0.9)),
+                                    const SizedBox(height: 14),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.translate_rounded, size: 18, color: ZyncPalette.plum),
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFE9E5FF),
+                                            borderRadius: BorderRadius.circular(999),
+                                          ),
+                                          child: Text(
+                                            ZyncLanguage.nativeName(_result!.secondaryLanguage ?? widget.peerLanguage ?? 'en'),
+                                            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: ZyncPalette.plum),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      secondaryQuestion,
+                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(height: 1.4),
+                                    ),
+                                  ],
                                   if (_result != null && !_result!.fromAi) ...[
                                     const SizedBox(height: 20),
                                     Container(
