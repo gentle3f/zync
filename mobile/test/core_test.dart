@@ -6,6 +6,7 @@ import 'package:zync/core/language_support.dart';
 import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 import 'package:zync/core/relay_service.dart';
+import 'package:zync/core/zync_session_service.dart';
 
 void main() {
   test('small QR payload stays legacy JSON and round-trips without PII expansion', () {
@@ -192,6 +193,90 @@ void main() {
     expect(onScanner.shared.map((item) => item.id).toList(), onHost.shared.map((item) => item.id).toList());
     expect(onScanner.onlyMine.map((item) => item.id).toList(), onHost.onlyMine.map((item) => item.id).toList());
     expect(onScanner.onlyTheirs.map((item) => item.id).toList(), onHost.onlyTheirs.map((item) => item.id).toList());
+  });
+
+  test('matching preserves each person strength for the same canonical interest', () {
+    const mine = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.wantToTry),
+    ];
+
+    final result = MatchingService.compare(mine, theirs);
+    final detail = result.sharedDetails.single;
+
+    expect(detail.mine.strength, InterestStrength.love);
+    expect(detail.theirs.strength, InterestStrength.wantToTry);
+    expect(detail.merged.strength, InterestStrength.wantToTry);
+  });
+
+  test('Zync Session collapses broad ancestors but never sibling specific interests', () {
+    const mine = [
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+      SelectedInterest(id: 'entertainment.one_piece', strength: InterestStrength.like),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.love),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+      SelectedInterest(id: 'entertainment.one_piece', strength: InterestStrength.love),
+    ];
+
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'session-a');
+    final connections = ZyncSessionService.exactConnections(
+      match,
+      sessionSeed: 'session-a',
+    );
+
+    expect(connections.map((item) => item.id), containsAll(['anime.jojo', 'entertainment.one_piece']));
+    expect(connections.map((item) => item.id), isNot(contains('media.anime')));
+    expect(
+      connections.firstWhere((item) => item.id == 'anime.jojo').context.map((item) => item.id),
+      contains('media.anime'),
+    );
+  });
+
+  test('new specific connection outranks old broad/popular connections', () {
+    const mine = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like),
+    ];
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'stable-seed');
+    final connections = ZyncSessionService.exactConnections(
+      match,
+      previousSharedIds: {'sports.badminton'},
+      sessionSeed: 'stable-seed',
+    );
+
+    expect(connections.first.id, 'anime.jojo');
+    expect(connections.first.isNew, isTrue);
+  });
+
+  test('zero-match bridge selection is deterministic and graph-aware', () {
+    const match = MatchResult(
+      shared: [],
+      onlyMine: [
+        SelectedInterest(id: 'travel.japan', strength: InterestStrength.love),
+        SelectedInterest(id: 'technology.ai', strength: InterestStrength.like),
+      ],
+      onlyTheirs: [
+        SelectedInterest(id: 'food.japanese', strength: InterestStrength.love),
+        SelectedInterest(id: 'sports.badminton', strength: InterestStrength.like),
+      ],
+    );
+
+    final first = ZyncSessionService.bestCrossover(match, sessionSeed: 'same-session');
+    final second = ZyncSessionService.bestCrossover(match, sessionSeed: 'same-session');
+
+    expect(first, isNotNull);
+    expect(first!.connectionKey, second!.connectionKey);
+    expect(first.mine.id, 'travel.japan');
+    expect(first.theirs.id, 'food.japanese');
   });
 
   test('handshake QR carries a short-lived session but never the private host capability', () {
