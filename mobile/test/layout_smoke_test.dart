@@ -351,11 +351,13 @@ void main() {
     expect(find.text('Ask about them'), findsOneWidget);
     expect(find.text('Japan Travel'), findsOneWidget);
 
-    await tester.drag(
-      find.byType(ListView).last,
-      const Offset(0, -900),
-    );
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 6 && find.text('Let them ask you').evaluate().isEmpty; i++) {
+      await tester.drag(
+        find.byType(ListView).last,
+        const Offset(0, -240),
+      );
+      await tester.pumpAndSettle();
+    }
 
     expect(find.text('Let them ask you'), findsOneWidget);
     expect(find.text('Street Photography'), findsOneWidget);
