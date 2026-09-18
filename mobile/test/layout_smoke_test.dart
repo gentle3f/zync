@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 import 'package:zync/core/relay_service.dart';
 import 'package:zync/l10n/generated/app_localizations.dart';
@@ -209,6 +210,92 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
     await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Zync Session collapses a true ancestor and first session has no new badge', (tester) async {
+    _setPhone(tester, width: 390, height: 844);
+    const peer = QrProfilePayload(
+      version: QrProfilePayload.currentVersion,
+      localId: 'peer-thread',
+      nickname: 'Mika',
+      language: 'en',
+      interests: [],
+    );
+    const mine = [
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'thread-session');
+
+    await tester.pumpWidget(
+      _harness(
+        MatchScreen(
+          peer: peer,
+          match: match,
+          newMatchCount: 0,
+          sessionSeed: 'thread-session',
+        ),
+        locale: const Locale('en'),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(find.text('You found 1 hidden connections.'), findsOneWidget);
+    expect(find.text('New since your last Zync'), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("JoJo's Bizarre Adventure"), findsOneWidget);
+    expect(find.text('Anime'), findsOneWidget);
+    expect(find.text('New since your last Zync'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('zero exact match becomes a positive graph crossover, not a failure screen', (tester) async {
+    _setPhone(tester, width: 390, height: 844);
+    const peer = QrProfilePayload(
+      version: QrProfilePayload.currentVersion,
+      localId: 'peer-crossover',
+      nickname: 'Kai',
+      language: 'en',
+      interests: [],
+    );
+    const match = MatchResult(
+      shared: [],
+      onlyMine: [
+        SelectedInterest(id: 'travel.japan', strength: InterestStrength.love),
+      ],
+      onlyTheirs: [
+        SelectedInterest(id: 'food.japanese', strength: InterestStrength.love),
+      ],
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        const MatchScreen(
+          peer: peer,
+          match: match,
+          newMatchCount: 0,
+          sessionSeed: 'crossover-session',
+        ),
+        locale: Locale('en'),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(find.text('No exact match.'), findsNothing);
+    expect(find.text('There’s still a connection.'), findsOneWidget);
+    expect(find.text('Japan Travel  ×  Japanese Food'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
