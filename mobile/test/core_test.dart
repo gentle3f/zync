@@ -7,8 +7,126 @@ import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 import 'package:zync/core/relay_service.dart';
 import 'package:zync/core/zync_session_service.dart';
+import 'package:zync/core/zync_alias.dart';
 
 void main() {
+  test('ridiculous anonymous alias is deterministic and never exposes the raw ID', () {
+    final first = ZyncAlias.forId('peer-stable-123', 'en');
+    final second = ZyncAlias.forId('peer-stable-123', 'en');
+    final zh = ZyncAlias.forId('peer-stable-123', 'zh-Hant');
+
+    expect(first, second);
+    expect(first, isNot(contains('peer-stable-123')));
+    expect(first, isNot(startsWith('Zync #')));
+    expect(first.split(' ').length, greaterThanOrEqualTo(2));
+    expect(zh, isNotEmpty);
+  });
+
+  test('QR includes only explicitly shared public social links', () {
+    const profile = LocalProfile(
+      localId: 'social-user',
+      nickname: '',
+      language: 'en',
+      interests: [
+        SelectedInterest(id: 'sports.badminton', strength: InterestStrength.like),
+      ],
+      socialLinks: [
+        SocialLink(
+          platform: SocialPlatform.instagram,
+          value: '@open_me',
+          shareAfterZync: true,
+        ),
+        SocialLink(
+          platform: SocialPlatform.threads,
+          value: '@private_for_now',
+          shareAfterZync: false,
+        ),
+      ],
+    );
+
+    final payload = QrProfilePayload.fromProfile(profile);
+    expect(payload.socialLinks, hasLength(1));
+    expect(payload.socialLinks.single.platform, SocialPlatform.instagram);
+
+    final decoded = QrProfilePayload.decode(payload.encode());
+    expect(decoded.socialLinks, hasLength(1));
+    expect(decoded.socialLinks.single.profileUrl, 'https://www.instagram.com/open_me/');
+    expect(decoded.socialLinks.single.shareAfterZync, isTrue);
+  });
+
+  test('old profile and QR JSON remain valid without social-link fields', () {
+    final profile = LocalProfile.fromJson({
+      'localId': 'old-local',
+      'nickname': '',
+      'language': 'en',
+      'interests': const [],
+    });
+    expect(profile.socialLinks, isEmpty);
+
+    final decoded = QrProfilePayload.decode(
+      jsonEncode({
+        'v': QrProfilePayload.currentVersion,
+        'id': 'old-peer',
+        'name': '',
+        'lang': 'en',
+        'i': const [],
+      }),
+    );
+    expect(decoded.socialLinks, isEmpty);
+  });
+
+  test('history JSON migrates old rows and preserves richer local memories', () {
+    final old = ZyncHistoryEntry.fromJson({
+      'peerId': 'old-peer',
+      'peerNickname': '',
+      'previousSharedIds': ['sports.badminton'],
+      'firstZyncAt': '2026-09-17T00:00:00Z',
+      'lastZyncAt': '2026-09-18T00:00:00Z',
+      'sessionCount': 2,
+    });
+    expect(old.peerInterests, isEmpty);
+    expect(old.recentQuestions, isEmpty);
+
+    final rich = ZyncHistoryEntry(
+      peerId: 'peer-rich',
+      peerNickname: '',
+      previousSharedIds: const ['anime.jojo'],
+      firstZyncAt: DateTime.utc(2026, 9, 17),
+      lastZyncAt: DateTime.utc(2026, 9, 18),
+      sessionCount: 3,
+      peerInterests: const [
+        SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      ],
+      recentQuestions: [
+        ZyncQuestionMemory(
+          connectionKey: 'shared:anime.jojo',
+          question: 'Which Part would you start with?',
+          mode: 'fun',
+          createdAt: DateTime.utc(2026, 9, 18),
+          connectionLabel: 'JoJo',
+        ),
+      ],
+    );
+    final roundTrip = ZyncHistoryEntry.fromJson(rich.toJson());
+    expect(roundTrip.peerInterests.single.id, 'sports.badminton');
+    expect(roundTrip.recentQuestions.single.question, 'Which Part would you start with?');
+  });
+
+  test('one-person fallback invites curiosity instead of inventing a crossover', () {
+    const service = AiService(baseUrl: '');
+    const match = MatchResult(
+      shared: [],
+      onlyMine: [],
+      onlyTheirs: [
+        SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      ],
+    );
+    final result = service.localFallback(language: 'en', match: match);
+    expect(result.fromAi, isFalse);
+    expect(result.question.toLowerCase(), contains('badminton'));
+    expect(result.question.toLowerCase(), isNot(contains('combined')));
+  });
+
   test('small QR payload stays legacy JSON and round-trips without PII expansion', () {
     const profile = LocalProfile(
       localId: 'abc-123',
