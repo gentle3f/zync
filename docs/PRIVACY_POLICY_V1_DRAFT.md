@@ -15,10 +15,13 @@ The current public-V1 posture is:
 - one-scan completion uses a short-lived encrypted relay for the scanner response;
 - the scanner response is AES-GCM encrypted on-device with a one-time QR secret that the relay does not receive;
 - relay state uses Vercel + Upstash Redis, is designed to expire after about three minutes, and is deleted earlier after successful authenticated host decryption when possible;
-- bounded AI feature data sent through the Zync Vercel API and OpenRouter;
+- interest catalog search/custom-interest creation run on-device; custom-interest text is not sent for AI normalization by the shipped V1 UI;
+- coarse device-locale region plus aggregate canonical-interest impression/selection counts can be used for stable regional discovery ranking without GPS/precise location or a persistent Zync user/install identifier;
+- bounded AI conversation feature data sent through the Zync Vercel API and OpenRouter;
 - OpenRouter requests enforce `zdr: true` and `data_collection: "deny"`;
 - `openrouter/free` is the configured model router;
 - product analytics are explicitly disabled in the public V1 Android build with `ZYNC_ANALYTICS_ENABLED=false`;
+- the separate aggregate regional-interest learning path is enabled with `ZYNC_INTEREST_LEARNING_ENABLED=true` and is disclosed in `privacy.html`/Data Safety;
 - privacy inquiries use the official Google Play listing's Developer contact mechanism.
 
 Do not restore or publish the earlier placeholders, and do not describe V1 as "direct peer transfer only". Edit `privacy.html` if the shipped privacy practice changes, and update Play Data Safety at the same time.
