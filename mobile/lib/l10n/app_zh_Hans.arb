@@ -175,5 +175,16 @@
   "finishAndRecap": "完成并查看回顾",
   "backToIdeas": "返回其他话题",
   "theirInterest": "对方的一个兴趣",
-  "yourInterest": "你的一个兴趣"
+  "yourInterest": "你的一个兴趣",
+  "socialLinks": "社交账号",
+  "socialLinksSubtitle": "可选。添加你愿意在Zync之后分享的公开账号。",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync后分享",
+  "shareAfterZyncExplain": "只有你明确开启分享的账号才会放进Zync QR，并在session结束后显示给对方。",
+  "stayConnected": "想继续联系？",
+  "openProfile": "打开账号",
+  "showQr": "显示QR",
+  "saveSocialLinks": "保存社交账号"
 }
