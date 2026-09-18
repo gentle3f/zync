@@ -6,6 +6,7 @@ ZyncHistoryEntry peer(
   String id, {
   List<String> interests = const [],
   List<String> shared = const [],
+  List<String> seen = const [],
   int sessions = 1,
 }) {
   final now = DateTime.utc(2026, 9, 19);
@@ -16,6 +17,7 @@ ZyncHistoryEntry peer(
     firstZyncAt: now,
     lastZyncAt: now,
     sessionCount: sessions,
+    seenInterestIds: seen,
     peerInterests: interests
         .map(
           (interestId) => SelectedInterest(
@@ -91,6 +93,21 @@ void main() {
     ]);
 
     expect(snapshot.unlockedIds, contains('basketball_starting_five'));
+  });
+
+  test('earned discovery progress does not regress when current peer interests change', () {
+    final snapshot = AchievementService.evaluate([
+      peer(
+        'changed-profile',
+        interests: const ['music.jazz'],
+        seen: const ['sports.basketball', 'music.jazz'],
+      ),
+    ]);
+
+    final basketball = snapshot.progress
+        .firstWhere((item) => item.id == 'basketball_starting_five');
+    expect(basketball.current, 1);
+    expect(snapshot.discoveredSports, contains('sports.basketball'));
   });
 
   test('newlyUnlocked only returns trophies crossed by the latest encounter', () {
