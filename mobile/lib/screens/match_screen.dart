@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'achievement_screen.dart';
+
 import '../core/ai_service.dart';
 import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
@@ -28,6 +30,7 @@ class MatchScreen extends StatefulWidget {
     this.previousSharedIds = const {},
     this.isRepeatPeer = false,
     this.localIsMatchMine = true,
+    this.newAchievementIds = const [],
   });
 
   final QrProfilePayload peer;
@@ -37,6 +40,7 @@ class MatchScreen extends StatefulWidget {
   final Set<String> previousSharedIds;
   final bool isRepeatPeer;
   final bool localIsMatchMine;
+  final List<String> newAchievementIds;
 
   @override
   State<MatchScreen> createState() => _MatchScreenState();
@@ -1238,6 +1242,54 @@ class _MatchScreenState extends State<MatchScreen> {
                 )
                 .toList(growable: false),
           ),
+          if (widget.newAchievementIds.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            ZyncSurface(
+              borderColor: const Color(0xFFFFD98A),
+              backgroundColor: const Color(0xFFFFF8E8),
+              child: Column(
+                children: [
+                  const ZyncIconTile(
+                    icon: Icons.emoji_events_rounded,
+                    size: 56,
+                    backgroundColor: Color(0xFFFFE9B7),
+                    foregroundColor: Color(0xFF8B5A00),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    LocalizedDomainText.newAchievement(locale),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  for (final id in widget.newAchievementIds)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        LocalizedDomainText.achievementTitle(id, locale),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(color: const Color(0xFF8B5A00)),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const AchievementScreen(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.emoji_events_outlined),
+                    label: Text(
+                      LocalizedDomainText.achievementsTitle(locale),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           if (widget.peer.socialLinks.isNotEmpty) ...[
             const SizedBox(height: 28),
             Text(
