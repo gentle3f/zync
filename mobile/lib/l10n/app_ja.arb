@@ -175,5 +175,16 @@
   "finishAndRecap": "終了して振り返る",
   "backToIdeas": "ほかの話題へ",
   "theirInterest": "相手の興味",
-  "yourInterest": "あなたの興味"
+  "yourInterest": "あなたの興味",
+  "socialLinks": "ソーシャルリンク",
+  "socialLinksSubtitle": "任意。Zync後に共有してもよい公開プロフィールを追加できます。",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync後に共有",
+  "shareAfterZyncExplain": "明示的に共有をオンにしたリンクだけがZync QRに入り、セッション後に相手へ表示されます。",
+  "stayConnected": "つながっておく？",
+  "openProfile": "プロフィールを開く",
+  "showQr": "QRを表示",
+  "saveSocialLinks": "ソーシャルリンクを保存"
 }
