@@ -33,7 +33,7 @@ This file is the release-facing answer sheet for the rebuilt local-first V1. It 
 There are now three feature-dependent off-device paths that must be considered:
 
 1. AI-assisted conversation generation transmits a bounded set of relevant interest labels/mode/language context to the Zync API and AI processing path.
-2. One-scan QR pairing transmits an AES-GCM-encrypted scanner profile response to the short-lived Zync relay so the host phone can complete the same local match automatically.
+2. One-scan QR pairing transmits an AES-GCM-encrypted scanner profile response to the short-lived Zync relay so the host phone can complete the same local match automatically. If the scanner explicitly enabled post-Zync sharing for a public social-profile handle/URL, that opted-in link can be part of the encrypted limited profile response.
 3. Regional interest learning can transmit a coarse device-locale region plus canonical catalog interest IDs that were shown and selected, so the server can maintain aggregate weekly impression/selection counts.
 
 Encryption, opacity to the application server, short retention, and ephemeral processing do **not** make an off-device transmission disappear for Data Safety analysis. Do **not** answer "No data collected" for this V1.
@@ -115,6 +115,7 @@ After the scanner reads the host QR, the app prepares only the profile fields th
 - supported language;
 - selected interest IDs and Love / Like / Want to try strength;
 - custom-interest labels/categories needed to interpret those interests;
+- optional public Instagram, Threads, or Facebook handles/profile URLs that the scanner explicitly enabled for post-Zync sharing; and
 - relay protocol/session/expiry metadata.
 
 Before transmission, that response is encrypted and authenticated on the scanning device with AES-GCM using the one-time 256-bit secret carried in the host QR. The relay endpoint receives the random session ID and an opaque encrypted envelope; it does not receive the one-time decryption secret.
@@ -133,7 +134,7 @@ Before transmission, that response is encrypted and authenticated on the scannin
 
 ### Play category
 
-The cleartext represents user/profile content but the Zync-controlled relay stores only ciphertext. Google's Data Safety form classifications are based on what user data leaves the device, not merely what the first-party server can read. Before submission, inspect the current Play taxonomy and classify this encrypted profile response conservatively under the closest applicable user-content/profile category or categories.
+The cleartext represents user/profile content but the Zync-controlled relay stores only ciphertext. Google's Data Safety form classifications are based on what user data leaves the device, not merely what the first-party server can read. Before submission, inspect the current Play taxonomy and classify this encrypted profile response conservatively under the closest applicable user-content/profile category or categories. If public social-profile handles/URLs are enabled, also verify whether the current Play form treats those handles as User IDs, Other personal info, or another category; do not assume the category from an older Console version.
 
 Do **not** omit this transmission merely because the server lacks the decryption key.
 
@@ -144,6 +145,20 @@ This transmission is feature-dependent: it occurs when users choose the one-scan
 ### Is the data processed ephemerally?
 
 Yes at the application-design level: the relay is intentionally short-lived and TTL-backed, with early deletion after successful consume. Still disclose the off-device collection and answer the Play Console's current ephemeral-processing question according to Google's current wording.
+
+## Optional public social-profile exchange
+
+Zync V1 can let a user manually enter a public Instagram, Threads or Facebook handle/profile URL and independently enable **Share after Zync** for each link.
+
+- This does not create a Zync account.
+- Zync V1 does not request or store a social-media password, browser cookie, or OAuth access token for this flow.
+- Non-enabled links remain local and are not placed in the exchanged limited profile.
+- An enabled host link is intentionally disclosed to the scanner through the QR/profile payload.
+- An enabled scanner link can leave the scanning device inside the AES-GCM-encrypted relay response described above.
+- The recipient can retain the shared public link in local Zync history on their own device.
+- No contacts, followers, posts, messages or social graph are imported.
+
+Because this is an intentional user-to-user disclosure as well as, for the scanner side, part of the encrypted off-device relay path, verify the current Google Play Data Safety wording for user-initiated transfers and social/profile identifiers before final submission. Do not omit the encrypted scanner-side transmission simply because the user opted in or because the relay sees only ciphertext.
 
 ## Data type 3 — coarse regional interest discovery signals
 
@@ -214,7 +229,8 @@ If analytics are enabled in a future release, re-open Data Safety before publish
 ## Data that remains local / is not persisted as a cloud profile
 
 - host profile/history as a permanent cloud object;
-- Zync Again/history records;
+- Zync Again/history records, including questions shown during prior sessions, the peer's latest limited interests, and social links the peer explicitly shared;
+- the user's own optional social-profile links and per-link sharing preferences, except when an opted-in link is intentionally exchanged through the QR/one-scan pairing flow;
 - Interest DNA calculations;
 - local match calculation and reveal state;
 - custom-interest text created through the V1 interest-entry UI;
@@ -244,7 +260,7 @@ Before saving the Data Safety form:
 5. Live-smoke the regional-interest popularity read endpoint and confirm aggregate weekly data can be read from the configured Upstash store.
 6. Confirm `/privacy` is public, HTTPS, non-PDF, non-geofenced and readable without login/JavaScript.
 7. Confirm the signed AAB was built with `ZYNC_ANALYTICS_ENABLED=false` and `ZYNC_INTEREST_LEARNING_ENABLED=true`.
-8. Verify the current Play Console category wording for both AI content and the encrypted pairing-response data.
+8. Verify the current Play Console category wording for AI content, the encrypted pairing-response data, and any explicitly shared public social-profile handles/URLs.
 9. Verify provider/service-provider exceptions before deciding the final "shared" answers, including Upstash for the pairing path.
 10. Review current Play treatment of IP/network identifiers in the final hosting configuration.
 11. Ensure the Play listing no longer says "No data collected".
