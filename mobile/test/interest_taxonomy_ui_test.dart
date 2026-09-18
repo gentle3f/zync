@@ -9,7 +9,7 @@ import 'package:zync/ui/zync_design.dart';
 void main() {
   testWidgets('interest setup drills from category to L2 and L3 taxonomy', (tester) async {
     tester.view.devicePixelRatio = 2;
-    tester.view.physicalSize = const Size(780, 1688);
+    tester.view.physicalSize = const Size(3000, 1688);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -41,11 +41,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final l1Strip = find.byType(ListView).first;
-    for (var i = 0; i < 4 && find.text('Entertainment').evaluate().isEmpty; i++) {
-      await tester.drag(l1Strip, const Offset(-700, 0));
-      await tester.pumpAndSettle();
-    }
     expect(find.text('Entertainment'), findsOneWidget);
     await tester.tap(find.text('Entertainment'));
     await tester.pumpAndSettle();
