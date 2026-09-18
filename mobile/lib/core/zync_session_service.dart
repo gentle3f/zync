@@ -144,9 +144,11 @@ class ZyncSessionService {
     final mutualStrength =
         (detail.mine.strength.wireValue + detail.theirs.strength.wireValue + 2) *
         10;
-    final newBonus = isNew ? 80 : 0;
+    // Do not let device-local Zync Again history alter reveal order: the two
+    // phones may have different local histories. Newness remains a prominent
+    // local badge while ordering stays identical on both devices.
     final jitter = _seedScore(sessionSeed, detail.id) % 7;
-    return newBonus + specificity + rarity + mutualStrength + jitter;
+    return specificity + rarity + mutualStrength + jitter;
   }
 
   static int _seedScore(String seed, String value) {
