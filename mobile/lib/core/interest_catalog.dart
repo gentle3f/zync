@@ -55,6 +55,91 @@ class InterestCatalog {
 
   static int get count => seed.length;
 
+  static ({String category, String l2, String? l3})? taxonomyPathFor(String id) {
+    final item = byId(id);
+    if (item == null) return null;
+    final path = _taxonomyPath(item);
+    return (category: item.category, l2: path.l2, l3: path.l3);
+  }
+
+  /// Approximate hierarchy depth for reveal ranking. This never changes exact
+  /// matching semantics; it only helps the post-scan experience prefer the
+  /// narrower "wait, you like that too?" connection over a broad parent.
+  static int specificityScore(String id) {
+    final item = byId(id);
+    if (item == null) return 55; // custom interests are usually intentionally specific
+    final path = _taxonomyPath(item);
+    if (_isCategoryRoot(item)) return 4;
+    final l3 = path.l3;
+    if (l3 != null && l3.isNotEmpty && l3 != 'general') {
+      const highSpecificityLeaves = {
+        'titles_franchises',
+        'franchises',
+        'modern_evergreen',
+        'classics',
+        'artists_global',
+        'hk_cantopop',
+        'mandopop_artists',
+        'japanese_artists',
+        'kpop_artists',
+      };
+      return highSpecificityLeaves.contains(l3) || l3.endsWith('artists') ? 52 : 42;
+    }
+    if (path.l2 != 'general') return 24;
+    return 10;
+  }
+
+  /// True only for a broad taxonomy node that is genuinely superseded by a
+  /// more specific shared interest. Sibling interests are never collapsed.
+  static bool isBroadAncestorOf(String broadId, String specificId) {
+    if (broadId == specificId) return false;
+    final broad = byId(broadId);
+    final specific = byId(specificId);
+    if (broad == null || specific == null || broad.category != specific.category) return false;
+
+    if (_isCategoryRoot(broad)) return true;
+
+    final a = _taxonomyPath(broad);
+    final b = _taxonomyPath(specific);
+    final aGeneral = a.l3 == null || a.l3!.isEmpty || a.l3 == 'general';
+    final bSpecific = b.l3 != null && b.l3!.isNotEmpty && b.l3 != 'general';
+    return aGeneral && bSpecific && a.l2 == b.l2;
+  }
+
+  /// Lower values mean a more plausible local-interest bridge.
+  static int relationshipDistance(String aId, String bId) {
+    if (aId == bId) return 0;
+    final a = byId(aId);
+    final b = byId(bId);
+    if (a == null || b == null) return 7;
+    final ap = _taxonomyPath(a);
+    final bp = _taxonomyPath(b);
+    if (a.category == b.category && ap.l2 == bp.l2 && ap.l3 == bp.l3) return 1;
+    if (a.category == b.category && ap.l2 == bp.l2) return 2;
+    if (a.category == b.category) return 3;
+
+    const adjacent = {
+      'entertainment|music',
+      'entertainment|arts',
+      'gaming|technology',
+      'gaming|entertainment',
+      'sports|wellness',
+      'sports|outdoors',
+      'travel|food',
+      'travel|outdoors',
+      'arts|crafts',
+      'science|technology',
+      'learning|science',
+      'transport|motorsport',
+      'fashion|lifestyle',
+      'pets|outdoors',
+    };
+    final key = a.category.compareTo(b.category) <= 0
+        ? '${a.category}|${b.category}'
+        : '${b.category}|${a.category}';
+    return adjacent.contains(key) ? 4 : 6;
+  }
+
   static InterestDefinition? exact(String input) {
     final q = normalizeText(input);
     if (q.isEmpty) return null;
@@ -372,6 +457,18 @@ class InterestCatalog {
         break;
     }
     return (l2: root, l3: leaf);
+  }
+
+  static bool _isCategoryRoot(InterestDefinition item) {
+    const explicitRoots = {
+      'travel.general',
+      'media.movies',
+      'media.tv',
+      'media.anime',
+      'media.manga',
+    };
+    if (explicitRoots.contains(item.id)) return true;
+    return item.id.endsWith('.general') && item.rank < 200;
   }
 
   static String _stableId(String normalized) {
