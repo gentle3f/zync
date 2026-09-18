@@ -205,7 +205,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
-    await tester.tap(find.byIcon(Icons.visibility_outlined));
+    await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });
