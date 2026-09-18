@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../core/achievement_service.dart';
 import '../core/analytics_service.dart';
 import '../core/local_store.dart';
 import '../core/matching_service.dart';
@@ -93,7 +94,10 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         widget.profile.interests,
         sessionSeed: handshake.sessionId,
       );
-      final previous = await LocalStore.findHistory(peer.localId);
+      final historyBefore = await LocalStore.loadHistory();
+      final previous = historyBefore
+          .where((entry) => entry.peerId == peer.localId)
+          .firstOrNull;
       final previousIds = previous?.previousSharedIds.toSet() ?? <String>{};
       final currentIds = match.shared.map((item) => item.id).toSet();
       final newCount = currentIds.difference(previousIds).length;
@@ -118,6 +122,14 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         peerInterests: peer.interests,
         peerSocialLinks: peer.socialLinks,
       );
+      final newAchievementIds = AchievementService.newlyUnlocked(
+        before: historyBefore,
+        after: await LocalStore.loadHistory(),
+      ).toList(growable: false);
+      final newAchievementIds = AchievementService.newlyUnlocked(
+        before: historyBefore,
+        after: await LocalStore.loadHistory(),
+      ).toList(growable: false);
       _pendingHandshakeRaw = null;
       _pendingEncryptedResponse = null;
 
@@ -157,6 +169,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
             previousSharedIds: previousIds,
             isRepeatPeer: previous != null,
             localIsMatchMine: false,
+            newAchievementIds: newAchievementIds,
           ),
         ),
       );
@@ -201,7 +214,10 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         throw const FormatException('Cannot Zync with yourself');
       }
       final match = MatchingService.compare(widget.profile.interests, peer.interests);
-      final previous = await LocalStore.findHistory(peer.localId);
+      final historyBefore = await LocalStore.loadHistory();
+      final previous = historyBefore
+          .where((entry) => entry.peerId == peer.localId)
+          .firstOrNull;
       final previousIds = previous?.previousSharedIds.toSet() ?? <String>{};
       final currentIds = match.shared.map((item) => item.id).toSet();
       final newCount = currentIds.difference(previousIds).length;
@@ -250,6 +266,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
             previousSharedIds: previousIds,
             isRepeatPeer: previous != null,
             localIsMatchMine: true,
+            newAchievementIds: newAchievementIds,
           ),
         ),
       );
