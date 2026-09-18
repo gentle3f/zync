@@ -7,6 +7,7 @@ import '../core/ai_service.dart';
 import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
 import '../core/language_support.dart';
+import '../core/local_store.dart';
 import '../core/models.dart';
 import '../core/zync_alias.dart';
 import '../core/zync_session_service.dart';
@@ -39,6 +40,11 @@ class MatchScreen extends StatefulWidget {
 }
 
 class _MatchScreenState extends State<MatchScreen> {
+  static const _qaDebug = bool.fromEnvironment(
+    'ZYNC_QA_DEBUG',
+    defaultValue: false,
+  );
+
   final _ai = const AiService();
   late final List<ZyncConnection> _connections;
   late final ZyncCrossover? _crossover;
@@ -117,38 +123,102 @@ class _MatchScreenState extends State<MatchScreen> {
     if (match == null || connectionKey == null || connectionKey.isEmpty) return;
 
     final mapKey = '$connectionKey|${_mode.name}';
-    if (_questions.containsKey(mapKey) || _loadingQuestions.contains(mapKey)) return;
-    if (mounted) {
-      setState(() => _loadingQuestions.add(mapKey));
-    } else {
-      _loadingQuestions.add(mapKey);
+    final existing = _questions[mapKey];
+    if (existing?.fromAi == true) {
+      if (!prefetch) unawaited(_rememberQuestion(connectionKey, existing!));
+      return;
     }
+    if (_loadingQuestions.contains(mapKey)) return;
 
     final language = Localizations.localeOf(context).toLanguageTag();
     final requestedMode = _mode;
-    final result = await _ai.generateQuestion(
-      language: language,
-      secondaryLanguage: widget.peer.language,
-      mode: requestedMode,
-      match: match,
-      sessionSeed: widget.sessionSeed,
-      connectionKey: connectionKey,
-    );
+    final fallback = existing ??
+        _ai.localFallback(
+          language: language,
+          secondaryLanguage: widget.peer.language,
+          match: match,
+        );
+
+    if (mounted) {
+      setState(() {
+        _questions[mapKey] = fallback;
+        _loadingQuestions.add(mapKey);
+      });
+    } else {
+      _questions[mapKey] = fallback;
+      _loadingQuestions.add(mapKey);
+    }
+
+    AiQuestionResult? aiResult;
+    for (var attempt = 0; attempt < 3 && aiResult == null; attempt++) {
+      if (attempt > 0) {
+        await Future<void>.delayed(Duration(milliseconds: attempt == 1 ? 900 : 2200));
+        if (!mounted) return;
+      }
+      aiResult = await _ai.generateAiQuestion(
+        language: language,
+        secondaryLanguage: widget.peer.language,
+        mode: requestedMode,
+        match: match,
+        sessionSeed: widget.sessionSeed,
+        connectionKey: connectionKey,
+      );
+    }
     if (!mounted) return;
 
+    final finalResult = aiResult ?? fallback;
     setState(() {
-      _questions[mapKey] = result;
+      _questions[mapKey] = finalResult;
       _loadingQuestions.remove(mapKey);
     });
+
+    if (!prefetch || _baseConnectionKey() == connectionKey) {
+      unawaited(_rememberQuestion(connectionKey, finalResult));
+    }
+
     unawaited(
       ZyncAnalytics.instance.track(
         AnalyticsEvent.questionGenerated,
         properties: {
           'mode': requestedMode.name,
-          'source': result.fromAi ? 'ai' : 'fallback',
+          'source': finalResult.fromAi ? 'ai' : 'fallback',
           'match_type': _connections.isEmpty ? 'crossover' : 'shared',
-          'bilingual': result.secondaryQuestion?.isNotEmpty ?? false,
+          'bilingual': finalResult.secondaryQuestion?.isNotEmpty ?? false,
         },
+      ),
+    );
+  }
+
+  Future<void> _rememberQuestion(
+    String connectionKey,
+    AiQuestionResult result,
+  ) async {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    String? label;
+    if (connectionKey.startsWith('shared:')) {
+      final id = connectionKey.substring('shared:'.length);
+      label = InterestCatalog.byId(id)?.labelFor(locale) ?? id;
+    } else if (_crossover != null && connectionKey == _crossover!.connectionKey) {
+      final mine = InterestCatalog.byId(_crossover!.mine.id)?.labelFor(locale) ??
+          _crossover!.mine.customLabel ??
+          _crossover!.mine.id;
+      final theirs =
+          InterestCatalog.byId(_crossover!.theirs.id)?.labelFor(locale) ??
+              _crossover!.theirs.customLabel ??
+              _crossover!.theirs.id;
+      label = '$mine × $theirs';
+    }
+
+    await LocalStore.recordQuestion(
+      peerId: widget.peer.localId,
+      memory: ZyncQuestionMemory(
+        connectionKey: connectionKey,
+        question: result.question,
+        secondaryQuestion: result.secondaryQuestion,
+        connectionLabel: label,
+        mode: _mode.name,
+        kind: connectionKey.startsWith('shared:') ? 'shared' : 'crossover',
+        createdAt: DateTime.now().toUtc(),
       ),
     );
   }
@@ -599,8 +669,22 @@ class _MatchScreenState extends State<MatchScreen> {
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(height: 1.4),
               ),
             ],
-            if (!result.fromAi) ...[
-              const SizedBox(height: 14),
+            if (_qaDebug) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Chip(
+                  visualDensity: VisualDensity.compact,
+                  avatar: Icon(
+                    result.fromAi ? Icons.auto_awesome_rounded : Icons.offline_bolt_outlined,
+                    size: 15,
+                  ),
+                  label: Text(result.fromAi ? 'AI' : 'Local fallback'),
+                ),
+              ),
+            ],
+            if (!result.fromAi && !loading) ...[
+              const SizedBox(height: 10),
               Text(
                 l10n.aiUnavailable,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
