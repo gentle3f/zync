@@ -775,9 +775,11 @@ class _MatchScreenState extends State<MatchScreen> {
               children: [
                 const Icon(Icons.person_search_outlined, color: ZyncPalette.plum),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.askAboutThem,
-                  style: Theme.of(context).textTheme.titleMedium,
+                Expanded(
+                  child: Text(
+                    l10n.askAboutThem,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
@@ -798,9 +800,11 @@ class _MatchScreenState extends State<MatchScreen> {
               children: [
                 const Icon(Icons.record_voice_over_outlined, color: ZyncPalette.orangeDeep),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.letThemAskYou,
-                  style: Theme.of(context).textTheme.titleMedium,
+                Expanded(
+                  child: Text(
+                    l10n.letThemAskYou,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
