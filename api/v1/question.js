@@ -105,6 +105,26 @@ function buildPrompt({ language, secondaryLanguage, mode, shared, personA, perso
   ].join('\n');
 }
 
+function extractMessageText(message) {
+  const content = message?.content;
+  if (typeof content === 'string') return content;
+
+  if (Array.isArray(content)) {
+    return content
+      .map((part) => {
+        if (typeof part === 'string') return part;
+        if (!part || typeof part !== 'object') return '';
+        if (typeof part.text === 'string') return part.text;
+        if (part.type === 'text' && typeof part.content === 'string') return part.content;
+        return '';
+      })
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  return '';
+}
+
 function cleanModelText(value) {
   if (typeof value !== 'string') return '';
   return value
@@ -308,7 +328,9 @@ export default async function handler(req, res) {
           { role: 'user', content: prompt },
         ],
         temperature: mode === 'surprise' ? 1.0 : 0.8,
-        max_tokens: generationSecondary ? 320 : 180,
+        modalities: ['text'],
+        reasoning_effort: 'none',
+        max_completion_tokens: generationSecondary ? 420 : 240,
       }),
       signal: AbortSignal.timeout(AI_TIMEOUT_MS),
     });
@@ -328,9 +350,30 @@ export default async function handler(req, res) {
       });
     }
 
-    const parsed = parseQuestions(data?.choices?.[0]?.message?.content, generationSecondary);
+    const choice = data?.choices?.[0];
+    const modelText = extractMessageText(choice?.message);
+    const parsed = parseQuestions(modelText, generationSecondary);
     if (!parsed) {
-      return res.status(502).json({ error: generationSecondary ? 'bilingual_response_invalid' : 'empty_ai_response' });
+      const diagnostic = body.diagnostics === true
+        ? {
+            servedModel: typeof data?.model === 'string' ? data.model.slice(0, 120) : 'unknown',
+            finishReason: typeof choice?.finish_reason === 'string' ? choice.finish_reason.slice(0, 80) : 'unknown',
+            contentKind: Array.isArray(choice?.message?.content)
+              ? 'array'
+              : typeof choice?.message?.content,
+            contentLength: modelText.length,
+            reasoningLength: typeof choice?.message?.reasoning === 'string'
+              ? choice.message.reasoning.length
+              : 0,
+            completionTokens: Number.isFinite(data?.usage?.completion_tokens)
+              ? data.usage.completion_tokens
+              : null,
+          }
+        : null;
+      return res.status(502).json({
+        error: generationSecondary ? 'bilingual_response_invalid' : 'empty_ai_response',
+        ...(diagnostic ? { diagnostic } : {}),
+      });
     }
 
     const servedModel =
