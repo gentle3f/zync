@@ -1,6 +1,6 @@
 # Zync V1 — Google Play Data Safety Release Answers
 
-Date: 2026-09-17  
+Date: 2026-09-18  
 Branch: `zync-v1-rebuild-20260917`  
 Android package: `com.gmail.gentle3f.myproject`
 
@@ -14,8 +14,10 @@ This file is the release-facing answer sheet for the rebuilt local-first V1. It 
 - One-scan pairing uses a short-lived encrypted relay: the scanner encrypts the limited profile response needed by the host with AES-GCM using a one-time key carried in the QR; the Zync relay receives only the random session ID plus opaque ciphertext/status and does not receive that decryption key.
 - Relay state is designed for about a three-minute maximum lifetime and is deleted earlier after successful authenticated host decryption where possible.
 - The relay path is Android -> Zync Vercel API -> Upstash Redis. Matching itself remains on-device on both phones.
-- AI is optional and used only for unknown-interest normalization and conversation-question generation.
-- AI requests go through the Zync Vercel API and OpenRouter.
+- Interest catalog search, aliases, custom-interest creation and matching are on-device; the shipped V1 UI does not send custom-interest text for AI normalization.
+- Optional AI conversation-question requests go through the Zync Vercel API and OpenRouter.
+- Regional interest discovery can use the coarse country/region from the device locale plus aggregate canonical-interest impression/selection counts. It does not use GPS or precise location.
+- The regional-learning transport has no Zync account ID, analytics installation ID, nickname, full profile, or custom-interest text.
 - Every OpenRouter request requires `provider.zdr: true` and `provider.data_collection: "deny"`.
 - Model selection is `openrouter/free`, so the underlying free model/provider can vary; requests must still satisfy the privacy-routing constraints.
 - Product analytics are explicitly **OFF** in the public V1 Android build with `ZYNC_ANALYTICS_ENABLED=false`.
@@ -27,10 +29,11 @@ This file is the release-facing answer sheet for the rebuilt local-first V1. It 
 
 **Yes — collect.**
 
-There are now two feature-dependent off-device paths that must be considered:
+There are now three feature-dependent off-device paths that must be considered:
 
-1. AI-assisted features transmit bounded interest/conversation content to the Zync API and AI processing path.
+1. AI-assisted conversation generation transmits a bounded set of relevant interest labels/mode/language context to the Zync API and AI processing path.
 2. One-scan QR pairing transmits an AES-GCM-encrypted scanner profile response to the short-lived Zync relay so the host phone can complete the same local match automatically.
+3. Regional interest learning can transmit a coarse device-locale region plus canonical catalog interest IDs that were shown and selected, so the server can maintain aggregate weekly impression/selection counts.
 
 Encryption, opacity to the application server, short retention, and ephemeral processing do **not** make an off-device transmission disappear for Data Safety analysis. Do **not** answer "No data collected" for this V1.
 
@@ -46,14 +49,9 @@ The release gate requires an HTTPS `ZYNC_API_BASE`. AI server calls use HTTPS. T
 
 Zync V1 has no user account, login or registration flow, so Google's account-deletion requirement for apps that let users create accounts is not applicable to this release.
 
-## Data type 1 — interest / conversation content sent for AI functionality
+## Data type 1 — interest context sent for AI conversation functionality
 
 ### What leaves the device
-
-`POST /api/v1/normalize-interest`:
-
-- user-entered unknown interest text, bounded to 2–100 characters;
-- supported language/locale.
 
 `POST /api/v1/question`:
 
@@ -89,7 +87,7 @@ This category name must be checked against the actual current Play Console UI be
 
 ### Is collection required or optional?
 
-The AI transmission is **feature-dependent**: it occurs only when the user invokes the relevant AI-assisted feature. Local profile creation, pairing/matching and local fallback conversation content do not require a successful AI request.
+The AI transmission is **feature-dependent**: it occurs only when the user invokes AI-assisted conversation generation. Local interest entry/search, local profile creation, pairing/matching and local fallback conversation content do not require a successful AI request.
 
 Use the current Play form's definition of optional collection carefully. Do not claim user-configurable opt-out controls that do not exist.
 
@@ -140,11 +138,39 @@ This transmission is feature-dependent: it occurs when users choose the one-scan
 
 Yes at the application-design level: the relay is intentionally short-lived and TTL-backed, with early deletion after successful consume. Still disclose the off-device collection and answer the Play Console's current ephemeral-processing question according to Google's current wording.
 
+## Data type 3 — coarse regional interest discovery signals
+
+### What can leave the device
+
+When regional interest learning is enabled in the shipped build:
+
+- coarse content region derived from the country/region in the device locale (for example `hk`, `tw`, `jp` or `global`);
+- canonical catalog interest IDs that were displayed as discovery choices;
+- canonical catalog interest IDs that were selected.
+
+The client does **not** send GPS coordinates, precise location, nickname, full profile, custom-interest labels, advertising ID, account ID or the optional product-analytics installation UUID for this signal. Custom interests are excluded.
+
+### Purpose and stability
+
+Purpose:
+
+- **App functionality / personalization of interest discovery ordering**.
+
+The server aggregates signals by coarse region and completed week. Human-curated catalog scores remain the prior; observed selection rates have bounded influence and weekly score movement is capped, so small or sudden samples do not rapidly reorder the catalog.
+
+### Retention
+
+Aggregate weekly counters in Upstash Redis are configured to expire after about 120 days. The current week's data is accumulated for a future completed-week ranking and does not immediately change the current week's order.
+
+### Play category
+
+Before submission, check the current Play Console wording for coarse region and app-interaction/discovery signals. Because these signals leave the device, do not omit them merely because they are aggregate-only and carry no persistent Zync user identifier. Use the closest current categories conservatively and record the purpose as App functionality/personalization as applicable.
+
 ## Technical network / abuse-prevention metadata
 
 The relay is hosted on Vercel and backed by Upstash Redis. Hosting/network providers may necessarily process technical request information such as IP address under their applicable service terms.
 
-At the Zync application layer, relay rate limiting derives a short-lived HMAC-based key from the request IP and a server secret. The application-level Redis rate key does not need to store the raw IP; the counter itself has a brief expiry.
+At the Zync application layer, relay and regional-learning rate limiting derive short-lived HMAC-based keys from the request IP and a server secret. The application-level Redis rate keys do not need to store the raw IP; the counters themselves have brief expiry.
 
 Before Play submission, verify the current Data Safety treatment of provider-processed network identifiers and whether any Device or other IDs category is triggered by the final production/provider configuration. Do not label the dormant analytics identifier as collected: analytics remain disabled in public V1.
 
@@ -169,7 +195,7 @@ For this release:
 - the client returns before creating analytics IDs or making an analytics request;
 - PostHog is not required for the public V1 release.
 
-Therefore the optional analytics design does **not** itself add App interactions or an analytics Device/other ID to the public V1 Data Safety answers.
+Therefore the optional product-analytics design does **not** itself add its analytics installation ID to the public V1 Data Safety answers. This is separate from the enabled aggregate regional-interest learning described above, which has no persistent installation identifier but still needs its own off-device Data Safety assessment.
 
 If analytics are enabled in a future release, re-open Data Safety before publishing. At minimum review:
 
@@ -184,6 +210,7 @@ If analytics are enabled in a future release, re-open Data Safety before publish
 - Zync Again/history records;
 - Interest DNA calculations;
 - local match calculation and reveal state;
+- custom-interest text created through the V1 interest-entry UI;
 - the host QR profile body as part of relay-session creation;
 - the one-time QR decryption secret.
 
@@ -206,13 +233,14 @@ Before saving the Data Safety form:
 1. Confirm the production deployment is the new V1 and not the old 2025 `main` deployment.
 2. Confirm the production relay has valid `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, and `ZYNC_RELAY_RATE_LIMIT_SECRET` server environment values without exposing them to the Android build.
 3. Live-smoke the relay create -> respond -> repeated take -> consume -> expired/not-found sequence with synthetic opaque data.
-4. Live-smoke both AI endpoints with the real OpenRouter key and `openrouter/free` under enforced ZDR/data-collection-deny routing.
-5. Confirm `/privacy` is public, HTTPS, non-PDF, non-geofenced and readable without login/JavaScript.
-6. Confirm the signed AAB was built with `ZYNC_ANALYTICS_ENABLED=false`.
-7. Verify the current Play Console category wording for both AI content and the encrypted pairing-response data.
-8. Verify provider/service-provider exceptions before deciding the final "shared" answers, including Upstash for the pairing path.
-9. Review current Play treatment of IP/network identifiers in the final hosting configuration.
-10. Ensure the Play listing no longer says "No data collected".
+4. Live-smoke AI conversation generation with the real OpenRouter key and `openrouter/free` under enforced ZDR/data-collection-deny routing.
+5. Live-smoke the regional-interest popularity read endpoint and confirm aggregate weekly data can be read from the configured Upstash store.
+6. Confirm `/privacy` is public, HTTPS, non-PDF, non-geofenced and readable without login/JavaScript.
+7. Confirm the signed AAB was built with `ZYNC_ANALYTICS_ENABLED=false` and `ZYNC_INTEREST_LEARNING_ENABLED=true`.
+8. Verify the current Play Console category wording for both AI content and the encrypted pairing-response data.
+9. Verify provider/service-provider exceptions before deciding the final "shared" answers, including Upstash for the pairing path.
+10. Review current Play treatment of IP/network identifiers in the final hosting configuration.
+11. Ensure the Play listing no longer says "No data collected".
 
 ## Current official policy references checked 2026-09-17
 
