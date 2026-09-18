@@ -123,9 +123,16 @@ void main() {
 
     expect(find.text('Social links'), findsOneWidget);
     expect(find.text('Instagram'), findsOneWidget);
-    expect(find.text('Threads'), findsOneWidget);
-    expect(find.text('Facebook'), findsOneWidget);
     expect(find.byType(ListView), findsOneWidget);
+
+    await tester.drag(
+      find.byType(ListView).last,
+      const Offset(0, -700),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Threads'), findsWidgets);
+    expect(find.text('Facebook'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -346,7 +353,7 @@ void main() {
 
     await tester.drag(
       find.byType(ListView).last,
-      const Offset(0, -420),
+      const Offset(0, -900),
     );
     await tester.pumpAndSettle();
 
