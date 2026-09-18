@@ -69,6 +69,13 @@ class LocalStore {
     late final ZyncHistoryEntry updated;
     if (index >= 0) {
       final previous = history[index];
+      final seenInterestIds = <String>{
+        ...previous.seenInterestIds,
+        ...previous.previousSharedIds,
+        ...previous.peerInterests.map((item) => item.id),
+        ...sharedIds,
+        ...peerInterests.map((item) => item.id),
+      }.toList(growable: false);
       updated = ZyncHistoryEntry(
         peerId: peerId,
         peerNickname: peerNickname,
@@ -79,6 +86,7 @@ class LocalStore {
         peerInterests: peerInterests.isEmpty
             ? previous.peerInterests
             : List<SelectedInterest>.from(peerInterests),
+        seenInterestIds: seenInterestIds,
         peerSocialLinks: peerSocialLinks.isEmpty
             ? previous.peerSocialLinks
             : List<SocialLink>.from(peerSocialLinks),
@@ -94,6 +102,10 @@ class LocalStore {
         lastZyncAt: now,
         sessionCount: 1,
         peerInterests: List<SelectedInterest>.from(peerInterests),
+        seenInterestIds: <String>{
+          ...sharedIds,
+          ...peerInterests.map((item) => item.id),
+        }.toList(growable: false),
         peerSocialLinks: List<SocialLink>.from(peerSocialLinks),
         recentQuestions: const [],
       );
@@ -129,6 +141,7 @@ class LocalStore {
       lastZyncAt: previous.lastZyncAt,
       sessionCount: previous.sessionCount,
       peerInterests: previous.peerInterests,
+      seenInterestIds: previous.seenInterestIds,
       peerSocialLinks: previous.peerSocialLinks,
       recentQuestions: questions,
     );
