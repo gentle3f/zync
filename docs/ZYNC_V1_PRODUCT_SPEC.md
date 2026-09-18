@@ -35,7 +35,7 @@ V1 is deliberately not a social network. It is the smallest product that can tes
 6. Person B scans once, compares locally, encrypts its limited profile response on-device and returns opaque ciphertext through the temporary relay.
 7. Both phones arrive in the same **Zync Session** automatically.
 8. The session creates an impact moment: **YOU ZYNC!** plus a count of hidden connections, without dumping a checklist.
-9. Broad taxonomy ancestors are collapsed into a more specific **connection thread** so `Movies -> Anime -> JoJo` does not become three weak reveal moments.
+9. Broad taxonomy ancestors are collapsed into a more specific **connection thread** so `Entertainment -> Anime -> JoJo` does not become three weak reveal moments.
 10. Connections are revealed one at a time. Reveal order is deterministic on both devices and favours specificity, mutual interest strength and less-common interests, with only small session-seeded jitter.
 11. Each revealed connection keeps both people's original strength values. A `Love` versus `Want to try` contrast is itself useful conversation context.
 12. The conversation prompt appears inside the same reveal experience; users do not need to finish a report and enter a separate AI screen.
@@ -68,7 +68,7 @@ Exact matching still happens on canonical IDs. The presentation layer may collap
 Example:
 
 ```text
-Movies
+Entertainment
 → Anime
 → JoJo's Bizarre Adventure
 ```
