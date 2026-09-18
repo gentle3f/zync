@@ -175,5 +175,16 @@
   "finishAndRecap": "Terminar e rever",
   "backToIdeas": "Voltar para mais ideias",
   "theirInterest": "Um interesse da outra pessoa",
-  "yourInterest": "Um dos seus interesses"
+  "yourInterest": "Um dos seus interesses",
+  "socialLinks": "Links sociais",
+  "socialLinksSubtitle": "Opcional. Adicione perfis públicos que você aceita compartilhar depois de um Zync.",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Compartilhar depois do Zync",
+  "shareAfterZyncExplain": "Só os links que você ativar explicitamente entram no seu QR do Zync e aparecem após a sessão.",
+  "stayConnected": "Continuar conectado?",
+  "openProfile": "Abrir perfil",
+  "showQr": "Mostrar QR",
+  "saveSocialLinks": "Salvar links sociais"
 }
