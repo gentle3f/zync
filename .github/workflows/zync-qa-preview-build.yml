@@ -8,15 +8,15 @@ on:
       - '.github/workflows/zync-qa-preview-build.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-qa-apk:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      QA_API_BASE: https://zync-86yxy110d-gens-projects-4f99f8b9.vercel.app
-      QA_PRIVACY_URL: https://zync-86yxy110d-gens-projects-4f99f8b9.vercel.app/privacy
+      QA_API_BASE: https://zync-oomycx2b0-gens-projects-4f99f8b9.vercel.app
+      QA_PRIVACY_URL: https://zync-oomycx2b0-gens-projects-4f99f8b9.vercel.app/privacy
 
     steps:
       - name: Checkout
@@ -136,6 +136,7 @@ jobs:
           } > Zync-QA-preview-build.txt
 
       - name: Upload QA APK
+        id: upload-qa
         uses: actions/upload-artifact@v4
         with:
           name: zync-qa-preview-ai-live
@@ -145,3 +146,27 @@ jobs:
             Zync-QA-preview-build.txt
           if-no-files-found: error
           retention-days: 14
+
+      - name: Record successful QA build checkpoint
+        shell: bash
+        env:
+          QA_ARTIFACT_ID: ${{ steps.upload-qa.outputs.artifact-id }}
+          QA_ARTIFACT_URL: ${{ steps.upload-qa.outputs.artifact-url }}
+        run: |
+          mkdir -p AI_STATE
+          cat > AI_STATE/QA_BUILD_LATEST.txt <<EOF
+          status=SUCCESS
+          run_id=$GITHUB_RUN_ID
+          artifact_id=$QA_ARTIFACT_ID
+          artifact_url=$QA_ARTIFACT_URL
+          source_sha=$GITHUB_SHA
+          api_base=$QA_API_BASE
+          privacy_url=$QA_PRIVACY_URL
+          package=com.gmail.gentle3f.myproject.qa
+          label=Zync QA
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add AI_STATE/QA_BUILD_LATEST.txt
+          git commit -m "state: record successful QA preview build $GITHUB_RUN_ID"
+          git push origin HEAD:zync-v1-rebuild-20260917
