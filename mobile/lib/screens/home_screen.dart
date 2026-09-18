@@ -9,6 +9,7 @@ import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
 import 'scan_qr_screen.dart';
 import 'show_qr_screen.dart';
+import 'social_links_screen.dart';
 
 const _privacyUrl = String.fromEnvironment('ZYNC_PRIVACY_URL');
 
@@ -78,6 +79,22 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(width: 10),
           Text('Zync', style: Theme.of(context).textTheme.titleLarge),
           const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.alternate_email_rounded),
+            tooltip: l10n.socialLinks,
+            onPressed: () async {
+              final result = await Navigator.of(context).push<LocalProfile>(
+                MaterialPageRoute(
+                  builder: (_) => SocialLinksScreen(
+                    profile: profile,
+                    onSaved: onProfileChanged,
+                  ),
+                ),
+              );
+              if (result != null) await onProfileChanged(result);
+            },
+          ),
+          const SizedBox(width: 4),
           IconButton.filledTonal(
             icon: const Icon(Icons.tune_rounded),
             tooltip: l10n.edit,
