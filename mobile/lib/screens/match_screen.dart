@@ -156,9 +156,8 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   Future<void> _revealFirst() async {
-    if (_connections.isEmpty) return;
-    await HapticFeedback.mediumImpact();
-    if (!mounted) return;
+    if (_connections.isEmpty || !mounted) return;
+    unawaited(HapticFeedback.mediumImpact());
     setState(() => _revealedIndex = 0);
     unawaited(_ensureQuestion());
   }
@@ -168,8 +167,8 @@ class _MatchScreenState extends State<MatchScreen> {
       setState(() => _recap = true);
       return;
     }
-    await HapticFeedback.lightImpact();
     if (!mounted) return;
+    unawaited(HapticFeedback.lightImpact());
     setState(() {
       _revealedIndex += 1;
       _mode = ConversationMode.fun;
