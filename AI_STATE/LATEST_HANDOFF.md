@@ -4,6 +4,10 @@ Authoritative continuation checkpoint:
 
 `AI_STATE/HANDOFF_20260918_ICEBREAKING_SOCIAL_AI_LIVE_QA_READY.md`
 
+Latest physical-QA gate verification:
+
+`AI_STATE/MINI_HANDOFF_20260918_PHYSICAL_QA_GATE_CONFIRMED.md`
+
 Previous detailed checkpoint:
 
 `AI_STATE/MINI_HANDOFF_20260918_ZYNC_SESSION_QA_READY.md`
@@ -35,6 +39,14 @@ Read the authoritative continuation checkpoint **in full** before doing any work
 Current state in one sentence:
 
 > The feedback-driven V1 update is QA-ready: strict hierarchical interest browsing, longer shared+curiosity icebreaking, meaningful People history, deterministic funny aliases, opt-in public social exchange, and real live AI questions are implemented; the controlled Preview passed live relay/AI/social/privacy/bilingual-cache smoke and a new separate-install Zync QA APK has been built.
+
+Physical-QA gate has been re-verified:
+
+- no implementation drift after QA source SHA `6209f04dad24a87f72e5f93ca719f38327ec9748`;
+- controlled Preview remains READY;
+- branch auto-deploy remains disabled;
+- QA artifact remains unexpired;
+- APK bytes independently match SHA-256 `663e8f428e53c90f8e2a6dc367276eeaa9b105c1393e14e5a164715cf3c8f195`.
 
 Current controlled Preview:
 
