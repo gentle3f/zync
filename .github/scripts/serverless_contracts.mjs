@@ -98,6 +98,74 @@ test('question parses bilingual separator output', async () => {
   assert.equal(r.body.secondaryLanguage, 'ja');
 });
 
+test('same Zync session reuses one semantic bilingual question across both phone language orders', async () => {
+  enableTestAi();
+  process.env.UPSTASH_REDIS_REST_URL = 'https://fake-question-cache.example';
+  process.env.UPSTASH_REDIS_REST_TOKEN = 'unit-test-cache-token';
+
+  let cachedValue = null;
+  let openRouterCalls = 0;
+  globalThis.fetch = async (url, options) => {
+    if (url === 'https://fake-question-cache.example') {
+      const command = JSON.parse(options.body);
+      if (command[0] === 'GET') {
+        return { ok: true, status: 200, json: async () => ({ result: cachedValue }) };
+      }
+      if (command[0] === 'SET') {
+        if (cachedValue == null) {
+          cachedValue = command[2];
+          return { ok: true, status: 200, json: async () => ({ result: 'OK' }) };
+        }
+        return { ok: true, status: 200, json: async () => ({ result: null }) };
+      }
+      throw new Error('Unexpected Redis command');
+    }
+
+    assert.equal(url, 'https://openrouter.ai/api/v1/chat/completions');
+    openRouterCalls += 1;
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        choices: [{
+          message: {
+            content: '一緒にJoJoを初めて見るなら、どのPartから始める？<<<ZYNC_TRANSLATION>>>如果一齊由零開始睇 JoJo，你哋會揀邊一 Part？',
+          },
+        }],
+      }),
+    };
+  };
+
+  const common = {
+    mode: 'fun',
+    shared: ["JoJo's Bizarre Adventure"],
+    sessionSeed: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+    connectionKey: 'shared:anime.jojo',
+  };
+
+  const hkPhone = await invoke(question, {
+    ...common,
+    language: 'zh-Hant',
+    secondaryLanguage: 'ja',
+  });
+  assert.equal(hkPhone.status, 200);
+  assert.equal(hkPhone.body.question, '如果一齊由零開始睇 JoJo，你哋會揀邊一 Part？');
+  assert.equal(hkPhone.body.secondaryQuestion, '一緒にJoJoを初めて見るなら、どのPartから始める？');
+
+  const jpPhone = await invoke(question, {
+    ...common,
+    language: 'ja',
+    secondaryLanguage: 'zh-Hant',
+  });
+  assert.equal(jpPhone.status, 200);
+  assert.equal(jpPhone.body.question, '一緒にJoJoを初めて見るなら、どのPartから始める？');
+  assert.equal(jpPhone.body.secondaryQuestion, '如果一齊由零開始睇 JoJo，你哋會揀邊一 Part？');
+  assert.equal(openRouterCalls, 1);
+
+  delete process.env.UPSTASH_REDIS_REST_URL;
+  delete process.env.UPSTASH_REDIS_REST_TOKEN;
+});
+
 test('question rejects malformed bilingual output', async () => {
   enableTestAi();
   mockFetch({ choices: [{ message: { content: 'Only one language was returned.' } }] });
