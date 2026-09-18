@@ -298,6 +298,49 @@ class MatchResult {
   }
 }
 
+class ZyncQuestionMemory {
+  const ZyncQuestionMemory({
+    required this.connectionKey,
+    required this.question,
+    required this.mode,
+    required this.createdAt,
+    this.secondaryQuestion,
+    this.connectionLabel,
+    this.kind = 'shared',
+  });
+
+  final String connectionKey;
+  final String question;
+  final String mode;
+  final DateTime createdAt;
+  final String? secondaryQuestion;
+  final String? connectionLabel;
+  final String kind;
+
+  Map<String, dynamic> toJson() => {
+        'connectionKey': connectionKey,
+        'question': question,
+        'mode': mode,
+        'createdAt': createdAt.toIso8601String(),
+        if (secondaryQuestion != null && secondaryQuestion!.isNotEmpty)
+          'secondaryQuestion': secondaryQuestion,
+        if (connectionLabel != null && connectionLabel!.isNotEmpty)
+          'connectionLabel': connectionLabel,
+        'kind': kind,
+      };
+
+  factory ZyncQuestionMemory.fromJson(Map<String, dynamic> json) => ZyncQuestionMemory(
+        connectionKey: (json['connectionKey'] as String?) ?? '',
+        question: (json['question'] as String?) ?? '',
+        mode: (json['mode'] as String?) ?? 'fun',
+        createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
+            DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+        secondaryQuestion: json['secondaryQuestion'] as String?,
+        connectionLabel: json['connectionLabel'] as String?,
+        kind: (json['kind'] as String?) ?? 'shared',
+      );
+}
+
 class ZyncHistoryEntry {
   const ZyncHistoryEntry({
     required this.peerId,
@@ -306,6 +349,8 @@ class ZyncHistoryEntry {
     required this.firstZyncAt,
     required this.lastZyncAt,
     required this.sessionCount,
+    this.peerInterests = const [],
+    this.recentQuestions = const [],
   });
 
   final String peerId;
@@ -315,6 +360,13 @@ class ZyncHistoryEntry {
   final DateTime lastZyncAt;
   final int sessionCount;
 
+  /// Latest limited profile received from this peer. Stored locally only so
+  /// history can remember what you learned about the person.
+  final List<SelectedInterest> peerInterests;
+
+  /// Local-only memory of prompts actually shown during past Zync sessions.
+  final List<ZyncQuestionMemory> recentQuestions;
+
   Map<String, dynamic> toJson() => {
         'peerId': peerId,
         'peerNickname': peerNickname,
@@ -322,6 +374,8 @@ class ZyncHistoryEntry {
         'firstZyncAt': firstZyncAt.toIso8601String(),
         'lastZyncAt': lastZyncAt.toIso8601String(),
         'sessionCount': sessionCount,
+        'peerInterests': peerInterests.map((item) => item.toJson()).toList(),
+        'recentQuestions': recentQuestions.map((item) => item.toJson()).toList(),
       };
 
   factory ZyncHistoryEntry.fromJson(Map<String, dynamic> json) => ZyncHistoryEntry(
@@ -331,6 +385,15 @@ class ZyncHistoryEntry {
         firstZyncAt: DateTime.parse(json['firstZyncAt'] as String),
         lastZyncAt: DateTime.parse(json['lastZyncAt'] as String),
         sessionCount: (json['sessionCount'] as num?)?.toInt() ?? 1,
+        peerInterests: ((json['peerInterests'] as List?) ?? const [])
+            .whereType<Map>()
+            .map((item) => SelectedInterest.fromJson(Map<String, dynamic>.from(item)))
+            .toList(),
+        recentQuestions: ((json['recentQuestions'] as List?) ?? const [])
+            .whereType<Map>()
+            .map((item) => ZyncQuestionMemory.fromJson(Map<String, dynamic>.from(item)))
+            .where((item) => item.question.trim().isNotEmpty)
+            .toList(),
       );
 }
 
