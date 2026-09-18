@@ -173,9 +173,13 @@ async function relay(body) {
     mode: 'easy',
     shared: ['Badminton'],
     sessionSeed: sessionId(),
+    diagnostics: true,
   });
   assertAiPrivacyHeaders(response, '/api/v1/question');
-  assert.ok(response.ok, `question live smoke failed with HTTP ${response.status}`);
+  assert.ok(
+    response.ok,
+    `question live smoke failed with HTTP ${response.status}: ${JSON.stringify(json)}`,
+  );
   assert.equal(typeof json.question, 'string');
   assert.ok(json.question.trim());
   console.log('✓ live question generation works on the expected privacy-hardened V1 handler');
