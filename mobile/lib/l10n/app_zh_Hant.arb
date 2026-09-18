@@ -10,17 +10,41 @@
   "pickAtLeastFive": "至少揀 5 個興趣，之後隨時可以更改。",
   "searchAnything": "搜尋任何興趣...",
   "addWithAi": "用 AI 加入「{interest}」",
-  "@addWithAi": {"placeholders": {"interest": {"type": "String"}}},
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "aiSuggested": "AI 建議將佢整理成「{interest}」。加入嗎？",
-  "@aiSuggested": {"placeholders": {"interest": {"type": "String"}}},
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "addInterest": "加入興趣",
   "normalizing": "正在理解你嘅興趣...",
   "selectedCount": "已選 {count} 個",
-  "@selectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "saveAndContinue": "儲存並繼續",
   "homeGreeting": "準備 Zync？",
   "interestsCount": "你嘅興趣檔案有 {count} 個興趣",
-  "@interestsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "zyncWithSomeone": "同另一個人 Zync",
   "showMyQr": "顯示我的 QR",
   "scanSomeone": "掃描對方",
@@ -48,7 +72,13 @@
   "cameraErrorBody": "相機未能啟動。可以再試，或者返回顯示自己嘅 QR。",
   "youZync": "你哋 ZYNC 咗！",
   "hiddenMatches": "你哋有 {count} 個隱藏共同興趣。",
-  "@hiddenMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "noExactMatch": "暫時冇完全相同嘅興趣。",
   "findConnection": "一齊搵出你哋之間嘅連結。",
   "reveal": "揭曉",
@@ -66,7 +96,13 @@
   "noHistory": "暫時未有 Zync 紀錄。",
   "zyncAgain": "再次 Zync",
   "newMatches": "比上次多咗 {count} 個新共同興趣",
-  "@newMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "love": "超鍾意",
   "like": "鍾意",
   "wantToTry": "想試",
@@ -75,5 +111,60 @@
   "edit": "編輯",
   "done": "完成",
   "retry": "再試",
-  "cancel": "取消"
+  "cancel": "取消",
+  "hiddenConnections": "你哋搵到 {count} 個隱藏連結。",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "揭曉一個連結",
+  "revealAnother": "再揭曉一個",
+  "talkAboutThis": "由呢度開始傾",
+  "changeVibe": "轉換氣氛",
+  "connectionProgress": "第 {current} / {total} 個連結",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "今次 Zync 新發現",
+  "strengthContrast": "你：{mine} · {peer}：{theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "興趣唔同。",
+  "stillConnection": "但仍然搵到一個連結。",
+  "crossoverIntro": "試下呢個 crossover",
+  "sessionRecap": "今次發現咗啲乜",
+  "sessionRecapCount": "你同 {name} 發現咗 {count} 個連結。",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "完成今次 Zync",
+  "findingQuestion": "諗緊一條值得傾嘅問題…"
 }
