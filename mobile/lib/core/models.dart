@@ -248,12 +248,54 @@ class QrProfilePayload {
   }
 }
 
+class SharedInterestDetail {
+  const SharedInterestDetail({
+    required this.mine,
+    required this.theirs,
+  });
+
+  final SelectedInterest mine;
+  final SelectedInterest theirs;
+
+  String get id => mine.id;
+
+  SelectedInterest get merged {
+    final lower = mine.strength.wireValue < theirs.strength.wireValue
+        ? mine.strength
+        : theirs.strength;
+    return SelectedInterest(
+      id: id,
+      strength: lower,
+      customLabel: mine.customLabel ?? theirs.customLabel,
+      customCategory: mine.customCategory ?? theirs.customCategory,
+    );
+  }
+}
+
 class MatchResult {
-  const MatchResult({required this.shared, required this.onlyMine, required this.onlyTheirs});
+  const MatchResult({
+    required this.shared,
+    required this.onlyMine,
+    required this.onlyTheirs,
+    this.sharedDetails = const [],
+  });
 
   final List<SelectedInterest> shared;
   final List<SelectedInterest> onlyMine;
   final List<SelectedInterest> onlyTheirs;
+
+  /// Preserves both people's strength for the exact shared canonical ID.
+  /// Older call sites can keep using [shared]; new Zync Session UX should use
+  /// this richer view so "Love" vs "Want to try" becomes a conversation signal.
+  final List<SharedInterestDetail> sharedDetails;
+
+  SharedInterestDetail detailFor(String id) {
+    for (final detail in sharedDetails) {
+      if (detail.id == id) return detail;
+    }
+    final fallback = shared.firstWhere((item) => item.id == id);
+    return SharedInterestDetail(mine: fallback, theirs: fallback);
+  }
 }
 
 class ZyncHistoryEntry {
