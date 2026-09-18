@@ -186,5 +186,31 @@
   "stayConnected": "Stay connected?",
   "openProfile": "Open profile",
   "showQr": "Show QR",
-  "saveSocialLinks": "Save social links"
+  "saveSocialLinks": "Save social links",
+  "questionsSavedCount": "Questions saved: {count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync sessions: {count} · last {date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "Things you both like",
+  "noSharedSaved": "No exact shared interests saved yet.",
+  "thingsLearnedAboutThem": "Things you learned about them",
+  "nothingExtraSaved": "Nothing extra saved from their latest Zync yet.",
+  "questionsYouTalkedAbout": "Questions you talked about",
+  "questionsNextTime": "Questions from your next Zync will be remembered here on this phone.",
+  "sharedSocials": "Socials they shared"
 }
