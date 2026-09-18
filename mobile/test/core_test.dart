@@ -237,7 +237,7 @@ void main() {
     );
   });
 
-  test('new specific connection outranks old broad/popular connections', () {
+  test('Zync Again newness is local metadata and does not change shared reveal order', () {
     const mine = [
       SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
       SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like),
@@ -247,14 +247,25 @@ void main() {
       SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like),
     ];
     final match = MatchingService.compare(mine, theirs, sessionSeed: 'stable-seed');
-    final connections = ZyncSessionService.exactConnections(
+    final firstDevice = ZyncSessionService.exactConnections(
       match,
       previousSharedIds: {'sports.badminton'},
       sessionSeed: 'stable-seed',
     );
+    final secondDevice = ZyncSessionService.exactConnections(
+      match,
+      previousSharedIds: const {},
+      sessionSeed: 'stable-seed',
+    );
 
-    expect(connections.first.id, 'anime.jojo');
-    expect(connections.first.isNew, isTrue);
+    expect(
+      firstDevice.map((item) => item.id).toList(),
+      secondDevice.map((item) => item.id).toList(),
+    );
+    expect(
+      firstDevice.firstWhere((item) => item.id == 'anime.jojo').isNew,
+      isTrue,
+    );
   });
 
   test('zero-match bridge selection is deterministic and graph-aware', () {
