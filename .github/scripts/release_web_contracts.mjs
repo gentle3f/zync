@@ -100,6 +100,10 @@ assert.match(question, /google\/gemma-4-26b-a4b-it/);
 assert.match(question, /allow_fallbacks:\s*true/);
 assert.match(question, /zdr:\s*true/);
 assert.match(question, /data_collection:\s*'deny'/);
+assert.match(question, /reasoning_effort:\s*'none'/);
+assert.match(question, /max_completion_tokens:/);
+assert.match(question, /modalities:\s*\['text'\]/);
+assert.ok(!/max_tokens:/.test(question), 'question handler must not regress to deprecated max_tokens');
 
 assert.match(interestLearning, /zync:interest:v1:/);
 assert.match(interestLearning, /zync:interest:rl:v1:/);
