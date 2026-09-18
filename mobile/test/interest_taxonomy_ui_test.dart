@@ -41,6 +41,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text('Badminton'), findsNothing);
+
     expect(find.text('Entertainment'), findsOneWidget);
     await tester.tap(find.text('Entertainment'));
     await tester.pumpAndSettle();
@@ -57,6 +59,55 @@ void main() {
     expect(find.byKey(const ValueKey('interest-l3-subgenres')), findsOneWidget);
     expect(find.byKey(const ValueKey('interest-l3-classics')), findsOneWidget);
     expect(find.byKey(const ValueKey('interest-l3-modern_evergreen')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('sports leaf interests stay hidden until their L2 family is chosen', (tester) async {
+    tester.view.devicePixelRatio = 2;
+    tester.view.physicalSize = const Size(3000, 1688);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    const profile = LocalProfile(
+      localId: 'strict-level-test',
+      nickname: '',
+      language: 'en',
+      interests: [],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ZyncTheme.light(),
+        locale: const Locale('en'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: InterestSetupScreen(
+          profile: profile,
+          editing: true,
+          onSaved: (_) async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Badminton'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('interest-l1-sports')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('interest-l2-racket')), findsOneWidget);
+    expect(find.text('Badminton'), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('interest-l2-racket')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Badminton'), findsOneWidget);
+    expect(find.text('Drama'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }
