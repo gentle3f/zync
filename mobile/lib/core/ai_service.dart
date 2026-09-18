@@ -227,6 +227,36 @@ class AiService {
       return templates[ZyncLanguage.canonical(language)] ?? templates['en']!;
     }
 
+    if (match.onlyMine.isNotEmpty && match.onlyTheirs.isEmpty) {
+      final interest = label(match.onlyMine.first);
+      final templates = <String, String>{
+        'zh-Hant': '你最想對方講一個關於「$interest」而外行人通常唔知道嘅故事或者細節係咩？',
+        'zh-Hans': '你最想让对方讲一个关于“$interest”而外行人通常不知道的故事或细节是什么？',
+        'ja': '「$interest」について、詳しくない相手に一番話してみたい意外なことは何ですか？',
+        'ko': '“$interest”를 잘 모르는 상대에게 꼭 들려주고 싶은 의외의 이야기나 디테일은 무엇인가요?',
+        'es': '¿Qué historia o detalle sorprendente sobre $interest le contarías a alguien que no lo conoce bien?',
+        'fr': 'Quelle histoire ou quel détail surprenant sur $interest raconterais-tu à quelqu’un qui connaît peu ce sujet ?',
+        'pt': 'Que história ou detalhe surpreendente sobre $interest você contaria a alguém que conhece pouco isso?',
+        'en': 'What is one story or surprising detail about $interest you would tell someone who does not know it well?',
+      };
+      return templates[ZyncLanguage.canonical(language)] ?? templates['en']!;
+    }
+
+    if (match.onlyTheirs.isNotEmpty && match.onlyMine.isEmpty) {
+      final interest = label(match.onlyTheirs.first);
+      final templates = <String, String>{
+        'zh-Hant': '不如請對方講一個關於「$interest」而你可能估唔到嘅故事或者細節？',
+        'zh-Hans': '不如请对方讲一个关于“$interest”而你可能想不到的故事或细节？',
+        'ja': '相手に「$interest」について、あなたが意外に思いそうな話や細部を一つ教えてもらうなら何を聞きますか？',
+        'ko': '상대에게 “$interest”에 대해 당신이 의외라고 느낄 만한 이야기나 디테일 하나를 들려달라고 해보세요.',
+        'es': 'Pídele que te cuente una historia o detalle sobre $interest que probablemente no esperarías.',
+        'fr': 'Demande-lui de raconter une histoire ou un détail sur $interest auquel tu ne t’attendrais probablement pas.',
+        'pt': 'Peça para a outra pessoa contar uma história ou detalhe sobre $interest que você provavelmente não esperaria.',
+        'en': 'Ask them for one story or surprising detail about $interest that you probably would not expect.',
+      };
+      return templates[ZyncLanguage.canonical(language)] ?? templates['en']!;
+    }
+
     final a = match.onlyMine.isNotEmpty ? label(match.onlyMine.first) : 'your interests';
     final b = match.onlyTheirs.isNotEmpty ? label(match.onlyTheirs.first) : 'their interests';
     final templates = <String, String>{
