@@ -35,15 +35,16 @@
       <li>an optional nickname;</li>
       <li>your supported/preferred language;</li>
       <li>selected interests and their Love / Like / Want to try strength;</li>
-      <li>locally created custom-interest labels and categories; and</li>
-      <li>Zync Again history, such as a local peer identifier or nickname received during a Zync, shared-interest identifiers, timestamps, and repeat-session count.</li>
+      <li>locally created custom-interest labels and categories;</li>
+      <li>optional public social-profile handles or URLs you enter, together with whether you explicitly chose to share each one after a Zync; and</li>
+      <li>Zync Again history, such as a local peer identifier or nickname received during a Zync, shared-interest identifiers, the peer's latest limited interests, conversation questions shown during your sessions, public social-profile links the peer explicitly shared, timestamps, and repeat-session count.</li>
     </ul>
     <p>This local profile and Zync Again history are not cloud-synced by Zync V1. Clearing the app's storage or uninstalling the app normally removes this local data from that device, subject to Android or device-backup behaviour outside Zync's control.</p>
 
     <h2>3. QR sharing and the temporary encrypted relay</h2>
-    <p>When you choose to show your Zync QR, the QR contains the information needed for the other device to compare interests locally. This can include a random local Zync profile identifier, your optional nickname, language, selected interests and strengths, labels/categories needed to display custom interests, plus a random short-lived session identifier, expiry time, and a one-time encryption secret for that pairing.</p>
+    <p>When you choose to show your Zync QR, the QR contains the information needed for the other device to compare interests locally. This can include a random local Zync profile identifier, your optional nickname, language, selected interests and strengths, labels/categories needed to display custom interests, plus a random short-lived session identifier, expiry time, and a one-time encryption secret for that pairing. If you have manually added public Instagram, Threads, or Facebook profile information and explicitly enabled <strong>Share after Zync</strong> for a link, that opted-in public profile handle or URL can also be included in the limited QR/profile payload exchanged with the other participant.</p>
     <p>The person who scans your QR receives the QR information visually and locally through the camera. Zync does <strong>not</strong> upload the host's QR profile body to the relay when the session is created. The scanner performs the initial comparison locally.</p>
-    <p>To let both phones complete a one-scan Zync automatically, the scanning phone prepares the limited profile information the host needs for the same local comparison and encrypts it on the scanning phone using AES-GCM with the one-time secret from the QR. Only the encrypted response is then sent through the Zync Vercel API to a short-lived Upstash Redis relay. The relay receives a random session identifier, opaque ciphertext, expiry/status information, and limited technical request metadata needed to operate and protect the service. Zync's relay code does not receive the one-time decryption secret and is not designed to decrypt the profile response.</p>
+    <p>To let both phones complete a one-scan Zync automatically, the scanning phone prepares the limited profile information the host needs for the same local comparison. If the scanner explicitly opted to share a public social-profile link after Zync, that opted-in link can be part of this limited response. The response is encrypted on the scanning phone using AES-GCM with the one-time secret from the QR. Only the encrypted response is then sent through the Zync Vercel API to a short-lived Upstash Redis relay. The relay receives a random session identifier, opaque ciphertext, expiry/status information, and limited technical request metadata needed to operate and protect the service. Zync's relay code does not receive the one-time decryption secret and is not designed to decrypt the profile response.</p>
     <p>The host phone polls for that encrypted response, decrypts and authenticates it locally, verifies the session and expiry, performs its own local match, and then requests deletion of the relay session. A relay session is designed to expire automatically after about three minutes even if a phone disconnects or abandons the flow. Successful sessions are deleted earlier after the host completes authenticated decryption.</p>
     <p>You should only show or scan a Zync QR with someone with whom you intend to exchange the selected profile information.</p>
 
@@ -61,11 +62,16 @@
     <p>The request does not need your nickname, peer local identifier, QR body, phone number, email address, precise location, or login token. These requests use the same Vercel/OpenRouter processing path and privacy-routing constraints described above. If AI generation fails, Zync can fall back to built-in local questions.</p>
     <p>For an encrypted one-scan Zync session, Zync may temporarily cache the generated conversation question in Upstash Redis so both phones can receive the same semantic question even when they use different interface languages. The cache key is derived from a cryptographic hash of the random session/connection/mode/language context; the stored value contains the generated question text, not either person's nickname, full profile, QR body, or raw session capability. This shared question cache is configured to expire after about fifteen minutes.</p>
 
-    <h2>7. Product analytics in the public V1 build</h2>
+    <h2>7. Optional post-Zync social-profile exchange</h2>
+    <p>You may manually add a public Instagram, Threads, or Facebook handle/profile URL and independently choose whether each link is shared after a Zync. Social-profile sharing is optional and off by default for links you have not explicitly enabled.</p>
+    <p>Zync V1 does not ask for or store your social-media password, browser cookie, or OAuth access token for this feature, and it does not import your contacts, followers, posts, or social graph. The feature shares only the public profile information you entered and explicitly enabled.</p>
+    <p>After a Zync, the other participant may be able to open an opted-in public profile link or display a QR code containing that public URL. A link you receive from another participant may remain in that person's local Zync history on your device together with interests or conversation questions from your sessions. The recipient controls their own device and may independently save or record information you intentionally shared with them, so only enable social-profile sharing when you are comfortable with that person receiving the link.</p>
+
+    <h2>8. Product analytics in the public V1 build</h2>
     <p><strong>Product analytics are disabled by default in the public V1 build.</strong> The release build does not enable Zync's optional analytics transport, so it does not create an analytics installation identifier or send product-analytics events merely because the production API is configured.</p>
     <p>Zync contains privacy-filtered analytics code that may be enabled in a future release. If analytics is enabled later, this policy and the Google Play Data safety declaration must be updated before that release is published.</p>
 
-    <h2>8. Service providers</h2>
+    <h2>9. Service providers</h2>
     <p>For the public V1 release, Zync's online features use:</p>
     <ul>
       <li><strong>Vercel</strong> — hosting and execution of the Zync API and encrypted-relay endpoint;</li>
@@ -74,12 +80,12 @@
     </ul>
     <p>The exact underlying AI model provider may vary because Zync can use OpenRouter's free-model router. Provider availability can change over time.</p>
 
-    <h2>9. Security</h2>
+    <h2>10. Security</h2>
     <p>The production Android build is designed to communicate with Zync's online API over HTTPS. Pairing responses sent through the temporary relay are additionally encrypted and authenticated on-device with AES-GCM using a one-time 256-bit secret carried in the QR and not sent to the relay endpoint as part of session creation. The server stores only the opaque encrypted response for the short relay lifetime.</p>
     <p>Zync applies input and payload-size limits, protocol/version checks, short expiries, one-response semantics, and rate limiting to the relay. For abuse protection, the relay can derive a short-lived HMAC-based rate-limit key from network request information such as the request IP; Zync's application-level rate-limit store does not need to keep the raw IP in that key. Hosting and networking providers may still process network identifiers such as IP addresses under their own applicable terms and security practices.</p>
     <p>Zync keeps provider credentials such as the Upstash and OpenRouter server tokens on the server rather than in the Android application. No transmission or storage system can be guaranteed to be completely secure.</p>
 
-    <h2>10. Retention and deletion</h2>
+    <h2>11. Retention and deletion</h2>
     <p><strong>Local data:</strong> profile and history information remains on your device until you change it, clear app storage, or uninstall the app, subject to device/OS backup behaviour.</p>
     <p><strong>Encrypted pairing relay:</strong> the relay stores a random session identifier and either pending state or an opaque encrypted response. A successful host requests deletion immediately after authenticated decryption. If the flow is abandoned or deletion cannot complete, the relay key is configured to expire automatically after about three minutes. Short-lived abuse-protection counters are configured with their own brief expiry. Zync does not use the relay as a permanent profile database.</p>
     <p><strong>Regional interest aggregates:</strong> when the release enables regional interest learning, canonical interest impression/selection counts are stored as aggregate weekly counters by coarse region. These counters are configured with a maximum retention of about 120 days so recent completed weeks can inform stable discovery ranking. They do not contain a Zync account ID, analytics installation ID, nickname, custom-interest label, or precise location.</p>
@@ -87,13 +93,13 @@
     <p><strong>AI conversation requests:</strong> Zync's application code does not intentionally persist AI prompt content to a Zync user-account database, because V1 has no user accounts. OpenRouter requests require Zero Data Retention-compatible routing and deny provider data collection. Hosting, networking, security, relay, and AI providers may still process limited technical metadata under their applicable service terms and security practices.</p>
     <p>Because Zync V1 has no account, there is no cloud account dashboard to delete. If you have a privacy inquiry concerning server/provider records, use the privacy contact mechanism below.</p>
 
-    <h2>11. Children and age information</h2>
+    <h2>12. Children and age information</h2>
     <p>Zync V1 does not ask users to provide a date of birth or age as part of the app profile. The app should be used consistently with the target-audience settings shown on its Google Play listing and any applicable parental or guardian requirements.</p>
 
-    <h2>12. Changes to this policy</h2>
+    <h2>13. Changes to this policy</h2>
     <p>This policy may be updated when Zync's features, providers, or data practices change. The latest version will remain available at <a href="https://zync-inky.vercel.app/privacy">https://zync-inky.vercel.app/privacy</a> with its effective date.</p>
 
-    <h2>13. Privacy contact</h2>
+    <h2>14. Privacy contact</h2>
     <p>For privacy questions or requests, use the <strong>Developer contact</strong> information shown on Zync's official Google Play listing:</p>
     <p><a href="https://play.google.com/store/apps/details?id=com.gmail.gentle3f.myproject" rel="noopener">Zync on Google Play</a></p>
 
