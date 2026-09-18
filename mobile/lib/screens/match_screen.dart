@@ -132,7 +132,15 @@ class _MatchScreenState extends State<MatchScreen> {
     final mapKey = '$connectionKey|${_mode.name}';
     final existing = _questions[mapKey];
     if (existing?.fromAi == true) {
-      if (!prefetch) unawaited(_rememberQuestion(connectionKey, existing!));
+      if (!prefetch) {
+        unawaited(
+          _rememberQuestion(
+            connectionKey,
+            existing!,
+            mode: _mode,
+          ),
+        );
+      }
       return;
     }
     if (_loadingQuestions.contains(mapKey)) return;
@@ -180,7 +188,13 @@ class _MatchScreenState extends State<MatchScreen> {
     });
 
     if (!prefetch || _baseConnectionKey() == connectionKey) {
-      unawaited(_rememberQuestion(connectionKey, finalResult));
+      unawaited(
+        _rememberQuestion(
+          connectionKey,
+          finalResult,
+          mode: requestedMode,
+        ),
+      );
     }
 
     unawaited(
@@ -198,11 +212,17 @@ class _MatchScreenState extends State<MatchScreen> {
 
   Future<void> _rememberQuestion(
     String connectionKey,
-    AiQuestionResult result,
-  ) async {
+    AiQuestionResult result, {
+    required ConversationMode mode,
+  }) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
     String? label;
-    if (connectionKey.startsWith('shared:')) {
+    var kind = connectionKey.startsWith('shared:') ? 'shared' : 'crossover';
+
+    if (_activeExploreKey == connectionKey && _activeExploreLabel != null) {
+      label = _activeExploreLabel;
+      kind = _activeExploreKind;
+    } else if (connectionKey.startsWith('shared:')) {
       final id = connectionKey.substring('shared:'.length);
       label = InterestCatalog.byId(id)?.labelFor(locale) ?? id;
     } else if (_crossover != null && connectionKey == _crossover!.connectionKey) {
@@ -223,8 +243,8 @@ class _MatchScreenState extends State<MatchScreen> {
         question: result.question,
         secondaryQuestion: result.secondaryQuestion,
         connectionLabel: label,
-        mode: _mode.name,
-        kind: connectionKey.startsWith('shared:') ? 'shared' : 'crossover',
+        mode: mode.name,
+        kind: kind,
         createdAt: DateTime.now().toUtc(),
       ),
     );
