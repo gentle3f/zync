@@ -22,6 +22,7 @@ The production deployment procedure is:
 - Relay path: Android -> Zync Vercel API -> Upstash Redis; relay state expires after about three minutes and successful sessions are deleted earlier after authenticated host decryption where possible.
 - Interest catalog search, custom-interest creation and exact matching are on-device; the shipped V1 UI does not use AI to normalize custom interests.
 - Optional AI conversation generation transmits limited relevant interest/mode/language context off-device when invoked.
+- In a one-scan session, generated question text may be held in a hashed Upstash cache for about 15 minutes so both phones receive the same semantic question; this is temporary App functionality state, not a profile/history database.
 - AI path: Android -> Zync Vercel API -> OpenRouter -> compatible model provider.
 - Regional discovery can transmit a coarse device-locale region plus canonical interest IDs shown/selected, aggregated weekly in Upstash Redis; it does not use GPS or precise location and has no persistent Zync user/install identifier.
 - OpenRouter request routing enforces `zdr: true` and `data_collection: "deny"`.
@@ -32,7 +33,7 @@ The production deployment procedure is:
 
 ## Important Data Safety consequence
 
-The old Play statement "No data collected" is not suitable for the rebuilt V1. There are feature-dependent off-device data paths for AI conversation generation, the encrypted scanner response used by one-scan pairing, and coarse-region aggregate interest-discovery signals.
+The old Play statement "No data collected" is not suitable for the rebuilt V1. There are feature-dependent off-device data paths for AI conversation generation (including its short-lived shared-question cache), the encrypted scanner response used by one-scan pairing, and coarse-region aggregate interest-discovery signals.
 
 Encryption, server-side opacity, ZDR, and short retention do not remove the need to consider those transmissions in Google's Data Safety form. The release answer sheet therefore treats them conservatively as collection for **App functionality** and instructs the release owner to verify the exact current Play Console category wording before submission.
 
