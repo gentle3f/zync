@@ -102,8 +102,7 @@ jobs:
         working-directory: build_app
         run: >-
           flutter test
-          "--dart-define=ZYNC_API_BASE=${QA_API_BASE}"
-          "--dart-define=ZYNC_PRIVACY_URL=${QA_PRIVACY_URL}"
+          "--dart-define=ZYNC_PRIVACY_URL=https://example.com/zync-privacy-policy"
           "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
           "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
           "--dart-define=ZYNC_QA_DEBUG=true"
