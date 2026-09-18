@@ -8,16 +8,17 @@
 
 ## 1. Executive summary
 
-**Zync helps people discover the interests they did not know they had in common — and turns those discoveries into real conversations.**
+**Zync helps people discover the connections they did not know existed — including shared interests, differences worth asking about, and surprising crossovers — and turns those discoveries into real conversations.**
 
 The starting experience is deliberately simple:
 
 1. each person builds a lightweight interest profile;
 2. one person shows a QR code and the other scans it;
 3. Zync compares their interests locally;
-4. shared interests are revealed progressively rather than dumped as a list;
-5. AI turns those shared interests into a natural conversation prompt;
-6. if there is no exact shared interest, AI creates a crossover question between the two people’s different interests instead of showing a dead end.
+4. exact shared interests are revealed progressively rather than dumped as a list;
+5. AI turns the revealed connection into a natural conversation prompt;
+6. once the strongest shared interests are exhausted, Zync can keep the icebreaker alive by inviting one person to talk about an interest the other did not select, letting the roles reverse, or using a crossover;
+7. if there is no exact shared interest, Zync starts from a local crossover instead of showing a dead end.
 
 The emotional product moment is not “matching data.” It is the human reaction:
 
@@ -113,7 +114,9 @@ The product is deliberately local-first.
 - Put the AI conversation prompt inside that reveal moment instead of forcing users into a separate report-then-chat flow.
 - If there is no exact match, use the local Interest Graph to choose a plausible crossover and let AI turn it into a question.
 - Keep conversation modes such as Fun, Deep, Debate, Guess or Surprise as secondary controls.
-- Keep local history so people can **Zync Again** later.
+- Keep local history so people can **Zync Again** later, revisit questions they talked about, and remember selected things they learned about each other.
+- Use stable ridiculous aliases for anonymous peers instead of sterile raw-ID names.
+- Let users optionally exchange explicitly consented public social-profile links after a successful Zync, without requiring a Zync account or social-media login.
 - Show an **Interest DNA** summary of the user's own interest profile.
 - Support different languages between two participants and show equivalent versions of the same semantic question.
 
@@ -135,6 +138,10 @@ Then reveal one connection that is specific enough to make somebody react:
 The conversation can start immediately. The user should not need to reveal every result before Zync becomes useful.
 
 This protects the strongest emotional moment: the surprise of learning something unexpected about another person.
+
+The second half of the icebreaker is **curiosity**, not just similarity. A useful Zync can be: "Wait — you like that too?" but it can also be: "I never knew you were into that — tell me about it." Exact shared interests remain the signature hook because they create the strongest surprise, while different interests and crossovers keep the conversation alive after the obvious matches are gone.
+
+A good session therefore should not feel like a short match report with a fixed ending. It should give the pair a few strong conversational doors and let them decide when they are done.
 
 ---
 
