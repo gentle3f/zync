@@ -16,6 +16,7 @@ This file is the release-facing answer sheet for the rebuilt local-first V1. It 
 - The relay path is Android -> Zync Vercel API -> Upstash Redis. Matching itself remains on-device on both phones.
 - Interest catalog search, aliases, custom-interest creation and matching are on-device; the shipped V1 UI does not send custom-interest text for AI normalization.
 - Optional AI conversation-question requests go through the Zync Vercel API and OpenRouter.
+- During a one-scan Zync, generated question text may be cached briefly in Upstash Redis under a hashed session/connection key so both phones receive the same semantic question; this cache expires after about 15 minutes and is not a profile/history store.
 - Regional interest discovery can use the coarse country/region from the device locale plus aggregate canonical-interest impression/selection counts. It does not use GPS or precise location.
 - The regional-learning transport has no Zync account ID, analytics installation ID, nickname, full profile, or custom-interest text.
 - Every OpenRouter request requires `provider.zdr: true` and `provider.data_collection: "deny"`.
