@@ -488,7 +488,9 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   }) {
     final selected = _selected[interest.id];
     final isCustom = InterestCatalog.byId(interest.id) == null;
-    if (!isCustom) _popularityService.noteImpression(interest.id);
+    if (!isCustom && selected == null) {
+      _popularityService.noteImpression(interest.id);
+    }
     return Material(
       color: Colors.transparent,
       child: InkWell(
