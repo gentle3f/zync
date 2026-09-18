@@ -112,7 +112,7 @@
   "done": "Concluído",
   "retry": "Tentar novamente",
   "cancel": "Cancelar",
-  "hiddenConnections": "Vocês encontraram {count} conexões escondidas.",
+  "hiddenConnections": "{count, plural, =1{Vocês encontraram 1 conexão escondida.} other{Vocês encontraram {count} conexões escondidas.}}",
   "@hiddenConnections": {
     "placeholders": {
       "count": {
@@ -154,7 +154,7 @@
   "stillConnection": "Mesmo assim, há uma conexão.",
   "crossoverIntro": "Experimentem este cruzamento",
   "sessionRecap": "O que vocês descobriram",
-  "sessionRecapCount": "Você encontrou {count} conexões com {name}.",
+  "sessionRecapCount": "{count, plural, =1{Você encontrou 1 conexão com {name}.} other{Você encontrou {count} conexões com {name}.}}",
   "@sessionRecapCount": {
     "placeholders": {
       "count": {
