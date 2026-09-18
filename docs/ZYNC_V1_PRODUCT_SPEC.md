@@ -2,7 +2,7 @@
 
 ## Product thesis
 
-**Zync helps people discover hidden shared interests and turns those discoveries into real conversations.**
+**Zync helps people discover hidden connections — both what they share and what they did not know about each other — and turns those discoveries into real conversations.**
 
 Consumer-facing concept: **Discover what connects you.**
 
@@ -15,7 +15,7 @@ V1 is deliberately not a social network. It is the smallest product that can tes
 ## V1 principles
 
 1. Global-first and multilingual from day one.
-2. No login, account, Firebase profile, feed, chat, nearby people, community, merchant, ads, payment or subscription.
+2. No required login, Zync account, Firebase profile, feed, chat, nearby people, community, merchant, ads, payment or subscription. Optional public social-profile links may be entered manually for post-Zync exchange; this is not social-account import or Zync account creation.
 3. Core profile, exact matching, history and Interest DNA remain local on-device.
 4. QR remains the real-world pairing ritual.
 5. The one-scan experience may use a minimal short-lived encrypted relay so the scanner can return its profile to the host automatically; the relay is not a permanent person/profile database.
@@ -41,8 +41,9 @@ V1 is deliberately not a social network. It is the smallest product that can tes
 12. The conversation prompt appears inside the same reveal experience; users do not need to finish a report and enter a separate AI screen.
 13. Conversation modes such as Easy, Fun, Debate, Deep, Guess and Surprise are secondary controls, not the main task.
 14. If there is no exact match, Zync chooses a plausible local Interest-Graph crossover first, then AI turns that bridge into a question. The experience must not present zero exact matches as failure.
-15. A short recap appears when the people finish the session.
-16. Zync Again history is stored locally and can mark newly discovered shared interests on repeat sessions.
+15. Shared interests are not the end of the session. After the strongest exact connections are revealed, Zync can continue with **Ask about them**, **Let them ask you**, and **Surprise us** moments using selected non-shared interests and crossovers. A non-shared interest must never be mislabeled as an exact match.
+16. A short recap appears when the people finish the session. If a peer explicitly opted to share public social-profile links, the recap can offer an Open Profile action and a QR for that public profile URL.
+17. Zync Again history is stored locally and can remember prior shared IDs, the peer's latest limited interest profile, conversation questions actually shown, and public social links the peer explicitly shared.
 
 ## Zync Session
 
@@ -56,10 +57,14 @@ Scan
 → reveal one meaningful connection
 → talk about it
 → reveal another when ready
+→ keep discovering through differences / curiosity / crossover
 → recap
+→ optional social exchange
 ```
 
 The app should never require both people to reveal every connection before a conversation can begin.
+
+Shared-interest surprise remains Zync's signature moment, but it is not the whole conversation engine. The session may continue after the last exact shared reveal with a small curated set of non-shared interests from each person. These are framed as curiosity — for example, asking one person to tell a story about an interest the other did not select — rather than as additional matches. The user can finish at any time; Zync should not force people through every card.
 
 ### Connection threads
 
@@ -119,6 +124,22 @@ The catalog is a hierarchy plus graph, not one flat list.
 
 Different-language labels map to the same ID. `Badminton`, `羽毛球`, `バドミントン` and `배드민턴` are the same exact interest.
 
+## Optional post-Zync social exchange
+
+A user may manually enter public Instagram, Threads or Facebook handles/profile URLs and independently choose whether each one is shared after a Zync.
+
+Rules:
+
+- social sharing is optional;
+- each link requires an explicit **Share after Zync** opt-in;
+- only opted-in public links are included in the limited QR/profile payload exchanged with the other participant;
+- Zync does not ask for or store the user's social-media password, cookie or OAuth access token for this V1 flow;
+- the other participant may open the public profile or display a QR for the public profile URL after the session;
+- links received from a peer may remain in that peer's local Zync history on the recipient's device;
+- this feature does not create a Zync account and does not import a person's social graph, posts, contacts or followers.
+
+A future **claim your Zync identity** account layer may be considered only after the anonymous two-person loop proves itself. It is not part of the current V1 implementation.
+
 ## Regional discovery
 
 Phase 1 may use a coarse device-locale country/region as a soft discovery default. It must not require GPS or precise location.
@@ -165,6 +186,8 @@ AI should activate the revealed connection, not summarize the whole profile.
 For an exact reveal, send only the focused connection required for the question.
 
 For zero exact matches, use the locally selected crossover pair.
+
+For a one-person curiosity card, send only the selected non-shared interest on the correct person's side of the request. The generated question should invite the owner to tell a specific story, preference, recommendation or surprising detail while giving the other person something concrete to react to. It must not pretend the other person shares that interest.
 
 For a one-scan session, the same session + connection + mode + language pair should resolve to the same semantic question on both phones. A short-lived shared question cache may be used for this purpose.
 
@@ -216,10 +239,15 @@ Related interests remain related only; they are not displayed as exact shared in
 Local history identifies previous peers by their random local Zync ID and may contain:
 
 - peer ID;
-- nickname;
+- nickname or deterministic funny alias;
 - previously shared canonical IDs;
+- the peer's latest limited interests received during Zync;
+- conversation questions actually shown during previous Zync sessions;
+- public social-profile links that peer explicitly chose to share;
 - first and latest Zync timestamps;
 - session count.
+
+If a nickname is blank, the UI uses a deterministic, non-identifying playful alias derived locally from the random peer ID (for example, a ridiculous adjective + noun combination). It must not display the raw identifier as the person's human-facing name.
 
 A repeat session can label newly shared interests.
 
@@ -300,7 +328,8 @@ Phase 1 metrics that matter include:
 - distinct people Zynced with;
 - repeat Zync within 30 days;
 - whether users report learning something new about the other person;
-- whether the interaction started a conversation that otherwise would not have happened.
+- whether the interaction started a conversation that otherwise would not have happened;
+- optional post-Zync social-exchange rate, as a signal that the interaction produced enough value for the participants to want to stay connected.
 
 DAU alone is not the definition of success.
 
@@ -317,7 +346,7 @@ Do not add these to V1 without an explicit strategic decision:
 - nearby people;
 - precise location matching;
 - random activity matching;
-- social-account import;
+- social-account import or automatic social-graph import (manual, explicitly shared public profile links are allowed);
 - merchant deals / advertising;
 - payment/subscription;
 - career matching;
