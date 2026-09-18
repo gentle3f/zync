@@ -168,7 +168,8 @@ class _MatchScreenState extends State<MatchScreen> {
     }
 
     AiQuestionResult? aiResult;
-    for (var attempt = 0; attempt < 3 && aiResult == null; attempt++) {
+    final attempts = _ai.hasRemote ? 3 : 0;
+    for (var attempt = 0; attempt < attempts && aiResult == null; attempt++) {
       if (attempt > 0) {
         await Future<void>.delayed(Duration(milliseconds: attempt == 1 ? 900 : 2200));
         if (!mounted) return;
