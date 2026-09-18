@@ -219,6 +219,8 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
             match: match,
             newMatchCount: previous == null ? 0 : newCount,
             sessionSeed: bootstrap.sessionId,
+            previousSharedIds: previousIds,
+            localIsMatchMine: true,
           ),
         ),
       );
