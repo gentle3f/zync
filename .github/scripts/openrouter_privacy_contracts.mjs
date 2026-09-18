@@ -50,6 +50,12 @@ function assertZeroRetention(request) {
   if ('allow_fallbacks' in upstream.provider) {
     assert.equal(upstream.provider.allow_fallbacks, true);
   }
+  if ('reasoning_effort' in upstream) {
+    assert.equal(upstream.reasoning_effort, 'none');
+    assert.deepEqual(upstream.modalities, ['text']);
+    assert.ok(Number.isInteger(upstream.max_completion_tokens));
+    assert.equal('max_tokens' in upstream, false);
+  }
   assert.ok(request.options.signal, 'OpenRouter request must retain its timeout/abort signal');
 }
 
