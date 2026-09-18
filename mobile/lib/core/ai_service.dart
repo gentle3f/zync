@@ -84,11 +84,14 @@ class AiService {
     required MatchResult match,
     String? secondaryLanguage,
     String sessionSeed = '',
+    String connectionKey = '',
   }) async {
     final primary = ZyncLanguage.canonical(language);
     final secondary = secondaryLanguage == null ? null : ZyncLanguage.canonical(secondaryLanguage);
     final wantsSecondary = secondary != null && secondary != primary;
     final boundedSessionSeed = sessionSeed.length > 64 ? sessionSeed.substring(0, 64) : sessionSeed;
+    final boundedConnectionKey =
+        connectionKey.length > 180 ? connectionKey.substring(0, 180) : connectionKey;
 
     if (baseUrl.trim().isEmpty) {
       return _fallback(
@@ -111,6 +114,7 @@ class AiService {
               'personA': match.onlyMine.map((item) => _label(item, primary)).take(8).toList(),
               'personB': match.onlyTheirs.map((item) => _label(item, primary)).take(8).toList(),
               if (boundedSessionSeed.isNotEmpty) 'sessionSeed': boundedSessionSeed,
+              if (boundedConnectionKey.trim().isNotEmpty) 'connectionKey': boundedConnectionKey.trim(),
             }),
           )
           .timeout(const Duration(seconds: 12));
