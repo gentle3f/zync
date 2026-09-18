@@ -8,6 +8,7 @@ import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
 import '../core/language_support.dart';
 import '../core/local_store.dart';
+import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../core/zync_alias.dart';
 import '../core/zync_session_service.dart';
