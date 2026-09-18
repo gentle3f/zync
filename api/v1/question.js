@@ -137,6 +137,15 @@ function firstEnv(...names) {
   return '';
 }
 
+function modelCandidates() {
+  const configured = (process.env.OPENROUTER_MODEL || '').trim();
+  return [
+    configured || 'openrouter/free',
+    'google/gemma-4-26b-a4b-it:free',
+    'google/gemma-4-26b-a4b-it',
+  ].filter((value, index, list) => value && list.indexOf(value) === index);
+}
+
 function cacheConfiguration() {
   const url = firstEnv('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL').replace(/\/$/, '');
   const token = firstEnv('UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN');
@@ -244,7 +253,8 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'ai_not_configured' });
   }
 
-  const model = process.env.OPENROUTER_MODEL || 'openrouter/free';
+  const models = modelCandidates();
+  const model = models[0];
   const cache = cacheContext(body, requestedPrimary, requestedSecondary, mode);
   const cacheConfig = cache ? cacheConfiguration() : null;
 
@@ -284,10 +294,11 @@ export default async function handler(req, res) {
         'X-Title': 'Zync',
       },
       body: JSON.stringify({
-        model,
+        models,
         provider: {
           zdr: true,
           data_collection: 'deny',
+          allow_fallbacks: true,
         },
         messages: [
           {
@@ -313,6 +324,8 @@ export default async function handler(req, res) {
       return res.status(502).json({ error: generationSecondary ? 'bilingual_response_invalid' : 'empty_ai_response' });
     }
 
+    const servedModel =
+        typeof data?.model === 'string' && data.model.trim() ? data.model.trim() : model;
     const questions = {
       [generationPrimary]: parsed.question,
       ...(generationSecondary ? { [generationSecondary]: parsed.secondaryQuestion } : {}),
@@ -352,7 +365,7 @@ export default async function handler(req, res) {
       questions,
       requestedPrimary,
       requestedSecondary,
-      model,
+      servedModel,
       false,
     );
     if (!response) {
