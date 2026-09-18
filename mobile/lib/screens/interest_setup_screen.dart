@@ -33,6 +33,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   final _popularityService = InterestPopularityService.instance;
   late final String _region;
   InterestPopularitySnapshot? _popularity;
+  final Map<String, List<String>> _stableBrowseOrders = {};
   late Map<String, InterestStrength> _selected;
   late Map<String, SelectedInterest> _custom;
   String? _selectedCategory;
@@ -180,31 +181,26 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         .toList();
   }
 
-  List<InterestDefinition> _discoveryResults() {
-    final result = <InterestDefinition>[];
-    final seen = <String>{};
-
-    void addAll(Iterable<InterestDefinition?> items) {
-      for (final item in items.whereType<InterestDefinition>()) {
-        if (seen.add(item.id)) result.add(item);
-      }
-    }
-
-    addAll(_selected.keys.map(InterestCatalog.byId));
-    if (_selected.isNotEmpty) {
-      addAll(InterestCatalog.relatedTo(
-        _selected.keys,
+  List<InterestDefinition> _stableLeafResults({
+    required String category,
+    required String? cluster,
+    required String? subcluster,
+  }) {
+    final key = '$category|${cluster ?? ''}|${subcluster ?? ''}';
+    final ids = _stableBrowseOrders.putIfAbsent(key, () {
+      return InterestCatalog.popular(
+        category: category,
+        cluster: cluster,
+        subcluster: subcluster,
         region: _region,
         popularity: _popularity,
-        limit: 28,
-      ));
-    }
-    addAll(InterestCatalog.popular(
-      region: _region,
-      popularity: _popularity,
-      limit: 60,
-    ));
-    return result.take(80).toList(growable: false);
+        limit: 120,
+      ).map((item) => item.id).toList(growable: false);
+    });
+    return ids
+        .map(InterestCatalog.byId)
+        .whereType<InterestDefinition>()
+        .toList(growable: false);
   }
 
   @override
