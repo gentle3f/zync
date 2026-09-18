@@ -226,15 +226,18 @@ class _MatchScreenState extends State<MatchScreen> {
     } else if (connectionKey.startsWith('shared:')) {
       final id = connectionKey.substring('shared:'.length);
       label = InterestCatalog.byId(id)?.labelFor(locale) ?? id;
-    } else if (_crossover != null && connectionKey == _crossover!.connectionKey) {
-      final mine = InterestCatalog.byId(_crossover!.mine.id)?.labelFor(locale) ??
-          _crossover!.mine.customLabel ??
-          _crossover!.mine.id;
-      final theirs =
-          InterestCatalog.byId(_crossover!.theirs.id)?.labelFor(locale) ??
-              _crossover!.theirs.customLabel ??
-              _crossover!.theirs.id;
-      label = '$mine × $theirs';
+    } else {
+      final crossover = _crossover;
+      if (crossover != null && connectionKey == crossover.connectionKey) {
+        final mine = InterestCatalog.byId(crossover.mine.id)?.labelFor(locale) ??
+            crossover.mine.customLabel ??
+            crossover.mine.id;
+        final theirs =
+            InterestCatalog.byId(crossover.theirs.id)?.labelFor(locale) ??
+                crossover.theirs.customLabel ??
+                crossover.theirs.id;
+        label = '$mine × $theirs';
+      }
     }
 
     await LocalStore.recordQuestion(
