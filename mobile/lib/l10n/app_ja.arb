@@ -166,5 +166,14 @@
     }
   },
   "finishZync": "Zyncを終了",
-  "findingQuestion": "いい質問を考えています…"
+  "findingQuestion": "いい質問を考えています…",
+  "keepDiscovering": "もっと知る",
+  "sharedOnlyStart": "共通点はきっかけにすぎません。まだ知らなかった相手のことを見つけましょう。",
+  "askAboutThem": "相手について聞く",
+  "letThemAskYou": "あなたについて聞いてもらう",
+  "surpriseUs": "おまかせ",
+  "finishAndRecap": "終了して振り返る",
+  "backToIdeas": "ほかの話題へ",
+  "theirInterest": "相手の興味",
+  "yourInterest": "あなたの興味"
 }
