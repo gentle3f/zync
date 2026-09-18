@@ -460,14 +460,9 @@ class InterestCatalog {
   }
 
   static bool _isCategoryRoot(InterestDefinition item) {
-    const explicitRoots = {
-      'travel.general',
-      'media.movies',
-      'media.tv',
-      'media.anime',
-      'media.manga',
-    };
-    if (explicitRoots.contains(item.id)) return true;
+    // L2 concepts such as Movies, TV, Anime and Manga are siblings, not
+    // category-wide ancestors. Only an explicit low-rank ".general" concept
+    // can collapse across L2 families inside the same category.
     return item.id.endsWith('.general') && item.rank < 200;
   }
 
