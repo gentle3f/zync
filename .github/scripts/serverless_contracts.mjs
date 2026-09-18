@@ -88,6 +88,59 @@ test('question returns one same-language question', async () => {
   assert.equal(r.headers['cache-control'], 'no-store');
 });
 
+test('question prompt is interaction-first instead of interview-style', async () => {
+  enableTestAi();
+  let request;
+  mockFetch(
+    { choices: [{ message: { content: 'Pick one badminton rule you would change and make the other person defend the current rule.' } }] },
+    { capture: (url, options) => { request = { url, options }; } },
+  );
+
+  const r = await invoke(question, {
+    language: 'en',
+    mode: 'fun',
+    shared: ['Badminton'],
+  });
+  assert.equal(r.status, 200);
+
+  const upstream = JSON.parse(request.options.body);
+  const prompt = upstream.messages[1].content;
+  assert.equal(prompt.includes('conversation director'), true);
+  assert.equal(prompt.includes('Silently draft several candidate questions'), true);
+  assert.equal(prompt.includes('predict, choose, rank, compare, defend, recommend, reveal, or react'), true);
+  assert.equal(prompt.includes('when did you start'), true);
+  assert.equal(prompt.includes('They already know they share this interest'), true);
+  assert.equal(prompt.includes('friends talking, not an interview'), true);
+});
+
+test('question modes carry distinct interaction directions', async () => {
+  enableTestAi();
+  const prompts = {};
+  for (const mode of ['easy', 'fun', 'debate', 'deep', 'guess', 'surprise']) {
+    mockFetch(
+      { choices: [{ message: { content: 'Would you pick A or B?' } }] },
+      {
+        capture: (_url, options) => {
+          prompts[mode] = JSON.parse(options.body).messages[1].content;
+        },
+      },
+    );
+    const r = await invoke(question, {
+      language: 'en',
+      mode,
+      shared: ['Basketball'],
+    });
+    assert.equal(r.status, 200);
+  }
+
+  assert.match(prompts.easy, /low-pressure forced choice/i);
+  assert.match(prompts.fun, /playful scenario/i);
+  assert.match(prompts.debate, /two-sided choice/i);
+  assert.match(prompts.deep, /meaningful preference/i);
+  assert.match(prompts.guess, /predict the other person/i);
+  assert.match(prompts.surprise, /unexpected but plausible/i);
+});
+
 test('question accepts routed typed text content parts', async () => {
   enableTestAi();
   mockFetch({
