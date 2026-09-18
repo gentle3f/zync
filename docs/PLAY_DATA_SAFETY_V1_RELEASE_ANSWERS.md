@@ -156,7 +156,7 @@ Purpose:
 
 - **App functionality / personalization of interest discovery ordering**.
 
-The server aggregates signals by coarse region and completed week. Human-curated catalog scores remain the prior; observed selection rates have bounded influence and weekly score movement is capped, so small or sudden samples do not rapidly reorder the catalog.
+The server aggregates signals by coarse region and completed week. Ranking pools the two most recent completed weeks. Human-curated catalog scores remain the prior; observed selection rates have bounded influence and the learned score is hard-capped to a small adjustment around that curated base, so small or sudden samples cannot take over the catalog.
 
 ### Retention
 
