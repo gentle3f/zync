@@ -13,7 +13,7 @@ class AchievementProgress {
   final int target;
 
   bool get unlocked => current >= target;
-  double get fraction => target <= 0 ? 1 : (current / target).clamp(0, 1);
+  double get fraction => target <= 0 ? 1.0 : (current / target).clamp(0.0, 1.0).toDouble();
 }
 
 class AchievementSnapshot {
