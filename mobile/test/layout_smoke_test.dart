@@ -253,7 +253,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
     await tester.pumpAndSettle();
 
-    expect(find.text("JoJo's Bizarre Adventure"), findsOneWidget);
+    expect(find.byKey(const ValueKey('zync-connection-anime.jojo')), findsOneWidget);
     expect(find.text('Anime'), findsOneWidget);
     expect(find.text('New since your last Zync'), findsNothing);
     expect(tester.takeException(), isNull);
