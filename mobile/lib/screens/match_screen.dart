@@ -661,6 +661,274 @@ class _MatchScreenState extends State<MatchScreen> {
     );
   }
 
+  Widget _exploreHubScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final peerSource = widget.localIsMatchMine
+        ? widget.match.onlyTheirs
+        : widget.match.onlyMine;
+    final mineSource = widget.localIsMatchMine
+        ? widget.match.onlyMine
+        : widget.match.onlyTheirs;
+    final peerOwnerIsMatchMine = !widget.localIsMatchMine;
+    final localOwnerIsMatchMine = widget.localIsMatchMine;
+    final peerIdeas = _rankedUniqueInterests(peerSource).take(4).toList();
+    final myIdeas = _rankedUniqueInterests(mineSource).take(4).toList();
+
+    Widget interestCard(
+      SelectedInterest interest, {
+      required String overline,
+      required VoidCallback onTap,
+    }) {
+      final label = InterestCatalog.byId(interest.id)?.labelFor(locale) ??
+          interest.customLabel ??
+          interest.id;
+      final category = InterestCatalog.byId(interest.id)?.category ??
+          interest.customCategory ??
+          'other';
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 9),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: onTap,
+            child: ZyncSurface(
+              shadow: false,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+              child: Row(
+                children: [
+                  ZyncIconTile(
+                    icon: Icons.chat_bubble_outline_rounded,
+                    size: 42,
+                    backgroundColor: const Color(0xFFF1EEFF),
+                    foregroundColor: ZyncPalette.plum,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          overline,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(color: ZyncPalette.plum),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          label,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${_strengthEmoji(interest.strength)} ${LocalizedDomainText.category(category, locale)}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ZyncPalette.inkSoft),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 15,
+                    color: ZyncPalette.inkSoft,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _shell(
+      context,
+      ListView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+        children: [
+          Text(
+            l10n.keepDiscovering,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 7),
+          Text(
+            l10n.sharedOnlyStart,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: ZyncPalette.inkSoft, height: 1.35),
+          ),
+          if (peerIdeas.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                const Icon(Icons.person_search_outlined, color: ZyncPalette.plum),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.askAboutThem,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            for (final interest in peerIdeas)
+              interestCard(
+                interest,
+                overline: l10n.theirInterest,
+                onTap: () => _openAboutInterest(
+                  interest,
+                  ownerIsMatchMine: peerOwnerIsMatchMine,
+                ),
+              ),
+          ],
+          if (myIdeas.isNotEmpty) ...[
+            const SizedBox(height: 22),
+            Row(
+              children: [
+                const Icon(Icons.record_voice_over_outlined, color: ZyncPalette.orangeDeep),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.letThemAskYou,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            for (final interest in myIdeas)
+              interestCard(
+                interest,
+                overline: l10n.yourInterest,
+                onTap: () => _openAboutInterest(
+                  interest,
+                  ownerIsMatchMine: localOwnerIsMatchMine,
+                ),
+              ),
+          ],
+          if (_crossover != null && _connections.isNotEmpty) ...[
+            const SizedBox(height: 22),
+            Text(
+              l10n.surpriseUs,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 10),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: _openCrossoverMoment,
+                child: ZyncSurface(
+                  shadow: false,
+                  borderColor: const Color(0xFFE5DFFF),
+                  backgroundColor: const Color(0xFFF8F5FF),
+                  child: Row(
+                    children: [
+                      const ZyncIconTile(
+                        icon: Icons.shuffle_rounded,
+                        backgroundColor: Color(0xFFE9E5FF),
+                        foregroundColor: ZyncPalette.plum,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.crossoverIntro,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 15),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 28),
+          FilledButton.icon(
+            onPressed: () => setState(() => _recap = true),
+            icon: const Icon(Icons.check_rounded),
+            label: Text(l10n.finishAndRecap),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _exploreMomentScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final ownerIsLocal = _activeOwnerIsMatchMine != null &&
+        _activeOwnerIsMatchMine == widget.localIsMatchMine;
+    final heading = _activeExploreKind == 'crossover'
+        ? l10n.surpriseUs
+        : ownerIsLocal
+            ? l10n.letThemAskYou
+            : l10n.askAboutThem;
+    final key = _questionMapKey();
+    final result = _questions[key];
+    final loading = _loadingQuestions.contains(key);
+
+    return _shell(
+      context,
+      ListView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        children: [
+          Text(
+            heading,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 16),
+          ZyncSurface(
+            borderColor: const Color(0xFFE5DFFF),
+            backgroundColor: const Color(0xFFF8F5FF),
+            child: Column(
+              children: [
+                ZyncIconTile(
+                  icon: _activeExploreKind == 'crossover'
+                      ? Icons.shuffle_rounded
+                      : ownerIsLocal
+                          ? Icons.record_voice_over_outlined
+                          : Icons.person_search_outlined,
+                  size: 54,
+                  backgroundColor: const Color(0xFFE9E5FF),
+                  foregroundColor: ZyncPalette.plum,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  _activeExploreLabel ?? '',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          _questionCard(context, result: result, loading: loading),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: _pickMode,
+            icon: const Icon(Icons.tune_rounded),
+            label: Text('${l10n.changeVibe}: ${_modeLabel(l10n, _mode)}'),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: _backToExploreHub,
+            icon: const Icon(Icons.arrow_back_rounded),
+            label: Text(l10n.backToIdeas),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: () => setState(() => _recap = true),
+            icon: const Icon(Icons.check_rounded),
+            label: Text(l10n.finishAndRecap),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _crossoverScreen(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
