@@ -16,8 +16,9 @@ The production deployment procedure is:
 - Package remains `com.gmail.gentle3f.myproject`.
 - No login, registration or permanent cloud user profile.
 - Local profile/history and matching remain primarily on-device.
-- The host profile is shared visually through the QR and is not uploaded when the relay session is created.
-- One-scan pairing sends the scanner's limited profile response through a short-lived encrypted relay so the host can auto-complete the same local match.
+- Users may manually add public Instagram, Threads or Facebook handles/profile URLs and explicitly opt each link into post-Zync sharing; this does not require a Zync account, social-media password, OAuth token or social-graph import.
+- The host profile, including only social links explicitly enabled for sharing, is shared visually through the QR and is not uploaded when the relay session is created.
+- One-scan pairing sends the scanner's limited profile response through a short-lived encrypted relay so the host can auto-complete the same local match; explicitly opted-in scanner social-profile links can be included in that encrypted limited response.
 - The scanner response is AES-GCM encrypted on-device with a one-time 256-bit secret carried in the host QR; the Zync relay does not receive that decryption secret.
 - Relay path: Android -> Zync Vercel API -> Upstash Redis; relay state expires after about three minutes and successful sessions are deleted earlier after authenticated host decryption where possible.
 - Interest catalog search, custom-interest creation and exact matching are on-device; the shipped V1 UI does not use AI to normalize custom interests.
@@ -33,7 +34,7 @@ The production deployment procedure is:
 
 ## Important Data Safety consequence
 
-The old Play statement "No data collected" is not suitable for the rebuilt V1. There are feature-dependent off-device data paths for AI conversation generation (including its short-lived shared-question cache), the encrypted scanner response used by one-scan pairing, and coarse-region aggregate interest-discovery signals.
+The old Play statement "No data collected" is not suitable for the rebuilt V1. There are feature-dependent off-device data paths for AI conversation generation (including its short-lived shared-question cache), the encrypted scanner response used by one-scan pairing (which can include a public social-profile link the scanner explicitly opted to share), and coarse-region aggregate interest-discovery signals.
 
 Encryption, server-side opacity, ZDR, and short retention do not remove the need to consider those transmissions in Google's Data Safety form. The release answer sheet therefore treats them conservatively as collection for **App functionality** and instructs the release owner to verify the exact current Play Console category wording before submission.
 
@@ -64,14 +65,14 @@ Intended production URL:
 
 `https://zync-inky.vercel.app/privacy`
 
-The policy is static browser-readable HTML, identifies Zync/package, describes local interest handling, coarse-region aggregate discovery learning, QR sharing, the temporary encrypted relay, AI conversation data flow, Vercel/Upstash/OpenRouter providers, security, retention/deletion and a privacy inquiry mechanism using the official Google Play Developer contact.
+The policy is static browser-readable HTML, identifies Zync/package, describes local interest/history handling, optional public social-profile exchange, coarse-region aggregate discovery learning, QR sharing, the temporary encrypted relay, AI conversation data flow, Vercel/Upstash/OpenRouter providers, security, retention/deletion and a privacy inquiry mechanism using the official Google Play Developer contact.
 
 ## Remaining Play release checks
 
 - provision/configure Upstash Redis for the production Vercel project;
 - set server-only `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, and `ZYNC_RELAY_RATE_LIMIT_SECRET`;
 - production V1 deployment and live API/privacy/relay/regional-interest read smoke;
-- current Play Console Data Safety category wording for AI conversation content, encrypted pairing-response data, and coarse-region aggregate interest-discovery signals;
+- current Play Console Data Safety category wording for AI conversation content, encrypted pairing-response data, explicitly shared public social-profile handles/URLs, and coarse-region aggregate interest-discovery signals;
 - provider/service-provider sharing-exception analysis, including Upstash, before final "shared" answers;
 - current Play treatment of provider-processed IP/network identifiers;
 - replace stale old login/remote-matching listing/screenshots;
