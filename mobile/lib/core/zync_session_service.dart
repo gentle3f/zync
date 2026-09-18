@@ -80,9 +80,10 @@ class ZyncSessionService {
                 InterestCatalog.isBroadAncestorOf(other.id, primary.id),
           )
           .toList(growable: false);
-      final threadIds = <String>{primary.id, ...context.map((item) => item.id)};
+      // "New" describes the connection being revealed, not a broad
+      // ancestor that may have been folded into quiet context.
       final isNew =
-          markNewConnections && threadIds.any((id) => !previousSharedIds.contains(id));
+          markNewConnections && !previousSharedIds.contains(primary.id);
       return ZyncConnection(
         primary: primary,
         context: context,
