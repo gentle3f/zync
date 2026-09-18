@@ -112,7 +112,7 @@
   "done": "Terminé",
   "retry": "Réessayer",
   "cancel": "Annuler",
-  "hiddenConnections": "Vous avez trouvé {count} connexions cachées.",
+  "hiddenConnections": "{count, plural, =1{Vous avez trouvé 1 connexion cachée.} other{Vous avez trouvé {count} connexions cachées.}}",
   "@hiddenConnections": {
     "placeholders": {
       "count": {
@@ -154,7 +154,7 @@
   "stillConnection": "Mais il y a quand même un lien.",
   "crossoverIntro": "Essayez ce croisement",
   "sessionRecap": "Ce que vous avez découvert",
-  "sessionRecapCount": "Vous avez trouvé {count} connexions avec {name}.",
+  "sessionRecapCount": "{count, plural, =1{Vous avez trouvé 1 connexion avec {name}.} other{Vous avez trouvé {count} connexions avec {name}.}}",
   "@sessionRecapCount": {
     "placeholders": {
       "count": {
