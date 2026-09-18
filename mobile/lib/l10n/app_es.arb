@@ -166,5 +166,14 @@
     }
   },
   "finishZync": "Terminar Zync",
-  "findingQuestion": "Buscando una buena pregunta…"
+  "findingQuestion": "Buscando una buena pregunta…",
+  "keepDiscovering": "Seguid descubriendo",
+  "sharedOnlyStart": "Lo que tenéis en común es solo el comienzo. Descubrid algo que aún no sabíais del otro.",
+  "askAboutThem": "Pregúntale sobre sí",
+  "letThemAskYou": "Que te pregunte a ti",
+  "surpriseUs": "Sorpréndenos",
+  "finishAndRecap": "Terminar y repasar",
+  "backToIdeas": "Volver a más ideas",
+  "theirInterest": "Uno de sus intereses",
+  "yourInterest": "Uno de tus intereses"
 }
