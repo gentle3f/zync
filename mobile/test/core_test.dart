@@ -97,6 +97,13 @@ void main() {
       peerInterests: const [
         SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
       ],
+      peerSocialLinks: const [
+        SocialLink(
+          platform: SocialPlatform.instagram,
+          value: '@peer_rich',
+          shareAfterZync: true,
+        ),
+      ],
       recentQuestions: [
         ZyncQuestionMemory(
           connectionKey: 'shared:anime.jojo',
@@ -109,6 +116,7 @@ void main() {
     );
     final roundTrip = ZyncHistoryEntry.fromJson(rich.toJson());
     expect(roundTrip.peerInterests.single.id, 'sports.badminton');
+    expect(roundTrip.peerSocialLinks.single.profileUrl, 'https://www.instagram.com/peer_rich/');
     expect(roundTrip.recentQuestions.single.question, 'Which Part would you start with?');
   });
 
