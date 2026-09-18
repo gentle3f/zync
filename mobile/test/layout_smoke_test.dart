@@ -259,6 +259,59 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('last shared reveal continues into unmatched-interest icebreaking instead of ending', (tester) async {
+    _setPhone(tester, width: 390, height: 844);
+    const peer = QrProfilePayload(
+      version: QrProfilePayload.currentVersion,
+      localId: 'peer-keep-discovering',
+      nickname: '',
+      language: 'en',
+      interests: [
+        SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+        SelectedInterest(id: 'travel.japan', strength: InterestStrength.love),
+      ],
+    );
+    const mine = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
+      SelectedInterest(id: 'photography.street', strength: InterestStrength.love),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.like),
+      SelectedInterest(id: 'travel.japan', strength: InterestStrength.love),
+    ];
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'keep-discovering-session');
+
+    await tester.pumpWidget(
+      _harness(
+        MatchScreen(
+          peer: peer,
+          match: match,
+          newMatchCount: 0,
+          sessionSeed: 'keep-discovering-session',
+        ),
+        locale: const Locale('en'),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Keep discovering'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('zync-next-connection')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Keep discovering'), findsOneWidget);
+    expect(find.text('Ask about them'), findsOneWidget);
+    expect(find.text('Let them ask you'), findsOneWidget);
+    expect(find.text('Japan Travel'), findsOneWidget);
+    expect(find.text('Street Photography'), findsOneWidget);
+    expect(find.text('What you discovered'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('zero exact match becomes a positive graph crossover, not a failure screen', (tester) async {
     _setPhone(tester, width: 390, height: 844);
     const peer = QrProfilePayload(
