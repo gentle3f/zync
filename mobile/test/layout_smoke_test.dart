@@ -10,6 +10,7 @@ import 'package:zync/screens/home_screen.dart';
 import 'package:zync/screens/interest_setup_screen.dart';
 import 'package:zync/screens/match_screen.dart';
 import 'package:zync/screens/show_qr_screen.dart';
+import 'package:zync/screens/social_links_screen.dart';
 import 'package:zync/ui/zync_design.dart';
 
 void main() {
@@ -89,6 +90,42 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('social-link consent settings remain scroll-safe on a small phone', (tester) async {
+    _setPhone(tester, width: 320, height: 620);
+    const socialProfile = LocalProfile(
+      localId: 'social-settings',
+      nickname: '',
+      language: 'en',
+      interests: [],
+      socialLinks: [
+        SocialLink(
+          platform: SocialPlatform.instagram,
+          value: '@existing_user',
+          shareAfterZync: true,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        SocialLinksScreen(
+          profile: socialProfile,
+          onSaved: (_) async {},
+        ),
+        locale: const Locale('en'),
+        textScale: 1.1,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Social links'), findsOneWidget);
+    expect(find.text('Instagram'), findsOneWidget);
+    expect(find.text('Threads'), findsOneWidget);
+    expect(find.text('Facebook'), findsOneWidget);
+    expect(find.byType(ListView), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
