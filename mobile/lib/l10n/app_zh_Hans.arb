@@ -186,5 +186,31 @@
   "stayConnected": "想继续联系？",
   "openProfile": "打开账号",
   "showQr": "显示QR",
-  "saveSocialLinks": "保存社交账号"
+  "saveSocialLinks": "保存社交账号",
+  "questionsSavedCount": "已保存问题：{count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync 次数：{count} · 最近：{date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "你们都喜欢的东西",
+  "noSharedSaved": "暂时没有已保存的共同兴趣。",
+  "thingsLearnedAboutThem": "你发现了对方什么",
+  "nothingExtraSaved": "最近一次Zync还没有保存其他对方兴趣。",
+  "questionsYouTalkedAbout": "你们聊过的问题",
+  "questionsNextTime": "下次Zync出现过的问题会保存在这部手机。",
+  "sharedSocials": "对方分享过的社交账号"
 }
