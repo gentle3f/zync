@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
+import 'achievement_screen.dart';
 import 'history_screen.dart';
 import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
@@ -207,6 +209,17 @@ class HomeScreen extends StatelessWidget {
           title: l10n.peopleHistory,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const HistoryScreen()),
+          ),
+        ),
+        _MenuSpec(
+          icon: Icons.emoji_events_outlined,
+          iconBackground: const Color(0xFFFFE9B7),
+          iconForeground: const Color(0xFF8B5A00),
+          title: LocalizedDomainText.achievementsTitle(
+            Localizations.localeOf(context).toLanguageTag(),
+          ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const AchievementScreen()),
           ),
         ),
         _MenuSpec(
