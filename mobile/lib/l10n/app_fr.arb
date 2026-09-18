@@ -186,5 +186,31 @@
   "stayConnected": "Rester en contact ?",
   "openProfile": "Ouvrir le profil",
   "showQr": "Afficher le QR",
-  "saveSocialLinks": "Enregistrer les liens"
+  "saveSocialLinks": "Enregistrer les liens",
+  "questionsSavedCount": "Questions enregistrées : {count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Sessions Zync : {count} · dernière : {date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "Ce que vous aimez tous les deux",
+  "noSharedSaved": "Aucun centre d’intérêt commun enregistré pour l’instant.",
+  "thingsLearnedAboutThem": "Ce que vous avez découvert sur cette personne",
+  "nothingExtraSaved": "Aucun autre centre d’intérêt enregistré lors du dernier Zync.",
+  "questionsYouTalkedAbout": "Les questions dont vous avez parlé",
+  "questionsNextTime": "Les questions de votre prochain Zync seront mémorisées sur cet appareil.",
+  "sharedSocials": "Réseaux sociaux partagés"
 }
