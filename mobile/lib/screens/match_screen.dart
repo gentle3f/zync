@@ -754,9 +754,11 @@ class _MatchScreenState extends State<MatchScreen> {
 
     return _shell(
       context,
-      ListView(
+      SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
-        children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
           Text(
             l10n.keepDiscovering,
             style: Theme.of(context).textTheme.headlineMedium,
@@ -862,7 +864,8 @@ class _MatchScreenState extends State<MatchScreen> {
             icon: const Icon(Icons.check_rounded),
             label: Text(l10n.finishAndRecap),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
