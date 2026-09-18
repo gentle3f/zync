@@ -460,6 +460,7 @@ class ZyncHistoryEntry {
     required this.lastZyncAt,
     required this.sessionCount,
     this.peerInterests = const [],
+    this.peerSocialLinks = const [],
     this.recentQuestions = const [],
   });
 
@@ -474,6 +475,10 @@ class ZyncHistoryEntry {
   /// history can remember what you learned about the person.
   final List<SelectedInterest> peerInterests;
 
+  /// Latest social links that the peer explicitly consented to share.
+  /// These remain local history on this device after the Zync session.
+  final List<SocialLink> peerSocialLinks;
+
   /// Local-only memory of prompts actually shown during past Zync sessions.
   final List<ZyncQuestionMemory> recentQuestions;
 
@@ -485,6 +490,7 @@ class ZyncHistoryEntry {
         'lastZyncAt': lastZyncAt.toIso8601String(),
         'sessionCount': sessionCount,
         'peerInterests': peerInterests.map((item) => item.toJson()).toList(),
+        'peerSocialLinks': peerSocialLinks.map((item) => item.toJson()).toList(),
         'recentQuestions': recentQuestions.map((item) => item.toJson()).toList(),
       };
 
@@ -498,6 +504,11 @@ class ZyncHistoryEntry {
         peerInterests: ((json['peerInterests'] as List?) ?? const [])
             .whereType<Map>()
             .map((item) => SelectedInterest.fromJson(Map<String, dynamic>.from(item)))
+            .toList(),
+        peerSocialLinks: ((json['peerSocialLinks'] as List?) ?? const [])
+            .whereType<Map>()
+            .map((item) => SocialLink.fromJson(Map<String, dynamic>.from(item)))
+            .where((item) => item.profileUrl != null)
             .toList(),
         recentQuestions: ((json['recentQuestions'] as List?) ?? const [])
             .whereType<Map>()
