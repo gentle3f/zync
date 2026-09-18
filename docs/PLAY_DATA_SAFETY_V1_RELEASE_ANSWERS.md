@@ -98,6 +98,12 @@ OpenRouter requests enforce ZDR-compatible routing and deny non-transient provid
 
 Google's Data Safety guidance still requires off-device ephemeral processing to be declared. Apply the current Play UI's ephemeral-processing question based on the final provider configuration and Google's definition at submission time.
 
+## Shared conversation-question cache
+
+For a one-scan Zync session, generated question text may be stored briefly in Upstash Redis under a SHA-256-derived key based on the random session, focused connection, mode and language pair. This lets both phones receive the same semantic question.
+
+The cache is not a permanent conversation log or profile store and expires after about 15 minutes. The underlying bounded interest context and generated question remain part of the App functionality data flow and should be assessed conservatively under the current Play Console wording.
+
 ## Data type 2 — encrypted scanner profile response used for one-scan pairing
 
 ### What leaves the scanning phone
