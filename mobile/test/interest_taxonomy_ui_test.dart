@@ -46,17 +46,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('interest-l2-strip')), findsOneWidget);
-    expect(find.text('Movies'), findsOneWidget);
-    expect(find.text('TV & Drama'), findsOneWidget);
-    expect(find.text('Anime & Manga'), findsOneWidget);
+    expect(find.byKey(const ValueKey('interest-l2-movies')), findsOneWidget);
+    expect(find.byKey(const ValueKey('interest-l2-tv_drama')), findsOneWidget);
+    expect(find.byKey(const ValueKey('interest-l2-anime_manga')), findsOneWidget);
 
-    await tester.tap(find.text('Movies'));
+    await tester.tap(find.byKey(const ValueKey('interest-l2-movies')));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('interest-l3-strip')), findsOneWidget);
-    expect(find.text('Genres & Subgenres'), findsOneWidget);
-    expect(find.text('Classics'), findsOneWidget);
-    expect(find.text('Modern Favorites'), findsOneWidget);
+    expect(find.byKey(const ValueKey('interest-l3-subgenres')), findsOneWidget);
+    expect(find.byKey(const ValueKey('interest-l3-classics')), findsOneWidget);
+    expect(find.byKey(const ValueKey('interest-l3-modern_evergreen')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
