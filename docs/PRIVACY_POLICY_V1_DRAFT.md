@@ -10,9 +10,10 @@ The old placeholder-heavy privacy-policy draft has been replaced by the actual b
 The current public-V1 posture is:
 
 - no account or permanent cloud user profile;
-- local profile/history and local matching;
-- host profile shared visually through the QR;
-- one-scan completion uses a short-lived encrypted relay for the scanner response;
+- local profile/history and local matching, including locally remembered conversation questions and peer information received during Zync;
+- optional public Instagram, Threads or Facebook profile links can be entered manually and independently opted into post-Zync sharing, without a social-media password/OAuth token or social-graph import;
+- host profile, including only social links explicitly enabled for sharing, shared visually through the QR;
+- one-scan completion uses a short-lived encrypted relay for the scanner response, which can include a public social-profile link the scanner explicitly opted to share;
 - the scanner response is AES-GCM encrypted on-device with a one-time QR secret that the relay does not receive;
 - relay state uses Vercel + Upstash Redis, is designed to expire after about three minutes, and is deleted earlier after successful authenticated host decryption when possible;
 - interest catalog search/custom-interest creation run on-device; custom-interest text is not sent for AI normalization by the shipped V1 UI;
