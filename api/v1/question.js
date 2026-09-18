@@ -316,7 +316,16 @@ export default async function handler(req, res) {
     const data = await upstream.json().catch(() => ({}));
     if (!upstream.ok) {
       console.error('OpenRouter question error', upstream.status, data?.error?.message || data?.error || 'unknown');
-      return res.status(502).json({ error: 'ai_upstream_error' });
+      const diagnostic = body.diagnostics === true
+        ? {
+            upstreamStatus: upstream.status,
+            upstreamCode: String(data?.error?.code || data?.error?.type || 'unknown').slice(0, 80),
+          }
+        : null;
+      return res.status(502).json({
+        error: 'ai_upstream_error',
+        ...(diagnostic ? { diagnostic } : {}),
+      });
     }
 
     const parsed = parseQuestions(data?.choices?.[0]?.message?.content, generationSecondary);
