@@ -8,6 +8,8 @@ import 'interest_catalog_part7.dart';
 import 'interest_catalog_part8.dart';
 import 'interest_catalog_part9.dart';
 import 'interest_catalog_part10.dart';
+import 'interest_popularity_service.dart';
+import 'interest_relevance.dart';
 import 'models.dart';
 
 class InterestCatalog {
@@ -63,6 +65,8 @@ class InterestCatalog {
     String query,
     String locale, {
     String? category,
+    String region = 'global',
+    InterestPopularitySnapshot? popularity,
     int limit = 80,
   }) {
     final q = normalizeText(query);
@@ -71,7 +75,12 @@ class InterestCatalog {
               ? seed
               : seed.where((item) => item.category == category))
           .toList()
-        ..sort(_rankCompare);
+        ..sort((a, b) => InterestRelevance.compare(
+              a,
+              b,
+              region: region,
+              popularity: popularity,
+            ));
       return items.take(limit).toList(growable: false);
     }
 
@@ -84,7 +93,12 @@ class InterestCatalog {
     scored.sort((a, b) {
       final score = a.score.compareTo(b.score);
       if (score != 0) return score;
-      return _rankCompare(a.item, b.item);
+      return InterestRelevance.compare(
+        a.item,
+        b.item,
+        region: region,
+        popularity: popularity,
+      );
     });
     return scored.map((row) => row.item).take(limit).toList(growable: false);
   }
@@ -125,6 +139,8 @@ class InterestCatalog {
     String? category,
     String? cluster,
     String? subcluster,
+    String region = 'global',
+    InterestPopularitySnapshot? popularity,
     int limit = 36,
   }) {
     Iterable<InterestDefinition> items = seed;
@@ -139,7 +155,13 @@ class InterestCatalog {
         return path.l3 == subcluster;
       });
     }
-    final sorted = items.toList()..sort(_rankCompare);
+    final sorted = items.toList()
+      ..sort((a, b) => InterestRelevance.compare(
+            a,
+            b,
+            region: region,
+            popularity: popularity,
+          ));
     return sorted.take(limit).toList(growable: false);
   }
 
@@ -147,12 +169,18 @@ class InterestCatalog {
   /// IDs, so nearby concepts are never falsely reported as shared interests.
   static List<InterestDefinition> relatedTo(
     Iterable<String> selectedIds, {
+    String region = 'global',
+    InterestPopularitySnapshot? popularity,
     int limit = 18,
   }) {
     final selected = selectedIds.toSet();
-    if (selected.isEmpty) return popular(limit: limit);
+    if (selected.isEmpty) {
+      return popular(region: region, popularity: popularity, limit: limit);
+    }
     final selectedDefs = selected.map(byId).whereType<InterestDefinition>().toList();
-    if (selectedDefs.isEmpty) return popular(limit: limit);
+    if (selectedDefs.isEmpty) {
+      return popular(region: region, popularity: popularity, limit: limit);
+    }
 
     final fullClusters = <String, int>{};
     final rootClusters = <String, int>{};
@@ -180,12 +208,17 @@ class InterestCatalog {
               : categoryHits > 0
                   ? 160 - (categoryHits * 5)
                   : 1000;
-      return (item: item, score: relationship + item.rank);
-    }).where((row) => row.score < 1120).toList()
+      return (item: item, relationship: relationship);
+    }).where((row) => row.relationship < 1000).toList()
       ..sort((a, b) {
-        final score = a.score.compareTo(b.score);
-        if (score != 0) return score;
-        return _rankCompare(a.item, b.item);
+        final relationship = a.relationship.compareTo(b.relationship);
+        if (relationship != 0) return relationship;
+        return InterestRelevance.compare(
+          a.item,
+          b.item,
+          region: region,
+          popularity: popularity,
+        );
       });
 
     return candidates.map((row) => row.item).take(limit).toList(growable: false);
