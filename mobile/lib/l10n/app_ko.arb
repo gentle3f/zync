@@ -186,5 +186,31 @@
   "stayConnected": "계속 연결할까요?",
   "openProfile": "프로필 열기",
   "showQr": "QR 보기",
-  "saveSocialLinks": "소셜 링크 저장"
+  "saveSocialLinks": "소셜 링크 저장",
+  "questionsSavedCount": "저장된 질문: {count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync 횟수: {count} · 최근: {date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "둘 다 좋아하는 것",
+  "noSharedSaved": "저장된 공통 관심사가 아직 없습니다.",
+  "thingsLearnedAboutThem": "상대에 대해 알게 된 것",
+  "nothingExtraSaved": "최근 Zync에서 추가로 저장된 상대 관심사가 없습니다.",
+  "questionsYouTalkedAbout": "함께 이야기한 질문",
+  "questionsNextTime": "다음 Zync에서 사용한 질문은 이 기기에 저장됩니다.",
+  "sharedSocials": "상대가 공유한 소셜 계정"
 }
