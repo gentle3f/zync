@@ -10,17 +10,41 @@
   "pickAtLeastFive": "관심사를 5개 이상 선택하세요. 언제든 바꿀 수 있어요.",
   "searchAnything": "관심사 검색...",
   "addWithAi": "AI로 ‘{interest}’ 추가",
-  "@addWithAi": {"placeholders": {"interest": {"type": "String"}}},
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "aiSuggested": "AI 제안: ‘{interest}’. 추가할까요?",
-  "@aiSuggested": {"placeholders": {"interest": {"type": "String"}}},
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "addInterest": "관심사 추가",
   "normalizing": "관심사를 이해하는 중...",
   "selectedCount": "{count}개 선택됨",
-  "@selectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "saveAndContinue": "저장하고 계속",
   "homeGreeting": "Zync할 준비 됐나요?",
   "interestsCount": "프로필에 관심사 {count}개",
-  "@interestsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "zyncWithSomeone": "누군가와 Zync",
   "showMyQr": "내 QR 보기",
   "scanSomeone": "상대방 스캔",
@@ -48,7 +72,13 @@
   "cameraErrorBody": "카메라를 시작하지 못했어요. 다시 시도하거나 뒤로 가서 내 QR을 보여 주세요.",
   "youZync": "YOU ZYNC!",
   "hiddenMatches": "숨겨진 공통 관심사가 {count}개 있어요.",
-  "@hiddenMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "noExactMatch": "완전히 같은 관심사는 아직 없어요.",
   "findConnection": "둘 사이의 연결점을 찾아볼게요.",
   "reveal": "공개",
@@ -66,7 +96,13 @@
   "noHistory": "아직 Zync 기록이 없어요.",
   "zyncAgain": "다시 Zync",
   "newMatches": "지난번보다 새로운 공통점 {count}개",
-  "@newMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "love": "정말 좋아해요",
   "like": "좋아해요",
   "wantToTry": "해보고 싶어요",
@@ -75,5 +111,60 @@
   "edit": "편집",
   "done": "완료",
   "retry": "다시 시도",
-  "cancel": "취소"
+  "cancel": "취소",
+  "hiddenConnections": "숨겨진 연결 {count}개를 찾았어요.",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "연결 하나 공개",
+  "revealAnother": "하나 더 공개",
+  "talkAboutThis": "이 이야기로 시작하기",
+  "changeVibe": "분위기 바꾸기",
+  "connectionProgress": "연결 {current} / {total}",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "이번 Zync에서 새로 발견",
+  "strengthContrast": "나: {mine} · {peer}: {theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "관심사는 달라도,",
+  "stillConnection": "연결점은 있어요.",
+  "crossoverIntro": "이 교차점으로 이야기해 보세요",
+  "sessionRecap": "이번에 발견한 것",
+  "sessionRecapCount": "{name}님과 {count}개의 연결을 찾았어요.",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "Zync 마치기",
+  "findingQuestion": "좋은 질문을 찾는 중…"
 }
