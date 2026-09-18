@@ -54,6 +54,12 @@ class _MatchScreenState extends State<MatchScreen> {
   Timer? _impactTimer;
   bool _impactDone = false;
   bool _recap = false;
+  bool _exploreHub = false;
+  MatchResult? _activeExploreMatch;
+  String? _activeExploreKey;
+  String? _activeExploreLabel;
+  String _activeExploreKind = 'about';
+  bool? _activeOwnerIsMatchMine;
   int _revealedIndex = -1;
   ConversationMode _mode = ConversationMode.fun;
 
@@ -66,12 +72,10 @@ class _MatchScreenState extends State<MatchScreen> {
       markNewConnections: widget.isRepeatPeer,
       sessionSeed: widget.sessionSeed,
     );
-    _crossover = _connections.isEmpty
-        ? ZyncSessionService.bestCrossover(
-            widget.match,
-            sessionSeed: widget.sessionSeed,
-          )
-        : null;
+    _crossover = ZyncSessionService.bestCrossover(
+      widget.match,
+      sessionSeed: widget.sessionSeed,
+    );
     _impactTimer = Timer(const Duration(milliseconds: 900), () {
       if (!mounted) return;
       setState(() => _impactDone = true);
