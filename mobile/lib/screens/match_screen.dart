@@ -406,11 +406,13 @@ class _MatchScreenState extends State<MatchScreen> {
             ],
           ),
           const SizedBox(height: 14),
-          ZyncSurface(
-            borderColor: ZyncPalette.peach,
-            backgroundColor: const Color(0xFFFFF7F2),
-            padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
-            child: Column(
+          KeyedSubtree(
+            key: ValueKey('zync-connection-${connection.id}'),
+            child: ZyncSurface(
+              borderColor: ZyncPalette.peach,
+              backgroundColor: const Color(0xFFFFF7F2),
+              padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
+              child: Column(
               children: [
                 const ZyncIconTile(
                   icon: Icons.auto_awesome_rounded,
@@ -451,7 +453,8 @@ class _MatchScreenState extends State<MatchScreen> {
                     }).toList(growable: false),
                   ),
                 ],
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
