@@ -10,6 +10,7 @@ const disclaimer = read('disclaimer.html');
 const vercel = JSON.parse(read('vercel.json'));
 const analytics = read('mobile/lib/core/analytics_service.dart');
 const interestLearning = read('api/v1/interest-popularity.js');
+const question = read('api/v1/question.js');
 const relay = read('api/v1/relay.js');
 const relayClient = read('mobile/lib/core/relay_service.dart');
 const signedRelease = read('.github/workflows/zync-v1-signed-release.yml');
@@ -55,6 +56,8 @@ assert.match(privacy, /Product analytics are disabled by default/i);
 assert.match(privacy, /regional interest discovery/i);
 assert.match(privacy, /does not use GPS or precise location/i);
 assert.match(privacy, /canonical interest identifiers/i);
+assert.match(privacy, /about fifteen minutes/i);
+assert.match(privacy, /same semantic question/i);
 assert.match(privacy, /play\.google\.com\/store\/apps\/details\?id=com\.gmail\.gentle3f\.myproject/);
 assert.match(privacy, /Retention and deletion/i);
 assert.match(privacy, /Security/i);
@@ -81,6 +84,10 @@ assert.equal(routeMap.get('/disclaimer'), '/disclaimer.html');
 assert.match(analytics, /ZYNC_ANALYTICS_ENABLED/);
 assert.match(analytics, /defaultValue:\s*false/);
 assert.match(analytics, /if \(!enabled\) return;/);
+
+assert.match(question, /zync:question:v1:/);
+assert.match(question, /QUESTION_CACHE_SECONDS\s*=\s*15\s*\*\s*60/);
+assert.match(question, /createHash\('sha256'\)/);
 
 assert.match(interestLearning, /zync:interest:v1:/);
 assert.match(interestLearning, /zync:interest:rl:v1:/);
