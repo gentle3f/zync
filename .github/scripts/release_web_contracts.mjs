@@ -95,6 +95,11 @@ assert.match(analytics, /if \(!enabled\) return;/);
 assert.match(question, /zync:question:v1:/);
 assert.match(question, /QUESTION_CACHE_SECONDS\s*=\s*15\s*\*\s*60/);
 assert.match(question, /createHash\('sha256'\)/);
+assert.match(question, /google\/gemma-4-26b-a4b-it:free/);
+assert.match(question, /google\/gemma-4-26b-a4b-it/);
+assert.match(question, /allow_fallbacks:\s*true/);
+assert.match(question, /zdr:\s*true/);
+assert.match(question, /data_collection:\s*'deny'/);
 
 assert.match(interestLearning, /zync:interest:v1:/);
 assert.match(interestLearning, /zync:interest:rl:v1:/);
