@@ -191,11 +191,22 @@ class _SocialEditor extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 7),
-            SwitchListTile.adaptive(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-              title: Text(shareLabel),
-              value: share,
-              onChanged: onShareChanged,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      shareLabel,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: share,
+                    onChanged: onShareChanged,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
