@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/ai_service.dart';
 import '../core/analytics_service.dart';
@@ -1092,6 +1094,82 @@ class _MatchScreenState extends State<MatchScreen> {
     );
   }
 
+  String _socialPlatformLabel(
+    AppLocalizations l10n,
+    SocialPlatform platform,
+  ) =>
+      switch (platform) {
+        SocialPlatform.instagram => l10n.instagram,
+        SocialPlatform.threads => l10n.threads,
+        SocialPlatform.facebook => l10n.facebook,
+      };
+
+  Future<void> _openSocialLink(BuildContext context, SocialLink link) async {
+    final raw = link.profileUrl;
+    final uri = raw == null ? null : Uri.tryParse(raw);
+    if (uri == null) return;
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      // Social exchange is optional; a failed external app launch must not
+      // break the completed Zync Session.
+    }
+  }
+
+  Future<void> _showSocialQr(
+    BuildContext context,
+    SocialLink link,
+  ) async {
+    final raw = link.profileUrl;
+    if (raw == null) return;
+    final l10n = AppLocalizations.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 4, 24, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _socialPlatformLabel(l10n, link.platform),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                link.displayValue,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 18),
+              Container(
+                padding: const EdgeInsets.all(14),
+                color: Colors.white,
+                child: QrImageView(
+                  data: raw,
+                  version: QrVersions.auto,
+                  errorCorrectionLevel: QrErrorCorrectLevel.M,
+                  size: 230,
+                  padding: EdgeInsets.zero,
+                  gapless: true,
+                ),
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () => _openSocialLink(context, link),
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: Text(l10n.openProfile),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _recapScreen(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -1152,6 +1230,67 @@ class _MatchScreenState extends State<MatchScreen> {
                 )
                 .toList(growable: false),
           ),
+          if (widget.peer.socialLinks.isNotEmpty) ...[
+            const SizedBox(height: 28),
+            Text(
+              l10n.stayConnected,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            for (final link in widget.peer.socialLinks)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 9),
+                child: ZyncSurface(
+                  shadow: false,
+                  borderColor: const Color(0xFFE5DFFF),
+                  backgroundColor: const Color(0xFFF8F5FF),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 11,
+                  ),
+                  child: Row(
+                    children: [
+                      const ZyncIconTile(
+                        icon: Icons.alternate_email_rounded,
+                        size: 40,
+                        backgroundColor: Color(0xFFE9E5FF),
+                        foregroundColor: ZyncPalette.plum,
+                      ),
+                      const SizedBox(width: 11),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _socialPlatformLabel(l10n, link.platform),
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              link.displayValue,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: l10n.openProfile,
+                        onPressed: () => _openSocialLink(context, link),
+                        icon: const Icon(Icons.open_in_new_rounded),
+                      ),
+                      IconButton(
+                        tooltip: l10n.showQr,
+                        onPressed: () => _showSocialQr(context, link),
+                        icon: const Icon(Icons.qr_code_2_rounded),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
           const SizedBox(height: 30),
           FilledButton.icon(
             onPressed: _finish,
