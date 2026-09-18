@@ -175,5 +175,16 @@
   "finishAndRecap": "完成並睇回顧",
   "backToIdeas": "返去其他話題",
   "theirInterest": "對方其中一個興趣",
-  "yourInterest": "你其中一個興趣"
+  "yourInterest": "你其中一個興趣",
+  "socialLinks": "社交帳戶",
+  "socialLinksSubtitle": "可選。加入你願意Zync之後分享嘅公開帳戶。",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync後分享",
+  "shareAfterZyncExplain": "只有你明確開啟分享嘅帳戶先會放入Zync QR，並喺session完結後顯示畀對方。",
+  "stayConnected": "想繼續聯絡？",
+  "openProfile": "開啟帳戶",
+  "showQr": "顯示QR",
+  "saveSocialLinks": "儲存社交帳戶"
 }
