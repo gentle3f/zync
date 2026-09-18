@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../core/achievement_service.dart';
 import '../core/analytics_service.dart';
 import '../core/local_store.dart';
 import '../core/matching_service.dart';
@@ -177,7 +178,10 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
         peer.interests,
         sessionSeed: bootstrap.sessionId,
       );
-      final previous = await LocalStore.findHistory(peer.localId);
+      final historyBefore = await LocalStore.loadHistory();
+      final previous = historyBefore
+          .where((entry) => entry.peerId == peer.localId)
+          .firstOrNull;
       final previousIds = previous?.previousSharedIds.toSet() ?? <String>{};
       final currentIds = match.shared.map((item) => item.id).toSet();
       final newCount = currentIds.difference(previousIds).length;
@@ -188,6 +192,10 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
         peerInterests: peer.interests,
         peerSocialLinks: peer.socialLinks,
       );
+      final newAchievementIds = AchievementService.newlyUnlocked(
+        before: historyBefore,
+        after: await LocalStore.loadHistory(),
+      ).toList(growable: false);
       await _relay.consume(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken);
 
       final analytics = <Future<void>>[
@@ -224,6 +232,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
             previousSharedIds: previousIds,
             isRepeatPeer: previous != null,
             localIsMatchMine: true,
+            newAchievementIds: newAchievementIds,
           ),
         ),
       );
