@@ -73,8 +73,10 @@ jobs:
           node --check api/v1/normalize-interest.js
           node --check api/v1/analytics.js
           node --check api/v1/relay.js
+          node --check api/v1/interest-popularity.js
           node --check .github/scripts/serverless_contracts.mjs
           node --check .github/scripts/relay_contracts.mjs
+          node --check .github/scripts/interest_popularity_contracts.mjs
           node --check .github/scripts/openrouter_privacy_contracts.mjs
           node --check .github/scripts/live_api_smoke.mjs
           node --check .github/scripts/release_web_contracts.mjs
@@ -84,6 +86,9 @@ jobs:
 
       - name: Test encrypted relay contracts
         run: node .github/scripts/relay_contracts.mjs
+
+      - name: Test regional interest popularity contracts
+        run: node .github/scripts/interest_popularity_contracts.mjs
 
       - name: Test OpenRouter privacy contracts
         run: node .github/scripts/openrouter_privacy_contracts.mjs
@@ -161,6 +166,7 @@ jobs:
           "--dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}"
           "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PRIVACY_URL}"
           "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
+          "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
 
       - name: Verify AAB signature
         shell: bash
