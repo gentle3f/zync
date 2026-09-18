@@ -49,6 +49,7 @@ class AchievementService {
 
     for (final entry in uniquePeers.values) {
       final peerInterestIds = <String>{
+        ...entry.seenInterestIds,
         ...entry.previousSharedIds,
         ...entry.peerInterests.map((item) => item.id),
       };
