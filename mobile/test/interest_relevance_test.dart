@@ -28,8 +28,8 @@ void main() {
   });
 
   test('regional ranking changes discovery order while canonical IDs stay stable', () {
-    final hkMusic = InterestCatalog.popular(category: 'music', region: 'hk', limit: 20);
-    final globalMusic = InterestCatalog.popular(category: 'music', region: 'global', limit: 20);
+    final hkMusic = InterestCatalog.popular(category: 'music', region: 'hk', limit: 100);
+    final globalMusic = InterestCatalog.popular(category: 'music', region: 'global', limit: 100);
     final hkIndex = hkMusic.map((item) => item.id).toList().indexOf('music.cantopop');
     final globalIndex = globalMusic.map((item) => item.id).toList().indexOf('music.cantopop');
 
