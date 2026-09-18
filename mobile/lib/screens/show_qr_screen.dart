@@ -186,6 +186,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
         peerInterests: peer.interests,
+        peerSocialLinks: peer.socialLinks,
       );
       await _relay.consume(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken);
 
