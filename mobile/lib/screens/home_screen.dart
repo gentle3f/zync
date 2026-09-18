@@ -82,6 +82,16 @@ class HomeScreen extends StatelessWidget {
           Text('Zync', style: Theme.of(context).textTheme.titleLarge),
           const Spacer(),
           IconButton(
+            icon: const Icon(Icons.emoji_events_outlined),
+            tooltip: LocalizedDomainText.achievementsTitle(
+              Localizations.localeOf(context).toLanguageTag(),
+            ),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AchievementScreen()),
+            ),
+          ),
+          const SizedBox(width: 2),
+          IconButton(
             icon: const Icon(Icons.alternate_email_rounded),
             tooltip: l10n.socialLinks,
             onPressed: () async {
@@ -209,17 +219,6 @@ class HomeScreen extends StatelessWidget {
           title: l10n.peopleHistory,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const HistoryScreen()),
-          ),
-        ),
-        _MenuSpec(
-          icon: Icons.emoji_events_outlined,
-          iconBackground: const Color(0xFFFFE9B7),
-          iconForeground: const Color(0xFF8B5A00),
-          title: LocalizedDomainText.achievementsTitle(
-            Localizations.localeOf(context).toLanguageTag(),
-          ),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const AchievementScreen()),
           ),
         ),
         _MenuSpec(
