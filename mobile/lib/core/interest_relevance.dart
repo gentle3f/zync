@@ -97,7 +97,7 @@ class InterestRelevance {
 
   static const double priorWeight = 750;
   static const double maxBehaviourWeight = 0.30;
-  static const double maxWeeklyMove = 6;
+  static const double maxBehaviourAdjustment = 8;
   static const double benchmarkSelectionRate = 0.25;
 
   static double baseScore(InterestDefinition item, String region) {
@@ -115,9 +115,15 @@ class InterestRelevance {
     final base = baseScore(item, region);
     if (popularity == null) return base;
 
-    final older = _blend(base, popularity.older[item.id]);
-    final proposed = _blend(base, popularity.previous[item.id]);
-    return proposed.clamp(older - maxWeeklyMove, older + maxWeeklyMove);
+    final combined = _combine(
+      popularity.previous[item.id],
+      popularity.older[item.id],
+    );
+    final proposed = _blend(base, combined);
+    return proposed.clamp(
+      base - maxBehaviourAdjustment,
+      base + maxBehaviourAdjustment,
+    );
   }
 
   static int compare(
@@ -132,6 +138,17 @@ class InterestRelevance {
     if (scoreOrder != 0) return scoreOrder;
     final rankOrder = a.rank.compareTo(b.rank);
     return rankOrder != 0 ? rankOrder : a.id.compareTo(b.id);
+  }
+
+  static InterestSignalCount? _combine(
+    InterestSignalCount? previous,
+    InterestSignalCount? older,
+  ) {
+    if (previous == null && older == null) return null;
+    return InterestSignalCount(
+      impressions: (previous?.impressions ?? 0) + (older?.impressions ?? 0),
+      selections: (previous?.selections ?? 0) + (older?.selections ?? 0),
+    );
   }
 
   static double _blend(double base, InterestSignalCount? signal) {
