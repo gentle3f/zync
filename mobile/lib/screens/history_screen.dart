@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/interest_catalog.dart';
 import '../core/local_store.dart';
@@ -119,7 +121,7 @@ class HistoryScreen extends StatelessWidget {
                                 if (questionCount > 0) ...[
                                   const SizedBox(height: 2),
                                   Text(
-                                    '$questionCount conversation ${questionCount == 1 ? 'question' : 'questions'} saved',
+                                    l10n.questionsSavedCount(questionCount),
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -169,6 +171,7 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final name = ZyncAlias.displayName(
       nickname: entry.peerNickname,
@@ -212,7 +215,10 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
                         Text(name, style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 4),
                         Text(
-                          '${entry.sessionCount} Zync${entry.sessionCount == 1 ? '' : 's'} · last ${_shortDate(entry.lastZyncAt.toLocal())}',
+                          l10n.zyncSessionsMeta(
+                            entry.sessionCount,
+                            _shortDate(entry.lastZyncAt.toLocal()),
+                          ),
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -225,13 +231,13 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 22),
-            const _SectionTitle(
+            _SectionTitle(
               icon: Icons.favorite_outline_rounded,
-              title: 'Things you both like',
+              title: l10n.thingsYouBothLike,
             ),
             const SizedBox(height: 10),
             if (shared.isEmpty)
-              const _EmptyMemory(text: 'No exact shared interests saved yet.')
+              _EmptyMemory(text: l10n.noSharedSaved)
             else
               Wrap(
                 spacing: 8,
@@ -239,13 +245,13 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
                 children: shared.map((label) => Chip(label: Text(label))).toList(),
               ),
             const SizedBox(height: 24),
-            const _SectionTitle(
+            _SectionTitle(
               icon: Icons.lightbulb_outline_rounded,
-              title: 'Things you learned about them',
+              title: l10n.thingsLearnedAboutThem,
             ),
             const SizedBox(height: 10),
             if (peerOnly.isEmpty)
-              const _EmptyMemory(text: 'Nothing extra saved from their latest Zync yet.')
+              _EmptyMemory(text: l10n.nothingExtraSaved)
             else
               Wrap(
                 spacing: 8,
@@ -262,16 +268,66 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
                   return Chip(label: Text('$emoji $label'));
                 }).toList(),
               ),
+            if (entry.peerSocialLinks.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              _SectionTitle(
+                icon: Icons.alternate_email_rounded,
+                title: l10n.sharedSocials,
+              ),
+              const SizedBox(height: 10),
+              for (final link in entry.peerSocialLinks)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 9),
+                  child: ZyncSurface(
+                    shadow: false,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.link_rounded, color: ZyncPalette.plum),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _platformLabel(l10n, link.platform),
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                link.displayValue,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: l10n.openProfile,
+                          onPressed: () => _openSocial(link),
+                          icon: const Icon(Icons.open_in_new_rounded),
+                        ),
+                        IconButton(
+                          tooltip: l10n.showQr,
+                          onPressed: () => _showSocialQr(context, link),
+                          icon: const Icon(Icons.qr_code_2_rounded),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
             const SizedBox(height: 24),
-            const _SectionTitle(
+            _SectionTitle(
               icon: Icons.chat_bubble_outline_rounded,
-              title: 'Questions you talked about',
+              title: l10n.questionsYouTalkedAbout,
             ),
             const SizedBox(height: 10),
             if (entry.recentQuestions.isEmpty)
-              const _EmptyMemory(
-                text: 'Questions from your next Zync will be remembered here on this phone.',
-              )
+              _EmptyMemory(text: l10n.questionsNextTime)
             else
               ...entry.recentQuestions.map(
                 (memory) => Padding(
@@ -311,7 +367,7 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
                         ],
                         const SizedBox(height: 8),
                         Text(
-                          '${memory.mode} · ${_shortDate(memory.createdAt.toLocal())}',
+                          '${_modeLabel(l10n, memory.mode)} · ${_shortDate(memory.createdAt.toLocal())}',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -320,6 +376,96 @@ class ZyncHistoryDetailScreen extends StatelessWidget {
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  String _platformLabel(
+    AppLocalizations l10n,
+    SocialPlatform platform,
+  ) =>
+      switch (platform) {
+        SocialPlatform.instagram => l10n.instagram,
+        SocialPlatform.threads => l10n.threads,
+        SocialPlatform.facebook => l10n.facebook,
+      };
+
+  String _modeLabel(AppLocalizations l10n, String raw) {
+    for (final mode in ConversationMode.values) {
+      if (mode.name != raw) continue;
+      return switch (mode) {
+        ConversationMode.easy => l10n.modeEasy,
+        ConversationMode.fun => l10n.modeFun,
+        ConversationMode.debate => l10n.modeDebate,
+        ConversationMode.deep => l10n.modeDeep,
+        ConversationMode.guess => l10n.modeGuess,
+        ConversationMode.surprise => l10n.modeSurprise,
+      };
+    }
+    return raw;
+  }
+
+  Future<void> _openSocial(SocialLink link) async {
+    final raw = link.profileUrl;
+    final uri = raw == null ? null : Uri.tryParse(raw);
+    if (uri == null) return;
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      // Optional convenience action; local history remains available.
+    }
+  }
+
+  Future<void> _showSocialQr(
+    BuildContext context,
+    SocialLink link,
+  ) async {
+    final raw = link.profileUrl;
+    if (raw == null) return;
+    final l10n = AppLocalizations.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 4, 24, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _platformLabel(l10n, link.platform),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                link.displayValue,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 18),
+              Container(
+                padding: const EdgeInsets.all(14),
+                color: Colors.white,
+                child: QrImageView(
+                  data: raw,
+                  version: QrVersions.auto,
+                  errorCorrectionLevel: QrErrorCorrectLevel.M,
+                  size: 230,
+                  padding: EdgeInsets.zero,
+                  gapless: true,
+                ),
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () => _openSocial(link),
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: Text(l10n.openProfile),
+              ),
+            ],
+          ),
         ),
       ),
     );
