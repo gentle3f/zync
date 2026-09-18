@@ -58,6 +58,7 @@ class LocalStore {
     required String peerId,
     required String peerNickname,
     required List<String> sharedIds,
+    List<SelectedInterest> peerInterests = const [],
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final history = (await loadHistory()).toList();
@@ -74,6 +75,8 @@ class LocalStore {
         firstZyncAt: previous.firstZyncAt,
         lastZyncAt: now,
         sessionCount: previous.sessionCount + 1,
+        peerInterests: peerInterests.isEmpty ? previous.peerInterests : List<SelectedInterest>.from(peerInterests),
+        recentQuestions: previous.recentQuestions,
       );
       history[index] = updated;
     } else {
@@ -84,12 +87,47 @@ class LocalStore {
         firstZyncAt: now,
         lastZyncAt: now,
         sessionCount: 1,
+        peerInterests: List<SelectedInterest>.from(peerInterests),
+        recentQuestions: const [],
       );
       history.add(updated);
     }
 
     await prefs.setString(_historyKey, jsonEncode(history.map((entry) => entry.toJson()).toList()));
     return updated;
+  }
+
+  static Future<void> recordQuestion({
+    required String peerId,
+    required ZyncQuestionMemory memory,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final history = (await loadHistory()).toList();
+    final index = history.indexWhere((entry) => entry.peerId == peerId);
+    if (index < 0) return;
+
+    final previous = history[index];
+    final deduped = previous.recentQuestions
+        .where((item) =>
+            item.connectionKey != memory.connectionKey ||
+            item.mode != memory.mode ||
+            item.question != memory.question)
+        .toList();
+    final questions = [memory, ...deduped].take(24).toList(growable: false);
+    history[index] = ZyncHistoryEntry(
+      peerId: previous.peerId,
+      peerNickname: previous.peerNickname,
+      previousSharedIds: previous.previousSharedIds,
+      firstZyncAt: previous.firstZyncAt,
+      lastZyncAt: previous.lastZyncAt,
+      sessionCount: previous.sessionCount,
+      peerInterests: previous.peerInterests,
+      recentQuestions: questions,
+    );
+    await prefs.setString(
+      _historyKey,
+      jsonEncode(history.map((entry) => entry.toJson()).toList()),
+    );
   }
 
   static Future<ZyncHistoryEntry?> findHistory(String peerId) async {
