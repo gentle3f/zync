@@ -100,6 +100,7 @@ Do not add PostHog as a release blocker for this V1.
 Before deployment, confirm all intended release files are committed and CI is green, including:
 
 - `api/v1/question.js`
+  - includes the short-lived `zync:question:v1:*` shared-question cache; cache entries expire after about 15 minutes and exist only to keep the two phones on one semantic prompt.
 - `api/v1/normalize-interest.js` (dormant compatibility endpoint; not invoked by the shipped V1 interest-entry UI)
 - `api/v1/analytics.js`
 - `api/v1/relay.js`
@@ -201,7 +202,7 @@ Required browser-readable pages:
 - `/terms`
 - `/disclaimer`
 
-Check that `/privacy` is public HTTPS, non-PDF, readable without authentication and accurately identifies the temporary encrypted Vercel/Upstash relay, regional aggregate interest learning, their retention, and the AI conversation/provider data flows.
+Check that `/privacy` is public HTTPS, non-PDF, readable without authentication and accurately identifies the temporary encrypted Vercel/Upstash relay, the roughly 15-minute shared-question cache, regional aggregate interest learning, their retention, and the AI conversation/provider data flows.
 
 ### 9. Promote the verified fresh deployment
 
@@ -218,7 +219,7 @@ ZYNC_API_BASE=https://zync-inky.vercel.app
 ZYNC_PRIVACY_URL=https://zync-inky.vercel.app/privacy
 ```
 
-The smoke must confirm the public privacy page, encrypted relay lifecycle, read-only regional-interest aggregate endpoint, AI conversation endpoint and analytics endpoint behavior using synthetic data only.
+The smoke must confirm the public privacy page, encrypted relay lifecycle, read-only regional-interest aggregate endpoint, AI conversation endpoint and analytics endpoint behavior using synthetic data only. Contract tests must also verify that reversed bilingual phone-language order reuses one cached semantic question for the same session/connection/mode.
 
 ### 11. Set GitHub release variables
 
