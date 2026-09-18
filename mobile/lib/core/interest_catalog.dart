@@ -120,19 +120,19 @@ class InterestCatalog {
 
     const adjacent = {
       'entertainment|music',
-      'entertainment|arts',
+      'arts|entertainment',
       'gaming|technology',
-      'gaming|entertainment',
+      'entertainment|gaming',
       'sports|wellness',
-      'sports|outdoors',
-      'travel|food',
-      'travel|outdoors',
+      'outdoors|sports',
+      'food|travel',
+      'outdoors|travel',
       'arts|crafts',
       'science|technology',
       'learning|science',
-      'transport|motorsport',
+      'motorsport|transport',
       'fashion|lifestyle',
-      'pets|outdoors',
+      'outdoors|pets',
     };
     final key = a.category.compareTo(b.category) <= 0
         ? '${a.category}|${b.category}'
