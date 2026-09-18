@@ -116,6 +116,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
         peerInterests: peer.interests,
+        peerSocialLinks: peer.socialLinks,
       );
       _pendingHandshakeRaw = null;
       _pendingEncryptedResponse = null;
@@ -209,6 +210,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
         peerInterests: peer.interests,
+        peerSocialLinks: peer.socialLinks,
       );
 
       final analytics = <Future<void>>[
