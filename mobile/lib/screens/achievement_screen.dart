@@ -91,9 +91,7 @@ class AchievementScreen extends StatelessWidget {
                 if (achievement.discoveredSports.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   Text(
-                    LocalizedDomainText.taxonomy('sports', locale) == 'Sports'
-                        ? 'Sports discovered'
-                        : '已發現運動',
+                    LocalizedDomainText.sportsDiscovered(locale),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 9),
@@ -195,7 +193,7 @@ class _AchievementCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   LocalizedDomainText.achievementProgress(
-                    item.current.clamp(0, item.target),
+                    item.current.clamp(0, item.target).toInt(),
                     item.target,
                     locale,
                   ),
