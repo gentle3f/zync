@@ -104,6 +104,7 @@ class _MatchScreenState extends State<MatchScreen> {
           : null;
 
   String _baseConnectionKey() {
+    if (_activeExploreKey != null) return _activeExploreKey!;
     final current = _currentConnection;
     if (current != null) return 'shared:${current.id}';
     return _crossover?.connectionKey ?? '';
@@ -114,16 +115,18 @@ class _MatchScreenState extends State<MatchScreen> {
   Future<void> _ensureQuestion({bool prefetch = false}) async {
     if (_connections.isNotEmpty && _revealedIndex < 0 && !prefetch) return;
 
-    final match = _connections.isNotEmpty
-        ? (_revealedIndex >= 0
-            ? _connections[_revealedIndex].focusedMatch
-            : _connections.first.focusedMatch)
-        : _crossover?.focusedMatch;
-    final connectionKey = _connections.isNotEmpty
-        ? (_revealedIndex >= 0
-            ? 'shared:${_connections[_revealedIndex].id}'
-            : 'shared:${_connections.first.id}')
-        : _crossover?.connectionKey;
+    final match = _activeExploreMatch ??
+        (_connections.isNotEmpty
+            ? (_revealedIndex >= 0
+                ? _connections[_revealedIndex].focusedMatch
+                : _connections.first.focusedMatch)
+            : _crossover?.focusedMatch);
+    final connectionKey = _activeExploreKey ??
+        (_connections.isNotEmpty
+            ? (_revealedIndex >= 0
+                ? 'shared:${_connections[_revealedIndex].id}'
+                : 'shared:${_connections.first.id}')
+            : _crossover?.connectionKey);
     if (match == null || connectionKey == null || connectionKey.isEmpty) return;
 
     final mapKey = '$connectionKey|${_mode.name}';
