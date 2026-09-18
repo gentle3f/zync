@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      ZYNC_API_BASE: https://zync-8urkethxw-gens-projects-4f99f8b9.vercel.app
-      ZYNC_PRIVACY_URL: https://zync-8urkethxw-gens-projects-4f99f8b9.vercel.app/privacy
+      ZYNC_API_BASE: https://zync-86yxy110d-gens-projects-4f99f8b9.vercel.app
+      ZYNC_PRIVACY_URL: https://zync-86yxy110d-gens-projects-4f99f8b9.vercel.app/privacy
     steps:
       - name: Checkout
         uses: actions/checkout@v5
