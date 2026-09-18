@@ -14,19 +14,16 @@ class MatchingService {
     final theirById = {for (final item in theirs) item.id: item};
 
     final sharedIds = mineById.keys.toSet().intersection(theirById.keys.toSet());
-    final shared = sharedIds.map((id) {
-      final a = mineById[id]!;
-      final b = theirById[id]!;
-      final lower = a.strength.wireValue < b.strength.wireValue ? a.strength : b.strength;
-      return SelectedInterest(
-        id: id,
-        strength: lower,
-        customLabel: a.customLabel ?? b.customLabel,
-        customCategory: a.customCategory ?? b.customCategory,
+    final sharedDetails = sharedIds.map((id) {
+      return SharedInterestDetail(
+        mine: mineById[id]!,
+        theirs: theirById[id]!,
       );
     }).toList()
       ..sort((a, b) {
-        final strength = b.strength.wireValue.compareTo(a.strength.wireValue);
+        final aMerged = a.merged;
+        final bMerged = b.merged;
+        final strength = bMerged.strength.wireValue.compareTo(aMerged.strength.wireValue);
         if (strength != 0) return strength;
         if (sessionSeed.isNotEmpty) {
           final seeded = _seedScore(sessionSeed, a.id).compareTo(_seedScore(sessionSeed, b.id));
@@ -34,11 +31,17 @@ class MatchingService {
         }
         return a.id.compareTo(b.id);
       });
+    final shared = sharedDetails.map((detail) => detail.merged).toList(growable: false);
 
     final onlyMine = mine.where((item) => !sharedIds.contains(item.id)).toList();
     final onlyTheirs = theirs.where((item) => !sharedIds.contains(item.id)).toList();
 
-    return MatchResult(shared: shared, onlyMine: onlyMine, onlyTheirs: onlyTheirs);
+    return MatchResult(
+      shared: shared,
+      sharedDetails: sharedDetails,
+      onlyMine: onlyMine,
+      onlyTheirs: onlyTheirs,
+    );
   }
 
   static int _seedScore(String seed, String id) {
