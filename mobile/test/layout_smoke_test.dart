@@ -247,7 +247,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
 
-    expect(find.text('You found 1 hidden connections.'), findsOneWidget);
+    expect(find.text('You found 1 hidden connection.'), findsOneWidget);
     expect(find.text('New since your last Zync'), findsNothing);
 
     await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
