@@ -626,8 +626,8 @@ class _MatchScreenState extends State<MatchScreen> {
         : _crossover == null
             ? const <String>[]
             : <String>[
-                '${InterestCatalog.byId(_crossover!.mine.id)?.labelFor(locale) ?? _crossover!.mine.customLabel ?? _crossover!.mine.id} × '
-                    '${InterestCatalog.byId(_crossover!.theirs.id)?.labelFor(locale) ?? _crossover!.theirs.customLabel ?? _crossover!.theirs.id}',
+                '${InterestCatalog.byId(_crossover.mine.id)?.labelFor(locale) ?? _crossover.mine.customLabel ?? _crossover.mine.id} × '
+                    '${InterestCatalog.byId(_crossover.theirs.id)?.labelFor(locale) ?? _crossover.theirs.customLabel ?? _crossover.theirs.id}',
               ];
 
     return _shell(
