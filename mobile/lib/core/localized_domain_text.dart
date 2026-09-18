@@ -188,6 +188,11 @@ class LocalizedDomainText {
         'es':'Nuevo trofeo desbloqueado','fr':'Nouveau trophée débloqué','pt':'Novo troféu desbloqueado',
       });
 
+  static String sportsDiscovered(String locale) => _pick(locale, {
+        'en':'Sports discovered','zh-Hant':'已發現運動','zh-Hans':'已发现运动','ja':'発見したスポーツ','ko':'발견한 스포츠',
+        'es':'Deportes descubiertos','fr':'Sports découverts','pt':'Esportes descobertos',
+      });
+
   static String achievementProgress(int current, int target, String locale) => _pick(locale, {
         'en':'$current / $target','zh-Hant':'$current / $target','zh-Hans':'$current / $target','ja':'$current / $target','ko':'$current / $target',
         'es':'$current / $target','fr':'$current / $target','pt':'$current / $target',
