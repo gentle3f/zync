@@ -85,6 +85,7 @@ void main() {
       'sessionCount': 2,
     });
     expect(old.peerInterests, isEmpty);
+    expect(old.seenInterestIds, isEmpty);
     expect(old.recentQuestions, isEmpty);
 
     final rich = ZyncHistoryEntry(
@@ -97,6 +98,7 @@ void main() {
       peerInterests: const [
         SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
       ],
+      seenInterestIds: const ['sports.badminton', 'sports.basketball'],
       peerSocialLinks: const [
         SocialLink(
           platform: SocialPlatform.instagram,
@@ -116,6 +118,7 @@ void main() {
     );
     final roundTrip = ZyncHistoryEntry.fromJson(rich.toJson());
     expect(roundTrip.peerInterests.single.id, 'sports.badminton');
+    expect(roundTrip.seenInterestIds, containsAll(['sports.badminton', 'sports.basketball']));
     expect(roundTrip.peerSocialLinks.single.profileUrl, 'https://www.instagram.com/peer_rich/');
     expect(roundTrip.recentQuestions.single.question, 'Which Part would you start with?');
   });
