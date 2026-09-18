@@ -175,5 +175,16 @@
   "finishAndRecap": "마치고 돌아보기",
   "backToIdeas": "다른 아이디어 보기",
   "theirInterest": "상대의 관심사",
-  "yourInterest": "나의 관심사"
+  "yourInterest": "나의 관심사",
+  "socialLinks": "소셜 링크",
+  "socialLinksSubtitle": "선택 사항입니다. Zync 후 공유해도 되는 공개 프로필을 추가하세요.",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync 후 공유",
+  "shareAfterZyncExplain": "직접 공유를 켠 링크만 Zync QR에 포함되고 세션 후 상대에게 표시됩니다.",
+  "stayConnected": "계속 연결할까요?",
+  "openProfile": "프로필 열기",
+  "showQr": "QR 보기",
+  "saveSocialLinks": "소셜 링크 저장"
 }
