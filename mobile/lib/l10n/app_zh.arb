@@ -10,17 +10,41 @@
   "pickAtLeastFive": "至少选择 5 个兴趣，之后随时可以修改。",
   "searchAnything": "搜索任何兴趣...",
   "addWithAi": "用 AI 添加“{interest}”",
-  "@addWithAi": {"placeholders": {"interest": {"type": "String"}}},
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "aiSuggested": "AI 建议整理为“{interest}”。添加吗？",
-  "@aiSuggested": {"placeholders": {"interest": {"type": "String"}}},
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "addInterest": "添加兴趣",
   "normalizing": "正在理解你的兴趣...",
   "selectedCount": "已选 {count} 个",
-  "@selectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "saveAndContinue": "保存并继续",
   "homeGreeting": "准备 Zync？",
   "interestsCount": "你的兴趣档案有 {count} 个兴趣",
-  "@interestsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "zyncWithSomeone": "和另一个人 Zync",
   "showMyQr": "显示我的 QR",
   "scanSomeone": "扫描对方",
@@ -48,7 +72,13 @@
   "cameraErrorBody": "相机未能启动。请重试，或返回显示自己的 QR。",
   "youZync": "你们 ZYNC 了！",
   "hiddenMatches": "你们有 {count} 个隐藏共同兴趣。",
-  "@hiddenMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "noExactMatch": "暂时没有完全相同的兴趣。",
   "findConnection": "一起找出你们之间的连接。",
   "reveal": "揭晓",
@@ -66,7 +96,13 @@
   "noHistory": "暂时没有 Zync 记录。",
   "zyncAgain": "再次 Zync",
   "newMatches": "比上次多了 {count} 个新共同兴趣",
-  "@newMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "love": "超喜欢",
   "like": "喜欢",
   "wantToTry": "想试",
@@ -75,5 +111,60 @@
   "edit": "编辑",
   "done": "完成",
   "retry": "重试",
-  "cancel": "取消"
+  "cancel": "取消",
+  "hiddenConnections": "你们找到了 {count} 个隐藏连接。",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "揭晓一个连接",
+  "revealAnother": "再揭晓一个",
+  "talkAboutThis": "从这里开始聊",
+  "changeVibe": "切换气氛",
+  "connectionProgress": "第 {current} / {total} 个连接",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "这次 Zync 新发现",
+  "strengthContrast": "你：{mine} · {peer}：{theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "兴趣不同。",
+  "stillConnection": "但仍然找到了一个连接。",
+  "crossoverIntro": "试试这个交叉点",
+  "sessionRecap": "这次发现了什么",
+  "sessionRecapCount": "你和 {name} 发现了 {count} 个连接。",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "完成这次 Zync",
+  "findingQuestion": "正在想一个值得聊的问题…"
 }
