@@ -12,12 +12,14 @@ class AiQuestionResult {
     required this.fromAi,
     this.secondaryQuestion,
     this.secondaryLanguage,
+    this.model,
   });
 
   final String question;
   final bool fromAi;
   final String? secondaryQuestion;
   final String? secondaryLanguage;
+  final String? model;
 }
 
 class NormalizedInterestResult {
@@ -173,11 +175,13 @@ class AiService {
         return null;
       }
 
+      final servedModel = (json['model'] as String?)?.trim();
       return AiQuestionResult(
         question: question,
         fromAi: true,
         secondaryQuestion: wantsSecondary ? secondaryQuestion : null,
         secondaryLanguage: wantsSecondary ? secondary : null,
+        model: servedModel == null || servedModel.isEmpty ? null : servedModel,
       );
     } catch (_) {
       return null;
