@@ -89,30 +89,107 @@ class SelectedInterest {
       );
 }
 
+enum SocialPlatform { instagram, threads, facebook }
+
+class SocialLink {
+  const SocialLink({
+    required this.platform,
+    required this.value,
+    this.shareAfterZync = false,
+  });
+
+  final SocialPlatform platform;
+  final String value;
+
+  /// Explicit opt-in: only links with this flag are included in a Zync QR.
+  final bool shareAfterZync;
+
+  String get displayValue {
+    final trimmed = value.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      final uri = Uri.tryParse(trimmed);
+      if (uri != null && uri.pathSegments.isNotEmpty) {
+        return uri.pathSegments.lastWhere(
+          (segment) => segment.trim().isNotEmpty,
+          orElse: () => trimmed,
+        );
+      }
+    }
+    return trimmed.startsWith('@') ? trimmed : '@$trimmed';
+  }
+
+  String? get profileUrl {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+
+    final direct = Uri.tryParse(trimmed);
+    if (direct != null &&
+        (direct.scheme == 'https' || direct.scheme == 'http') &&
+        direct.host.isNotEmpty) {
+      return direct.replace(scheme: 'https').toString();
+    }
+
+    final handle = trimmed
+        .replaceAll(RegExp(r'^@+'), '')
+        .replaceAll(RegExp(r'\s+'), '')
+        .trim();
+    if (handle.isEmpty) return null;
+
+    return switch (platform) {
+      SocialPlatform.instagram => 'https://www.instagram.com/$handle/',
+      SocialPlatform.threads => 'https://www.threads.net/@$handle',
+      SocialPlatform.facebook => 'https://www.facebook.com/$handle',
+    };
+  }
+
+  Map<String, dynamic> toJson() => {
+        'platform': platform.name,
+        'value': value,
+        'shareAfterZync': shareAfterZync,
+      };
+
+  factory SocialLink.fromJson(Map<String, dynamic> json) {
+    final rawPlatform = (json['platform'] as String?) ?? '';
+    final platform = SocialPlatform.values.firstWhere(
+      (item) => item.name == rawPlatform,
+      orElse: () => SocialPlatform.instagram,
+    );
+    return SocialLink(
+      platform: platform,
+      value: (json['value'] as String?) ?? '',
+      shareAfterZync: (json['shareAfterZync'] as bool?) ?? false,
+    );
+  }
+}
+
 class LocalProfile {
   const LocalProfile({
     required this.localId,
     required this.nickname,
     required this.language,
     required this.interests,
+    this.socialLinks = const [],
   });
 
   final String localId;
   final String nickname;
   final String language;
   final List<SelectedInterest> interests;
+  final List<SocialLink> socialLinks;
 
   LocalProfile copyWith({
     String? localId,
     String? nickname,
     String? language,
     List<SelectedInterest>? interests,
+    List<SocialLink>? socialLinks,
   }) =>
       LocalProfile(
         localId: localId ?? this.localId,
         nickname: nickname ?? this.nickname,
         language: language ?? this.language,
         interests: interests ?? this.interests,
+        socialLinks: socialLinks ?? this.socialLinks,
       );
 
   Map<String, dynamic> toJson() => {
@@ -120,6 +197,7 @@ class LocalProfile {
         'nickname': nickname,
         'language': language,
         'interests': interests.map((item) => item.toJson()).toList(),
+        'socialLinks': socialLinks.map((item) => item.toJson()).toList(),
       };
 
   factory LocalProfile.fromJson(Map<String, dynamic> json) => LocalProfile(
@@ -129,6 +207,11 @@ class LocalProfile {
         interests: ((json['interests'] as List?) ?? const [])
             .whereType<Map>()
             .map((item) => SelectedInterest.fromJson(Map<String, dynamic>.from(item)))
+            .toList(),
+        socialLinks: ((json['socialLinks'] as List?) ?? const [])
+            .whereType<Map>()
+            .map((item) => SocialLink.fromJson(Map<String, dynamic>.from(item)))
+            .where((item) => item.value.trim().isNotEmpty)
             .toList(),
       );
 
@@ -143,6 +226,7 @@ class QrProfilePayload {
     required this.nickname,
     required this.language,
     required this.interests,
+    this.socialLinks = const [],
   });
 
   static const currentVersion = 1;
@@ -155,6 +239,7 @@ class QrProfilePayload {
   final String nickname;
   final String language;
   final List<SelectedInterest> interests;
+  final List<SocialLink> socialLinks;
 
   factory QrProfilePayload.fromProfile(LocalProfile profile) => QrProfilePayload(
         version: currentVersion,
@@ -162,6 +247,9 @@ class QrProfilePayload {
         nickname: profile.nickname,
         language: profile.language,
         interests: profile.interests,
+        socialLinks: profile.socialLinks
+            .where((item) => item.shareAfterZync && item.profileUrl != null)
+            .toList(growable: false),
       );
 
   Map<String, dynamic> toCompactJson() => {
@@ -180,6 +268,10 @@ class QrProfilePayload {
             item.customCategory,
           ];
         }).toList(),
+        if (socialLinks.isNotEmpty)
+          's': socialLinks
+              .map((item) => <dynamic>[item.platform.name, item.value])
+              .toList(),
       };
 
   String encodeLegacyJson() => jsonEncode(toCompactJson());
@@ -213,12 +305,30 @@ class QrProfilePayload {
         customCategory: pair.length > 3 ? pair[3] as String? : null,
       );
     }).toList();
+    final socialLinks = ((json['s'] as List?) ?? const [])
+        .whereType<List>()
+        .map((entry) {
+          if (entry.length < 2) return null;
+          final platform = SocialPlatform.values.firstWhere(
+            (item) => item.name == entry[0],
+            orElse: () => SocialPlatform.instagram,
+          );
+          final link = SocialLink(
+            platform: platform,
+            value: (entry[1] as String?) ?? '',
+            shareAfterZync: true,
+          );
+          return link.profileUrl == null ? null : link;
+        })
+        .whereType<SocialLink>()
+        .toList(growable: false);
     return QrProfilePayload(
       version: version,
       localId: json['id'] as String,
       nickname: (json['name'] as String?) ?? '',
       language: (json['lang'] as String?) ?? 'en',
       interests: interests,
+      socialLinks: socialLinks,
     );
   }
 
