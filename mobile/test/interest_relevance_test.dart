@@ -27,6 +27,18 @@ void main() {
     expect(cantopop.id, 'music.cantopop');
   });
 
+  test('regional ranking changes discovery order while canonical IDs stay stable', () {
+    final hkMusic = InterestCatalog.popular(category: 'music', region: 'hk', limit: 20);
+    final globalMusic = InterestCatalog.popular(category: 'music', region: 'global', limit: 20);
+    final hkIndex = hkMusic.map((item) => item.id).toList().indexOf('music.cantopop');
+    final globalIndex = globalMusic.map((item) => item.id).toList().indexOf('music.cantopop');
+
+    expect(hkIndex, greaterThanOrEqualTo(0));
+    expect(globalIndex, greaterThanOrEqualTo(0));
+    expect(hkIndex, lessThan(globalIndex));
+    expect(InterestCatalog.byId('music.cantopop')!.id, 'music.cantopop');
+  });
+
   test('behavioural learning is prior-weighted and weekly movement is capped', () {
     final item = InterestCatalog.byId('music.cantopop')!;
     final base = InterestRelevance.baseScore(item, 'hk');
