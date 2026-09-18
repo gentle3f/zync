@@ -166,5 +166,14 @@
     }
   },
   "finishZync": "Finish Zync",
-  "findingQuestion": "Finding a good question…"
+  "findingQuestion": "Finding a good question…",
+  "keepDiscovering": "Keep discovering",
+  "sharedOnlyStart": "Things in common are only the start. Learn something you did not know about each other.",
+  "askAboutThem": "Ask about them",
+  "letThemAskYou": "Let them ask about you",
+  "surpriseUs": "Surprise us",
+  "finishAndRecap": "Finish & recap",
+  "backToIdeas": "Back to more ideas",
+  "theirInterest": "One of their interests",
+  "yourInterest": "One of your interests"
 }
