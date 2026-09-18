@@ -59,6 +59,7 @@
     <h2>6. AI-assisted conversation questions</h2>
     <p>After two profiles are compared, Zync may send a bounded set of relevant interest labels, the selected conversation mode, supported language information, and a random session context value to the Zync API to generate a conversation question. For bilingual use, a secondary language may also be included.</p>
     <p>The request does not need your nickname, peer local identifier, QR body, phone number, email address, precise location, or login token. These requests use the same Vercel/OpenRouter processing path and privacy-routing constraints described above. If AI generation fails, Zync can fall back to built-in local questions.</p>
+    <p>For an encrypted one-scan Zync session, Zync may temporarily cache the generated conversation question in Upstash Redis so both phones can receive the same semantic question even when they use different interface languages. The cache key is derived from a cryptographic hash of the random session/connection/mode/language context; the stored value contains the generated question text, not either person's nickname, full profile, QR body, or raw session capability. This shared question cache is configured to expire after about fifteen minutes.</p>
 
     <h2>7. Product analytics in the public V1 build</h2>
     <p><strong>Product analytics are disabled by default in the public V1 build.</strong> The release build does not enable Zync's optional analytics transport, so it does not create an analytics installation identifier or send product-analytics events merely because the production API is configured.</p>
@@ -68,7 +69,7 @@
     <p>For the public V1 release, Zync's online features use:</p>
     <ul>
       <li><strong>Vercel</strong> — hosting and execution of the Zync API and encrypted-relay endpoint;</li>
-      <li><strong>Upstash Redis</strong> — short-lived storage of the encrypted pairing response and relay state, and weekly aggregate regional interest impression/selection counters; and</li>
+      <li><strong>Upstash Redis</strong> — short-lived storage of the encrypted pairing response and relay state, the temporary shared AI-question cache, and weekly aggregate regional interest impression/selection counters; and</li>
       <li><strong>OpenRouter</strong> — routing optional AI requests to compatible model providers under Zync's request constraints.</li>
     </ul>
     <p>The exact underlying AI model provider may vary because Zync can use OpenRouter's free-model router. Provider availability can change over time.</p>
@@ -82,6 +83,7 @@
     <p><strong>Local data:</strong> profile and history information remains on your device until you change it, clear app storage, or uninstall the app, subject to device/OS backup behaviour.</p>
     <p><strong>Encrypted pairing relay:</strong> the relay stores a random session identifier and either pending state or an opaque encrypted response. A successful host requests deletion immediately after authenticated decryption. If the flow is abandoned or deletion cannot complete, the relay key is configured to expire automatically after about three minutes. Short-lived abuse-protection counters are configured with their own brief expiry. Zync does not use the relay as a permanent profile database.</p>
     <p><strong>Regional interest aggregates:</strong> when the release enables regional interest learning, canonical interest impression/selection counts are stored as aggregate weekly counters by coarse region. These counters are configured with a maximum retention of about 120 days so recent completed weeks can inform stable discovery ranking. They do not contain a Zync account ID, analytics installation ID, nickname, custom-interest label, or precise location.</p>
+    <p><strong>Shared conversation-question cache:</strong> during a one-scan session, the generated question text may be cached under a hashed random session/connection key for about fifteen minutes so the two phones see the same semantic prompt. The cache is not a conversation history and is not used as a permanent profile record.</p>
     <p><strong>AI conversation requests:</strong> Zync's application code does not intentionally persist AI prompt content to a Zync user-account database, because V1 has no user accounts. OpenRouter requests require Zero Data Retention-compatible routing and deny provider data collection. Hosting, networking, security, relay, and AI providers may still process limited technical metadata under their applicable service terms and security practices.</p>
     <p>Because Zync V1 has no account, there is no cloud account dashboard to delete. If you have a privacy inquiry concerning server/provider records, use the privacy contact mechanism below.</p>
 
