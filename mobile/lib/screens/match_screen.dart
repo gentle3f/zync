@@ -1089,7 +1089,13 @@ class _MatchScreenState extends State<MatchScreen> {
                     result.fromAi ? Icons.auto_awesome_rounded : Icons.offline_bolt_outlined,
                     size: 15,
                   ),
-                  label: Text(result.fromAi ? 'AI' : 'Local fallback'),
+                  label: Text(
+                    result.fromAi
+                        ? result.model?.trim().isNotEmpty == true
+                            ? 'AI · ${result.model}'
+                            : 'AI'
+                        : 'Local fallback',
+                  ),
                 ),
               ),
             ],
