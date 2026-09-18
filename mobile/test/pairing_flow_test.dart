@@ -86,6 +86,10 @@ void main() {
     );
 
     await tester.pump(const Duration(milliseconds: 800));
+    await tester.pump();
+
+    expect(find.text('YOU ZYNC!'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
 
     expect(find.text('You found 3 hidden connections.'), findsOneWidget);
