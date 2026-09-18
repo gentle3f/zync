@@ -184,9 +184,14 @@ function firstEnv(...names) {
 
 function modelCandidates() {
   const configured = (process.env.OPENROUTER_MODEL || '').trim();
+  const stableFree = 'google/gemma-4-26b-a4b-it:free';
+  const configuredPrimary =
+      configured && configured !== 'openrouter/free' ? configured : stableFree;
   return [
-    configured || 'openrouter/free',
-    'google/gemma-4-26b-a4b-it:free',
+    configuredPrimary,
+    stableFree,
+    configured,
+    'openrouter/free',
     'google/gemma-4-26b-a4b-it',
   ].filter((value, index, list) => value && list.indexOf(value) === index);
 }
