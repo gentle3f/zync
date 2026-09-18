@@ -186,5 +186,31 @@
   "stayConnected": "想繼續聯絡？",
   "openProfile": "開啟帳戶",
   "showQr": "顯示QR",
-  "saveSocialLinks": "儲存社交帳戶"
+  "saveSocialLinks": "儲存社交帳戶",
+  "questionsSavedCount": "已儲存問題：{count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync 次數：{count} · 最近：{date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "你哋都鍾意嘅嘢",
+  "noSharedSaved": "暫時冇已儲存嘅共同興趣。",
+  "thingsLearnedAboutThem": "你發現咗對方啲咩",
+  "nothingExtraSaved": "最近一次Zync未有儲存其他對方興趣。",
+  "questionsYouTalkedAbout": "你哋傾過嘅問題",
+  "questionsNextTime": "下次Zync出現過嘅問題會儲喺呢部手機。",
+  "sharedSocials": "對方分享過嘅社交帳戶"
 }
