@@ -216,6 +216,12 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         ? InterestCatalog.subclustersFor(_selectedCategory!, _selectedCluster!)
         : const <String>[];
 
+    final atLeafLevel = query.isEmpty &&
+        _selectedCategory != null &&
+        (clusters.isEmpty ||
+            (_selectedCluster != null &&
+                (subclusters.isEmpty || _selectedSubcluster != null)));
+
     final catalogResults = query.isNotEmpty
         ? InterestCatalog.search(
             query,
@@ -224,16 +230,13 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
             popularity: _popularity,
             limit: 80,
           )
-        : _selectedCategory == null
-            ? _discoveryResults()
-            : InterestCatalog.popular(
-                category: _selectedCategory,
+        : atLeafLevel
+            ? _stableLeafResults(
+                category: _selectedCategory!,
                 cluster: _selectedCluster,
                 subcluster: _selectedSubcluster,
-                region: _region,
-                popularity: _popularity,
-                limit: 80,
-              );
+              )
+            : const <InterestDefinition>[];
     final customResults = _customResults(query, locale);
     final results = <InterestDefinition>[];
     final seen = <String>{};
@@ -251,9 +254,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                 ? LocalizedDomainText.taxonomy(_selectedCluster!, locale)
                 : _selectedCategory != null
                     ? LocalizedDomainText.category(_selectedCategory!, locale)
-                    : _selected.isNotEmpty
-                        ? LocalizedDomainText.suggestedForYou(locale)
-                        : LocalizedDomainText.popularInterests(locale);
+                    : l10n.pickInterests;
 
     return Scaffold(
       appBar: widget.editing ? AppBar(title: Text(l10n.myInterests)) : null,
