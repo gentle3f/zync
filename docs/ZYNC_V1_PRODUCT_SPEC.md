@@ -2,37 +2,180 @@
 
 ## Product thesis
 
-**Zync helps two or more people discover hidden shared interests and turns those interests into natural conversations.**
+**Zync helps people discover hidden shared interests and turns those discoveries into real conversations.**
 
 Consumer-facing concept: **Discover what connects you.**
 
-V1 is deliberately not a social network. It is the smallest product that can test whether people enjoy discovering hidden common interests enough to invite another person, Zync again, and reuse it in future social situations.
+The signature emotional moment is:
+
+> **“Wait — you like that too?”**
+
+V1 is deliberately not a social network. It is the smallest product that can test whether this two-person discovery moment is strong enough to make people invite another person, Zync again, and reuse Zync in future social situations.
 
 ## V1 principles
 
 1. Global-first and multilingual from day one.
-2. No login, account, Firebase, cloud profile, chat, feed, location, community, merchant, ads, payment, or subscription.
-3. User interest data is stored locally on-device.
-4. QR is the primary peer-to-peer exchange mechanism, so pairing does not require a backend.
-5. AI is used only where it materially improves the experience: interest normalization and conversation generation.
-6. OpenRouter credentials live only in Vercel server-side environment variables.
-7. The app must continue to function when AI is unavailable by using local fallback questions.
-8. Existing Google Play identity must be preserved: Android applicationId `com.gmail.gentle3f.myproject`; release versionCode must be greater than 5.
+2. No login, account, Firebase profile, feed, chat, nearby people, community, merchant, ads, payment or subscription.
+3. Core profile, exact matching, history and Interest DNA remain local on-device.
+4. QR remains the real-world pairing ritual.
+5. The one-scan experience may use a minimal short-lived encrypted relay so the scanner can return its profile to the host automatically; the relay is not a permanent person/profile database.
+6. AI is used where it materially improves the human interaction: shared-interest and crossover conversation generation. The shipped V1 interest-entry flow must not block on AI.
+7. The app must remain useful when AI is unavailable through local fallback questions.
+8. Exact shared-interest semantics use canonical IDs only. Related-interest graphs, regional popularity and AI never manufacture a false exact match.
+9. Existing Google Play identity remains `com.gmail.gentle3f.myproject`; target/compile SDK 36; release versionCode must remain greater than the existing Play version.
+10. Infrastructure stays small and privacy-minimised while Phase 1 validates behaviour.
 
 ## Core flow
 
-1. User opens Zync.
-2. User chooses at least 5 interests.
-3. User can mark each interest as `love`, `like`, or `wantToTry`.
-4. User taps **Zync with someone**.
-5. Person A shows a QR containing a versioned local profile payload.
-6. Person B scans the QR.
-7. Person B's device compares canonical interest IDs locally.
-8. The result screen says **You Zync!** and shows the number of hidden matches without revealing them immediately.
-9. Shared interests are revealed one at a time.
-10. AI generates a conversation question based on shared interests.
-11. If there are no exact matches, AI combines interests from both people to create a crossover question rather than presenting a failure state.
-12. Users can request more questions through conversation modes.
+1. User creates a lightweight local interest identity.
+2. User selects at least 5 interests; the UI should encourage a richer profile because more specific interests improve discovery.
+3. Each selected interest can be marked **Love**, **Like**, or **Want to try**.
+4. User taps **Show my QR** or **Scan someone**.
+5. Person A's QR contains a short-lived encrypted-session handshake plus the host profile needed for local comparison.
+6. Person B scans once, compares locally, encrypts its limited profile response on-device and returns opaque ciphertext through the temporary relay.
+7. Both phones arrive in the same **Zync Session** automatically.
+8. The session creates an impact moment: **YOU ZYNC!** plus a count of hidden connections, without dumping a checklist.
+9. Broad taxonomy ancestors are collapsed into a more specific **connection thread** so `Movies -> Anime -> JoJo` does not become three weak reveal moments.
+10. Connections are revealed one at a time. Reveal order is deterministic on both devices and favours specificity, mutual interest strength and less-common interests, with only small session-seeded jitter.
+11. Each revealed connection keeps both people's original strength values. A `Love` versus `Want to try` contrast is itself useful conversation context.
+12. The conversation prompt appears inside the same reveal experience; users do not need to finish a report and enter a separate AI screen.
+13. Conversation modes such as Easy, Fun, Debate, Deep, Guess and Surprise are secondary controls, not the main task.
+14. If there is no exact match, Zync chooses a plausible local Interest-Graph crossover first, then AI turns that bridge into a question. The experience must not present zero exact matches as failure.
+15. A short recap appears when the people finish the session.
+16. Zync Again history is stored locally and can mark newly discovered shared interests on repeat sessions.
+
+## Zync Session
+
+The post-scan product is a **session**, not a match report.
+
+The intended rhythm is:
+
+```text
+Scan
+→ impact
+→ reveal one meaningful connection
+→ talk about it
+→ reveal another when ready
+→ recap
+```
+
+The app should never require both people to reveal every connection before a conversation can begin.
+
+### Connection threads
+
+Exact matching still happens on canonical IDs. The presentation layer may collapse a broad exact ancestor into a more specific exact descendant.
+
+Example:
+
+```text
+Movies
+→ Anime
+→ JoJo's Bizarre Adventure
+```
+
+If all three are exact shared IDs, the session should normally create one strong reveal around **JoJo's Bizarre Adventure**, while broad ancestors may appear only as quiet context.
+
+Sibling specific interests must never be collapsed into one another.
+
+### Reveal ordering
+
+Reveal order must be identical on both devices for an encrypted one-scan session.
+
+The local deterministic **Magic Score** may use information that both devices can calculate consistently:
+
+- taxonomy specificity;
+- both people's interest strengths;
+- a bounded rarity / lower-popularity signal;
+- small deterministic session-seeded jitter.
+
+Device-local Zync Again history may add a **New** badge, but must not silently reorder one phone differently from the other unless a future protocol explicitly synchronizes one authoritative reveal plan.
+
+## Interest model
+
+Interests use language-neutral canonical IDs, not display text.
+
+Example:
+
+```text
+sports.badminton
+anime.jojo
+motorsport.formula1
+```
+
+A canonical interest may contain:
+
+- stable canonical ID;
+- L1 category;
+- L2 family;
+- optional L3 subgenre/style/title/franchise layer;
+- localized labels;
+- aliases / synonyms;
+- related-interest graph metadata;
+- curated discovery rank;
+- regional relevance metadata;
+- future physical-locality / activity metadata.
+
+The catalog is a hierarchy plus graph, not one flat list.
+
+Different-language labels map to the same ID. `Badminton`, `羽毛球`, `バドミントン` and `배드민턴` are the same exact interest.
+
+## Regional discovery
+
+Phase 1 may use a coarse device-locale country/region as a soft discovery default. It must not require GPS or precise location.
+
+Regional relevance affects:
+
+- empty-query ordering;
+- browse prominence;
+- related-interest suggestions.
+
+It never changes exact matching semantics.
+
+The regional rank starts from a curated prior. Aggregate canonical-interest impression/selection signals may adjust discovery slowly. Behavioural data is bounded around the curated base, uses completed-week aggregates, and must not let early users or a sudden traffic spike rapidly rewrite the catalog.
+
+## Free-text interests
+
+Users may search or type anything.
+
+If local catalog/alias resolution succeeds, the known canonical ID is used immediately.
+
+If it does not, V1 creates a deterministic local custom-interest ID immediately. AI normalization is **not** a mandatory gate in the current shipped interest-entry flow.
+
+The legacy `/api/v1/normalize-interest` endpoint may remain for compatibility/research, but current V1 product behaviour and privacy documentation must not imply that every unknown interest is sent to AI.
+
+## One-scan QR and encrypted relay
+
+The handshake QR is versioned and contains only what the intended scanner needs:
+
+- random session ID;
+- short expiry;
+- one-time AES-GCM 256-bit secret;
+- host's limited Zync profile payload.
+
+The private host capability used to read/delete relay state is **not** carried in the QR.
+
+The scanner encrypts its limited profile response on-device. The relay receives opaque ciphertext but not the AES key. The host retrieves, decrypts and authenticates the response locally, then requests deletion. Abandoned relay state expires automatically after roughly three minutes.
+
+The relay is transport, not identity storage.
+
+## Shared conversation question
+
+AI should activate the revealed connection, not summarize the whole profile.
+
+For an exact reveal, send only the focused connection required for the question.
+
+For zero exact matches, use the locally selected crossover pair.
+
+For a one-scan session, the same session + connection + mode + language pair should resolve to the same semantic question on both phones. A short-lived shared question cache may be used for this purpose.
+
+The cache:
+
+- uses a cryptographic hash of random session/connection/mode/language context;
+- stores generated question text, not a permanent profile;
+- expires after about 15 minutes;
+- must fail open to local/ordinary AI behaviour if cache infrastructure is unavailable.
+
+For bilingual peers, both phones should receive equivalent versions of the same semantic question, with each phone showing its own language first.
 
 ## Conversation modes
 
@@ -43,220 +186,141 @@ V1 is deliberately not a social network. It is the smallest product that can tes
 - Guess
 - Surprise Me
 
-Questions must prompt interaction between the two people rather than simply asking two independent answers.
+Modes are a secondary **Change vibe** control inside the Zync Session.
 
-## Interest model
+Questions must cause interaction between the two people rather than two unrelated survey answers.
 
-Interests are identified by canonical IDs rather than display text.
+## Zero-exact-match experience
 
-Example:
+Never lead with a failure state.
 
-```text
-sports.badminton
-motorsport.formula1
-anime.jojo
-food.japanese
-transport.railways
-```
-
-Each canonical interest may include:
-
-- canonical ID
-- fallback English label
-- category / parent IDs
-- localized display names
-- aliases / synonyms
-- optional source (`seed`, `custom`, `aiNormalized`)
-
-Different-language labels must map to the same canonical ID. For example `Badminton`, `羽毛球`, `バドミントン`, and `배드민턴` all represent `sports.badminton`.
-
-## Free-text interests
-
-Users may search or type anything. If the app cannot resolve it from the local seed catalog / alias index, it may call the Vercel normalization endpoint. The normalized result is shown to the user for confirmation before it is added.
-
-The V1 backend does not maintain a global user-interest database.
-
-## QR payload
-
-QR payload is versioned and should contain only the data required to Zync locally.
-
-Conceptual payload:
-
-```json
-{
-  "v": 1,
-  "id": "local-random-id",
-  "name": "Gentle",
-  "lang": "zh-Hant",
-  "interests": [
-    ["anime.jojo", 2],
-    ["motorsport.formula1", 2],
-    ["travel.japan", 1]
-  ]
-}
-```
-
-No email, phone number, precise location, advertising identifier, or account token is included.
-
-## Hidden Match experience
-
-Scanning must not immediately dump a checklist. The signature interaction is:
+Preferred framing:
 
 ```text
-YOU ZYNC!
-You have 6 hidden matches.
+Different interests.
+There's still a connection.
 ```
 
-Users reveal shared interests one at a time. A rare or specific match may receive stronger visual emphasis than a broad match.
-
-## Zero-match experience
-
-Never show a dead-end `No match` screen.
-
-Instead:
+The local graph chooses a promising bridge, for example:
 
 ```text
-No exact match.
-Let's find the connection.
+F1 × Street Photography
 ```
 
-The AI endpoint receives a small set of interests from Person A and Person B and generates a meaningful crossover question both people can discuss.
+AI then turns that pair into a natural question both can discuss.
+
+Related interests remain related only; they are not displayed as exact shared interests.
 
 ## Zync Again
 
-The app stores a local history of peers previously scanned, identified by their random local Zync ID.
+Local history identifies previous peers by their random local Zync ID and may contain:
 
-History may contain:
+- peer ID;
+- nickname;
+- previously shared canonical IDs;
+- first and latest Zync timestamps;
+- session count.
 
-- peer local ID
-- nickname
-- previous shared canonical IDs
-- first Zync timestamp
-- most recent Zync timestamp
-- number of sessions
+A repeat session can label newly shared interests.
 
-On a later scan, the app can highlight newly shared interests.
-
-No peer history is uploaded to Zync servers in V1.
+No peer history is uploaded as a persistent Zync cloud profile in V1.
 
 ## Interest DNA
 
-The app may summarize a user's local interests by category and strength. It must remain descriptive, not pretend to infer personality or psychological traits.
-
-Example:
-
-```text
-Technology 22%
-Travel 18%
-Entertainment 17%
-Sports 13%
-Food 12%
-```
+Interest DNA is a descriptive summary of the user's own local interest identity. It must not pretend to infer psychology, intelligence or personality traits scientifically.
 
 ## Group Zync
 
-Group Zync is desirable but may ship as V1.1 if it delays the core two-person experience. A host device scans multiple participants and performs all group matching locally.
+Group Zync remains a possible V1.1 extension after the two-person loop is stable. It must not delay certification of the core Zync Session.
 
 ## Languages
 
-Architecture must support arbitrary locales. Initial translation target set:
+Initial UI target:
 
-- English (`en`)
-- Traditional Chinese (`zh-Hant`)
-- Simplified Chinese (`zh-Hans`)
-- Japanese (`ja`)
-- Korean (`ko`)
-- Spanish (`es`)
-- French (`fr`)
-- Portuguese (`pt`)
+- English
+- Traditional Chinese
+- Simplified Chinese
+- Japanese
+- Korean
+- Spanish
+- French
+- Portuguese
 
-All UI strings must use localization keys. Interest identity must never depend on a localized label.
-
-For people using different languages, AI may return the same semantic question in both languages.
+Canonical interest identity is language-neutral. Cross-language peers can still exact-match and can receive equivalent bilingual prompts.
 
 ## AI architecture
 
 ```text
 Flutter app
     |
-    | HTTPS POST
+    | HTTPS
     v
-Vercel serverless API
+Zync Vercel API
+    |
+    +--> short-lived Upstash session/question state
     |
     v
 OpenRouter
 ```
 
-Secrets are server-side only. The Android app must not contain an OpenRouter API key.
+Secrets remain server-side.
 
-V1 endpoints:
+Active user-facing AI endpoint:
 
 - `POST /api/v1/question`
+
+Compatibility endpoint, not required by current V1 interest entry:
+
 - `POST /api/v1/normalize-interest`
 
-The existing Vercel/OpenRouter code in this repository may be reused where sensible, but V1 endpoints should have explicit validated request/response schemas and must not rely on fetching mutable prompts from the default GitHub branch at runtime.
+Question requests enforce the configured Zero Data Retention / provider-data-collection-deny posture.
 
 ## AI fallback
 
-If the AI request fails, times out, or is rate-limited, the app selects a local template and remains usable.
+If AI fails or is unavailable, the current reveal remains useful and the app supplies a local question.
 
 Examples:
 
-- Shared: `What first got each of you interested in {interest}?`
-- Crossover: `If {interestA} and {interestB} were combined into one activity, what would it look like?`
+- Exact: `What first got each of you interested in {interest}?`
+- Crossover: `If {interestA} and {interestB} became one weekend activity, what would it look like?`
 
-## Android release constraints
+## Product analytics and regional learning
 
-- Existing application ID: `com.gmail.gentle3f.myproject`
-- Current known Play versionCode: 5
-- New release versionCode: >= 6
-- targetSdk / compileSdk: 36 for the 2026 rebuild
-- Final Android distribution artifact: AAB
-- Do not change the installed-app identity while rebuilding the implementation.
+General product analytics remain disabled in the public V1 unless a future release explicitly changes the disclosed posture.
 
-## V1 analytics
+Separately, privacy-minimised **regional interest learning** may be enabled. It sends only coarse region plus canonical catalog IDs shown/selected, without nickname, full profile, custom-interest text, account ID, advertising ID or the optional analytics installation UUID.
 
-Analytics should measure product behaviour without uploading the content of a user's interest profile.
+Phase 1 metrics that matter include:
 
-Useful events include:
+- interest-profile completion;
+- first-Zync completion;
+- QR / one-scan completion;
+- connection reveal;
+- conversation-question generation / mode use;
+- distinct people Zynced with;
+- repeat Zync within 30 days;
+- whether users report learning something new about the other person;
+- whether the interaction started a conversation that otherwise would not have happened.
 
-- app_open
-- interest_setup_complete
-- interest_added
-- qr_generated
-- qr_scanned
-- match_complete
-- match_count
-- question_generated
-- question_next
-- mode_selected
-- zync_again
-
-Primary validation metrics:
-
-- onboarding completion rate
-- first-Zync completion rate
-- second-person invitation / install loop
-- repeat Zync rate within 30 days
-- sessions per active user
+DAU alone is not the definition of success.
 
 ## Explicitly out of scope
 
-Do not add these to V1:
+Do not add these to V1 without an explicit strategic decision:
 
-- login / registration
-- Firebase user profiles
-- cloud account sync
-- friends / follow graph
-- posts / feed
-- community rooms
-- chat / messaging
-- location / nearby people
-- activity matching
-- social-account import
-- merchant deals / advertising
-- payment / subscription
-- career matching
-- dating matching
+- login / registration;
+- Firebase/cloud user profiles;
+- friends/follow graph;
+- posts/feed;
+- persistent community rooms;
+- messaging/chat;
+- nearby people;
+- precise location matching;
+- random activity matching;
+- social-account import;
+- merchant deals / advertising;
+- payment/subscription;
+- career matching;
+- dating matching.
 
-Phase 2 architecture may be considered later, but it must not create V1 infrastructure cost or delay V1 validation.
+Phase 2 architecture may be anticipated in the data model, but must not create V1 product/infrastructure burden before the two-person loop is validated.
