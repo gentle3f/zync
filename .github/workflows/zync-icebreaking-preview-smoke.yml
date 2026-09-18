@@ -1,0 +1,102 @@
+name: Zync Icebreaking Preview Smoke
+
+on:
+  push:
+    branches:
+      - zync-v1-rebuild-20260917
+    paths:
+      - '.github/workflows/zync-icebreaking-preview-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  live-preview-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      ZYNC_API_BASE: https://zync-oluuzf8bh-gens-projects-4f99f8b9.vercel.app
+      ZYNC_PRIVACY_URL: https://zync-oluuzf8bh-gens-projects-4f99f8b9.vercel.app/privacy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Run existing live API smoke
+        run: node .github/scripts/live_api_smoke.mjs
+
+      - name: Verify new privacy and one-person curiosity behavior
+        shell: bash
+        run: |
+          node <<'NODE'
+          import assert from 'node:assert/strict';
+          import { randomBytes } from 'node:crypto';
+
+          const base = process.env.ZYNC_API_BASE.replace(/\/$/, '');
+          const privacy = await fetch(process.env.ZYNC_PRIVACY_URL, {
+            signal: AbortSignal.timeout(20000),
+          });
+          assert.ok(privacy.ok, 'privacy page failed');
+          const text = await privacy.text();
+          assert.match(text, /Share after Zync/i);
+          assert.match(text, /Instagram, Threads, or Facebook/i);
+          assert.match(text, /does not ask for or store your social-media password/i);
+          assert.match(text, /local Zync history on your device/i);
+
+          const response = await fetch(base + '/api/v1/question', {
+            method: 'POST',
+            headers: {'content-type':'application/json'},
+            body: JSON.stringify({
+              language: 'en',
+              mode: 'fun',
+              shared: [],
+              personA: [],
+              personB: ['Bouldering'],
+              sessionSeed: randomBytes(18).toString('base64url'),
+              connectionKey: 'about:b:sports.bouldering',
+            }),
+            signal: AbortSignal.timeout(20000),
+          });
+          const json = await response.json().catch(() => ({}));
+          assert.ok(response.ok, 'one-person question failed: ' + response.status + ' ' + JSON.stringify(json));
+          assert.equal(typeof json.question, 'string');
+          assert.ok(json.question.trim().length > 10);
+          assert.equal(response.headers.get('x-zync-api-version'), 'v1');
+          assert.equal(response.headers.get('x-zync-ai-privacy'), 'zdr-data-collection-deny');
+          console.log('✓ social disclosure is live and one-person curiosity AI returns a real prompt');
+          NODE
+
+      - name: Verify bilingual shared-question cache still holds
+        shell: bash
+        run: |
+          node <<'NODE'
+          import assert from 'node:assert/strict';
+          import { randomBytes } from 'node:crypto';
+
+          const base = process.env.ZYNC_API_BASE.replace(/\/$/, '');
+          const sessionSeed = randomBytes(18).toString('base64url');
+          const common = {
+            mode: 'fun',
+            shared: ["JoJo's Bizarre Adventure"],
+            sessionSeed,
+            connectionKey: 'shared:anime.jojo',
+          };
+
+          async function ask(language, secondaryLanguage) {
+            const response = await fetch(base + '/api/v1/question', {
+              method: 'POST',
+              headers: {'content-type':'application/json'},
+              body: JSON.stringify({...common, language, secondaryLanguage}),
+              signal: AbortSignal.timeout(20000),
+            });
+            const json = await response.json().catch(() => ({}));
+            assert.ok(response.ok, 'question request failed: ' + response.status + ' ' + JSON.stringify(json));
+            return {response, json};
+          }
+
+          const hk = await ask('zh-Hant', 'ja');
+          const jp = await ask('ja', 'zh-Hant');
+          assert.equal(jp.json.cached, true);
+          assert.equal(jp.json.question, hk.json.secondaryQuestion);
+          assert.equal(jp.json.secondaryQuestion, hk.json.question);
+          console.log('✓ reversed bilingual phones still reuse one semantic question');
+          NODE
