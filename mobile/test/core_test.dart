@@ -237,6 +237,29 @@ void main() {
     );
   });
 
+  test('connection threads never collapse sibling L2 families', () {
+    const mine = [
+      SelectedInterest(id: 'media.movies', strength: InterestStrength.like),
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'media.movies', strength: InterestStrength.love),
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'sibling-test');
+    final connections = ZyncSessionService.exactConnections(
+      match,
+      sessionSeed: 'sibling-test',
+    );
+
+    expect(connections.map((item) => item.id), contains('media.movies'));
+    expect(connections.map((item) => item.id), contains('anime.jojo'));
+    expect(connections.map((item) => item.id), isNot(contains('media.anime')));
+  });
+
   test('Zync Again newness is local metadata and does not change shared reveal order', () {
     const mine = [
       SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
