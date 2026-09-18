@@ -21,6 +21,7 @@ class MatchScreen extends StatefulWidget {
     required this.newMatchCount,
     this.sessionSeed = '',
     this.previousSharedIds = const {},
+    this.isRepeatPeer = false,
     this.localIsMatchMine = true,
   });
 
@@ -29,6 +30,7 @@ class MatchScreen extends StatefulWidget {
   final int newMatchCount;
   final String sessionSeed;
   final Set<String> previousSharedIds;
+  final bool isRepeatPeer;
   final bool localIsMatchMine;
 
   @override
@@ -54,6 +56,7 @@ class _MatchScreenState extends State<MatchScreen> {
     _connections = ZyncSessionService.exactConnections(
       widget.match,
       previousSharedIds: widget.previousSharedIds,
+      markNewConnections: widget.isRepeatPeer,
       sessionSeed: widget.sessionSeed,
     );
     _crossover = _connections.isEmpty
