@@ -250,11 +250,13 @@ void main() {
     final firstDevice = ZyncSessionService.exactConnections(
       match,
       previousSharedIds: {'sports.badminton'},
+      markNewConnections: true,
       sessionSeed: 'stable-seed',
     );
     final secondDevice = ZyncSessionService.exactConnections(
       match,
       previousSharedIds: const {},
+      markNewConnections: true,
       sessionSeed: 'stable-seed',
     );
 
@@ -266,6 +268,24 @@ void main() {
       firstDevice.firstWhere((item) => item.id == 'anime.jojo').isNew,
       isTrue,
     );
+  });
+
+  test('first-ever Zync does not label every connection as new since last time', () {
+    const mine = [
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.like),
+    ];
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'first-session');
+    final connections = ZyncSessionService.exactConnections(
+      match,
+      previousSharedIds: const {},
+      markNewConnections: false,
+      sessionSeed: 'first-session',
+    );
+
+    expect(connections.single.isNew, isFalse);
   });
 
   test('zero-match bridge selection is deterministic and graph-aware', () {
