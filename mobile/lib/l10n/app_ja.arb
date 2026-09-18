@@ -186,5 +186,31 @@
   "stayConnected": "つながっておく？",
   "openProfile": "プロフィールを開く",
   "showQr": "QRを表示",
-  "saveSocialLinks": "ソーシャルリンクを保存"
+  "saveSocialLinks": "ソーシャルリンクを保存",
+  "questionsSavedCount": "保存した質問：{count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync回数：{count} · 最終：{date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "二人とも好きなもの",
+  "noSharedSaved": "保存された共通の興味はまだありません。",
+  "thingsLearnedAboutThem": "相手について知ったこと",
+  "nothingExtraSaved": "直近のZyncでは追加の興味は保存されていません。",
+  "questionsYouTalkedAbout": "話した質問",
+  "questionsNextTime": "次回のZyncで使った質問はこの端末に保存されます。",
+  "sharedSocials": "相手が共有したSNS"
 }
