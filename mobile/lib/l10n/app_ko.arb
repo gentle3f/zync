@@ -166,5 +166,14 @@
     }
   },
   "finishZync": "Zync 마치기",
-  "findingQuestion": "좋은 질문을 찾는 중…"
+  "findingQuestion": "좋은 질문을 찾는 중…",
+  "keepDiscovering": "더 알아보기",
+  "sharedOnlyStart": "공통 관심사는 시작일 뿐이에요. 서로 몰랐던 것을 더 발견해 보세요.",
+  "askAboutThem": "상대에 대해 묻기",
+  "letThemAskYou": "나에 대해 질문받기",
+  "surpriseUs": "깜짝 질문",
+  "finishAndRecap": "마치고 돌아보기",
+  "backToIdeas": "다른 아이디어 보기",
+  "theirInterest": "상대의 관심사",
+  "yourInterest": "나의 관심사"
 }
