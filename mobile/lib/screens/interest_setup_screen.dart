@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
+import '../core/interest_popularity_service.dart';
+import '../core/interest_relevance.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -28,6 +30,9 @@ class InterestSetupScreen extends StatefulWidget {
 class _InterestSetupScreenState extends State<InterestSetupScreen> {
   late final TextEditingController _nickname;
   final _search = TextEditingController();
+  final _popularityService = InterestPopularityService.instance;
+  late final String _region;
+  InterestPopularitySnapshot? _popularity;
   late Map<String, InterestStrength> _selected;
   late Map<String, SelectedInterest> _custom;
   String? _selectedCategory;
@@ -43,7 +48,15 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       for (final item in widget.profile.interests)
         if (InterestCatalog.byId(item.id) == null && item.customLabel != null) item.id: item,
     };
+    _region = InterestRegion.current();
     _search.addListener(() => setState(() {}));
+    unawaited(_loadPopularity());
+  }
+
+  Future<void> _loadPopularity() async {
+    final snapshot = await _popularityService.fetchSnapshot(_region);
+    if (!mounted) return;
+    setState(() => _popularity = snapshot);
   }
 
   @override
@@ -62,6 +75,9 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         _selected[id] = InterestStrength.like;
       }
     });
+    if (adding && InterestCatalog.byId(id) != null) {
+      _popularityService.noteSelection(id);
+    }
     if (adding) {
       unawaited(
         ZyncAnalytics.instance.track(
@@ -93,6 +109,9 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       _selectedCluster = null;
       _selectedSubcluster = null;
     });
+    if (adding && selection.customLabel == null) {
+      _popularityService.noteSelection(selection.id);
+    }
     if (adding) {
       unawaited(
         ZyncAnalytics.instance.track(
@@ -131,6 +150,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       interests: normalized.values.toList(),
     );
     await widget.onSaved(profile);
+    unawaited(_popularityService.flush(_region));
     if (!widget.editing) {
       unawaited(
         ZyncAnalytics.instance.track(
@@ -171,8 +191,19 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     }
 
     addAll(_selected.keys.map(InterestCatalog.byId));
-    if (_selected.isNotEmpty) addAll(InterestCatalog.relatedTo(_selected.keys, limit: 28));
-    addAll(InterestCatalog.popular(limit: 60));
+    if (_selected.isNotEmpty) {
+      addAll(InterestCatalog.relatedTo(
+        _selected.keys,
+        region: _region,
+        popularity: _popularity,
+        limit: 28,
+      ));
+    }
+    addAll(InterestCatalog.popular(
+      region: _region,
+      popularity: _popularity,
+      limit: 60,
+    ));
     return result.take(80).toList(growable: false);
   }
 
@@ -190,13 +221,21 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         : const <String>[];
 
     final catalogResults = query.isNotEmpty
-        ? InterestCatalog.search(query, locale, limit: 80)
+        ? InterestCatalog.search(
+            query,
+            locale,
+            region: _region,
+            popularity: _popularity,
+            limit: 80,
+          )
         : _selectedCategory == null
             ? _discoveryResults()
             : InterestCatalog.popular(
                 category: _selectedCategory,
                 cluster: _selectedCluster,
                 subcluster: _selectedSubcluster,
+                region: _region,
+                popularity: _popularity,
                 limit: 80,
               );
     final customResults = _customResults(query, locale);
@@ -449,6 +488,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   }) {
     final selected = _selected[interest.id];
     final isCustom = InterestCatalog.byId(interest.id) == null;
+    if (!isCustom) _popularityService.noteImpression(interest.id);
     return Material(
       color: Colors.transparent,
       child: InkWell(
