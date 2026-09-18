@@ -39,7 +39,7 @@ void main() {
     expect(InterestCatalog.byId('music.cantopop')!.id, 'music.cantopop');
   });
 
-  test('behavioural learning is prior-weighted and weekly movement is capped', () {
+  test('behavioural learning is prior-weighted and bounded around the curated base', () {
     final item = InterestCatalog.byId('music.cantopop')!;
     final base = InterestRelevance.baseScore(item, 'hk');
     final snapshot = InterestPopularitySnapshot(
@@ -54,7 +54,7 @@ void main() {
     final learned = InterestRelevance.score(item, region: 'hk', popularity: snapshot);
     expect(
       (learned - base).abs(),
-      lessThanOrEqualTo(InterestRelevance.maxWeeklyMove + 0.0001),
+      lessThanOrEqualTo(InterestRelevance.maxBehaviourAdjustment + 0.0001),
     );
   });
 
