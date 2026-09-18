@@ -260,11 +260,6 @@ class InterestCatalog {
     return text;
   }
 
-  static int _rankCompare(InterestDefinition a, InterestDefinition b) {
-    final rank = a.rank.compareTo(b.rank);
-    return rank != 0 ? rank : a.id.compareTo(b.id);
-  }
-
   static Set<String> _searchTerms(InterestDefinition item) {
     return {
       ...item.labels.values.map(normalizeText),
