@@ -202,6 +202,8 @@ void main() {
         textScale: 1.15,
       ),
     );
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
