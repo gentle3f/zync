@@ -56,6 +56,7 @@ class ZyncSessionService {
   static List<ZyncConnection> exactConnections(
     MatchResult match, {
     Set<String> previousSharedIds = const {},
+    bool markNewConnections = false,
     String sessionSeed = '',
   }) {
     final details = match.sharedDetails.isNotEmpty
@@ -80,7 +81,8 @@ class ZyncSessionService {
           )
           .toList(growable: false);
       final threadIds = <String>{primary.id, ...context.map((item) => item.id)};
-      final isNew = threadIds.any((id) => !previousSharedIds.contains(id));
+      final isNew =
+          markNewConnections && threadIds.any((id) => !previousSharedIds.contains(id));
       return ZyncConnection(
         primary: primary,
         context: context,
