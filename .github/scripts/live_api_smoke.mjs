@@ -62,6 +62,8 @@ async function relay(body) {
   assert.match(privacyText, /Upstash Redis/i);
   assert.match(privacyText, /AES-GCM/i);
   assert.match(privacyText, /about three minutes/i);
+  assert.match(privacyText, /regional interest discovery/i);
+  assert.match(privacyText, /does not use GPS or precise location/i);
   console.log('✓ public privacy policy URL is reachable and discloses the encrypted relay');
 }
 
@@ -143,20 +145,27 @@ async function relay(body) {
 }
 
 {
-  const { response, json } = await post('/api/v1/normalize-interest', {
-    input: 'urban sketching',
-    language: 'en',
+  const response = await fetch(base + '/api/v1/interest-popularity?region=global', {
+    method: 'GET',
+    signal: AbortSignal.timeout(timeoutMs),
   });
-  assertAiPrivacyHeaders(response, '/api/v1/normalize-interest');
-  assert.ok(response.ok, `normalize-interest live smoke failed with HTTP ${response.status}`);
-  assert.equal(typeof json.id, 'string');
-  assert.ok(json.id.startsWith('custom.'));
-  assert.equal(typeof json.canonicalName, 'string');
-  assert.ok(json.canonicalName.trim());
-  assert.equal(typeof json.displayName, 'string');
-  assert.ok(json.displayName.trim());
-  console.log('✓ live normalize-interest works on the expected privacy-hardened V1 handler');
+  const json = await response.json().catch(() => ({}));
+  assert.equal(
+    response.status,
+    200,
+    'regional-interest popularity read smoke failed: HTTP ' +
+      response.status + ' ' + JSON.stringify(json),
+  );
+  assert.equal(json.version, 1);
+  assert.equal(json.region, 'global');
+  assert.match(json.previousWeek, /^\d{4}-\d{2}-\d{2}$/);
+  assert.match(json.olderWeek, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(typeof json.previous, 'object');
+  assert.equal(typeof json.older, 'object');
+  assert.match(response.headers.get('cache-control') || '', /max-age=3600/);
+  console.log('✓ live regional-interest endpoint returns completed-week aggregate snapshots');
 }
+
 
 {
   const { response, json } = await post('/api/v1/question', {
