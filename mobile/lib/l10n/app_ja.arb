@@ -10,17 +10,41 @@
   "pickAtLeastFive": "興味を5つ以上選んでください。あとでいつでも変更できます。",
   "searchAnything": "興味を検索...",
   "addWithAi": "AIで「{interest}」を追加",
-  "@addWithAi": {"placeholders": {"interest": {"type": "String"}}},
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "aiSuggested": "AIの提案：「{interest}」。追加しますか？",
-  "@aiSuggested": {"placeholders": {"interest": {"type": "String"}}},
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "addInterest": "興味を追加",
   "normalizing": "興味を理解しています...",
   "selectedCount": "{count}個選択中",
-  "@selectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "saveAndContinue": "保存して続ける",
   "homeGreeting": "Zyncする準備はできた？",
   "interestsCount": "プロフィールに{count}個の興味があります",
-  "@interestsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "zyncWithSomeone": "誰かとZyncする",
   "showMyQr": "自分のQRを表示",
   "scanSomeone": "相手をスキャン",
@@ -48,7 +72,13 @@
   "cameraErrorBody": "カメラを起動できませんでした。もう一度試すか、戻って自分のQRを表示してください。",
   "youZync": "YOU ZYNC!",
   "hiddenMatches": "{count}個の隠れた共通点があります。",
-  "@hiddenMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "noExactMatch": "完全に同じ興味はまだありません。",
   "findConnection": "ふたりの接点を見つけよう。",
   "reveal": "公開",
@@ -66,7 +96,13 @@
   "noHistory": "まだZync履歴はありません。",
   "zyncAgain": "もう一度Zync",
   "newMatches": "前回から新しい共通点が{count}個増えました",
-  "@newMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "love": "大好き",
   "like": "好き",
   "wantToTry": "やってみたい",
@@ -75,5 +111,60 @@
   "edit": "編集",
   "done": "完了",
   "retry": "再試行",
-  "cancel": "キャンセル"
+  "cancel": "キャンセル",
+  "hiddenConnections": "隠れたつながりが {count} 個見つかりました。",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "つながりを1つ見る",
+  "revealAnother": "もう1つ見る",
+  "talkAboutThis": "ここから話してみよう",
+  "changeVibe": "雰囲気を変える",
+  "connectionProgress": "{current} / {total} のつながり",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "今回のZyncで新しく発見",
+  "strengthContrast": "あなた：{mine} · {peer}：{theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "興味は違っても、",
+  "stillConnection": "つながりは見つかります。",
+  "crossoverIntro": "このクロスオーバーで話そう",
+  "sessionRecap": "今回見つけたつながり",
+  "sessionRecapCount": "{name}さんと {count} 個のつながりを見つけました。",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "Zyncを終了",
+  "findingQuestion": "いい質問を考えています…"
 }
