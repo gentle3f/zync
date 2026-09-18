@@ -96,24 +96,26 @@ Zync therefore treats the underlying interest as language-neutral and only local
 
 A concise definition:
 
-> **Zync V1 = multilingual interest identity + QR exchange + hidden common-interest discovery + AI conversation.**
+> **Zync V1 = multilingual interest identity + QR ritual + hidden connection discovery + AI-activated conversation.**
 
 The product is deliberately local-first.
 
 ### Core V1 experience
 
-- Build an interest profile.
-- Search/select interests and add free-text interests.
+- Build a lightweight interest profile from a deep multilingual catalog.
+- Search/select interests and add free-text interests instantly on-device.
 - Mark an interest as **Love**, **Like**, or **Want to try**.
 - Show or scan a Zync QR.
+- Complete a one-scan encrypted pairing so both phones enter the same Zync Session.
 - Compare canonical interest IDs locally on-device.
-- Reveal hidden matches progressively.
-- Generate an AI conversation prompt around shared interests.
-- If there is no exact match, generate a crossover prompt between different interests.
-- Choose different conversation modes such as Fun, Deep, Debate, Guess or Surprise.
+- Collapse broad taxonomy ancestors into stronger connection threads rather than revealing a hierarchy as a checklist.
+- Create the **YOU ZYNC!** impact moment, then reveal one meaningful connection at a time.
+- Put the AI conversation prompt inside that reveal moment instead of forcing users into a separate report-then-chat flow.
+- If there is no exact match, use the local Interest Graph to choose a plausible crossover and let AI turn it into a question.
+- Keep conversation modes such as Fun, Deep, Debate, Guess or Surprise as secondary controls.
 - Keep local history so people can **Zync Again** later.
-- Show an **Interest DNA** summary of the user’s own interest profile.
-- Support different languages between two participants and show equivalent questions in both languages.
+- Show an **Interest DNA** summary of the user's own interest profile.
+- Support different languages between two participants and show equivalent versions of the same semantic question.
 
 ### What makes the interaction distinctive
 
@@ -124,9 +126,13 @@ The product should not behave like a spreadsheet saying:
 It should create suspense and discovery:
 
 > **YOU ZYNC!**  
-> You have 6 hidden matches.
+> You found hidden connections.
 
-Then reveal them one at a time.
+Then reveal one connection that is specific enough to make somebody react:
+
+> **JoJo's Bizarre Adventure**
+
+The conversation can start immediately. The user should not need to reveal every result before Zync becomes useful.
 
 This protects the strongest emotional moment: the surprise of learning something unexpected about another person.
 
@@ -134,41 +140,37 @@ This protects the strongest emotional moment: the surprise of learning something
 
 ## 5. Why QR matters
 
-QR is not used because QR itself is novel. It is useful because it gives Zync a very clean product architecture and a strong real-world ritual.
+QR is not used because QR itself is novel. It is useful because it gives Zync a strong real-world ritual and a low-friction privacy model.
 
-A user deliberately chooses to show their Zync profile to the person physically in front of them. The other person scans it. There is no need to search usernames, exchange phone numbers, create friend requests or maintain a central pairing database.
+A user deliberately chooses to show Zync to the person physically in front of them. The other person scans once. There is no need to search usernames, exchange phone numbers, create friend requests or maintain a permanent central pairing database.
+
+The current one-scan architecture uses a minimal temporary relay: the scanner encrypts the limited profile response on-device with a one-time key carried in the QR, the relay stores only opaque ciphertext for a short lifetime, and the host decrypts locally. The private host capability is not in the QR, and abandoned relay state expires automatically.
 
 For V1 this allows:
 
 - no account requirement;
-- no cloud profile requirement;
-- no person-to-person pairing server;
+- no permanent cloud profile requirement;
+- no permanent person-to-person pairing database;
 - lower privacy risk;
 - near-zero fixed infrastructure cost;
-- a visible, understandable “Zync with me” interaction.
+- a visible, understandable “Zync with me” interaction;
+- both phones to enter the same post-scan experience after one scan.
 
-The QR contains only the data needed for local matching, such as a local random ID, nickname, language and selected interests. It does not need email, phone number, precise location or an advertising identifier.
+The QR and relay carry only what is needed for the Zync interaction. They do not need email, phone number, precise location or an advertising identifier.
 
 ---
 
 ## 6. Why AI belongs in V1
 
-AI is not being added simply because AI is fashionable. There are two places where it solves a genuine product problem.
+AI is not being added simply because AI is fashionable. Its most important V1 role is to convert a discovered connection into a better human conversation.
 
-### 6.1 Interest normalisation
+### 6.1 Interest coverage without an AI gate
 
-A fixed manually curated hobby list will always be incomplete.
+A fixed hobby list will always be incomplete, so Zync's interest system is designed around a large multilingual canonical taxonomy, aliases, related-interest graph and instant local custom interests.
 
-A user may type:
+The current V1 user should not have to wait for AI to approve an interest. If the local catalog does not contain what they type, Zync can create a deterministic local custom-interest identity immediately.
 
-- “Leica street photography”
-- “模型火車”
-- “JoJo cosplay”
-- “F1 engineering”
-
-AI can help convert free text into a stable canonical concept, while the user confirms the suggestion before it is saved.
-
-This prevents the app from requiring the team to manually catalogue every hobby in the world before launch.
+AI may still help future catalog maintenance, normalization research or user-authorised Interest DNA workflows, but the shipped V1 interest-entry loop must remain fast and local-first.
 
 ### 6.2 Conversation generation
 
@@ -178,13 +180,17 @@ AI can create a more interactive prompt:
 
 > “If you could both attend one Grand Prix for free, which race would you choose — and if you disagree, how would you convince the other person?”
 
-When there is no exact match, AI becomes even more valuable.
+The prompt should focus on the connection currently being revealed rather than summarizing two whole profiles.
 
-Person A may like F1 and JoJo. Person B may like photography and cooking. Instead of saying “No match,” Zync can create an unexpected crossover question that both can answer.
+When there is no exact match, the local Interest Graph first selects a plausible bridge. AI then turns that bridge into a discussable crossover instead of inventing a false shared interest.
+
+Person A may like F1 while Person B likes street photography. Zync can turn that into a question rather than saying “No match.”
 
 This is a core product principle:
 
 > **Zero exact matches should still lead to a conversation, not a failure state.**
+
+For a one-scan session, both phones should receive the same semantic question. A short-lived shared question cache may be used so language order or two simultaneous AI calls do not create two different conversations.
 
 AI is therefore part of the V1 value proposition, while local fallback prompts ensure the app still works if the model is unavailable or rate-limited.
 
@@ -725,17 +731,20 @@ The path between those two ideas should remain evidence-driven.
 Future work should preserve the following unless the user explicitly changes direction:
 
 1. **Do not turn V1 into a giant social network before validating the two-person loop.**
-2. **Do not remove AI from V1.** AI normalisation and crossover/shared-interest question generation are intentional product features.
+2. **Do not remove AI conversation generation from V1.** Shared-interest and crossover questions are intentional product features; AI interest normalization is no longer a mandatory gate in the shipped interest-entry flow.
 3. **Do not replace QR casually.** QR is central to the low-cost, local-first architecture and real-world ritual.
-4. **Do not require accounts/Firebase/community infrastructure for the core V1 experience.**
-5. **Do not treat daily retention as the only definition of success.** Zync may be episodic but still valuable.
-6. **Do not force activity matching as the initial product.** Network density and trust are not ready for that at cold start.
-7. **Do not split interests by language.** Canonical language-neutral IDs are foundational.
-8. **Do not oversell “Interest DNA” as psychology.** It is a descriptive interest identity, not scientific personality analysis.
-9. **Do not sell raw personal data as the business model.** Prefer useful services, transactions and ecosystem value.
-10. **Do not lose the emotional core:** “Wait — you like that too?” is more important than a complicated recommendation engine.
-11. **Professional UI/UX and graphics are part of the product, not optional decoration.**
-12. **Keep infrastructure near-zero-cost while validating Phase 1.** Scale infrastructure only when usage justifies it.
+4. **Do not regress the post-scan experience into a match report.** The canonical flow is a unified Zync Session: impact → meaningful reveal → conversation → next reveal → recap.
+5. **Do not require accounts/Firebase/community infrastructure for the core V1 experience.**
+6. **Do not treat daily retention as the only definition of success.** Zync may be episodic but still valuable.
+7. **Do not force activity matching as the initial product.** Network density and trust are not ready for that at cold start.
+8. **Do not split interests by language.** Canonical language-neutral IDs are foundational.
+9. **Do not let related-interest or regional-ranking logic manufacture a false exact match.**
+10. **Do not oversell “Interest DNA” as psychology.** It is a descriptive interest identity, not scientific personality analysis.
+11. **Do not sell raw personal data as the business model.** Prefer useful services, transactions and ecosystem value.
+12. **Do not lose the emotional core:** “Wait — you like that too?” is more important than a complicated recommendation engine.
+13. **Keep both phones in the same Zync Session semantics.** Reveal order and shared AI question meaning should not silently diverge between devices.
+14. **Professional UI/UX and graphics are part of the product, not optional decoration.**
+15. **Keep infrastructure near-zero-cost while validating Phase 1.** Scale infrastructure only when usage justifies it.
 
 ---
 
