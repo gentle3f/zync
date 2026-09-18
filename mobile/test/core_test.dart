@@ -293,6 +293,27 @@ void main() {
     );
   });
 
+  test('a newly added broad parent does not make an old specific reveal look new', () {
+    const mine = [
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+    const theirs = [
+      SelectedInterest(id: 'media.anime', strength: InterestStrength.like),
+      SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
+    ];
+    final match = MatchingService.compare(mine, theirs, sessionSeed: 'repeat-thread');
+    final connections = ZyncSessionService.exactConnections(
+      match,
+      previousSharedIds: {'anime.jojo'},
+      markNewConnections: true,
+      sessionSeed: 'repeat-thread',
+    );
+
+    expect(connections.single.id, 'anime.jojo');
+    expect(connections.single.isNew, isFalse);
+  });
+
   test('first-ever Zync does not label every connection as new since last time', () {
     const mine = [
       SelectedInterest(id: 'anime.jojo', strength: InterestStrength.love),
