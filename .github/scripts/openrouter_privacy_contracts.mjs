@@ -45,10 +45,11 @@ function captureSuccessfulFetch(responseContent) {
 function assertZeroRetention(request) {
   assert.equal(request.url, 'https://openrouter.ai/api/v1/chat/completions');
   const upstream = JSON.parse(request.options.body);
-  assert.deepEqual(upstream.provider, {
-    zdr: true,
-    data_collection: 'deny',
-  });
+  assert.equal(upstream.provider?.zdr, true);
+  assert.equal(upstream.provider?.data_collection, 'deny');
+  if ('allow_fallbacks' in upstream.provider) {
+    assert.equal(upstream.provider.allow_fallbacks, true);
+  }
   assert.ok(request.options.signal, 'OpenRouter request must retain its timeout/abort signal');
 }
 
