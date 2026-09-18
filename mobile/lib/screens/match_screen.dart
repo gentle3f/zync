@@ -259,7 +259,14 @@ class _MatchScreenState extends State<MatchScreen> {
 
   Future<void> _revealAnother() async {
     if (_revealedIndex + 1 >= _connections.length) {
-      setState(() => _recap = true);
+      setState(() {
+        _exploreHub = true;
+        _activeExploreMatch = null;
+        _activeExploreKey = null;
+        _activeExploreLabel = null;
+        _activeOwnerIsMatchMine = null;
+        _mode = ConversationMode.fun;
+      });
       return;
     }
     if (!mounted) return;
@@ -318,6 +325,10 @@ class _MatchScreenState extends State<MatchScreen> {
   Widget build(BuildContext context) {
     if (!_impactDone) return _impactScreen(context);
     if (_recap) return _recapScreen(context);
+    if (_exploreHub) {
+      if (_activeExploreKey != null) return _exploreMomentScreen(context);
+      return _exploreHubScreen(context);
+    }
     if (_connections.isEmpty) return _crossoverScreen(context);
     if (_revealedIndex < 0) return _hiddenScreen(context);
     return _connectionScreen(context);
