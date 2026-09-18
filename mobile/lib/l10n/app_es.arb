@@ -10,17 +10,41 @@
   "pickAtLeastFive": "Elige al menos 5 intereses. Puedes cambiarlos cuando quieras.",
   "searchAnything": "Buscar cualquier interés...",
   "addWithAi": "Añadir «{interest}» con IA",
-  "@addWithAi": {"placeholders": {"interest": {"type": "String"}}},
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "aiSuggested": "La IA sugiere «{interest}». ¿Añadirlo?",
-  "@aiSuggested": {"placeholders": {"interest": {"type": "String"}}},
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
   "addInterest": "Añadir interés",
   "normalizing": "Entendiendo tu interés...",
   "selectedCount": "{count} seleccionados",
-  "@selectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "saveAndContinue": "Guardar y continuar",
   "homeGreeting": "¿Listo para Zync?",
   "interestsCount": "{count} intereses en tu perfil",
-  "@interestsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "zyncWithSomeone": "Haz Zync con alguien",
   "showMyQr": "Mostrar mi QR",
   "scanSomeone": "Escanear a alguien",
@@ -48,7 +72,13 @@
   "cameraErrorBody": "No se pudo iniciar la cámara. Inténtalo de nuevo o vuelve atrás y muestra tu QR.",
   "youZync": "¡YOU ZYNC!",
   "hiddenMatches": "Tenéis {count} coincidencias ocultas.",
-  "@hiddenMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "noExactMatch": "No hay coincidencias exactas.",
   "findConnection": "Vamos a encontrar la conexión.",
   "reveal": "Revelar",
@@ -66,7 +96,13 @@
   "noHistory": "Aún no hay historial de Zync.",
   "zyncAgain": "Zync otra vez",
   "newMatches": "{count} coincidencias nuevas desde la última vez",
-  "@newMatches": {"placeholders": {"count": {"type": "int"}}},
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "love": "Me encanta",
   "like": "Me gusta",
   "wantToTry": "Quiero probarlo",
@@ -75,5 +111,60 @@
   "edit": "Editar",
   "done": "Listo",
   "retry": "Reintentar",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "hiddenConnections": "Habéis encontrado {count} conexiones ocultas.",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "Revelar una conexión",
+  "revealAnother": "Revelar otra",
+  "talkAboutThis": "Hablad de esto",
+  "changeVibe": "Cambiar el tono",
+  "connectionProgress": "Conexión {current} de {total}",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "Nueva desde vuestro último Zync",
+  "strengthContrast": "Tú: {mine} · {peer}: {theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "Intereses distintos.",
+  "stillConnection": "Aun así, hay una conexión.",
+  "crossoverIntro": "Probad este cruce",
+  "sessionRecap": "Lo que habéis descubierto",
+  "sessionRecapCount": "Has encontrado {count} conexiones con {name}.",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "Terminar Zync",
+  "findingQuestion": "Buscando una buena pregunta…"
 }
