@@ -305,8 +305,16 @@ void main() {
 
     expect(find.text('Keep discovering'), findsOneWidget);
     expect(find.text('Ask about them'), findsOneWidget);
-    expect(find.text('Let them ask you'), findsOneWidget);
     expect(find.text('Japan Travel'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Let them ask you'),
+      260,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Let them ask you'), findsOneWidget);
     expect(find.text('Street Photography'), findsOneWidget);
     expect(find.text('What you discovered'), findsNothing);
     expect(tester.takeException(), isNull);
