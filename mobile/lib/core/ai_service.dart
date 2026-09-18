@@ -41,6 +41,8 @@ class AiService {
 
   final String baseUrl;
 
+  bool get hasRemote => baseUrl.trim().isNotEmpty;
+
   String _label(SelectedInterest item, String language) {
     return InterestCatalog.byId(item.id)?.labelFor(language) ??
         item.customLabel ??
