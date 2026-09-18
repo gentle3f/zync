@@ -653,8 +653,8 @@ class _MatchScreenState extends State<MatchScreen> {
           FilledButton.icon(
             key: const ValueKey('zync-next-connection'),
             onPressed: _revealAnother,
-            icon: Icon(last ? Icons.check_rounded : Icons.visibility_outlined),
-            label: Text(last ? l10n.sessionRecap : l10n.revealAnother),
+            icon: Icon(last ? Icons.explore_outlined : Icons.visibility_outlined),
+            label: Text(last ? l10n.keepDiscovering : l10n.revealAnother),
           ),
         ],
       ),
