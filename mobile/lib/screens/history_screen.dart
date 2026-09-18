@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/local_store.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
+import '../core/zync_alias.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 
@@ -56,8 +57,11 @@ class HistoryScreen extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final entry = history[index];
-                final safePrefix = entry.peerId.length >= 6 ? entry.peerId.substring(0, 6) : entry.peerId;
-                final name = entry.peerNickname.trim().isEmpty ? 'Zync #$safePrefix' : entry.peerNickname;
+                final name = ZyncAlias.displayName(
+                  nickname: entry.peerNickname,
+                  localId: entry.peerId,
+                  locale: locale,
+                );
                 return ZyncSurface(
                   shadow: false,
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
