@@ -166,5 +166,14 @@
     }
   },
   "finishZync": "完成这次 Zync",
-  "findingQuestion": "正在想一个值得聊的问题…"
+  "findingQuestion": "正在想一个值得聊的问题…",
+  "keepDiscovering": "继续发现",
+  "sharedOnlyStart": "共同兴趣只是开始。再发现一些你原本不知道对方的事。",
+  "askAboutThem": "问问对方",
+  "letThemAskYou": "让对方问你",
+  "surpriseUs": "给我们一个惊喜",
+  "finishAndRecap": "完成并查看回顾",
+  "backToIdeas": "返回其他话题",
+  "theirInterest": "对方的一个兴趣",
+  "yourInterest": "你的一个兴趣"
 }
