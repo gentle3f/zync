@@ -278,6 +278,85 @@ class _MatchScreenState extends State<MatchScreen> {
     unawaited(_ensureQuestion());
   }
 
+  List<SelectedInterest> _rankedUniqueInterests(
+    Iterable<SelectedInterest> source,
+  ) {
+    final rows = source.toList()
+      ..sort((a, b) {
+        final aDef = InterestCatalog.byId(a.id);
+        final bDef = InterestCatalog.byId(b.id);
+        final aScore = (a.strength.wireValue * 100) +
+            (InterestCatalog.specificityScore(a.id) * 3) +
+            (((aDef?.rank ?? 1800) / 80).clamp(0, 35)).round();
+        final bScore = (b.strength.wireValue * 100) +
+            (InterestCatalog.specificityScore(b.id) * 3) +
+            (((bDef?.rank ?? 1800) / 80).clamp(0, 35)).round();
+        final score = bScore.compareTo(aScore);
+        return score != 0 ? score : a.id.compareTo(b.id);
+      });
+    return rows;
+  }
+
+  void _openAboutInterest(
+    SelectedInterest interest, {
+    required bool ownerIsMatchMine,
+  }) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final label = InterestCatalog.byId(interest.id)?.labelFor(locale) ??
+        interest.customLabel ??
+        interest.id;
+    final ownerIsLocal = ownerIsMatchMine == widget.localIsMatchMine;
+    setState(() {
+      _exploreHub = true;
+      _activeExploreMatch = MatchResult(
+        shared: const [],
+        onlyMine: ownerIsMatchMine ? [interest] : const [],
+        onlyTheirs: ownerIsMatchMine ? const [] : [interest],
+      );
+      _activeExploreKey =
+          'about:${ownerIsMatchMine ? 'a' : 'b'}:${interest.id}';
+      _activeExploreLabel = label;
+      _activeExploreKind = ownerIsLocal ? 'about_me' : 'about_them';
+      _activeOwnerIsMatchMine = ownerIsMatchMine;
+      _mode = ConversationMode.fun;
+    });
+    unawaited(_ensureQuestion());
+  }
+
+  void _openCrossoverMoment() {
+    final crossover = _crossover;
+    if (crossover == null) return;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final mine = InterestCatalog.byId(crossover.mine.id)?.labelFor(locale) ??
+        crossover.mine.customLabel ??
+        crossover.mine.id;
+    final theirs =
+        InterestCatalog.byId(crossover.theirs.id)?.labelFor(locale) ??
+            crossover.theirs.customLabel ??
+            crossover.theirs.id;
+    setState(() {
+      _exploreHub = true;
+      _activeExploreMatch = crossover.focusedMatch;
+      _activeExploreKey = crossover.connectionKey;
+      _activeExploreLabel = '$mine × $theirs';
+      _activeExploreKind = 'crossover';
+      _activeOwnerIsMatchMine = null;
+      _mode = ConversationMode.fun;
+    });
+    unawaited(_ensureQuestion());
+  }
+
+  void _backToExploreHub() {
+    setState(() {
+      _activeExploreMatch = null;
+      _activeExploreKey = null;
+      _activeExploreLabel = null;
+      _activeExploreKind = 'about';
+      _activeOwnerIsMatchMine = null;
+      _mode = ConversationMode.fun;
+    });
+  }
+
   Future<void> _pickMode() async {
     final l10n = AppLocalizations.of(context);
     final picked = await showModalBottomSheet<ConversationMode>(
