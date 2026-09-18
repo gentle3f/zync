@@ -986,9 +986,16 @@ class _MatchScreenState extends State<MatchScreen> {
           ),
           const SizedBox(height: 10),
           FilledButton.icon(
-            onPressed: () => setState(() => _recap = true),
-            icon: const Icon(Icons.check_rounded),
-            label: Text(l10n.sessionRecap),
+            onPressed: () => setState(() {
+              _exploreHub = true;
+              _activeExploreMatch = null;
+              _activeExploreKey = null;
+              _activeExploreLabel = null;
+              _activeOwnerIsMatchMine = null;
+              _mode = ConversationMode.fun;
+            }),
+            icon: const Icon(Icons.explore_outlined),
+            label: Text(l10n.keepDiscovering),
           ),
         ],
       ),
@@ -1151,6 +1158,12 @@ class _MatchScreenState extends State<MatchScreen> {
       ),
     );
   }
+
+  String _strengthEmoji(InterestStrength strength) => switch (strength) {
+        InterestStrength.love => '❤️',
+        InterestStrength.like => '👍',
+        InterestStrength.wantToTry => '✨',
+      };
 
   String _strengthLabel(AppLocalizations l10n, InterestStrength strength) => switch (strength) {
         InterestStrength.love => l10n.love,
