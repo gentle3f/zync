@@ -59,6 +59,7 @@ class LocalStore {
     required String peerNickname,
     required List<String> sharedIds,
     List<SelectedInterest> peerInterests = const [],
+    List<SocialLink> peerSocialLinks = const [],
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final history = (await loadHistory()).toList();
@@ -75,7 +76,12 @@ class LocalStore {
         firstZyncAt: previous.firstZyncAt,
         lastZyncAt: now,
         sessionCount: previous.sessionCount + 1,
-        peerInterests: peerInterests.isEmpty ? previous.peerInterests : List<SelectedInterest>.from(peerInterests),
+        peerInterests: peerInterests.isEmpty
+            ? previous.peerInterests
+            : List<SelectedInterest>.from(peerInterests),
+        peerSocialLinks: peerSocialLinks.isEmpty
+            ? previous.peerSocialLinks
+            : List<SocialLink>.from(peerSocialLinks),
         recentQuestions: previous.recentQuestions,
       );
       history[index] = updated;
@@ -88,6 +94,7 @@ class LocalStore {
         lastZyncAt: now,
         sessionCount: 1,
         peerInterests: List<SelectedInterest>.from(peerInterests),
+        peerSocialLinks: List<SocialLink>.from(peerSocialLinks),
         recentQuestions: const [],
       );
       history.add(updated);
@@ -122,6 +129,7 @@ class LocalStore {
       lastZyncAt: previous.lastZyncAt,
       sessionCount: previous.sessionCount,
       peerInterests: previous.peerInterests,
+      peerSocialLinks: previous.peerSocialLinks,
       recentQuestions: questions,
     );
     await prefs.setString(
