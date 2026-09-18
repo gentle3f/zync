@@ -346,12 +346,14 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                       ],
                       const SizedBox(height: 10),
                       _chipStrip(
-                        itemCount: InterestCatalog.categories.length + 1,
+                        key: const ValueKey('interest-l1-strip'),
+                        itemCount: InterestCatalog.categories.length,
                         itemBuilder: (index) {
-                          final category = index == 0 ? null : InterestCatalog.categories[index - 1];
+                          final category = InterestCatalog.categories[index];
                           return ChoiceChip(
+                            key: ValueKey('interest-l1-$category'),
                             selected: _selectedCategory == category && query.isEmpty,
-                            label: Text(category == null ? LocalizedDomainText.allInterests(locale) : LocalizedDomainText.category(category, locale)),
+                            label: Text(LocalizedDomainText.category(category, locale)),
                             onSelected: (_) {
                               setState(() {
                                 _selectedCategory = category;
@@ -367,13 +369,13 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         const SizedBox(height: 8),
                         _chipStrip(
                           key: const ValueKey('interest-l2-strip'),
-                          itemCount: clusters.length + 1,
+                          itemCount: clusters.length,
                           itemBuilder: (index) {
-                            final cluster = index == 0 ? null : clusters[index - 1];
+                            final cluster = clusters[index];
                             return ChoiceChip(
-                              key: cluster == null ? const ValueKey('interest-l2-all') : ValueKey('interest-l2-$cluster'),
+                              key: ValueKey('interest-l2-$cluster'),
                               selected: _selectedCluster == cluster,
-                              label: Text(cluster == null ? LocalizedDomainText.allInSection(locale) : LocalizedDomainText.taxonomy(cluster, locale)),
+                              label: Text(LocalizedDomainText.taxonomy(cluster, locale)),
                               onSelected: (_) {
                                 setState(() {
                                   _selectedCluster = cluster;
@@ -388,13 +390,13 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         const SizedBox(height: 8),
                         _chipStrip(
                           key: const ValueKey('interest-l3-strip'),
-                          itemCount: subclusters.length + 1,
+                          itemCount: subclusters.length,
                           itemBuilder: (index) {
-                            final subcluster = index == 0 ? null : subclusters[index - 1];
+                            final subcluster = subclusters[index];
                             return ChoiceChip(
-                              key: subcluster == null ? const ValueKey('interest-l3-all') : ValueKey('interest-l3-$subcluster'),
+                              key: ValueKey('interest-l3-$subcluster'),
                               selected: _selectedSubcluster == subcluster,
-                              label: Text(subcluster == null ? LocalizedDomainText.allInSection(locale) : LocalizedDomainText.taxonomy(subcluster, locale)),
+                              label: Text(LocalizedDomainText.taxonomy(subcluster, locale)),
                               onSelected: (_) => setState(() => _selectedSubcluster = subcluster),
                             );
                           },
