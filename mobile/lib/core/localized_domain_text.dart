@@ -162,6 +162,113 @@ class LocalizedDomainText {
     };
   }
 
+  static String achievementsTitle(String locale) => _pick(locale, {
+        'en':'Trophy Case','zh-Hant':'成就收藏','zh-Hans':'成就收藏','ja':'トロフィー','ko':'트로피','es':'Trofeos','fr':'Trophées','pt':'Troféus',
+      });
+
+  static String achievementsIntro(String locale) => _pick(locale, {
+        'en':'A map of the people and interests you have discovered in real life.',
+        'zh-Hant':'你喺現實世界遇過嘅人，同一路發現過嘅興趣地圖。',
+        'zh-Hans':'你在现实世界遇过的人，以及一路发现过的兴趣地图。',
+        'ja':'現実で出会った人と興味の発見を集める記録です。',
+        'ko':'현실에서 만난 사람과 발견한 관심사를 모아보세요.',
+        'es':'Tu mapa de personas e intereses descubiertos en la vida real.',
+        'fr':'La carte des personnes et centres d’intérêt découverts dans la vraie vie.',
+        'pt':'Seu mapa de pessoas e interesses descobertos na vida real.',
+      });
+
+  static String achievementUnlockedMeta(int unlocked, int total, String locale) => _pick(locale, {
+        'en':'$unlocked of $total unlocked','zh-Hant':'已解鎖 $unlocked / $total','zh-Hans':'已解锁 $unlocked / $total',
+        'ja':'$total 個中 $unlocked 個を解除','ko':'$total개 중 $unlocked개 달성',
+        'es':'$unlocked de $total desbloqueados','fr':'$unlocked sur $total débloqués','pt':'$unlocked de $total desbloqueados',
+      });
+
+  static String newAchievement(String locale) => _pick(locale, {
+        'en':'New trophy unlocked','zh-Hant':'解鎖新成就','zh-Hans':'解锁新成就','ja':'新しいトロフィー','ko':'새 트로피 달성',
+        'es':'Nuevo trofeo desbloqueado','fr':'Nouveau trophée débloqué','pt':'Novo troféu desbloqueado',
+      });
+
+  static String achievementProgress(int current, int target, String locale) => _pick(locale, {
+        'en':'$current / $target','zh-Hant':'$current / $target','zh-Hans':'$current / $target','ja':'$current / $target','ko':'$current / $target',
+        'es':'$current / $target','fr':'$current / $target','pt':'$current / $target',
+      });
+
+  static String achievementTitle(String id, String locale) {
+    final values = switch (id) {
+      'first_zync' => {
+          'en':'First Contact','zh-Hant':'第一次相遇','zh-Hans':'第一次相遇','ja':'最初の出会い','ko':'첫 만남',
+          'es':'Primer contacto','fr':'Premier contact','pt':'Primeiro contato',
+        },
+      'people_five' => {
+          'en':'High Five','zh-Hant':'High Five','zh-Hans':'High Five','ja':'ハイファイブ','ko':'하이파이브',
+          'es':'Choca esos cinco','fr':'High Five','pt':'High Five',
+        },
+      'basketball_starting_five' => {
+          'en':'Starting Five','zh-Hant':'正選五人','zh-Hans':'首发五人','ja':'スターティング5','ko':'스타팅 파이브',
+          'es':'Quinteto titular','fr':'Cinq majeur','pt':'Cinco inicial',
+        },
+      'sports_five' => {
+          'en':'Multi-Sport Rookie','zh-Hant':'多項運動新秀','zh-Hans':'多项运动新秀','ja':'マルチスポーツ新人','ko':'멀티스포츠 루키',
+          'es':'Novato multideporte','fr':'Rookie multisport','pt':'Novato multiesporte',
+        },
+      'sports_ten' => {
+          'en':'Ten-Sport Explorer','zh-Hant':'十項運動探索者','zh-Hans':'十项运动探索者','ja':'10スポーツ探検家','ko':'10종목 탐험가',
+          'es':'Explorador de 10 deportes','fr':'Explorateur de 10 sports','pt':'Explorador de 10 esportes',
+        },
+      'curiosity_25' => {
+          'en':'Curiosity Cabinet','zh-Hant':'好奇收藏櫃','zh-Hans':'好奇收藏柜','ja':'好奇心コレクション','ko':'호기심 컬렉션',
+          'es':'Gabinete de curiosidades','fr':'Cabinet de curiosités','pt':'Gabinete de curiosidades',
+        },
+      _ => {'en': id},
+    };
+    return _pick(locale, values);
+  }
+
+  static String achievementDescription(String id, String locale) {
+    final values = switch (id) {
+      'first_zync' => {
+          'en':'Zync with your first person.','zh-Hant':'完成你第一次真人 Zync。','zh-Hans':'完成你第一次真人 Zync。',
+          'ja':'最初の相手とZyncする。','ko':'첫 사람과 Zync 하세요.','es':'Haz Zync con tu primera persona.',
+          'fr':'Faites votre premier Zync.','pt':'Faça seu primeiro Zync.',
+        },
+      'people_five' => {
+          'en':'Meet 5 different people through Zync.','zh-Hant':'透過 Zync 遇到 5 個唔同嘅人。','zh-Hans':'通过 Zync 遇到 5 个不同的人。',
+          'ja':'5人の異なる人とZyncする。','ko':'서로 다른 5명과 Zync 하세요.','es':'Conoce a 5 personas distintas con Zync.',
+          'fr':'Rencontrez 5 personnes différentes avec Zync.','pt':'Conheça 5 pessoas diferentes com Zync.',
+        },
+      'basketball_starting_five' => {
+          'en':'Meet 5 different people who are into basketball.','zh-Hant':'遇到 5 個都鍾意籃球嘅唔同人物。','zh-Hans':'遇到 5 个都喜欢篮球的不同的人。',
+          'ja':'バスケットボール好きの5人と出会う。','ko':'농구를 좋아하는 서로 다른 5명을 만나세요.',
+          'es':'Conoce a 5 personas distintas a las que les gusta el baloncesto.',
+          'fr':'Rencontrez 5 personnes différentes qui aiment le basket.',
+          'pt':'Conheça 5 pessoas diferentes que gostam de basquete.',
+        },
+      'sports_five' => {
+          'en':'Discover 5 different sports through people you meet.','zh-Hant':'從你遇到嘅人身上發現 5 種唔同運動。','zh-Hans':'从你遇到的人身上发现 5 种不同运动。',
+          'ja':'出会った人から5種類のスポーツを発見する。','ko':'만난 사람들을 통해 5가지 스포츠를 발견하세요.',
+          'es':'Descubre 5 deportes distintos a través de la gente que conoces.',
+          'fr':'Découvrez 5 sports différents grâce aux personnes rencontrées.',
+          'pt':'Descubra 5 esportes diferentes através das pessoas que conhece.',
+        },
+      'sports_ten' => {
+          'en':'Discover 10 different sports through people you meet.','zh-Hant':'從你遇到嘅人身上發現 10 種唔同運動。','zh-Hans':'从你遇到的人身上发现 10 种不同运动。',
+          'ja':'出会った人から10種類のスポーツを発見する。','ko':'만난 사람들을 통해 10가지 스포츠를 발견하세요.',
+          'es':'Descubre 10 deportes distintos a través de la gente que conoces.',
+          'fr':'Découvrez 10 sports différents grâce aux personnes rencontrées.',
+          'pt':'Descubra 10 esportes diferentes através das pessoas que conhece.',
+        },
+      'curiosity_25' => {
+          'en':'Discover 25 different interests through people you meet.','zh-Hant':'從真人相遇中發現 25 個唔同興趣。','zh-Hans':'从真人相遇中发现 25 个不同兴趣。',
+          'ja':'出会いを通して25種類の興味を発見する。','ko':'사람들을 만나며 25가지 관심사를 발견하세요.',
+          'es':'Descubre 25 intereses distintos a través de la gente que conoces.',
+          'fr':'Découvrez 25 centres d’intérêt différents grâce aux rencontres.',
+          'pt':'Descubra 25 interesses diferentes através das pessoas que conhece.',
+        },
+      _ => {'en': id},
+    };
+    return _pick(locale, values);
+  }
+
   static String _pick(String locale, Map<String, String> values) {
     final code = _localeCode(locale);
     return values[code] ?? values[code.split('-').first] ?? values['en']!;
