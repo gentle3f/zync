@@ -26,6 +26,42 @@ class LocalizedDomainText {
   };
 
   static const Map<String, Map<String, String>> _taxonomy = {
+    'ai': {'en':'AI','zh-Hant':'人工智能','zh-Hans':'人工智能'},
+    'building_toys': {'en':'Building Toys','zh-Hant':'積木與拼砌玩具','zh-Hans':'积木与拼搭玩具'},
+    'business': {'en':'Business','zh-Hant':'商業','zh-Hans':'商业'},
+    'camping': {'en':'Camping','zh-Hant':'露營','zh-Hans':'露营'},
+    'cars': {'en':'Cars','zh-Hant':'汽車','zh-Hans':'汽车'},
+    'collecting': {'en':'Collecting','zh-Hant':'收藏','zh-Hans':'收藏'},
+    'combat': {'en':'Combat Sports','zh-Hant':'格鬥運動','zh-Hans':'格斗运动'},
+    'crafts': {'en':'Crafts & DIY','zh-Hant':'手作與 DIY','zh-Hans':'手作与 DIY'},
+    'cycling': {'en':'Cycling','zh-Hant':'單車','zh-Hans':'骑行'},
+    'fashion': {'en':'Fashion','zh-Hant':'時尚','zh-Hans':'时尚'},
+    'fitness': {'en':'Fitness','zh-Hant':'健身','zh-Hans':'健身'},
+    'gadgets': {'en':'Gadgets','zh-Hant':'電子裝置','zh-Hans':'电子设备'},
+    'hiking': {'en':'Hiking','zh-Hant':'行山與遠足','zh-Hans':'徒步与远足'},
+    'history': {'en':'History','zh-Hant':'歷史','zh-Hans':'历史'},
+    'home': {'en':'Home & Living','zh-Hant':'家居生活','zh-Hans':'家居生活'},
+    'knowledge': {'en':'Knowledge & Ideas','zh-Hant':'知識與思辨','zh-Hans':'知识与思辨'},
+    'languages': {'en':'Languages','zh-Hant':'語言','zh-Hans':'语言'},
+    'mind_body': {'en':'Mind & Body','zh-Hant':'身心運動','zh-Hans':'身心运动'},
+    'mind_sports': {'en':'Mind Sports','zh-Hant':'智力運動','zh-Hans':'智力运动'},
+    'motorsport': {'en':'Motorsport','zh-Hant':'賽車運動','zh-Hans':'赛车运动'},
+    'pets': {'en':'Pets & Animals','zh-Hant':'寵物與動物','zh-Hans':'宠物与动物'},
+    'photography': {'en':'Photography','zh-Hant':'攝影','zh-Hans':'摄影'},
+    'precision': {'en':'Precision Sports','zh-Hant':'精準運動','zh-Hans':'精准运动'},
+    'racket': {'en':'Racket Sports','zh-Hant':'球拍運動','zh-Hans':'球拍运动'},
+    'railways': {'en':'Railways','zh-Hant':'鐵路','zh-Hans':'铁路'},
+    'running': {'en':'Running','zh-Hant':'跑步','zh-Hans':'跑步'},
+    'science': {'en':'Science','zh-Hant':'科學','zh-Hans':'科学'},
+    'skating': {'en':'Skating','zh-Hant':'滑冰與輪滑','zh-Hans':'滑冰与轮滑'},
+    'social': {'en':'Social & Activities','zh-Hant':'社交活動','zh-Hans':'社交活动'},
+    'software': {'en':'Software & Coding','zh-Hant':'軟件與編程','zh-Hans':'软件与编程'},
+    'team_ball': {'en':'Team Ball Sports','zh-Hant':'團隊球類','zh-Hans':'团队球类'},
+    'title': {'en':'Titles','zh-Hant':'作品','zh-Hans':'作品'},
+    'visual_art': {'en':'Visual Art','zh-Hant':'視覺藝術','zh-Hans':'视觉艺术'},
+    'watches': {'en':'Watches','zh-Hant':'手錶','zh-Hans':'手表'},
+    'water': {'en':'Water Sports','zh-Hant':'水上運動','zh-Hans':'水上运动'},
+    'winter': {'en':'Winter Sports','zh-Hant':'冬季運動','zh-Hans':'冬季运动'},
     'movies': {'en':'Movies','zh-Hant':'電影','zh-Hans':'电影','ja':'映画','ko':'영화','es':'Películas','fr':'Films','pt':'Filmes'},
     'tv_drama': {'en':'TV & Drama','zh-Hant':'電視與劇集','zh-Hans':'电视与剧集','ja':'TV・ドラマ','ko':'TV·드라마','es':'TV y series','fr':'TV et séries','pt':'TV e séries'},
     'anime_manga': {'en':'Anime & Manga','zh-Hant':'動漫與漫畫','zh-Hans':'动漫与漫画','ja':'アニメ・漫画','ko':'애니·만화','es':'Anime y manga','fr':'Anime et manga','pt':'Anime e mangá'},
@@ -66,6 +102,15 @@ class LocalizedDomainText {
     if (labels == null) return _titleize(raw);
     final code = _localeCode(locale);
     return labels[code] ?? labels[code.split('-').first] ?? labels['en']!;
+  }
+
+  static bool hasTaxonomyTranslation(String raw, String locale) {
+    final key = raw.trim().toLowerCase();
+    final labels = _taxonomy[key];
+    if (labels == null) return false;
+    final code = _localeCode(locale);
+    return (labels[code]?.trim().isNotEmpty ?? false) ||
+        (labels[code.split('-').first]?.trim().isNotEmpty ?? false);
   }
 
   static String taxonomy(String raw, String locale) {
