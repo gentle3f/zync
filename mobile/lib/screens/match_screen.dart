@@ -8,6 +8,7 @@ import '../core/analytics_service.dart';
 import '../core/interest_catalog.dart';
 import '../core/language_support.dart';
 import '../core/models.dart';
+import '../core/zync_alias.dart';
 import '../core/zync_session_service.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
@@ -81,14 +82,11 @@ class _MatchScreenState extends State<MatchScreen> {
     super.dispose();
   }
 
-  String get _peerName {
-    final name = widget.peer.nickname.trim();
-    if (name.isNotEmpty) return name;
-    final prefix = widget.peer.localId.length >= 6
-        ? widget.peer.localId.substring(0, 6)
-        : widget.peer.localId;
-    return 'Zync #$prefix';
-  }
+  String get _peerName => ZyncAlias.displayName(
+        nickname: widget.peer.nickname,
+        localId: widget.peer.localId,
+        locale: Localizations.localeOf(context).toLanguageTag(),
+      );
 
   ZyncConnection? get _currentConnection =>
       _revealedIndex >= 0 && _revealedIndex < _connections.length
