@@ -88,7 +88,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 800));
     await tester.pumpAndSettle();
 
-    expect(find.text('YOU ZYNC!'), findsOneWidget);
+    expect(find.text('You found 3 hidden connections.'), findsOneWidget);
+    expect(find.byKey(const ValueKey('zync-reveal-first')), findsOneWidget);
     expect(find.text('Scanner'), findsOneWidget);
     expect(relay.consumedSessionId, handshake.sessionId);
     expect(relay.consumedHostToken, relay.createdHostToken);
