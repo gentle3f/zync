@@ -315,15 +315,38 @@ void main() {
         SelectedInterest(id: 'travel.japan', strength: InterestStrength.love),
       ],
     );
-    const mine = [
-      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.love),
-      SelectedInterest(id: 'photography.street', strength: InterestStrength.love),
-    ];
-    const theirs = [
-      SelectedInterest(id: 'sports.badminton', strength: InterestStrength.like),
-      SelectedInterest(id: 'travel.japan', strength: InterestStrength.love),
-    ];
-    final match = MatchingService.compare(mine, theirs, sessionSeed: 'keep-discovering-session');
+    const match = MatchResult(
+      shared: [
+        SelectedInterest(
+          id: 'sports.badminton',
+          strength: InterestStrength.like,
+        ),
+      ],
+      onlyMine: [
+        SelectedInterest(
+          id: 'photography.street',
+          strength: InterestStrength.love,
+        ),
+      ],
+      onlyTheirs: [
+        SelectedInterest(
+          id: 'travel.japan',
+          strength: InterestStrength.love,
+        ),
+      ],
+      sharedDetails: [
+        SharedInterestDetail(
+          mine: SelectedInterest(
+            id: 'sports.badminton',
+            strength: InterestStrength.love,
+          ),
+          theirs: SelectedInterest(
+            id: 'sports.badminton',
+            strength: InterestStrength.like,
+          ),
+        ),
+      ],
+    );
 
     await tester.pumpWidget(
       _harness(
