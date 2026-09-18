@@ -126,10 +126,6 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         before: historyBefore,
         after: await LocalStore.loadHistory(),
       ).toList(growable: false);
-      final newAchievementIds = AchievementService.newlyUnlocked(
-        before: historyBefore,
-        after: await LocalStore.loadHistory(),
-      ).toList(growable: false);
       _pendingHandshakeRaw = null;
       _pendingEncryptedResponse = null;
 
@@ -228,6 +224,10 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         peerInterests: peer.interests,
         peerSocialLinks: peer.socialLinks,
       );
+      final newAchievementIds = AchievementService.newlyUnlocked(
+        before: historyBefore,
+        after: await LocalStore.loadHistory(),
+      ).toList(growable: false);
 
       final analytics = <Future<void>>[
         ZyncAnalytics.instance.track(
