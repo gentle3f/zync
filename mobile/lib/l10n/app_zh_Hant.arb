@@ -166,5 +166,14 @@
     }
   },
   "finishZync": "完成今次 Zync",
-  "findingQuestion": "諗緊一條值得傾嘅問題…"
+  "findingQuestion": "諗緊一條值得傾嘅問題…",
+  "keepDiscovering": "繼續發現",
+  "sharedOnlyStart": "共同興趣只係開始。再發現一啲你原本唔知道對方嘅事。",
+  "askAboutThem": "問下對方",
+  "letThemAskYou": "畀對方問你",
+  "surpriseUs": "畀我哋一個驚喜",
+  "finishAndRecap": "完成並睇回顧",
+  "backToIdeas": "返去其他話題",
+  "theirInterest": "對方其中一個興趣",
+  "yourInterest": "你其中一個興趣"
 }
