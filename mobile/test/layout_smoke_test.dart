@@ -344,10 +344,9 @@ void main() {
     expect(find.text('Ask about them'), findsOneWidget);
     expect(find.text('Japan Travel'), findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.text('Let them ask you'),
-      260,
-      scrollable: find.byType(Scrollable).last,
+    await tester.drag(
+      find.byType(ListView).last,
+      const Offset(0, -420),
     );
     await tester.pumpAndSettle();
 
