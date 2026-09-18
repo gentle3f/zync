@@ -152,6 +152,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
             match: match,
             newMatchCount: previous == null ? 0 : newCount,
             sessionSeed: handshake.sessionId,
+            previousSharedIds: previousIds,
+            localIsMatchMine: false,
           ),
         ),
       );
@@ -236,7 +238,13 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       if (!mounted) return;
       await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => MatchScreen(peer: peer, match: match, newMatchCount: previous == null ? 0 : newCount),
+          builder: (_) => MatchScreen(
+            peer: peer,
+            match: match,
+            newMatchCount: previous == null ? 0 : newCount,
+            previousSharedIds: previousIds,
+            localIsMatchMine: true,
+          ),
         ),
       );
     } catch (_) {
