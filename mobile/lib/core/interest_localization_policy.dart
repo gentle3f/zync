@@ -18,7 +18,6 @@ class InterestLocalizationPolicy {
   /// enforce the translations permanently.
   static const Set<String> migrationBacklogClusters = {
     'music/styles',
-    'books/subgenres',
   };
 
   static const Set<String> _properNameClusters = {
