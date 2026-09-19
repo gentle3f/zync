@@ -79,7 +79,7 @@ export async function ensureAccountForIdentity(db, rawInput) {
     );
 
     const existing = await tx.query(
-      `SELECT a.id, a.status, a.created_at
+      `SELECT a.id, a.status, a.created_at, l.unlinked_at
          FROM zync_identity_links l
          JOIN zync_accounts a ON a.id = l.account_id
         WHERE l.provider = $1 AND l.provider_subject = $2
@@ -88,6 +88,9 @@ export async function ensureAccountForIdentity(db, rawInput) {
     );
 
     if (existing.length > 0) {
+      if (existing[0].unlinked_at != null) {
+        throw domainError('cardverse_identity_unlinked');
+      }
       return {
         created: false,
         account: {
@@ -153,7 +156,7 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
     }
 
     const providerOwner = await tx.query(
-      `SELECT account_id
+      `SELECT account_id, unlinked_at
          FROM zync_identity_links
         WHERE provider = $1 AND provider_subject = $2
         FOR UPDATE`,
@@ -164,7 +167,7 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
     }
 
     const accountProvider = await tx.query(
-      `SELECT provider_subject
+      `SELECT id, provider_subject, unlinked_at
          FROM zync_identity_links
         WHERE account_id = $1 AND provider = $2
         FOR UPDATE`,
@@ -177,16 +180,35 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
       throw domainError('cardverse_provider_already_linked');
     }
 
+    if (accountProvider.length > 0) {
+      await tx.query(
+        `UPDATE zync_identity_links
+            SET provider_email = $4,
+                email_verified = $5,
+                last_verified_at = now(),
+                unlinked_at = NULL
+          WHERE id = $1 AND account_id = $2 AND provider = $3`,
+        [
+          accountProvider[0].id,
+          accountId,
+          input.provider,
+          input.providerEmail,
+          input.emailVerified,
+        ],
+      );
+      return {
+        accountId,
+        provider: input.provider,
+        linked: true,
+        restored: accountProvider[0].unlinked_at != null,
+      };
+    }
+
     await tx.query(
       `INSERT INTO zync_identity_links (
          account_id, provider, provider_subject, provider_email,
          email_verified, last_verified_at
-       ) VALUES ($1, $2, $3, $4, $5, now())
-       ON CONFLICT (provider, provider_subject)
-       DO UPDATE SET
-         provider_email = EXCLUDED.provider_email,
-         email_verified = EXCLUDED.email_verified,
-         last_verified_at = now()`,
+       ) VALUES ($1, $2, $3, $4, $5, now())`,
       [
         accountId,
         input.provider,
@@ -196,7 +218,7 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
       ],
     );
 
-    return { accountId, provider: input.provider, linked: true };
+    return { accountId, provider: input.provider, linked: true, restored: false };
   });
 }
 
