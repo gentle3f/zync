@@ -326,7 +326,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(99),
                           child: LinearProgressIndicator(
-                            value: (_selected.length / 5).clamp(0.0, 1.0),
+                            value: (_selected.length / 5).clamp(0.0, 1.0).toDouble(),
                             minHeight: 7,
                             backgroundColor: const Color(0xFFEDEAF3),
                           ),
