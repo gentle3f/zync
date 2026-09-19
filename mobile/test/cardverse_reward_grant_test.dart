@@ -2,31 +2,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/cardverse_reward_grant.dart';
 import 'package:zync/core/quest_engine.dart';
 
-const eligibility = ZyncQuestRewardEligibility(
-  key: 'weekly_real_world_three:2026-09-14T16:00:00.000Z',
-  questId: 'weekly_real_world_three',
-  cycleStart: DateTime.fromMillisecondsSinceEpoch(
-    1789401600000,
-    isUtc: true,
-  ),
-  reward: ZyncQuestRewardPreview(
-    kind: ZyncQuestRewardKind.standardPack,
-    amount: 1,
-  ),
-  proofEventIds: ['event-1', 'event-2', 'event-3'],
-);
+ZyncQuestRewardEligibility eligibility() =>
+    ZyncQuestRewardEligibility(
+      key: 'weekly_real_world_three:2026-09-14T16:00:00.000Z',
+      questId: 'weekly_real_world_three',
+      cycleStart: DateTime.utc(2026, 9, 14, 16),
+      reward: const ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.standardPack,
+        amount: 1,
+      ),
+      proofEventIds: const ['event-1', 'event-2', 'event-3'],
+    );
 
 void main() {
   test('quest claim carries proof but never chooses reward output', () {
     final request = CardverseQuestRewardClaimRequest.fromEligibility(
-      eligibility: eligibility,
+      eligibility: eligibility(),
       idempotencyKey: 'claim-attempt-1',
     );
     final json = request.toJson();
 
-    expect(json['eligibilityKey'], eligibility.key);
-    expect(json['questId'], eligibility.questId);
-    expect(json['proofEventIds'], eligibility.proofEventIds);
+    expect(json['eligibilityKey'], eligibility().key);
+    expect(json['questId'], eligibility().questId);
+    expect(json['proofEventIds'], eligibility().proofEventIds);
     expect(json.containsKey('rewardKind'), isFalse);
     expect(json.containsKey('amount'), isFalse);
     expect(json.containsKey('packIds'), isFalse);
@@ -44,7 +42,7 @@ void main() {
       expect(
         () => CardverseQuestRewardClaimRequest.fromJson({
           ...CardverseQuestRewardClaimRequest.fromEligibility(
-            eligibility: eligibility,
+            eligibility: eligibility(),
             idempotencyKey: 'claim-attempt-1',
           ).toJson(),
           forbidden: 'client-choice',
@@ -59,8 +57,8 @@ void main() {
       () {
     final receipt = CardverseRewardGrantReceipt.serverValidated(
       grantId: 'grant-1',
-      eligibilityKey: eligibility.key,
-      questId: eligibility.questId,
+      eligibilityKey: eligibility().key,
+      questId: eligibility().questId,
       idempotencyKey: 'claim-attempt-1',
       kind: CardverseRewardGrantKind.standardPack,
       amount: 1,
@@ -71,15 +69,15 @@ void main() {
 
     expect(receipt.serverAuthoritative, isTrue);
     expect(receipt.unopenedPackIds, ['pack-server-1']);
-    expect(receipt.matchesEligibility(eligibility), isTrue);
+    expect(receipt.matchesEligibility(eligibility()), isTrue);
   });
 
   test('pack grant quantity must equal server-issued pack IDs', () {
     expect(
       () => CardverseRewardGrantReceipt.serverValidated(
         grantId: 'grant-bad',
-        eligibilityKey: eligibility.key,
-        questId: eligibility.questId,
+        eligibilityKey: eligibility().key,
+        questId: eligibility().questId,
         idempotencyKey: 'claim-attempt-1',
         kind: CardverseRewardGrantKind.standardPack,
         amount: 2,
@@ -111,8 +109,8 @@ void main() {
   test('mismatched server reward does not match local eligibility', () {
     final receipt = CardverseRewardGrantReceipt.serverValidated(
       grantId: 'grant-wrong',
-      eligibilityKey: eligibility.key,
-      questId: eligibility.questId,
+      eligibilityKey: eligibility().key,
+      questId: eligibility().questId,
       idempotencyKey: 'claim-attempt-1',
       kind: CardverseRewardGrantKind.discoveryPack,
       amount: 1,
@@ -121,15 +119,15 @@ void main() {
       unopenedPackIds: const ['pack-server-2'],
     );
 
-    expect(receipt.matchesEligibility(eligibility), isFalse);
+    expect(receipt.matchesEligibility(eligibility()), isFalse);
   });
 
   test('duplicate unopened pack IDs are rejected', () {
     expect(
       () => CardverseRewardGrantReceipt.serverValidated(
         grantId: 'grant-dup',
-        eligibilityKey: eligibility.key,
-        questId: eligibility.questId,
+        eligibilityKey: eligibility().key,
+        questId: eligibility().questId,
         idempotencyKey: 'claim-attempt-1',
         kind: CardverseRewardGrantKind.standardPack,
         amount: 2,
