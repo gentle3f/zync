@@ -5,6 +5,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-
 const SESSION_TOKEN = /^[A-Za-z0-9_-]{32,128}$/;
 const DEFAULT_CHALLENGE_MINUTES = 10;
 const DEFAULT_SESSION_DAYS = 30;
+const DEFAULT_MAX_ACTIVE_SESSIONS = 8;
 
 function domainError(code) {
   const error = new Error(code);
@@ -111,6 +112,28 @@ export async function createAccountSession(db, accountIdValue, options = {}) {
   const row = rows[0];
   if (!row?.session_id) throw domainError('cardverse_session_create_failed');
 
+  const maxActiveSessions = positiveInteger(
+    options.maxActiveSessions ?? process.env.CARDVERSE_MAX_ACTIVE_SESSIONS,
+    DEFAULT_MAX_ACTIVE_SESSIONS,
+    32,
+  );
+  await db.query(
+    `UPDATE zync_account_sessions
+        SET revoked_at = COALESCE(revoked_at, now())
+      WHERE account_id = $1
+        AND revoked_at IS NULL
+        AND session_id NOT IN (
+          SELECT session_id
+            FROM zync_account_sessions
+           WHERE account_id = $1
+             AND revoked_at IS NULL
+             AND expires_at > now()
+           ORDER BY created_at DESC, session_id DESC
+           LIMIT $2
+        )`,
+    [accountId, maxActiveSessions],
+  );
+
   return {
     sessionId: row.session_id,
     accountId,
@@ -168,4 +191,17 @@ export async function revokeAccountSession(db, tokenValue) {
     [sha256(token)],
   );
   return { revoked: true };
+}
+
+export async function revokeAllAccountSessions(db, accountIdValue) {
+  if (!db || typeof db.query !== 'function') throw domainError('cardverse_database_invalid');
+  const accountId = cleanUuid(accountIdValue, 'cardverse_account_id_invalid');
+  const rows = await db.query(
+    `UPDATE zync_account_sessions
+        SET revoked_at = COALESCE(revoked_at, now())
+      WHERE account_id = $1 AND revoked_at IS NULL
+      RETURNING session_id`,
+    [accountId],
+  );
+  return { revoked: rows.length };
 }
