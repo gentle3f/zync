@@ -68,20 +68,40 @@ class ZyncCardPreview extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _EditionSeal(
-                          label: editionLabel,
-                          foreground: palette.ink,
-                          background: Colors.white.withValues(alpha: 0.78),
-                        ),
-                        const Spacer(),
-                        if (cardNumberLabel != null)
-                          Text(
-                            cardNumberLabel!,
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: palette.ink.withValues(alpha: 0.72),
-                                  fontWeight: FontWeight.w700,
-                                ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: _EditionSeal(
+                                label: editionLabel,
+                                foreground: palette.ink,
+                                background:
+                                    Colors.white.withValues(alpha: 0.78),
+                              ),
+                            ),
                           ),
+                        ),
+                        if (cardNumberLabel != null) ...[
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              cardNumberLabel!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.right,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(
+                                    color:
+                                        palette.ink.withValues(alpha: 0.72),
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                     const Spacer(),
