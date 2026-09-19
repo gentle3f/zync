@@ -61,11 +61,16 @@ void main() {
       findsOneWidget,
     );
 
+    await tester.drag(
+      find.byKey(const ValueKey('collection-filter-strip')),
+      const Offset(-320, 0),
+    );
+    await tester.pumpAndSettle();
+
     final wantToTryFilter = find.byKey(
       const ValueKey('collection-filter-wantToTry'),
     );
-    await tester.ensureVisible(wantToTryFilter);
-    await tester.pump();
+    expect(wantToTryFilter, findsOneWidget);
     await tester.tap(wantToTryFilter);
     await tester.pumpAndSettle();
 
