@@ -162,6 +162,28 @@ class LocalizedDomainText {
     };
   }
 
+  static String hiddenRemaining(int count, String locale) => _pick(locale, {
+        'en': count == 1 ? '1 hidden connection left' : '$count hidden connections left',
+        'zh-Hant':'仲有 $count 個隱藏連結',
+        'zh-Hans':'还有 $count 个隐藏连接',
+        'ja':'隠れたつながりがあと $count 個',
+        'ko':'숨겨진 연결 $count개 남음',
+        'es': count == 1 ? 'Queda 1 conexión oculta' : 'Quedan $count conexiones ocultas',
+        'fr': count == 1 ? '1 connexion cachée restante' : '$count connexions cachées restantes',
+        'pt': count == 1 ? 'Falta 1 ligação escondida' : 'Faltam $count ligações escondidas',
+      });
+
+  static String allHiddenRevealed(String locale) => _pick(locale, {
+        'en':'All hidden connections revealed',
+        'zh-Hant':'所有隱藏連結已揭曉',
+        'zh-Hans':'所有隐藏连接已揭晓',
+        'ja':'隠れたつながりをすべて発見',
+        'ko':'숨겨진 연결을 모두 발견했어요',
+        'es':'Todas las conexiones ocultas reveladas',
+        'fr':'Toutes les connexions cachées ont été révélées',
+        'pt':'Todas as ligações escondidas foram reveladas',
+      });
+
   static String interactionLabel(String type, String locale) {
     final values = switch (type) {
       'pick' => {
