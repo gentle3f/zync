@@ -3,7 +3,6 @@ import 'package:zync/core/group_discovery_service.dart';
 import 'package:zync/core/group_relay_service.dart';
 import 'package:zync/core/group_zync_coordinator.dart';
 import 'package:zync/core/group_zync_protocol.dart';
-import 'package:zync/core/group_zync_session.dart';
 import 'package:zync/core/models.dart';
 import 'package:zync/core/zync_now_engine.dart';
 
