@@ -431,9 +431,21 @@ class _CardScenePainter extends CustomPainter {
         _drawCrafts(canvas, size, seed);
       case 'wellness':
         _drawWellness(canvas, size, seed);
+      case 'travel':
+        _drawTravel(canvas, size, seed);
+      case 'technology':
+        _drawTechnology(canvas, size, seed);
+      case 'nature':
+        _drawNature(canvas, size, seed);
+      case 'motorsport':
+        _drawMotorsport(canvas, size, seed);
+      case 'collecting':
+        _drawCollecting(canvas, size, seed);
       default:
         _drawAbstract(canvas, size, seed);
     }
+
+    _drawSceneGrammarAccent(canvas, size, seed);
   }
 
   void _drawPattern(Canvas canvas, Size size, int seed) {
@@ -814,6 +826,641 @@ class _CardScenePainter extends CustomPainter {
     );
   }
 
+  void _drawTravel(Canvas canvas, Size size, int seed) {
+    final route = Paint()
+      ..color = Colors.white.withValues(alpha: 0.78)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.022
+      ..strokeCap = StrokeCap.round;
+
+    final path = Path()
+      ..moveTo(size.width * 0.16, size.height * 0.56)
+      ..cubicTo(
+        size.width * 0.30,
+        size.height * 0.30,
+        size.width * 0.52,
+        size.height * 0.62,
+        size.width * 0.76,
+        size.height * 0.28,
+      )
+      ..cubicTo(
+        size.width * 0.83,
+        size.height * 0.20,
+        size.width * 0.87,
+        size.height * 0.24,
+        size.width * 0.90,
+        size.height * 0.17,
+      );
+    canvas.drawPath(path, route);
+
+    final point = Paint()..color = palette.accent.withValues(alpha: 0.92);
+    for (final offset in [
+      Offset(size.width * 0.18, size.height * 0.55),
+      Offset(size.width * 0.48, size.height * 0.46),
+      Offset(size.width * 0.78, size.height * 0.27),
+    ]) {
+      canvas.drawCircle(offset, size.width * 0.045, point);
+      canvas.drawCircle(
+        offset,
+        size.width * 0.018,
+        Paint()..color = Colors.white.withValues(alpha: 0.90),
+      );
+    }
+
+    final stamp = Paint()
+      ..color = Colors.white.withValues(alpha: 0.30)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.015;
+    canvas.drawCircle(
+      Offset(size.width * 0.33, size.height * 0.27),
+      size.width * 0.13,
+      stamp,
+    );
+  }
+
+  void _drawTechnology(Canvas canvas, Size size, int seed) {
+    final nodePaint = Paint()..color = Colors.white.withValues(alpha: 0.78);
+    final linkPaint = Paint()
+      ..color = palette.accent.withValues(alpha: 0.54)
+      ..strokeWidth = size.width * 0.016;
+
+    final nodes = <Offset>[
+      Offset(size.width * 0.20, size.height * 0.28),
+      Offset(size.width * 0.43, size.height * 0.20),
+      Offset(size.width * 0.72, size.height * 0.30),
+      Offset(size.width * 0.31, size.height * 0.50),
+      Offset(size.width * 0.62, size.height * 0.53),
+    ];
+    for (var i = 0; i < nodes.length - 1; i++) {
+      canvas.drawLine(nodes[i], nodes[i + 1], linkPaint);
+    }
+    canvas.drawLine(nodes[1], nodes[4], linkPaint);
+    canvas.drawLine(nodes[0], nodes[3], linkPaint);
+
+    for (var i = 0; i < nodes.length; i++) {
+      canvas.drawCircle(
+        nodes[i],
+        size.width * (i == 1 ? 0.055 : 0.035),
+        nodePaint,
+      );
+    }
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          size.width * 0.20,
+          size.height * 0.60,
+          size.width * 0.60,
+          size.height * 0.08,
+        ),
+        Radius.circular(size.width * 0.035),
+      ),
+      Paint()..color = palette.ink.withValues(alpha: 0.18),
+    );
+  }
+
+  void _drawNature(Canvas canvas, Size size, int seed) {
+    final horizon = Paint()
+      ..color = palette.ink.withValues(alpha: 0.20)
+      ..style = PaintingStyle.fill;
+    final path = Path()
+      ..moveTo(0, size.height * 0.58)
+      ..quadraticBezierTo(
+        size.width * 0.22,
+        size.height * 0.42,
+        size.width * 0.46,
+        size.height * 0.57,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.72,
+        size.height * 0.38,
+        size.width,
+        size.height * 0.55,
+      )
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+    canvas.drawPath(path, horizon);
+
+    final organic = Paint()
+      ..color = Colors.white.withValues(alpha: 0.56)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.018
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 4; i++) {
+      final x = size.width * (0.24 + i * 0.16);
+      canvas.drawArc(
+        Rect.fromCenter(
+          center: Offset(x, size.height * (0.34 + (i % 2) * 0.05)),
+          width: size.width * 0.18,
+          height: size.width * 0.12,
+        ),
+        math.pi * 0.12,
+        math.pi * 0.82,
+        false,
+        organic,
+      );
+    }
+  }
+
+  void _drawMotorsport(Canvas canvas, Size size, int seed) {
+    final track = Paint()
+      ..color = Colors.white.withValues(alpha: 0.72)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.055
+      ..strokeCap = StrokeCap.round;
+
+    final path = Path()
+      ..moveTo(size.width * 0.12, size.height * 0.52)
+      ..cubicTo(
+        size.width * 0.30,
+        size.height * 0.20,
+        size.width * 0.56,
+        size.height * 0.62,
+        size.width * 0.84,
+        size.height * 0.30,
+      );
+    canvas.drawPath(path, track);
+
+    final speed = Paint()
+      ..color = palette.accent.withValues(alpha: 0.78)
+      ..strokeWidth = size.width * 0.018;
+    for (var i = 0; i < 4; i++) {
+      final y = size.height * (0.21 + i * 0.08);
+      canvas.drawLine(
+        Offset(size.width * 0.18, y),
+        Offset(size.width * (0.40 + i * 0.08), y),
+        speed,
+      );
+    }
+  }
+
+  void _drawCollecting(Canvas canvas, Size size, int seed) {
+    final frame = Paint()
+      ..color = Colors.white.withValues(alpha: 0.55)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.014;
+
+    for (var row = 0; row < 2; row++) {
+      for (var col = 0; col < 3; col++) {
+        final rect = Rect.fromLTWH(
+          size.width * (0.16 + col * 0.23),
+          size.height * (0.20 + row * 0.19),
+          size.width * 0.17,
+          size.height * 0.13,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            rect,
+            Radius.circular(size.width * 0.025),
+          ),
+          frame,
+        );
+      }
+    }
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          size.width * 0.31,
+          size.height * 0.23,
+          size.width * 0.38,
+          size.height * 0.30,
+        ),
+        Radius.circular(size.width * 0.05),
+      ),
+      Paint()..color = palette.accent.withValues(alpha: 0.38),
+    );
+  }
+
+  void _drawSceneGrammarAccent(Canvas canvas, Size size, int seed) {
+    switch (recipe.sceneGrammar) {
+      case 'campfire_horizon':
+        _drawCampfireAccent(canvas, size);
+      case 'night_sky_orbit':
+        _drawNightSkyAccent(canvas, size, seed);
+      case 'wildlife_observation':
+        _drawWildlifeAccent(canvas, size);
+      case 'travel_destination_layers':
+        _drawDestinationAccent(canvas, size);
+      case 'travel_road_ribbon':
+        _drawRoadtripAccent(canvas, size);
+      case 'travel_food_stamp':
+        _drawFoodStampAccent(canvas, size);
+      case 'technology_code_grid':
+        _drawCodeAccent(canvas, size);
+      case 'technology_mechanical_nodes':
+        _drawRoboticsAccent(canvas, size);
+      case 'technology_hardware_grid':
+        _drawKeyboardAccent(canvas, size);
+      case 'wellness_energy_rings':
+        _drawFitnessAccent(canvas, size);
+      case 'arts_layered_canvas':
+        _drawVisualArtAccent(canvas, size);
+      case 'arts_ceramic_form':
+        _drawCeramicsAccent(canvas, size);
+      case 'food_plate_stamp':
+        _drawCuisineAccent(canvas, size);
+      case 'music_keys':
+        _drawPianoAccent(canvas, size);
+      case 'music_stage_lights':
+        _drawLiveMusicAccent(canvas, size);
+      case 'gaming_board_grid':
+        _drawTabletopAccent(canvas, size);
+      case 'gaming_strategy_nodes':
+        _drawStrategyAccent(canvas, size);
+      case 'learning_language_cards':
+        _drawLanguageAccent(canvas, size);
+      case 'learning_timeline':
+        _drawTimelineAccent(canvas, size);
+      case 'crafts_thread_weave':
+        _drawTextileAccent(canvas, size);
+    }
+  }
+
+  void _drawCampfireAccent(Canvas canvas, Size size) {
+    final fire = Path()
+      ..moveTo(size.width * 0.50, size.height * 0.25)
+      ..quadraticBezierTo(
+        size.width * 0.40,
+        size.height * 0.40,
+        size.width * 0.50,
+        size.height * 0.48,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.64,
+        size.height * 0.37,
+        size.width * 0.56,
+        size.height * 0.29,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.53,
+        size.height * 0.25,
+        size.width * 0.50,
+        size.height * 0.25,
+      );
+    canvas.drawPath(
+      fire,
+      Paint()..color = palette.accent.withValues(alpha: 0.82),
+    );
+  }
+
+  void _drawNightSkyAccent(Canvas canvas, Size size, int seed) {
+    final star = Paint()..color = Colors.white.withValues(alpha: 0.88);
+    for (var i = 0; i < 11; i++) {
+      final x = size.width * (0.12 + ((seed + i * 31) % 76) / 100);
+      final y = size.height * (0.12 + ((seed + i * 47) % 34) / 100);
+      canvas.drawCircle(
+        Offset(x, y),
+        size.width * (0.006 + (i % 3) * 0.004),
+        star,
+      );
+    }
+    canvas.drawCircle(
+      Offset(size.width * 0.68, size.height * 0.25),
+      size.width * 0.10,
+      Paint()..color = palette.accent.withValues(alpha: 0.55),
+    );
+  }
+
+  void _drawWildlifeAccent(Canvas canvas, Size size) {
+    final scope = Paint()
+      ..color = Colors.white.withValues(alpha: 0.72)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.018;
+    canvas.drawCircle(
+      Offset(size.width * 0.55, size.height * 0.31),
+      size.width * 0.13,
+      scope,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.55, size.height * 0.18),
+      Offset(size.width * 0.55, size.height * 0.44),
+      scope,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.42, size.height * 0.31),
+      Offset(size.width * 0.68, size.height * 0.31),
+      scope,
+    );
+  }
+
+  void _drawDestinationAccent(Canvas canvas, Size size) {
+    final mountain = Path()
+      ..moveTo(size.width * 0.28, size.height * 0.46)
+      ..lineTo(size.width * 0.50, size.height * 0.20)
+      ..lineTo(size.width * 0.72, size.height * 0.46)
+      ..close();
+    canvas.drawPath(
+      mountain,
+      Paint()..color = Colors.white.withValues(alpha: 0.38),
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.70, size.height * 0.22),
+      size.width * 0.055,
+      Paint()..color = palette.accent.withValues(alpha: 0.82),
+    );
+  }
+
+  void _drawRoadtripAccent(Canvas canvas, Size size) {
+    final road = Paint()
+      ..color = palette.ink.withValues(alpha: 0.24)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.09
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(size.width * 0.24, size.height * 0.60),
+      Offset(size.width * 0.74, size.height * 0.20),
+      road,
+    );
+    final dash = Paint()
+      ..color = Colors.white.withValues(alpha: 0.74)
+      ..strokeWidth = size.width * 0.012;
+    for (var i = 0; i < 4; i++) {
+      final t = 0.16 + i * 0.20;
+      final x = size.width * (0.24 + 0.50 * t);
+      final y = size.height * (0.60 - 0.40 * t);
+      canvas.drawCircle(Offset(x, y), size.width * 0.012, dash);
+    }
+  }
+
+  void _drawFoodStampAccent(Canvas canvas, Size size) {
+    final plate = Paint()
+      ..color = Colors.white.withValues(alpha: 0.52)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.025;
+    canvas.drawCircle(
+      Offset(size.width * 0.66, size.height * 0.36),
+      size.width * 0.12,
+      plate,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.48, size.height * 0.25),
+      Offset(size.width * 0.48, size.height * 0.50),
+      plate,
+    );
+  }
+
+  void _drawCodeAccent(Canvas canvas, Size size) {
+    final code = Paint()
+      ..color = Colors.white.withValues(alpha: 0.72)
+      ..strokeWidth = size.width * 0.018
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 5; i++) {
+      final y = size.height * (0.23 + i * 0.07);
+      final start = size.width * (0.22 + (i % 2) * 0.06);
+      canvas.drawLine(
+        Offset(start, y),
+        Offset(size.width * (0.64 + (i % 3) * 0.06), y),
+        code,
+      );
+    }
+  }
+
+  void _drawRoboticsAccent(Canvas canvas, Size size) {
+    final gear = Paint()
+      ..color = palette.accent.withValues(alpha: 0.72)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.035;
+    canvas.drawCircle(
+      Offset(size.width * 0.60, size.height * 0.34),
+      size.width * 0.11,
+      gear,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.40, size.height * 0.45),
+      size.width * 0.075,
+      gear,
+    );
+  }
+
+  void _drawKeyboardAccent(Canvas canvas, Size size) {
+    final keyPaint = Paint()..color = Colors.white.withValues(alpha: 0.58);
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 5; col++) {
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(
+              size.width * (0.22 + col * 0.105),
+              size.height * (0.24 + row * 0.075),
+              size.width * 0.075,
+              size.height * 0.050,
+            ),
+            Radius.circular(size.width * 0.012),
+          ),
+          keyPaint,
+        );
+      }
+    }
+  }
+
+  void _drawFitnessAccent(Canvas canvas, Size size) {
+    final ring = Paint()
+      ..color = palette.accent.withValues(alpha: 0.70)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.030;
+    final center = Offset(size.width * 0.50, size.height * 0.35);
+    for (var i = 0; i < 3; i++) {
+      canvas.drawCircle(
+        center,
+        size.width * (0.09 + i * 0.07),
+        ring,
+      );
+    }
+  }
+
+  void _drawVisualArtAccent(Canvas canvas, Size size) {
+    final paint = Paint()..color = palette.accent.withValues(alpha: 0.58);
+    canvas.drawCircle(
+      Offset(size.width * 0.37, size.height * 0.31),
+      size.width * 0.10,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.58, size.height * 0.38),
+      size.width * 0.13,
+      Paint()..color = Colors.white.withValues(alpha: 0.38),
+    );
+  }
+
+  void _drawCeramicsAccent(Canvas canvas, Size size) {
+    final pot = Path()
+      ..moveTo(size.width * 0.38, size.height * 0.24)
+      ..quadraticBezierTo(
+        size.width * 0.32,
+        size.height * 0.44,
+        size.width * 0.43,
+        size.height * 0.53,
+      )
+      ..lineTo(size.width * 0.61, size.height * 0.53)
+      ..quadraticBezierTo(
+        size.width * 0.72,
+        size.height * 0.44,
+        size.width * 0.65,
+        size.height * 0.24,
+      )
+      ..close();
+    canvas.drawPath(
+      pot,
+      Paint()..color = Colors.white.withValues(alpha: 0.58),
+    );
+  }
+
+  void _drawCuisineAccent(Canvas canvas, Size size) {
+    final stamp = Paint()
+      ..color = palette.ink.withValues(alpha: 0.18)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.018;
+    canvas.drawCircle(
+      Offset(size.width * 0.28, size.height * 0.25),
+      size.width * 0.10,
+      stamp,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.28, size.height * 0.25),
+      size.width * 0.055,
+      stamp,
+    );
+  }
+
+  void _drawPianoAccent(Canvas canvas, Size size) {
+    final white = Paint()..color = Colors.white.withValues(alpha: 0.82);
+    final dark = Paint()..color = palette.ink.withValues(alpha: 0.58);
+    final startX = size.width * 0.18;
+    final keyW = size.width * 0.09;
+    for (var i = 0; i < 7; i++) {
+      canvas.drawRect(
+        Rect.fromLTWH(
+          startX + i * keyW,
+          size.height * 0.27,
+          keyW * 0.92,
+          size.height * 0.23,
+        ),
+        white,
+      );
+    }
+    for (final i in [0, 1, 3, 4, 5]) {
+      canvas.drawRect(
+        Rect.fromLTWH(
+          startX + (i + 0.68) * keyW,
+          size.height * 0.27,
+          keyW * 0.42,
+          size.height * 0.14,
+        ),
+        dark,
+      );
+    }
+  }
+
+  void _drawLiveMusicAccent(Canvas canvas, Size size) {
+    final light = Paint()
+      ..color = palette.accent.withValues(alpha: 0.42)
+      ..style = PaintingStyle.fill;
+    for (var i = 0; i < 3; i++) {
+      final x = size.width * (0.26 + i * 0.24);
+      final cone = Path()
+        ..moveTo(x, size.height * 0.16)
+        ..lineTo(x - size.width * 0.12, size.height * 0.55)
+        ..lineTo(x + size.width * 0.12, size.height * 0.55)
+        ..close();
+      canvas.drawPath(cone, light);
+    }
+  }
+
+  void _drawTabletopAccent(Canvas canvas, Size size) {
+    final tile = Paint()
+      ..color = Colors.white.withValues(alpha: 0.54)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.015;
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        canvas.drawRect(
+          Rect.fromLTWH(
+            size.width * (0.25 + col * 0.14),
+            size.height * (0.23 + row * 0.10),
+            size.width * 0.11,
+            size.width * 0.11,
+          ),
+          tile,
+        );
+      }
+    }
+  }
+
+  void _drawStrategyAccent(Canvas canvas, Size size) {
+    final link = Paint()
+      ..color = Colors.white.withValues(alpha: 0.48)
+      ..strokeWidth = size.width * 0.014;
+    final node = Paint()..color = palette.accent.withValues(alpha: 0.80);
+    final points = [
+      Offset(size.width * 0.30, size.height * 0.42),
+      Offset(size.width * 0.48, size.height * 0.25),
+      Offset(size.width * 0.68, size.height * 0.37),
+      Offset(size.width * 0.54, size.height * 0.52),
+    ];
+    for (var i = 0; i < points.length; i++) {
+      canvas.drawLine(points[i], points[(i + 1) % points.length], link);
+      canvas.drawCircle(points[i], size.width * 0.035, node);
+    }
+  }
+
+  void _drawLanguageAccent(Canvas canvas, Size size) {
+    final card = Paint()..color = Colors.white.withValues(alpha: 0.56);
+    for (var i = 0; i < 3; i++) {
+      canvas.save();
+      canvas.translate(size.width * (0.30 + i * 0.14), size.height * 0.34);
+      canvas.rotate((i - 1) * 0.12);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: size.width * 0.22,
+            height: size.height * 0.20,
+          ),
+          Radius.circular(size.width * 0.03),
+        ),
+        card,
+      );
+      canvas.restore();
+    }
+  }
+
+  void _drawTimelineAccent(Canvas canvas, Size size) {
+    final line = Paint()
+      ..color = Colors.white.withValues(alpha: 0.66)
+      ..strokeWidth = size.width * 0.018;
+    canvas.drawLine(
+      Offset(size.width * 0.22, size.height * 0.38),
+      Offset(size.width * 0.78, size.height * 0.38),
+      line,
+    );
+    for (var i = 0; i < 4; i++) {
+      final x = size.width * (0.24 + i * 0.17);
+      canvas.drawCircle(
+        Offset(x, size.height * 0.38),
+        size.width * 0.032,
+        Paint()..color = palette.accent.withValues(alpha: 0.88),
+      );
+    }
+  }
+
+  void _drawTextileAccent(Canvas canvas, Size size) {
+    final threadA = Paint()
+      ..color = Colors.white.withValues(alpha: 0.60)
+      ..strokeWidth = size.width * 0.015;
+    final threadB = Paint()
+      ..color = palette.accent.withValues(alpha: 0.58)
+      ..strokeWidth = size.width * 0.015;
+    for (var i = 0; i < 7; i++) {
+      final x = size.width * (0.20 + i * 0.09);
+      canvas.drawLine(
+        Offset(x, size.height * 0.22),
+        Offset(x + size.width * 0.18, size.height * 0.52),
+        i.isEven ? threadA : threadB,
+      );
+    }
+  }
+
   void _drawAbstract(Canvas canvas, Size size, int seed) {
     final paint = Paint()..color = palette.accent.withValues(alpha: 0.55);
     canvas.drawCircle(
@@ -946,6 +1593,46 @@ class _CardPalette {
         secondary: Color(0xFF8EB7A1),
         accent: Color(0xFFF2D7A2),
         ink: Color(0xFF243937),
+      ),
+    ],
+    'travel': [
+      _CardPalette(
+        background: Color(0xFF2E6171),
+        secondary: Color(0xFF6F9D8B),
+        accent: Color(0xFFF3C66B),
+        ink: Color(0xFF193640),
+      ),
+    ],
+    'technology': [
+      _CardPalette(
+        background: Color(0xFF233C63),
+        secondary: Color(0xFF466AA1),
+        accent: Color(0xFF72E0CF),
+        ink: Color(0xFF14243B),
+      ),
+    ],
+    'nature': [
+      _CardPalette(
+        background: Color(0xFF2E594B),
+        secondary: Color(0xFF678A6A),
+        accent: Color(0xFFE9C779),
+        ink: Color(0xFF1A332A),
+      ),
+    ],
+    'motorsport': [
+      _CardPalette(
+        background: Color(0xFF3B3D49),
+        secondary: Color(0xFF8A3946),
+        accent: Color(0xFFF0C34C),
+        ink: Color(0xFF1F2027),
+      ),
+    ],
+    'collecting': [
+      _CardPalette(
+        background: Color(0xFF5A4267),
+        secondary: Color(0xFF8D6A88),
+        accent: Color(0xFFF2C879),
+        ink: Color(0xFF302438),
       ),
     ],
     'default': [
