@@ -37,6 +37,11 @@ String generateGroupParticipantId() =>
 String generateGroupParticipantCapability() =>
     _groupBase64UrlNoPad(_groupRandomBytes(24));
 
+enum SharedZyncRoomKind {
+  groupZync,
+  zyncNow,
+}
+
 class GroupRoomBootstrap {
   const GroupRoomBootstrap({
     required this.roomId,
@@ -45,6 +50,7 @@ class GroupRoomBootstrap {
     required this.secretBytes,
     required this.expiresAt,
     required this.maxParticipants,
+    this.kind = SharedZyncRoomKind.groupZync,
   });
 
   final String roomId;
@@ -53,9 +59,11 @@ class GroupRoomBootstrap {
   final List<int> secretBytes;
   final DateTime expiresAt;
   final int maxParticipants;
+  final SharedZyncRoomKind kind;
 
   factory GroupRoomBootstrap.generate({
     int maxParticipants = 8,
+    SharedZyncRoomKind kind = SharedZyncRoomKind.groupZync,
     DateTime? now,
   }) {
     if (maxParticipants < 2 || maxParticipants > 8) {
@@ -73,6 +81,7 @@ class GroupRoomBootstrap {
       secretBytes: _groupRandomBytes(32),
       expiresAt: current.add(groupZyncRoomLifetime),
       maxParticipants: maxParticipants,
+      kind: kind,
     );
   }
 
@@ -83,6 +92,7 @@ class GroupRoomBootstrap {
         secretBytes: secretBytes,
         expiresAt: expiresAt,
         maxParticipants: maxParticipants,
+        kind: kind,
       );
 }
 
@@ -94,6 +104,7 @@ class GroupJoinQrPayload {
     required this.secretBytes,
     required this.expiresAt,
     required this.maxParticipants,
+    this.kind = SharedZyncRoomKind.groupZync,
   });
 
   final int protocolVersion;
@@ -102,6 +113,7 @@ class GroupJoinQrPayload {
   final List<int> secretBytes;
   final DateTime expiresAt;
   final int maxParticipants;
+  final SharedZyncRoomKind kind;
 
   String encode() {
     final body = jsonEncode({
@@ -111,6 +123,7 @@ class GroupJoinQrPayload {
       'k': _groupBase64UrlNoPad(secretBytes),
       'exp': expiresAt.toUtc().millisecondsSinceEpoch,
       'max': maxParticipants,
+      'kind': kind == SharedZyncRoomKind.zyncNow ? 'n' : 'g',
     });
     final compressed = zlib.encode(utf8.encode(body));
     return '$_groupQrPrefix${_groupBase64UrlNoPad(compressed)}';
@@ -159,6 +172,12 @@ class GroupJoinQrPayload {
         throw const FormatException('Invalid shared Zync capacity');
       }
 
+      final kind = switch ((json['kind'] as String?) ?? 'g') {
+        'g' => SharedZyncRoomKind.groupZync,
+        'n' => SharedZyncRoomKind.zyncNow,
+        _ => throw const FormatException('Invalid shared Zync room kind'),
+      };
+
       final expiryMs = (json['exp'] as num?)?.toInt();
       if (expiryMs == null) {
         throw const FormatException('Invalid Group Zync expiry');
@@ -178,6 +197,7 @@ class GroupJoinQrPayload {
         secretBytes: secretBytes,
         expiresAt: expiresAt,
         maxParticipants: maxParticipants,
+        kind: kind,
       );
     } on FormatException {
       rethrow;
