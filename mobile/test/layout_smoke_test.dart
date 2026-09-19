@@ -93,6 +93,44 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('quick-start onboarding lets a new user stop at five interests', (tester) async {
+    _setPhone(tester, width: 390, height: 844);
+    const almostReady = LocalProfile(
+      localId: 'quick-start-user',
+      nickname: '',
+      language: 'en',
+      interests: [
+        SelectedInterest(id: 'sports.tennis', strength: InterestStrength.like),
+        SelectedInterest(id: 'travel.japan', strength: InterestStrength.like),
+        SelectedInterest(id: 'technology.ai', strength: InterestStrength.like),
+        SelectedInterest(id: 'food.sushi', strength: InterestStrength.like),
+      ],
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        InterestSetupScreen(profile: almostReady, onSaved: (_) async {}),
+        locale: const Locale('en'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pick 5 things that feel like you'), findsOneWidget);
+    expect(find.text('Quick picks'), findsOneWidget);
+
+    final search = find.byType(TextField).last;
+    await tester.enterText(search, 'Badminton');
+    await tester.pumpAndSettle();
+    expect(find.text('Badminton'), findsWidgets);
+
+    await tester.tap(find.text('Badminton').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ready to Zync'), findsOneWidget);
+    expect(find.text('You can add more interests anytime.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('social-link consent settings remain scroll-safe on a small phone', (tester) async {
     _setPhone(tester, width: 320, height: 620);
     const socialProfile = LocalProfile(
