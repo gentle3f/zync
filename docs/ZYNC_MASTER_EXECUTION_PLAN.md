@@ -124,10 +124,12 @@ AI chooses and fills mechanics; local structured fallback remains available.
 
 The basis of **Zync Now**.
 
+**Zync Now is group-native by architecture.** The engine must accept `N >= 2` participants from the beginning; a two-person session is simply the smallest group case, not a separate implementation.
+
 It converts:
 
 ```text
-participants
+participants[2..N]
 + interests
 + Want to Try
 + novelty preference
@@ -138,10 +140,12 @@ into:
 
 ```text
 three strong activity ideas
-→ consensus
+→ private / group consensus
 → chosen action
 → later outcome
 ```
+
+The same decision engine should serve ordinary two-person Zync, Group Zync, dinners, parties and later event contexts.
 
 ## 3.5 Reward / Progress Engine
 
@@ -344,9 +348,9 @@ It deliberately does **not** solve:
 
 ## C1. Entry points
 
-Initial entry points:
+Initial entry points must work for both pairs and groups.
 
-### Post-Zync
+### Post-Zync / Post-Group-Zync
 
 After a useful session:
 
@@ -372,7 +376,7 @@ No proactive person-specific suggestions before this consent model exists.
 
 ## C2. Modes
 
-Phase 1 should support:
+Phase 1 should support the same modes for `N >= 2` participants:
 
 - **Both Like It** — based on shared interests.
 - **One Knows, One Discovers** — one person teaches / introduces.
@@ -421,7 +425,7 @@ AI must not invent unavailable local venues in Phase 1.
 
 ## C5. Output
 
-Normally return **three** choices only:
+Normally return **three** choices only, whether there are two people or a group:
 
 - **Safe Pick**
 - **Discovery Pick**
@@ -431,7 +435,7 @@ Each must include a short explanation of why it fits the participants.
 
 ## C6. Consensus
 
-Support small decision mechanics:
+Consensus must be group-capable from the first engine design. Support small decision mechanics:
 
 - private vote;
 - eliminate one;
@@ -457,7 +461,7 @@ If yes:
 
 ### Zync Now Phase 1 exit gate
 
-Real users should be able to go from “we don't know what to do” to one agreed activity quickly without any venue database.
+A pair **or small group** should be able to go from “we don't know what to do” to one agreed activity quickly without any venue database.
 
 ---
 
@@ -1061,10 +1065,11 @@ Build:
 
 **Exit:** current two-person product is stronger and new systems have stable primitives.
 
-## Milestone 2 — Zync Now 1:1 MVP
+## Milestone 2 — Zync Now Decision Engine MVP
 
 Build:
 
+- group-native `N >= 2` decision model;
 - Post-Zync entry;
 - Home entry;
 - five activity modes;
@@ -1072,10 +1077,12 @@ Build:
 - local candidate engine;
 - AI creative composer;
 - 3-choice output;
-- consensus;
+- private / group consensus;
 - Tried Together memory.
 
-**Exit:** two people can reliably answer “what should we do?” without places / brands.
+The first UI may be validated with two people, but the engine and state model must already support multiple participants.
+
+**Exit:** the same engine can reliably answer “what should we do?” for a pair and is ready to be surfaced inside Group Zync without a rewrite.
 
 This is the first major new utility milestone worth a consolidated physical QA build.
 
@@ -1087,8 +1094,8 @@ Build:
 - 3–8 participant session protocol;
 - hidden cluster / only-one / ranking mechanics;
 - group interaction director;
-- Group Zync Now;
-- private consensus.
+- surface the **existing group-native Zync Now engine** inside Group Zync;
+- group-private consensus UI.
 
 **Exit:** a real dinner / party / orientation group can use Zync end-to-end.
 
