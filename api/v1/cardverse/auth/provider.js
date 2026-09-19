@@ -15,7 +15,10 @@ const UNAUTHORIZED = new Set([
 
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured' ||
-      error?.code === 'cardverse_provider_audience_not_configured') return 503;
+      error?.code === 'cardverse_provider_audience_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_unavailable') return 503;
+  if (error?.code === 'cardverse_rate_limited') return 429;
   if (UNAUTHORIZED.has(error?.code)) return 401;
   if (error?.code === 'cardverse_identity_provider_invalid' ||
       error?.code === 'cardverse_auth_challenge_id_invalid') return 400;
@@ -38,6 +41,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await enforceCardverseIpRateLimit(req, 'auth_provider_ip');
     const db = await getCardverseDatabase();
     const result = await authenticateProvider(db, {
       provider: body.provider,
@@ -52,6 +56,7 @@ export default async function handler(req, res) {
       provider: result.identity.provider,
     });
   } catch (error) {
+    applyCardverseAbuseHeaders(res, error);
     const status = statusFor(error);
     if (status >= 500) console.error('Cardverse provider auth failed', error?.code || error?.message);
     return res.status(status).json({ error: error?.code || 'cardverse_auth_failed' });
