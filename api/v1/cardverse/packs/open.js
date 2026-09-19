@@ -24,7 +24,9 @@ const BAD_REQUEST = new Set([
 
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured' ||
-      error?.code === 'cardverse_pack_policy_not_configured') return 503;
+      error?.code === 'cardverse_pack_policy_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_unavailable') return 503;
   if (error?.code === 'cardverse_rate_limited') return 429;
   if (error?.code === 'cardverse_session_missing' ||
       error?.code === 'cardverse_session_invalid') return 401;
@@ -48,6 +50,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await enforceCardverseIpRateLimit(req, 'pack_open_ip');
     const token = bearerTokenFromAuthorization(req.headers?.authorization);
     const db = await getCardverseDatabase();
     const session = await resolveAccountSession(db, token);
@@ -56,6 +59,7 @@ export default async function handler(req, res) {
     const receipt = await openPack(db, session.accountId, req.body, { rollPack });
     return res.status(200).json(receipt);
   } catch (error) {
+    applyCardverseAbuseHeaders(res, error);
     const status = statusFor(error);
     if (status >= 500) console.error('Cardverse pack open failed', error?.code || error?.message);
     return res.status(status).json({ error: error?.code || 'cardverse_pack_open_failed' });
