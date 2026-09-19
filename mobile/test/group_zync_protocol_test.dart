@@ -122,6 +122,44 @@ void main() {
     );
   });
 
+  test('private group input is encrypted and bound to participant plus round',
+      () async {
+    final now = DateTime.now().toUtc();
+    final room = GroupRoomBootstrap.generate(now: now);
+    const participantId = 'ABCDEFGHIJKLMNOPQRSTUVWX';
+    const input = GroupPrivateInput(
+      roundNumber: 2,
+      participantId: participantId,
+      answerIds: ['choice.b', 'rank.2'],
+    );
+
+    final encrypted = await GroupCrypto.encryptPrivateInput(
+      room: room.qr,
+      input: input,
+    );
+    expect(encrypted, isNot(contains('choice.b')));
+
+    final decoded = await GroupCrypto.decryptPrivateInput(
+      room: room,
+      participantId: participantId,
+      roundNumber: 2,
+      opaquePayload: encrypted,
+      now: now.add(const Duration(minutes: 1)),
+    );
+    expect(decoded.answerIds, ['choice.b', 'rank.2']);
+
+    await expectLater(
+      GroupCrypto.decryptPrivateInput(
+        room: room,
+        participantId: participantId,
+        roundNumber: 3,
+        opaquePayload: encrypted,
+        now: now.add(const Duration(minutes: 1)),
+      ),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
   test('bounded group state is encrypted and revision-bound', () async {
     final now = DateTime.now().toUtc();
     final room = GroupRoomBootstrap.generate(now: now);
