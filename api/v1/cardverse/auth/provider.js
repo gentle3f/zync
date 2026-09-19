@@ -15,7 +15,8 @@ function statusFor(error) {
   if (UNAUTHORIZED.has(error?.code)) return 401;
   if (error?.code === 'cardverse_identity_provider_invalid' ||
       error?.code === 'cardverse_auth_challenge_id_invalid') return 400;
-  if (error?.code === 'cardverse_account_not_active') return 403;
+  if (error?.code === 'cardverse_account_not_active' ||
+      error?.code === 'cardverse_identity_unlinked') return 403;
   return 500;
 }
 
