@@ -1,9 +1,16 @@
-import {\n  applyCardverseAbuseHeaders,\n  enforceCardverseIpRateLimit,\n} from '../../../_cardverse/abuse_guard.js';\nimport { cardverseApiEnabled, rejectDisabledCardverse } from '../../../_cardverse/runtime_gate.js';
+import {
+  applyCardverseAbuseHeaders,
+  enforceCardverseIpRateLimit,
+} from '../../../_cardverse/abuse_guard.js';
+import { cardverseApiEnabled, rejectDisabledCardverse } from '../../../_cardverse/runtime_gate.js';
 import { getCardverseDatabase } from '../../../_cardverse/db.js';
 import { createAuthChallenge } from '../../../_cardverse/session_store.js';
 
 function statusFor(error) {
-  if (error?.code === 'cardverse_database_not_configured' ||\n      error?.code === 'cardverse_abuse_guard_not_configured' ||\n      error?.code === 'cardverse_abuse_guard_unavailable') return 503;\n  if (error?.code === 'cardverse_rate_limited') return 429;
+  if (error?.code === 'cardverse_database_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_unavailable') return 503;
+  if (error?.code === 'cardverse_rate_limited') return 429;
   if (error?.code === 'cardverse_identity_provider_invalid') return 400;
   return 500;
 }
