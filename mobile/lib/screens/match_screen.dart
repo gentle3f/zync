@@ -1,0 +1,1552 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'achievement_screen.dart';
+
+import '../core/ai_service.dart';
+import '../core/analytics_service.dart';
+import '../core/interest_catalog.dart';
+import '../core/language_support.dart';
+import '../core/local_store.dart';
+import '../core/localized_domain_text.dart';
+import '../core/models.dart';
+import '../core/zync_alias.dart';
+import '../core/zync_session_service.dart';
+import '../l10n/generated/app_localizations.dart';
+import '../ui/zync_design.dart';
+
+/// Unified post-scan Zync Session: impact, one connection, conversation, recap.
+class MatchScreen extends StatefulWidget {
+  const MatchScreen({
+    super.key,
+    required this.peer,
+    required this.match,
+    required this.newMatchCount,
+    this.sessionSeed = '',
+    this.previousSharedIds = const {},
+    this.isRepeatPeer = false,
+    this.localIsMatchMine = true,
+    this.newAchievementIds = const [],
+  });
+
+  final QrProfilePayload peer;
+  final MatchResult match;
+  final int newMatchCount;
+  final String sessionSeed;
+  final Set<String> previousSharedIds;
+  final bool isRepeatPeer;
+  final bool localIsMatchMine;
+  final List<String> newAchievementIds;
+
+  @override
+  State<MatchScreen> createState() => _MatchScreenState();
+}
+
+class _MatchScreenState extends State<MatchScreen> {
+  static const _qaDebug = bool.fromEnvironment(
+    'ZYNC_QA_DEBUG',
+    defaultValue: false,
+  );
+
+  final _ai = const AiService();
+  late final List<ZyncConnection> _connections;
+  late final ZyncCrossover? _crossover;
+  final Map<String, AiQuestionResult> _questions = {};
+  final Set<String> _loadingQuestions = {};
+
+  Timer? _impactTimer;
+  bool _impactDone = false;
+  bool _recap = false;
+  bool _exploreHub = false;
+  MatchResult? _activeExploreMatch;
+  String? _activeExploreKey;
+  String? _activeExploreLabel;
+  String _activeExploreKind = 'about';
+  bool? _activeOwnerIsMatchMine;
+  int _revealedIndex = -1;
+  ConversationMode _mode = ConversationMode.fun;
+
+  @override
+  void initState() {
+    super.initState();
+    _connections = ZyncSessionService.exactConnections(
+      widget.match,
+      previousSharedIds: widget.previousSharedIds,
+      markNewConnections: widget.isRepeatPeer,
+      sessionSeed: widget.sessionSeed,
+    );
+    _crossover = ZyncSessionService.bestCrossover(
+      widget.match,
+      sessionSeed: widget.sessionSeed,
+    );
+    _impactTimer = Timer(const Duration(milliseconds: 900), () {
+      if (!mounted) return;
+      setState(() => _impactDone = true);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_ensureQuestion(prefetch: true));
+    });
+  }
+
+  @override
+  void dispose() {
+    _impactTimer?.cancel();
+    super.dispose();
+  }
+
+  String get _peerName => ZyncAlias.displayName(
+        nickname: widget.peer.nickname,
+        localId: widget.peer.localId,
+        locale: Localizations.localeOf(context).toLanguageTag(),
+      );
+
+  ZyncConnection? get _currentConnection =>
+      _revealedIndex >= 0 && _revealedIndex < _connections.length
+          ? _connections[_revealedIndex]
+          : null;
+
+  String _baseConnectionKey() {
+    if (_activeExploreKey != null) return _activeExploreKey!;
+    final current = _currentConnection;
+    if (current != null) return 'shared:${current.id}';
+    return _crossover?.connectionKey ?? '';
+  }
+
+  String _questionMapKey() => '${_baseConnectionKey()}|${_mode.name}';
+
+  Future<void> _ensureQuestion({bool prefetch = false}) async {
+    if (_connections.isNotEmpty && _revealedIndex < 0 && !prefetch) return;
+
+    final match = _activeExploreMatch ??
+        (_connections.isNotEmpty
+            ? (_revealedIndex >= 0
+                ? _connections[_revealedIndex].focusedMatch
+                : _connections.first.focusedMatch)
+            : _crossover?.focusedMatch);
+    final connectionKey = _activeExploreKey ??
+        (_connections.isNotEmpty
+            ? (_revealedIndex >= 0
+                ? 'shared:${_connections[_revealedIndex].id}'
+                : 'shared:${_connections.first.id}')
+            : _crossover?.connectionKey);
+    if (match == null || connectionKey == null || connectionKey.isEmpty) return;
+
+    final mapKey = '$connectionKey|${_mode.name}';
+    final existing = _questions[mapKey];
+    if (existing?.fromAi == true) {
+      if (!prefetch) {
+        unawaited(
+          _rememberQuestion(
+            connectionKey,
+            existing!,
+            mode: _mode,
+          ),
+        );
+      }
+      return;
+    }
+    if (_loadingQuestions.contains(mapKey)) return;
+
+    final language = Localizations.localeOf(context).toLanguageTag();
+    final requestedMode = _mode;
+    final fallback = existing ??
+        _ai.localFallback(
+          language: language,
+          secondaryLanguage: widget.peer.language,
+          match: match,
+          mode: requestedMode,
+        );
+
+    if (mounted) {
+      setState(() {
+        _questions[mapKey] = fallback;
+        _loadingQuestions.add(mapKey);
+      });
+    } else {
+      _questions[mapKey] = fallback;
+      _loadingQuestions.add(mapKey);
+    }
+
+    AiQuestionResult? aiResult;
+    final attempts = _ai.hasRemote ? 3 : 0;
+    for (var attempt = 0; attempt < attempts && aiResult == null; attempt++) {
+      if (attempt > 0) {
+        await Future<void>.delayed(Duration(milliseconds: attempt == 1 ? 900 : 2200));
+        if (!mounted) return;
+      }
+      aiResult = await _ai.generateAiQuestion(
+        language: language,
+        secondaryLanguage: widget.peer.language,
+        mode: requestedMode,
+        match: match,
+        sessionSeed: widget.sessionSeed,
+        connectionKey: connectionKey,
+      );
+    }
+    if (!mounted) return;
+
+    final finalResult = aiResult ?? fallback;
+    setState(() {
+      _questions[mapKey] = finalResult;
+      _loadingQuestions.remove(mapKey);
+    });
+
+    if (!prefetch || _baseConnectionKey() == connectionKey) {
+      unawaited(
+        _rememberQuestion(
+          connectionKey,
+          finalResult,
+          mode: requestedMode,
+        ),
+      );
+    }
+
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.questionGenerated,
+        properties: {
+          'mode': requestedMode.name,
+          'source': finalResult.fromAi ? 'ai' : 'fallback',
+          'match_type': _connections.isEmpty ? 'crossover' : 'shared',
+          'bilingual': finalResult.secondaryQuestion?.isNotEmpty ?? false,
+          'interaction_type': finalResult.interactionType,
+        },
+      ),
+    );
+  }
+
+  Future<void> _rememberQuestion(
+    String connectionKey,
+    AiQuestionResult result, {
+    required ConversationMode mode,
+  }) async {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    String? label;
+    var kind = connectionKey.startsWith('shared:') ? 'shared' : 'crossover';
+
+    if (_activeExploreKey == connectionKey && _activeExploreLabel != null) {
+      label = _activeExploreLabel;
+      kind = _activeExploreKind;
+    } else if (connectionKey.startsWith('shared:')) {
+      final id = connectionKey.substring('shared:'.length);
+      label = InterestCatalog.byId(id)?.labelFor(locale) ?? id;
+    } else {
+      final crossover = _crossover;
+      if (crossover != null && connectionKey == crossover.connectionKey) {
+        final mine = InterestCatalog.byId(crossover.mine.id)?.labelFor(locale) ??
+            crossover.mine.customLabel ??
+            crossover.mine.id;
+        final theirs =
+            InterestCatalog.byId(crossover.theirs.id)?.labelFor(locale) ??
+                crossover.theirs.customLabel ??
+                crossover.theirs.id;
+        label = '$mine × $theirs';
+      }
+    }
+
+    await LocalStore.recordQuestion(
+      peerId: widget.peer.localId,
+      memory: ZyncQuestionMemory(
+        connectionKey: connectionKey,
+        question: result.question,
+        secondaryQuestion: result.secondaryQuestion,
+        connectionLabel: label,
+        mode: mode.name,
+        kind: kind,
+        createdAt: DateTime.now().toUtc(),
+      ),
+    );
+  }
+
+  Future<void> _revealFirst() async {
+    if (_connections.isEmpty || !mounted) return;
+    unawaited(HapticFeedback.mediumImpact());
+    setState(() => _revealedIndex = 0);
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.connectionRevealed,
+        properties: {
+          'revealed_count': 1,
+          'total_count': _connections.length,
+          'remaining_count': _connections.length - 1,
+        },
+      ),
+    );
+    unawaited(_ensureQuestion());
+  }
+
+  Future<void> _revealAnother() async {
+    if (_revealedIndex + 1 >= _connections.length) {
+      setState(() {
+        _exploreHub = true;
+        _activeExploreMatch = null;
+        _activeExploreKey = null;
+        _activeExploreLabel = null;
+        _activeOwnerIsMatchMine = null;
+        _mode = ConversationMode.fun;
+      });
+      unawaited(
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.sessionContinue,
+          properties: const {
+            'continue_source': 'explore_hub',
+            'remaining_count': 0,
+          },
+        ),
+      );
+      return;
+    }
+    if (!mounted) return;
+    unawaited(HapticFeedback.lightImpact());
+    setState(() {
+      _revealedIndex += 1;
+      _mode = ConversationMode.fun;
+    });
+    final revealed = _revealedIndex + 1;
+    final remaining = _connections.length - revealed;
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionContinue,
+        properties: {
+          'continue_source': 'reveal_next',
+          'remaining_count': remaining,
+        },
+      ),
+    );
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.connectionRevealed,
+        properties: {
+          'revealed_count': revealed,
+          'total_count': _connections.length,
+          'remaining_count': remaining,
+        },
+      ),
+    );
+    unawaited(_ensureQuestion());
+  }
+
+  List<SelectedInterest> _rankedUniqueInterests(
+    Iterable<SelectedInterest> source,
+  ) {
+    final rows = source.toList()
+      ..sort((a, b) {
+        final aDef = InterestCatalog.byId(a.id);
+        final bDef = InterestCatalog.byId(b.id);
+        final aScore = (a.strength.wireValue * 100) +
+            (InterestCatalog.specificityScore(a.id) * 3) +
+            (((aDef?.rank ?? 1800) / 80).clamp(0, 35)).round();
+        final bScore = (b.strength.wireValue * 100) +
+            (InterestCatalog.specificityScore(b.id) * 3) +
+            (((bDef?.rank ?? 1800) / 80).clamp(0, 35)).round();
+        final score = bScore.compareTo(aScore);
+        return score != 0 ? score : a.id.compareTo(b.id);
+      });
+    return rows;
+  }
+
+  void _openAboutInterest(
+    SelectedInterest interest, {
+    required bool ownerIsMatchMine,
+  }) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final label = InterestCatalog.byId(interest.id)?.labelFor(locale) ??
+        interest.customLabel ??
+        interest.id;
+    final ownerIsLocal = ownerIsMatchMine == widget.localIsMatchMine;
+    setState(() {
+      _exploreHub = true;
+      _activeExploreMatch = MatchResult(
+        shared: const [],
+        onlyMine: ownerIsMatchMine ? [interest] : const [],
+        onlyTheirs: ownerIsMatchMine ? const [] : [interest],
+      );
+      _activeExploreKey =
+          'about:${ownerIsMatchMine ? 'a' : 'b'}:${interest.id}';
+      _activeExploreLabel = label;
+      _activeExploreKind = ownerIsLocal ? 'about_me' : 'about_them';
+      _activeOwnerIsMatchMine = ownerIsMatchMine;
+      _mode = ConversationMode.fun;
+    });
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionContinue,
+        properties: {
+          'continue_source': ownerIsLocal ? 'about_me' : 'about_them',
+          'remaining_count': 0,
+        },
+      ),
+    );
+    unawaited(_ensureQuestion());
+  }
+
+  void _openCrossoverMoment() {
+    final crossover = _crossover;
+    if (crossover == null) return;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final mine = InterestCatalog.byId(crossover.mine.id)?.labelFor(locale) ??
+        crossover.mine.customLabel ??
+        crossover.mine.id;
+    final theirs =
+        InterestCatalog.byId(crossover.theirs.id)?.labelFor(locale) ??
+            crossover.theirs.customLabel ??
+            crossover.theirs.id;
+    setState(() {
+      _exploreHub = true;
+      _activeExploreMatch = crossover.focusedMatch;
+      _activeExploreKey = crossover.connectionKey;
+      _activeExploreLabel = '$mine × $theirs';
+      _activeExploreKind = 'crossover';
+      _activeOwnerIsMatchMine = null;
+      _mode = ConversationMode.fun;
+    });
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionContinue,
+        properties: const {
+          'continue_source': 'crossover',
+          'remaining_count': 0,
+        },
+      ),
+    );
+    unawaited(_ensureQuestion());
+  }
+
+  void _backToExploreHub() {
+    setState(() {
+      _activeExploreMatch = null;
+      _activeExploreKey = null;
+      _activeExploreLabel = null;
+      _activeExploreKind = 'about';
+      _activeOwnerIsMatchMine = null;
+      _mode = ConversationMode.fun;
+    });
+  }
+
+  Future<void> _pickMode() async {
+    final l10n = AppLocalizations.of(context);
+    final picked = await showModalBottomSheet<ConversationMode>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.changeVibe, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: ConversationMode.values.map((mode) {
+                  return ChoiceChip(
+                    label: Text(_modeLabel(l10n, mode)),
+                    selected: mode == _mode,
+                    onSelected: (_) => Navigator.of(context).pop(mode),
+                  );
+                }).toList(growable: false),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (picked == null || picked == _mode || !mounted) return;
+    setState(() => _mode = picked);
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.modeSelected,
+        properties: {'mode': picked.name},
+      ),
+    );
+    unawaited(_ensureQuestion());
+  }
+
+  void _openRecap() {
+    final total = _connections.isNotEmpty
+        ? _connections.length
+        : (_crossover == null ? 0 : 1);
+    final revealed = _connections.isNotEmpty
+        ? (_revealedIndex < 0 ? 0 : _revealedIndex + 1)
+        : (_crossover == null ? 0 : 1);
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionRecap,
+        properties: {
+          'revealed_count': revealed,
+          'total_count': total,
+          'repeat_peer': widget.isRepeatPeer,
+        },
+      ),
+    );
+    setState(() => _recap = true);
+  }
+
+  void _finish() => Navigator.of(context).pop();
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_impactDone) return _impactScreen(context);
+    if (_recap) return _recapScreen(context);
+    if (_exploreHub) {
+      if (_activeExploreKey != null) return _exploreMomentScreen(context);
+      return _exploreHubScreen(context);
+    }
+    if (_connections.isEmpty) return _crossoverScreen(context);
+    if (_revealedIndex < 0) return _hiddenScreen(context);
+    return _connectionScreen(context);
+  }
+
+  Widget _shell(BuildContext context, Widget child) {
+    return Scaffold(
+      body: ConnectionBackdrop(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+                child: Row(
+                  children: [
+                    const ZyncMark(size: 36, strokeWidth: 3.8),
+                    const SizedBox(width: 9),
+                    Text('Zync', style: Theme.of(context).textTheme.titleLarge),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: _finish,
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: child),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _impactScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final exact = _connections.isNotEmpty;
+    return _shell(
+      context,
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(26, 10, 26, 42),
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.86, end: 1),
+            duration: const Duration(milliseconds: 650),
+            curve: Curves.easeOutBack,
+            builder: (context, value, child) => Transform.scale(
+              scale: value,
+              child: Opacity(
+                opacity: ((value - 0.86) / 0.14).clamp(0, 1),
+                child: child,
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 112,
+                  height: 112,
+                  decoration: BoxDecoration(
+                    color: exact ? ZyncPalette.peach : const Color(0xFFE9E5FF),
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: exact
+                      ? const ZyncMark(size: 72, strokeWidth: 6.2)
+                      : const Icon(Icons.hub_outlined, size: 52, color: ZyncPalette.plum),
+                ),
+                const SizedBox(height: 26),
+                Text(
+                  exact ? l10n.youZync : l10n.differentInterests,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  exact ? l10n.hiddenConnections(_connections.length) : l10n.stillConnection,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: ZyncPalette.inkSoft,
+                        height: 1.35,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                Text(_peerName, style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _hiddenScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return _shell(
+      context,
+      Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const ZyncIconTile(
+                icon: Icons.visibility_off_outlined,
+                size: 72,
+                backgroundColor: Color(0xFFFFEEE5),
+                foregroundColor: ZyncPalette.orangeDeep,
+              ),
+              const SizedBox(height: 22),
+              Text(
+                l10n.hiddenConnections(_connections.length),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 9),
+              Text(
+                _peerName,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const ValueKey('zync-reveal-first'),
+                  onPressed: _revealFirst,
+                  icon: const Icon(Icons.auto_awesome_rounded),
+                  label: Text(l10n.revealConnection),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _connectionScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final connection = _connections[_revealedIndex];
+    final detail = connection.primary;
+    final local = widget.localIsMatchMine ? detail.mine : detail.theirs;
+    final peer = widget.localIsMatchMine ? detail.theirs : detail.mine;
+    final label = InterestCatalog.byId(detail.id)?.labelFor(locale) ??
+        detail.merged.customLabel ??
+        detail.id;
+    final questionKey = _questionMapKey();
+    final result = _questions[questionKey];
+    final loading = _loadingQuestions.contains(questionKey);
+    final last = _revealedIndex == _connections.length - 1;
+
+    return _shell(
+      context,
+      ListView(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.connectionProgress(_revealedIndex + 1, _connections.length),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ZyncPalette.inkSoft),
+                ),
+              ),
+              if (connection.isNew)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: ZyncPalette.mint,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    l10n.newConnection,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: const Color(0xFF176B57),
+                        ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(99),
+            child: LinearProgressIndicator(
+              value: (_revealedIndex + 1) / _connections.length,
+              minHeight: 7,
+              backgroundColor: const Color(0xFFEDEAF3),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            last
+                ? LocalizedDomainText.allHiddenRevealed(locale)
+                : LocalizedDomainText.hiddenRemaining(
+                    _connections.length - _revealedIndex - 1,
+                    locale,
+                  ),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: ZyncPalette.inkSoft),
+          ),
+          const SizedBox(height: 14),
+          KeyedSubtree(
+            key: ValueKey('zync-connection-${connection.id}'),
+            child: ZyncSurface(
+              borderColor: ZyncPalette.peach,
+              backgroundColor: const Color(0xFFFFF7F2),
+              padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
+              child: Column(
+              children: [
+                const ZyncIconTile(
+                  icon: Icons.auto_awesome_rounded,
+                  size: 58,
+                  backgroundColor: ZyncPalette.peach,
+                  foregroundColor: ZyncPalette.orangeDeep,
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(height: 1.12),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.strengthContrast(
+                    _strengthLabel(l10n, local.strength),
+                    _peerName,
+                    _strengthLabel(l10n, peer.strength),
+                  ),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
+                ),
+                if (connection.context.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 7,
+                    runSpacing: 7,
+                    children: connection.context.map((contextItem) {
+                      final contextLabel = InterestCatalog.byId(contextItem.id)?.labelFor(locale) ??
+                          contextItem.merged.customLabel ??
+                          contextItem.id;
+                      return Chip(
+                        visualDensity: VisualDensity.compact,
+                        label: Text(contextLabel),
+                      );
+                    }).toList(growable: false),
+                  ),
+                ],
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _questionCard(context, result: result, loading: loading),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: _pickMode,
+            icon: const Icon(Icons.tune_rounded),
+            label: Text('${l10n.changeVibe}: ${_modeLabel(l10n, _mode)}'),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            key: const ValueKey('zync-next-connection'),
+            onPressed: _revealAnother,
+            icon: Icon(last ? Icons.explore_outlined : Icons.visibility_outlined),
+            label: Text(last ? l10n.keepDiscovering : l10n.revealAnother),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _exploreHubScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final peerSource = widget.localIsMatchMine
+        ? widget.match.onlyTheirs
+        : widget.match.onlyMine;
+    final mineSource = widget.localIsMatchMine
+        ? widget.match.onlyMine
+        : widget.match.onlyTheirs;
+    final peerOwnerIsMatchMine = !widget.localIsMatchMine;
+    final localOwnerIsMatchMine = widget.localIsMatchMine;
+    final peerIdeas = _rankedUniqueInterests(peerSource).take(4).toList();
+    final myIdeas = _rankedUniqueInterests(mineSource).take(4).toList();
+
+    Widget interestCard(
+      SelectedInterest interest, {
+      required String overline,
+      required VoidCallback onTap,
+    }) {
+      final label = InterestCatalog.byId(interest.id)?.labelFor(locale) ??
+          interest.customLabel ??
+          interest.id;
+      final category = InterestCatalog.byId(interest.id)?.category ??
+          interest.customCategory ??
+          'other';
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 9),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: onTap,
+            child: ZyncSurface(
+              shadow: false,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+              child: Row(
+                children: [
+                  ZyncIconTile(
+                    icon: Icons.chat_bubble_outline_rounded,
+                    size: 42,
+                    backgroundColor: const Color(0xFFF1EEFF),
+                    foregroundColor: ZyncPalette.plum,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          overline,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(color: ZyncPalette.plum),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          label,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${_strengthEmoji(interest.strength)} ${LocalizedDomainText.category(category, locale)}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ZyncPalette.inkSoft),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 15,
+                    color: ZyncPalette.inkSoft,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _shell(
+      context,
+      SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+          Text(
+            l10n.keepDiscovering,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 7),
+          Text(
+            l10n.sharedOnlyStart,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: ZyncPalette.inkSoft, height: 1.35),
+          ),
+          if (peerIdeas.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                const Icon(Icons.person_search_outlined, color: ZyncPalette.plum),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.askAboutThem,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            for (final interest in peerIdeas)
+              interestCard(
+                interest,
+                overline: l10n.theirInterest,
+                onTap: () => _openAboutInterest(
+                  interest,
+                  ownerIsMatchMine: peerOwnerIsMatchMine,
+                ),
+              ),
+          ],
+          if (myIdeas.isNotEmpty) ...[
+            const SizedBox(height: 22),
+            Row(
+              children: [
+                const Icon(Icons.record_voice_over_outlined, color: ZyncPalette.orangeDeep),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.letThemAskYou,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            for (final interest in myIdeas)
+              interestCard(
+                interest,
+                overline: l10n.yourInterest,
+                onTap: () => _openAboutInterest(
+                  interest,
+                  ownerIsMatchMine: localOwnerIsMatchMine,
+                ),
+              ),
+          ],
+          if (_crossover != null && _connections.isNotEmpty) ...[
+            const SizedBox(height: 22),
+            Text(
+              l10n.surpriseUs,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 10),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: _openCrossoverMoment,
+                child: ZyncSurface(
+                  shadow: false,
+                  borderColor: const Color(0xFFE5DFFF),
+                  backgroundColor: const Color(0xFFF8F5FF),
+                  child: Row(
+                    children: [
+                      const ZyncIconTile(
+                        icon: Icons.shuffle_rounded,
+                        backgroundColor: Color(0xFFE9E5FF),
+                        foregroundColor: ZyncPalette.plum,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.crossoverIntro,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 15),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 28),
+          FilledButton.icon(
+            onPressed: _openRecap,
+            icon: const Icon(Icons.check_rounded),
+            label: Text(l10n.finishAndRecap),
+          ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _exploreMomentScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final ownerIsLocal = _activeOwnerIsMatchMine != null &&
+        _activeOwnerIsMatchMine == widget.localIsMatchMine;
+    final heading = _activeExploreKind == 'crossover'
+        ? l10n.surpriseUs
+        : ownerIsLocal
+            ? l10n.letThemAskYou
+            : l10n.askAboutThem;
+    final key = _questionMapKey();
+    final result = _questions[key];
+    final loading = _loadingQuestions.contains(key);
+
+    return _shell(
+      context,
+      ListView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        children: [
+          Text(
+            heading,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 16),
+          ZyncSurface(
+            borderColor: const Color(0xFFE5DFFF),
+            backgroundColor: const Color(0xFFF8F5FF),
+            child: Column(
+              children: [
+                ZyncIconTile(
+                  icon: _activeExploreKind == 'crossover'
+                      ? Icons.shuffle_rounded
+                      : ownerIsLocal
+                          ? Icons.record_voice_over_outlined
+                          : Icons.person_search_outlined,
+                  size: 54,
+                  backgroundColor: const Color(0xFFE9E5FF),
+                  foregroundColor: ZyncPalette.plum,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  _activeExploreLabel ?? '',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          _questionCard(context, result: result, loading: loading),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: _pickMode,
+            icon: const Icon(Icons.tune_rounded),
+            label: Text('${l10n.changeVibe}: ${_modeLabel(l10n, _mode)}'),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: _backToExploreHub,
+            icon: const Icon(Icons.arrow_back_rounded),
+            label: Text(l10n.backToIdeas),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: _openRecap,
+            icon: const Icon(Icons.check_rounded),
+            label: Text(l10n.finishAndRecap),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _crossoverScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final crossover = _crossover;
+    if (crossover == null) {
+      return _shell(
+        context,
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Text(l10n.stillConnection, textAlign: TextAlign.center),
+          ),
+        ),
+      );
+    }
+
+    String label(SelectedInterest item) =>
+        InterestCatalog.byId(item.id)?.labelFor(locale) ?? item.customLabel ?? item.id;
+    final result = _questions[_questionMapKey()];
+    final loading = _loadingQuestions.contains(_questionMapKey());
+
+    return _shell(
+      context,
+      ListView(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+        children: [
+          Text(
+            l10n.stillConnection,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 18),
+          ZyncSurface(
+            borderColor: const Color(0xFFE5DFFF),
+            backgroundColor: const Color(0xFFF7F4FF),
+            child: Column(
+              children: [
+                Text(l10n.crossoverIntro, style: Theme.of(context).textTheme.labelLarge),
+                const SizedBox(height: 14),
+                Text(
+                  '${label(crossover.mine)}  ×  ${label(crossover.theirs)}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(height: 1.25),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          _questionCard(context, result: result, loading: loading),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: _pickMode,
+            icon: const Icon(Icons.tune_rounded),
+            label: Text('${l10n.changeVibe}: ${_modeLabel(l10n, _mode)}'),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: () => setState(() {
+              _exploreHub = true;
+              _activeExploreMatch = null;
+              _activeExploreKey = null;
+              _activeExploreLabel = null;
+              _activeOwnerIsMatchMine = null;
+              _mode = ConversationMode.fun;
+            }),
+            icon: const Icon(Icons.explore_outlined),
+            label: Text(l10n.keepDiscovering),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _questionCard(
+    BuildContext context, {
+    required AiQuestionResult? result,
+    required bool loading,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final secondary = result?.secondaryQuestion;
+    return ZyncSurface(
+      padding: const EdgeInsets.all(20),
+      borderColor: const Color(0xFFE5DFFF),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const ZyncIconTile(
+                icon: Icons.chat_bubble_outline_rounded,
+                size: 42,
+                backgroundColor: Color(0xFFE9E5FF),
+                foregroundColor: ZyncPalette.plum,
+              ),
+              const SizedBox(width: 11),
+              Expanded(
+                child: Text(l10n.talkAboutThis, style: Theme.of(context).textTheme.titleMedium),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (loading || result == null)
+            Row(
+              children: [
+                const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2.3),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(l10n.findingQuestion)),
+              ],
+            )
+          else ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F5FF),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFE5DFFF)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    _interactionIcon(result.interactionType),
+                    size: 20,
+                    color: ZyncPalette.plum,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          LocalizedDomainText.interactionLabel(
+                            result.interactionType,
+                            locale,
+                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(color: ZyncPalette.plum),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          LocalizedDomainText.interactionHint(
+                            result.interactionType,
+                            locale,
+                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ZyncPalette.inkSoft, height: 1.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              result.question,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(height: 1.4),
+            ),
+            if (secondary != null && secondary.isNotEmpty) ...[
+              const SizedBox(height: 17),
+              Divider(color: ZyncPalette.line.withValues(alpha: 0.9)),
+              const SizedBox(height: 12),
+              Text(
+                ZyncLanguage.nativeName(result.secondaryLanguage ?? widget.peer.language),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: ZyncPalette.plum),
+              ),
+              const SizedBox(height: 7),
+              Text(
+                secondary,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(height: 1.4),
+              ),
+            ],
+            if (_qaDebug) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Chip(
+                  visualDensity: VisualDensity.compact,
+                  avatar: Icon(
+                    result.fromAi ? Icons.auto_awesome_rounded : Icons.offline_bolt_outlined,
+                    size: 15,
+                  ),
+                  label: Text(
+                    result.fromAi
+                        ? result.model?.trim().isNotEmpty == true
+                            ? 'AI · ${result.model}'
+                            : 'AI'
+                        : 'Local fallback',
+                  ),
+                ),
+              ),
+            ],
+            if (!result.fromAi && !loading) ...[
+              const SizedBox(height: 10),
+              Text(
+                l10n.aiUnavailable,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _socialPlatformLabel(
+    AppLocalizations l10n,
+    SocialPlatform platform,
+  ) =>
+      switch (platform) {
+        SocialPlatform.instagram => l10n.instagram,
+        SocialPlatform.threads => l10n.threads,
+        SocialPlatform.facebook => l10n.facebook,
+      };
+
+  Future<void> _openSocialLink(BuildContext context, SocialLink link) async {
+    final raw = link.profileUrl;
+    final uri = raw == null ? null : Uri.tryParse(raw);
+    if (uri == null) return;
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      // Social exchange is optional; a failed external app launch must not
+      // break the completed Zync Session.
+    }
+  }
+
+  Future<void> _showSocialQr(
+    BuildContext context,
+    SocialLink link,
+  ) async {
+    final raw = link.profileUrl;
+    if (raw == null) return;
+    final l10n = AppLocalizations.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 4, 24, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _socialPlatformLabel(l10n, link.platform),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                link.displayValue,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 18),
+              Container(
+                padding: const EdgeInsets.all(14),
+                color: Colors.white,
+                child: QrImageView(
+                  data: raw,
+                  version: QrVersions.auto,
+                  errorCorrectionLevel: QrErrorCorrectLevel.M,
+                  size: 230,
+                  padding: EdgeInsets.zero,
+                  gapless: true,
+                ),
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () => _openSocialLink(context, link),
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: Text(l10n.openProfile),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _recapScreen(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final count = _connections.isNotEmpty ? _connections.length : (_crossover == null ? 0 : 1);
+
+    final labels = _connections.isNotEmpty
+        ? _connections
+            .map(
+              (connection) =>
+                  InterestCatalog.byId(connection.id)?.labelFor(locale) ??
+                  connection.primary.merged.customLabel ??
+                  connection.id,
+            )
+            .toList(growable: false)
+        : _crossover == null
+            ? const <String>[]
+            : <String>[
+                '${InterestCatalog.byId(_crossover.mine.id)?.labelFor(locale) ?? _crossover.mine.customLabel ?? _crossover.mine.id} × '
+                    '${InterestCatalog.byId(_crossover.theirs.id)?.labelFor(locale) ?? _crossover.theirs.customLabel ?? _crossover.theirs.id}',
+              ];
+
+    return _shell(
+      context,
+      ListView(
+        padding: const EdgeInsets.fromLTRB(22, 26, 22, 32),
+        children: [
+          const Center(
+            child: ZyncIconTile(
+              icon: Icons.favorite_rounded,
+              size: 72,
+              backgroundColor: ZyncPalette.peach,
+              foregroundColor: ZyncPalette.orangeDeep,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            l10n.sessionRecap,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.sessionRecapCount(count, _peerName),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
+          ),
+          const SizedBox(height: 24),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 9,
+            runSpacing: 9,
+            children: labels
+                .map(
+                  (label) => Chip(
+                    avatar: const Icon(Icons.auto_awesome_rounded, size: 17),
+                    label: Text(label),
+                  ),
+                )
+                .toList(growable: false),
+          ),
+          if (widget.newAchievementIds.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            ZyncSurface(
+              borderColor: const Color(0xFFFFD98A),
+              backgroundColor: const Color(0xFFFFF8E8),
+              child: Column(
+                children: [
+                  const ZyncIconTile(
+                    icon: Icons.emoji_events_rounded,
+                    size: 56,
+                    backgroundColor: Color(0xFFFFE9B7),
+                    foregroundColor: Color(0xFF8B5A00),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    LocalizedDomainText.newAchievement(locale),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  for (final id in widget.newAchievementIds)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        LocalizedDomainText.achievementTitle(id, locale),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(color: const Color(0xFF8B5A00)),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const AchievementScreen(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.emoji_events_outlined),
+                    label: Text(
+                      LocalizedDomainText.achievementsTitle(locale),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (widget.peer.socialLinks.isNotEmpty) ...[
+            const SizedBox(height: 28),
+            Text(
+              l10n.stayConnected,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            for (final link in widget.peer.socialLinks)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 9),
+                child: ZyncSurface(
+                  shadow: false,
+                  borderColor: const Color(0xFFE5DFFF),
+                  backgroundColor: const Color(0xFFF8F5FF),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 11,
+                  ),
+                  child: Row(
+                    children: [
+                      const ZyncIconTile(
+                        icon: Icons.alternate_email_rounded,
+                        size: 40,
+                        backgroundColor: Color(0xFFE9E5FF),
+                        foregroundColor: ZyncPalette.plum,
+                      ),
+                      const SizedBox(width: 11),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _socialPlatformLabel(l10n, link.platform),
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              link.displayValue,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: l10n.openProfile,
+                        onPressed: () => _openSocialLink(context, link),
+                        icon: const Icon(Icons.open_in_new_rounded),
+                      ),
+                      IconButton(
+                        tooltip: l10n.showQr,
+                        onPressed: () => _showSocialQr(context, link),
+                        icon: const Icon(Icons.qr_code_2_rounded),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+          const SizedBox(height: 30),
+          FilledButton.icon(
+            onPressed: _finish,
+            icon: const Icon(Icons.check_rounded),
+            label: Text(l10n.finishZync),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _interactionIcon(String type) => switch (type) {
+        'pick' => Icons.compare_arrows_rounded,
+        'defend' => Icons.forum_outlined,
+        'reveal' => Icons.record_voice_over_outlined,
+        'guess' => Icons.psychology_alt_outlined,
+        'surprise' => Icons.auto_awesome_rounded,
+        _ => Icons.sports_esports_outlined,
+      };
+
+  String _strengthEmoji(InterestStrength strength) => switch (strength) {
+        InterestStrength.love => '❤️',
+        InterestStrength.like => '👍',
+        InterestStrength.wantToTry => '✨',
+      };
+
+  String _strengthLabel(AppLocalizations l10n, InterestStrength strength) => switch (strength) {
+        InterestStrength.love => l10n.love,
+        InterestStrength.like => l10n.like,
+        InterestStrength.wantToTry => l10n.wantToTry,
+      };
+
+  String _modeLabel(AppLocalizations l10n, ConversationMode mode) => switch (mode) {
+        ConversationMode.easy => l10n.modeEasy,
+        ConversationMode.fun => l10n.modeFun,
+        ConversationMode.debate => l10n.modeDebate,
+        ConversationMode.deep => l10n.modeDeep,
+        ConversationMode.guess => l10n.modeGuess,
+        ConversationMode.surprise => l10n.modeSurprise,
+      };
+}

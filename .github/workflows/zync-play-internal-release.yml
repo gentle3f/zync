@@ -1,0 +1,125 @@
+name: Zync Play Internal Release
+
+# Publishes an ALREADY-SIGNED Zync AAB to Google Play Internal Testing ONLY.
+#
+# This workflow never builds, signs, or generates a signing key. It consumes
+# the "zync-v1-play-signed-aab" artifact produced by the existing
+# `zync-v1-signed-release.yml` workflow (the repo's one accepted Play
+# upload-signing system) and uploads it through the Android Publisher API,
+# hard-restricted to the `internal` track in both this config and in the
+# publishing script's own guard code (.github/scripts/play_internal_release.py).
+#
+# It does not touch Vercel configuration and triggers no Vercel deployment.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_internal_upload:
+        description: >-
+          Type UPLOAD_TO_INTERNAL_TESTING to confirm you intend to publish the
+          signed AAB to Google Play INTERNAL TESTING only.
+        required: true
+      signed_release_run_id:
+        description: >-
+          Run ID of a successful "Zync V1 Signed Release" workflow run that
+          produced the zync-v1-play-signed-aab artifact.
+        required: true
+      release_notes:
+        description: 'Internal testing release notes (plain text, shown to internal testers).'
+        required: false
+        default: 'Internal testing build.'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: zync-play-internal-release
+  cancel-in-progress: false
+
+jobs:
+  internal-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TRACK: internal
+      PACKAGE_NAME: com.gmail.gentle3f.myproject
+      SIGNED_AAB_ARTIFACT: zync-v1-play-signed-aab
+
+    steps:
+      - name: Require explicit internal-testing confirmation
+        shell: bash
+        run: |
+          if [ "${{ inputs.confirm_internal_upload }}" != "UPLOAD_TO_INTERNAL_TESTING" ]; then
+            echo "Refusing to run: confirm_internal_upload must be exactly UPLOAD_TO_INTERNAL_TESTING."
+            exit 1
+          fi
+
+      - name: Require numeric signed-release run id
+        shell: bash
+        run: |
+          if ! [[ "${{ inputs.signed_release_run_id }}" =~ ^[0-9]+$ ]]; then
+            echo "signed_release_run_id must be a numeric GitHub Actions run ID."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download signed AAB from the specified signed-release run
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SIGNED_AAB_ARTIFACT }}
+          run-id: ${{ inputs.signed_release_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: signed-aab
+
+      - name: Verify a signed AAB was actually downloaded
+        shell: bash
+        run: |
+          aab="signed-aab/app-release.aab"
+          if [ ! -s "$aab" ]; then
+            echo "No signed AAB found in the '$SIGNED_AAB_ARTIFACT' artifact from run ${{ inputs.signed_release_run_id }}."
+            echo "This workflow never builds or signs an AAB itself; it only publishes an existing signed one."
+            exit 1
+          fi
+          jarsigner -verify -strict "$aab"
+          echo "Confirmed signed AAB is present and its JAR signature verifies."
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Google API client
+        run: pip install --quiet google-api-python-client google-auth
+
+      - name: Run local publishing guard self-test
+        run: python3 .github/scripts/play_internal_release.py --self-test
+
+      - name: Write Play service-account credentials to an ephemeral file
+        shell: bash
+        run: |
+          umask 077
+          printf '%s' "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-credentials.json"
+          if [ ! -s "$RUNNER_TEMP/play-credentials.json" ]; then
+            echo "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON secret is empty or missing."
+            exit 1
+          fi
+        env:
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+
+      - name: Publish signed AAB to Google Play Internal Testing
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/play-credentials.json
+        run: |
+          python3 .github/scripts/play_internal_release.py \
+            --package "$PACKAGE_NAME" \
+            --track "$TRACK" \
+            --aab "signed-aab/app-release.aab" \
+            --release-notes "${{ inputs.release_notes }}"
+
+      - name: Remove ephemeral credentials file
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/play-credentials.json"

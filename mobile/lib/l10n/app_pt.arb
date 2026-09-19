@@ -1,0 +1,216 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Zync",
+  "tagline": "Descubra o que conecta vocês.",
+  "getStarted": "Começar",
+  "nicknameOptional": "Apelido (opcional)",
+  "yourName": "Como devemos chamar você?",
+  "continueLabel": "Continuar",
+  "pickInterests": "Do que você gosta?",
+  "pickAtLeastFive": "Escolha pelo menos 5 interesses. Você pode alterá-los a qualquer momento.",
+  "searchAnything": "Pesquisar qualquer interesse...",
+  "addWithAi": "Adicionar “{interest}” com IA",
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSuggested": "A IA sugere “{interest}”. Adicionar?",
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "addInterest": "Adicionar interesse",
+  "normalizing": "Entendendo seu interesse...",
+  "selectedCount": "{count} selecionados",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "saveAndContinue": "Salvar e continuar",
+  "homeGreeting": "Pronto para Zync?",
+  "interestsCount": "{count} interesses no seu perfil",
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncWithSomeone": "Fazer Zync com alguém",
+  "showMyQr": "Mostrar meu QR",
+  "scanSomeone": "Escanear alguém",
+  "myInterests": "Meus interesses",
+  "peopleHistory": "Pessoas com quem fiz Zync",
+  "interestDna": "DNA de interesses",
+  "readyToZync": "Deixe a outra pessoa escanear este código",
+  "qrPrivacy": "Este QR inclui os dados de perfil selecionados e uma chave de sessão criptografada de uso único. O relay temporário expira automaticamente.",
+  "waitingForScan": "Aguardando leitura…",
+  "zyncing": "Fazendo Zync…",
+  "relayConnectionIssue": "A conexão está um pouco instável. Continuaremos tentando enquanto este QR for válido.",
+  "relayStartIssue": "Ainda não conseguimos preparar este QR. Verifique sua conexão e tente novamente.",
+  "relayExpired": "Este QR expirou. Crie um novo para proteger sua privacidade.",
+  "regenerateQr": "Novo QR",
+  "qrAlreadyUsed": "Este QR do Zync já foi usado. Peça à outra pessoa para mostrar um novo.",
+  "scanConnectionIssue": "Não foi possível concluir o Zync. Verifique sua conexão e tente novamente.",
+  "scanTitle": "Escanear QR do Zync",
+  "scanHint": "Aponte a câmera para o QR do Zync da outra pessoa.",
+  "invalidQr": "Este não é um QR Zync válido.",
+  "cameraPermissionTitle": "O acesso à câmera é necessário",
+  "cameraPermissionBody": "Permita que o Zync use a câmera nas configurações do telefone, depois volte e tente novamente.",
+  "cameraUnavailableTitle": "Câmera indisponível",
+  "cameraUnavailableBody": "O Zync não consegue acessar uma câmera neste dispositivo. Você ainda pode mostrar seu próprio QR para a outra pessoa escanear.",
+  "cameraErrorTitle": "O scanner precisa tentar de novo",
+  "cameraErrorBody": "A câmera não conseguiu iniciar. Tente novamente ou volte e mostre seu QR.",
+  "youZync": "YOU ZYNC!",
+  "hiddenMatches": "Vocês têm {count} interesses em comum escondidos.",
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noExactMatch": "Nenhum interesse exatamente igual.",
+  "findConnection": "Vamos encontrar a conexão.",
+  "reveal": "Revelar",
+  "nextMatch": "Próxima conexão",
+  "startConversation": "Começar conversa",
+  "conversationTitle": "Escolha o clima",
+  "modeEasy": "Leve",
+  "modeFun": "Divertido",
+  "modeDebate": "Debate",
+  "modeDeep": "Profundo",
+  "modeGuess": "Adivinhar",
+  "modeSurprise": "Surpreenda-me",
+  "anotherQuestion": "Outra pergunta",
+  "aiUnavailable": "A IA está indisponível agora; aqui vai uma pergunta local.",
+  "noHistory": "Ainda não há histórico de Zync.",
+  "zyncAgain": "Zync novamente",
+  "newMatches": "{count} novas conexões desde a última vez",
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "love": "Adoro",
+  "like": "Gosto",
+  "wantToTry": "Quero experimentar",
+  "privacyPolicy": "Política de privacidade",
+  "privacyPolicyUnavailable": "Não foi possível abrir a política de privacidade. Tente novamente.",
+  "edit": "Editar",
+  "done": "Concluído",
+  "retry": "Tentar novamente",
+  "cancel": "Cancelar",
+  "hiddenConnections": "{count, plural, =1{Vocês encontraram 1 conexão escondida.} other{Vocês encontraram {count} conexões escondidas.}}",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "Revelar uma conexão",
+  "revealAnother": "Revelar outra",
+  "talkAboutThis": "Conversem sobre isso",
+  "changeVibe": "Mudar o clima",
+  "connectionProgress": "Conexão {current} de {total}",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "Nova desde o último Zync",
+  "strengthContrast": "Você: {mine} · {peer}: {theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "Interesses diferentes.",
+  "stillConnection": "Mesmo assim, há uma conexão.",
+  "crossoverIntro": "Experimentem este cruzamento",
+  "sessionRecap": "O que vocês descobriram",
+  "sessionRecapCount": "{count, plural, =1{Você encontrou 1 conexão com {name}.} other{Você encontrou {count} conexões com {name}.}}",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "Encerrar o Zync",
+  "findingQuestion": "Procurando uma boa pergunta…",
+  "keepDiscovering": "Continuem descobrindo",
+  "sharedOnlyStart": "O que vocês têm em comum é só o começo. Descubram algo que ainda não sabiam um sobre o outro.",
+  "askAboutThem": "Pergunte sobre a outra pessoa",
+  "letThemAskYou": "Deixe a outra pessoa perguntar",
+  "surpriseUs": "Surpreenda-nos",
+  "finishAndRecap": "Terminar e rever",
+  "backToIdeas": "Voltar para mais ideias",
+  "theirInterest": "Um interesse da outra pessoa",
+  "yourInterest": "Um dos seus interesses",
+  "socialLinks": "Links sociais",
+  "socialLinksSubtitle": "Opcional. Adicione perfis públicos que você aceita compartilhar depois de um Zync.",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Compartilhar depois do Zync",
+  "shareAfterZyncExplain": "Só os links que você ativar explicitamente entram no seu QR do Zync e aparecem após a sessão.",
+  "stayConnected": "Continuar conectado?",
+  "openProfile": "Abrir perfil",
+  "showQr": "Mostrar QR",
+  "saveSocialLinks": "Salvar links sociais",
+  "questionsSavedCount": "Perguntas salvas: {count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Sessões Zync: {count} · última: {date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "Coisas de que ambos gostam",
+  "noSharedSaved": "Ainda não há interesses exatos em comum salvos.",
+  "thingsLearnedAboutThem": "O que você descobriu sobre a outra pessoa",
+  "nothingExtraSaved": "Ainda não há outros interesses salvos do último Zync.",
+  "questionsYouTalkedAbout": "Perguntas sobre as quais vocês conversaram",
+  "questionsNextTime": "As perguntas do próximo Zync serão lembradas neste dispositivo.",
+  "sharedSocials": "Redes sociais que a pessoa compartilhou"
+}

@@ -1,0 +1,216 @@
+{
+  "@@locale": "ko",
+  "appTitle": "Zync",
+  "tagline": "서로를 잇는 공통점을 발견하세요.",
+  "getStarted": "시작하기",
+  "nicknameOptional": "닉네임 (선택)",
+  "yourName": "어떻게 불러드릴까요?",
+  "continueLabel": "계속",
+  "pickInterests": "무엇을 좋아하나요?",
+  "pickAtLeastFive": "관심사를 5개 이상 선택하세요. 언제든 바꿀 수 있어요.",
+  "searchAnything": "관심사 검색...",
+  "addWithAi": "AI로 ‘{interest}’ 추가",
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSuggested": "AI 제안: ‘{interest}’. 추가할까요?",
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "addInterest": "관심사 추가",
+  "normalizing": "관심사를 이해하는 중...",
+  "selectedCount": "{count}개 선택됨",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "saveAndContinue": "저장하고 계속",
+  "homeGreeting": "Zync할 준비 됐나요?",
+  "interestsCount": "프로필에 관심사 {count}개",
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncWithSomeone": "누군가와 Zync",
+  "showMyQr": "내 QR 보기",
+  "scanSomeone": "상대방 스캔",
+  "myInterests": "내 관심사",
+  "peopleHistory": "Zync했던 사람",
+  "interestDna": "관심사 DNA",
+  "readyToZync": "상대방이 이 코드를 스캔하게 하세요",
+  "qrPrivacy": "이 QR에는 선택한 프로필 정보와 일회용 암호화 세션 키가 포함됩니다. 임시 relay는 자동으로 만료됩니다.",
+  "waitingForScan": "스캔을 기다리는 중…",
+  "zyncing": "Zync 중…",
+  "relayConnectionIssue": "연결이 조금 불안정합니다. 이 QR이 유효한 동안 계속 다시 시도할게요.",
+  "relayStartIssue": "아직 이 QR을 준비하지 못했습니다. 연결을 확인하고 다시 시도해 주세요.",
+  "relayExpired": "이 QR은 만료되었습니다. 개인정보 보호를 위해 새 QR을 만들어 주세요.",
+  "regenerateQr": "새 QR",
+  "qrAlreadyUsed": "이 Zync QR은 이미 사용되었습니다. 상대방에게 새 QR을 보여 달라고 해 주세요.",
+  "scanConnectionIssue": "Zync를 완료하지 못했습니다. 연결을 확인하고 다시 시도해 주세요.",
+  "scanTitle": "Zync QR 스캔",
+  "scanHint": "상대방의 Zync QR에 카메라를 맞추세요.",
+  "invalidQr": "유효한 Zync QR이 아닙니다.",
+  "cameraPermissionTitle": "카메라 권한이 필요해요",
+  "cameraPermissionBody": "휴대폰 설정에서 Zync의 카메라 사용을 허용한 뒤 돌아와 다시 시도해 주세요.",
+  "cameraUnavailableTitle": "카메라를 사용할 수 없어요",
+  "cameraUnavailableBody": "이 기기에서는 Zync가 카메라에 접근할 수 없어요. 대신 내 QR을 보여 상대방이 스캔하게 할 수 있습니다.",
+  "cameraErrorTitle": "스캐너를 다시 시도해 주세요",
+  "cameraErrorBody": "카메라를 시작하지 못했어요. 다시 시도하거나 뒤로 가서 내 QR을 보여 주세요.",
+  "youZync": "YOU ZYNC!",
+  "hiddenMatches": "숨겨진 공통 관심사가 {count}개 있어요.",
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noExactMatch": "완전히 같은 관심사는 아직 없어요.",
+  "findConnection": "둘 사이의 연결점을 찾아볼게요.",
+  "reveal": "공개",
+  "nextMatch": "다음 공통점",
+  "startConversation": "대화 시작",
+  "conversationTitle": "대화 분위기 선택",
+  "modeEasy": "가볍게",
+  "modeFun": "재미있게",
+  "modeDebate": "토론",
+  "modeDeep": "깊게",
+  "modeGuess": "맞혀보기",
+  "modeSurprise": "랜덤",
+  "anotherQuestion": "다른 질문",
+  "aiUnavailable": "AI를 잠시 사용할 수 없어 기기 내 질문을 대신 보여드려요.",
+  "noHistory": "아직 Zync 기록이 없어요.",
+  "zyncAgain": "다시 Zync",
+  "newMatches": "지난번보다 새로운 공통점 {count}개",
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "love": "정말 좋아해요",
+  "like": "좋아해요",
+  "wantToTry": "해보고 싶어요",
+  "privacyPolicy": "개인정보 처리방침",
+  "privacyPolicyUnavailable": "개인정보 처리방침을 열 수 없습니다. 다시 시도해 주세요.",
+  "edit": "편집",
+  "done": "완료",
+  "retry": "다시 시도",
+  "cancel": "취소",
+  "hiddenConnections": "숨겨진 연결 {count}개를 찾았어요.",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "연결 하나 공개",
+  "revealAnother": "하나 더 공개",
+  "talkAboutThis": "이 이야기로 시작하기",
+  "changeVibe": "분위기 바꾸기",
+  "connectionProgress": "연결 {current} / {total}",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "이번 Zync에서 새로 발견",
+  "strengthContrast": "나: {mine} · {peer}: {theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "관심사는 달라도,",
+  "stillConnection": "연결점은 있어요.",
+  "crossoverIntro": "이 교차점으로 이야기해 보세요",
+  "sessionRecap": "이번에 발견한 것",
+  "sessionRecapCount": "{name}님과 {count}개의 연결을 찾았어요.",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "Zync 마치기",
+  "findingQuestion": "좋은 질문을 찾는 중…",
+  "keepDiscovering": "더 알아보기",
+  "sharedOnlyStart": "공통 관심사는 시작일 뿐이에요. 서로 몰랐던 것을 더 발견해 보세요.",
+  "askAboutThem": "상대에 대해 묻기",
+  "letThemAskYou": "나에 대해 질문받기",
+  "surpriseUs": "깜짝 질문",
+  "finishAndRecap": "마치고 돌아보기",
+  "backToIdeas": "다른 아이디어 보기",
+  "theirInterest": "상대의 관심사",
+  "yourInterest": "나의 관심사",
+  "socialLinks": "소셜 링크",
+  "socialLinksSubtitle": "선택 사항입니다. Zync 후 공유해도 되는 공개 프로필을 추가하세요.",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync 후 공유",
+  "shareAfterZyncExplain": "직접 공유를 켠 링크만 Zync QR에 포함되고 세션 후 상대에게 표시됩니다.",
+  "stayConnected": "계속 연결할까요?",
+  "openProfile": "프로필 열기",
+  "showQr": "QR 보기",
+  "saveSocialLinks": "소셜 링크 저장",
+  "questionsSavedCount": "저장된 질문: {count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync 횟수: {count} · 최근: {date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "둘 다 좋아하는 것",
+  "noSharedSaved": "저장된 공통 관심사가 아직 없습니다.",
+  "thingsLearnedAboutThem": "상대에 대해 알게 된 것",
+  "nothingExtraSaved": "최근 Zync에서 추가로 저장된 상대 관심사가 없습니다.",
+  "questionsYouTalkedAbout": "함께 이야기한 질문",
+  "questionsNextTime": "다음 Zync에서 사용한 질문은 이 기기에 저장됩니다.",
+  "sharedSocials": "상대가 공유한 소셜 계정"
+}

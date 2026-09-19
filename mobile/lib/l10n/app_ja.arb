@@ -1,0 +1,216 @@
+{
+  "@@locale": "ja",
+  "appTitle": "Zync",
+  "tagline": "ふたりをつなぐ共通点を見つけよう。",
+  "getStarted": "はじめる",
+  "nicknameOptional": "ニックネーム（任意）",
+  "yourName": "なんと呼べばいいですか？",
+  "continueLabel": "続ける",
+  "pickInterests": "何が好き？",
+  "pickAtLeastFive": "興味を5つ以上選んでください。あとでいつでも変更できます。",
+  "searchAnything": "興味を検索...",
+  "addWithAi": "AIで「{interest}」を追加",
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSuggested": "AIの提案：「{interest}」。追加しますか？",
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "addInterest": "興味を追加",
+  "normalizing": "興味を理解しています...",
+  "selectedCount": "{count}個選択中",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "saveAndContinue": "保存して続ける",
+  "homeGreeting": "Zyncする準備はできた？",
+  "interestsCount": "プロフィールに{count}個の興味があります",
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncWithSomeone": "誰かとZyncする",
+  "showMyQr": "自分のQRを表示",
+  "scanSomeone": "相手をスキャン",
+  "myInterests": "自分の興味",
+  "peopleHistory": "Zyncした人",
+  "interestDna": "興味DNA",
+  "readyToZync": "このコードを相手にスキャンしてもらおう",
+  "qrPrivacy": "このQRには選択したプロフィール情報と1回限りの暗号化セッションキーが含まれます。臨時relayは自動で期限切れになります。",
+  "waitingForScan": "スキャンを待っています…",
+  "zyncing": "Zync中…",
+  "relayConnectionIssue": "接続が少し不安定です。このQRが有効な間は再試行を続けます。",
+  "relayStartIssue": "このQRをまだ準備できませんでした。接続を確認してもう一度お試しください。",
+  "relayExpired": "このQRは期限切れです。プライバシー保護のため新しいQRを作成してください。",
+  "regenerateQr": "新しいQR",
+  "qrAlreadyUsed": "このZync QRはすでに使用されています。相手に新しいQRを表示してもらってください。",
+  "scanConnectionIssue": "Zyncを完了できませんでした。接続を確認してもう一度お試しください。",
+  "scanTitle": "Zync QRをスキャン",
+  "scanHint": "相手のZync QRにカメラを向けてください。",
+  "invalidQr": "有効なZync QRではありません。",
+  "cameraPermissionTitle": "カメラへのアクセスが必要です",
+  "cameraPermissionBody": "端末の設定でZyncのカメラ使用を許可してから、戻ってもう一度お試しください。",
+  "cameraUnavailableTitle": "カメラを利用できません",
+  "cameraUnavailableBody": "この端末ではZyncがカメラにアクセスできません。自分のQRを表示して、相手にスキャンしてもらうことはできます。",
+  "cameraErrorTitle": "スキャナーをもう一度お試しください",
+  "cameraErrorBody": "カメラを起動できませんでした。もう一度試すか、戻って自分のQRを表示してください。",
+  "youZync": "YOU ZYNC!",
+  "hiddenMatches": "{count}個の隠れた共通点があります。",
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noExactMatch": "完全に同じ興味はまだありません。",
+  "findConnection": "ふたりの接点を見つけよう。",
+  "reveal": "公開",
+  "nextMatch": "次の共通点",
+  "startConversation": "会話を始める",
+  "conversationTitle": "会話の雰囲気を選ぶ",
+  "modeEasy": "気軽",
+  "modeFun": "楽しい",
+  "modeDebate": "ディベート",
+  "modeDeep": "深い話",
+  "modeGuess": "当ててみる",
+  "modeSurprise": "おまかせ",
+  "anotherQuestion": "次の質問",
+  "aiUnavailable": "AIが一時的に利用できないため、端末内の質問を表示します。",
+  "noHistory": "まだZync履歴はありません。",
+  "zyncAgain": "もう一度Zync",
+  "newMatches": "前回から新しい共通点が{count}個増えました",
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "love": "大好き",
+  "like": "好き",
+  "wantToTry": "やってみたい",
+  "privacyPolicy": "プライバシーポリシー",
+  "privacyPolicyUnavailable": "プライバシーポリシーを開けませんでした。もう一度お試しください。",
+  "edit": "編集",
+  "done": "完了",
+  "retry": "再試行",
+  "cancel": "キャンセル",
+  "hiddenConnections": "隠れたつながりが {count} 個見つかりました。",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "つながりを1つ見る",
+  "revealAnother": "もう1つ見る",
+  "talkAboutThis": "ここから話してみよう",
+  "changeVibe": "雰囲気を変える",
+  "connectionProgress": "{current} / {total} のつながり",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "今回のZyncで新しく発見",
+  "strengthContrast": "あなた：{mine} · {peer}：{theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "興味は違っても、",
+  "stillConnection": "つながりは見つかります。",
+  "crossoverIntro": "このクロスオーバーで話そう",
+  "sessionRecap": "今回見つけたつながり",
+  "sessionRecapCount": "{name}さんと {count} 個のつながりを見つけました。",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "Zyncを終了",
+  "findingQuestion": "いい質問を考えています…",
+  "keepDiscovering": "もっと知る",
+  "sharedOnlyStart": "共通点はきっかけにすぎません。まだ知らなかった相手のことを見つけましょう。",
+  "askAboutThem": "相手について聞く",
+  "letThemAskYou": "あなたについて聞いてもらう",
+  "surpriseUs": "おまかせ",
+  "finishAndRecap": "終了して振り返る",
+  "backToIdeas": "ほかの話題へ",
+  "theirInterest": "相手の興味",
+  "yourInterest": "あなたの興味",
+  "socialLinks": "ソーシャルリンク",
+  "socialLinksSubtitle": "任意。Zync後に共有してもよい公開プロフィールを追加できます。",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync後に共有",
+  "shareAfterZyncExplain": "明示的に共有をオンにしたリンクだけがZync QRに入り、セッション後に相手へ表示されます。",
+  "stayConnected": "つながっておく？",
+  "openProfile": "プロフィールを開く",
+  "showQr": "QRを表示",
+  "saveSocialLinks": "ソーシャルリンクを保存",
+  "questionsSavedCount": "保存した質問：{count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync回数：{count} · 最終：{date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "二人とも好きなもの",
+  "noSharedSaved": "保存された共通の興味はまだありません。",
+  "thingsLearnedAboutThem": "相手について知ったこと",
+  "nothingExtraSaved": "直近のZyncでは追加の興味は保存されていません。",
+  "questionsYouTalkedAbout": "話した質問",
+  "questionsNextTime": "次回のZyncで使った質問はこの端末に保存されます。",
+  "sharedSocials": "相手が共有したSNS"
+}

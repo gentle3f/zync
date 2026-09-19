@@ -1,0 +1,246 @@
+name: Zync V1 CI
+
+on:
+  push:
+    branches:
+      - zync-v1-rebuild-20260917
+    paths:
+      - 'mobile/**'
+      - 'api/**'
+      - 'db/**'
+      - 'docs/ZYNC_CARDVERSE_*.md'
+      - 'package.json'
+      - 'index.html'
+      - 'privacy.html'
+      - 'terms.html'
+      - 'disclaimer.html'
+      - 'vercel.json'
+      - '.github/scripts/*.mjs'
+      - '.github/scripts/*.py'
+      - '.github/workflows/zync-v1-ci.yml'
+      - '.github/workflows/zync-v1-signed-release.yml'
+      - '.github/workflows/zync-play-internal-release.yml'
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - 'api/**'
+      - 'db/**'
+      - 'docs/ZYNC_CARDVERSE_*.md'
+      - 'package.json'
+      - 'index.html'
+      - 'privacy.html'
+      - 'terms.html'
+      - 'disclaimer.html'
+      - 'vercel.json'
+      - '.github/scripts/*.mjs'
+      - '.github/scripts/*.py'
+      - '.github/workflows/zync-v1-ci.yml'
+      - '.github/workflows/zync-v1-signed-release.yml'
+      - '.github/workflows/zync-play-internal-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zync-v1-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ZYNC_API_BASE: ${{ vars.ZYNC_API_BASE }}
+      ZYNC_PRIVACY_URL: ${{ vars.ZYNC_PRIVACY_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show toolchain
+        run: |
+          flutter --version
+          dart --version
+          node --version
+
+      - name: Check serverless JavaScript syntax
+        run: |
+          node --check api/generate.js
+          node --check api/generate1.js
+          node --check api/generate2.js
+          node --check api/v1/question.js
+          node --check api/v1/normalize-interest.js
+          node --check api/v1/analytics.js
+          node --check api/v1/relay.js
+          node --check api/v1/group-relay.js
+          node --check api/v1/interest-popularity.js
+          node --check api/_cardverse/db.js
+          node --check api/_cardverse/abuse_guard.js
+          node --check api/_cardverse/account_lifecycle.js
+          node --check api/_cardverse/ownership_store.js
+          node --check api/_cardverse/pack_store.js
+          node --check api/_cardverse/session_store.js
+          node --check api/_cardverse/provider_auth.js
+          node --check api/_cardverse/catalog_v1.js
+          node --check api/_cardverse/pack_policy_v1.js
+          node --check api/_cardverse/runtime_gate.js
+          node --check api/_cardverse/reward_store.js
+          node --check api/_cardverse/proof_ticket.js
+          node --check api/_cardverse/proof_ticket_redemption.js
+          node --check api/v1/cardverse/auth/challenge.js
+          node --check api/v1/cardverse/auth/provider.js
+          node --check api/v1/cardverse/auth/logout.js
+          node --check api/v1/cardverse/auth/logout-all.js
+          node --check api/v1/cardverse/auth/link.js
+          node --check api/v1/cardverse/auth/unlink.js
+          node --check api/v1/cardverse/account/delete.js
+          node --check api/v1/cardverse/inventory.js
+          node --check api/v1/cardverse/packs/open.js
+          node --check api/v1/cardverse/quests/claim.js
+          node --check api/v1/cardverse/proofs/redeem.js
+          node --check .github/scripts/serverless_contracts.mjs
+          node --check .github/scripts/relay_contracts.mjs
+          node --check .github/scripts/group_relay_contracts.mjs
+          node --check .github/scripts/interest_popularity_contracts.mjs
+          node --check .github/scripts/openrouter_privacy_contracts.mjs
+          node --check .github/scripts/live_api_smoke.mjs
+          node --check .github/scripts/release_web_contracts.mjs
+          node --check .github/scripts/play_internal_release_contracts.mjs
+          node --check .github/scripts/cardverse_ownership_contracts.mjs
+          node --check .github/scripts/cardverse_pack_open_contracts.mjs
+          node --check .github/scripts/cardverse_auth_contracts.mjs
+          node --check .github/scripts/cardverse_abuse_guard_contracts.mjs
+          node --check .github/scripts/cardverse_account_lifecycle_contracts.mjs
+          node --check .github/scripts/cardverse_pack_policy_contracts.mjs
+          node --check .github/scripts/cardverse_reward_contracts.mjs
+          node --check .github/scripts/cardverse_proof_ticket_contracts.mjs
+
+      - name: Test V1 serverless contracts
+        run: node .github/scripts/serverless_contracts.mjs
+
+      - name: Test Cardverse durable ownership contracts
+        run: node .github/scripts/cardverse_ownership_contracts.mjs
+
+      - name: Test Cardverse pack-open transaction contracts
+        run: node .github/scripts/cardverse_pack_open_contracts.mjs
+
+      - name: Test Cardverse auth/session contracts
+        run: node .github/scripts/cardverse_auth_contracts.mjs
+
+      - name: Test Cardverse distributed abuse/rate-limit contracts
+        run: node .github/scripts/cardverse_abuse_guard_contracts.mjs
+
+      - name: Test Cardverse account/session lifecycle contracts
+        run: node .github/scripts/cardverse_account_lifecycle_contracts.mjs
+
+      - name: Test Cardverse server catalog and pack policy contracts
+        run: node .github/scripts/cardverse_pack_policy_contracts.mjs
+
+      - name: Test Cardverse trusted Quest reward contracts
+        run: node .github/scripts/cardverse_reward_contracts.mjs
+
+      - name: Test Cardverse anonymous proof-ticket contracts
+        run: node .github/scripts/cardverse_proof_ticket_contracts.mjs
+
+      - name: Test encrypted relay contracts
+        run: node .github/scripts/relay_contracts.mjs
+
+      - name: Test Group Zync relay contracts
+        run: node .github/scripts/group_relay_contracts.mjs
+
+      - name: Test regional interest popularity contracts
+        run: node .github/scripts/interest_popularity_contracts.mjs
+
+      - name: Test OpenRouter privacy contracts
+        run: node .github/scripts/openrouter_privacy_contracts.mjs
+
+      - name: Test public release web contracts
+        run: node .github/scripts/release_web_contracts.mjs
+
+      - name: Test Play internal-release workflow contracts
+        run: node .github/scripts/play_internal_release_contracts.mjs
+
+      - name: Test release-signing configurator
+        run: python3 mobile/tool/configure_android_signing.py --self-test
+
+      - name: Test Play internal-release publishing guards
+        run: python3 .github/scripts/play_internal_release.py --self-test
+
+      - name: Generate Android wrapper with legacy Play identity
+        run: |
+          rm -rf build_app
+          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
+          rm -rf build_app/lib build_app/test
+          cp -R mobile/lib build_app/lib
+          cp -R mobile/test build_app/test
+          cp mobile/pubspec.yaml build_app/pubspec.yaml
+          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 mobile/tool/apply_android_branding.py build_app
+
+      - name: Verify signing patch matches generated Flutter template
+        run: python3 mobile/tool/configure_android_signing.py --check-template build_app
+
+      - name: Verify Play identity and Android requirements
+        run: |
+          grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
+          grep -q "version: 1.0.0+6" build_app/pubspec.yaml
+          grep -q 'android:label="Zync"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -q 'android:icon="@mipmap/zync_launcher"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -q 'android:allowBackup="false"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -q 'android:theme="@style/ZyncLaunchTheme"' build_app/android/app/src/main/AndroidManifest.xml
+          test -f build_app/android/app/src/main/res/mipmap-anydpi-v26/zync_launcher.xml
+          test -f build_app/android/app/src/main/res/mipmap-anydpi-v33/zync_launcher.xml
+          test -f build_app/android/app/src/main/res/drawable/zync_splash_mark.xml
+          grep -R -E 'compileSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
+          grep -R -E 'targetSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
+
+      - name: Install Flutter dependencies
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: build_app
+        run: flutter gen-l10n
+
+      - name: Analyze
+        working-directory: build_app
+        run: flutter analyze
+
+      - name: Test
+        working-directory: build_app
+        run: flutter test --dart-define=ZYNC_PRIVACY_URL=https://example.com/zync-privacy-policy
+
+      - name: Build unsigned release AAB
+        working-directory: build_app
+        run: >-
+          flutter build appbundle --release
+          "--dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}"
+          "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PRIVACY_URL}"
+          "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-v1-unsigned-aab
+          path: build_app/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14
+
+
+  cardverse-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Execute Cardverse PostgreSQL migrations and constraints
+        run: .github/scripts/cardverse_postgres_contracts.sh

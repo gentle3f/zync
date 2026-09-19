@@ -1,0 +1,216 @@
+{
+  "@@locale": "zh_Hant",
+  "appTitle": "Zync",
+  "tagline": "發現你哋之間嘅連結。",
+  "getStarted": "開始",
+  "nicknameOptional": "暱稱（可選）",
+  "yourName": "想我哋點稱呼你？",
+  "continueLabel": "繼續",
+  "pickInterests": "你鍾意啲乜？",
+  "pickAtLeastFive": "至少揀 5 個興趣，之後隨時可以更改。",
+  "searchAnything": "搜尋任何興趣...",
+  "addWithAi": "用 AI 加入「{interest}」",
+  "@addWithAi": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "aiSuggested": "AI 建議將佢整理成「{interest}」。加入嗎？",
+  "@aiSuggested": {
+    "placeholders": {
+      "interest": {
+        "type": "String"
+      }
+    }
+  },
+  "addInterest": "加入興趣",
+  "normalizing": "正在理解你嘅興趣...",
+  "selectedCount": "已選 {count} 個",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "saveAndContinue": "儲存並繼續",
+  "homeGreeting": "準備 Zync？",
+  "interestsCount": "你嘅興趣檔案有 {count} 個興趣",
+  "@interestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncWithSomeone": "同另一個人 Zync",
+  "showMyQr": "顯示我的 QR",
+  "scanSomeone": "掃描對方",
+  "myInterests": "我的興趣",
+  "peopleHistory": "曾經 Zync 過的人",
+  "interestDna": "興趣 DNA",
+  "readyToZync": "俾對方掃描呢個 QR",
+  "qrPrivacy": "呢個 QR 包含你揀選嘅個人檔案資料同一次性加密 session key；臨時 relay 會自動過期。",
+  "waitingForScan": "等待掃描…",
+  "zyncing": "Zync 緊…",
+  "relayConnectionIssue": "連線有少少唔穩定。只要呢個 QR 仲有效，我哋會繼續嘗試。",
+  "relayStartIssue": "暫時未能準備呢個 QR。請檢查網絡後再試。",
+  "relayExpired": "呢個 QR 已過期。為保障私隱，請產生一個新 QR。",
+  "regenerateQr": "新 QR",
+  "qrAlreadyUsed": "呢個 Zync QR 已經用過。請對方顯示一個新 QR。",
+  "scanConnectionIssue": "今次未能完成 Zync。請檢查網絡後再試。",
+  "scanTitle": "掃描 Zync QR",
+  "scanHint": "將鏡頭對準對方嘅 Zync QR。",
+  "invalidQr": "呢個唔係有效嘅 Zync QR。",
+  "cameraPermissionTitle": "需要相機權限",
+  "cameraPermissionBody": "請喺手機設定中允許 Zync 使用相機，之後返嚟再試。",
+  "cameraUnavailableTitle": "相機暫時用唔到",
+  "cameraUnavailableBody": "Zync 喺呢部裝置搵唔到可用相機。你仍然可以顯示自己嘅 QR，俾對方掃描。",
+  "cameraErrorTitle": "掃描器需要再試一次",
+  "cameraErrorBody": "相機未能啟動。可以再試，或者返回顯示自己嘅 QR。",
+  "youZync": "你哋 ZYNC 咗！",
+  "hiddenMatches": "你哋有 {count} 個隱藏共同興趣。",
+  "@hiddenMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noExactMatch": "暫時冇完全相同嘅興趣。",
+  "findConnection": "一齊搵出你哋之間嘅連結。",
+  "reveal": "揭曉",
+  "nextMatch": "下一個",
+  "startConversation": "開始傾偈",
+  "conversationTitle": "揀一種氣氛",
+  "modeEasy": "輕鬆",
+  "modeFun": "搞笑",
+  "modeDebate": "辯論",
+  "modeDeep": "深入",
+  "modeGuess": "估對方",
+  "modeSurprise": "隨機",
+  "anotherQuestion": "再來一題",
+  "aiUnavailable": "AI 暫時未能使用，先用本機問題繼續。",
+  "noHistory": "暫時未有 Zync 紀錄。",
+  "zyncAgain": "再次 Zync",
+  "newMatches": "比上次多咗 {count} 個新共同興趣",
+  "@newMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "love": "超鍾意",
+  "like": "鍾意",
+  "wantToTry": "想試",
+  "privacyPolicy": "私隱政策",
+  "privacyPolicyUnavailable": "暫時未能開啟私隱政策，請稍後再試。",
+  "edit": "編輯",
+  "done": "完成",
+  "retry": "再試",
+  "cancel": "取消",
+  "hiddenConnections": "你哋搵到 {count} 個隱藏連結。",
+  "@hiddenConnections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "revealConnection": "揭曉一個連結",
+  "revealAnother": "再揭曉一個",
+  "talkAboutThis": "由呢度開始傾",
+  "changeVibe": "轉換氣氛",
+  "connectionProgress": "第 {current} / {total} 個連結",
+  "@connectionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "newConnection": "今次 Zync 新發現",
+  "strengthContrast": "你：{mine} · {peer}：{theirs}",
+  "@strengthContrast": {
+    "placeholders": {
+      "mine": {
+        "type": "String"
+      },
+      "peer": {
+        "type": "String"
+      },
+      "theirs": {
+        "type": "String"
+      }
+    }
+  },
+  "differentInterests": "興趣唔同。",
+  "stillConnection": "但仍然搵到一個連結。",
+  "crossoverIntro": "試下呢個 crossover",
+  "sessionRecap": "今次發現咗啲乜",
+  "sessionRecapCount": "你同 {name} 發現咗 {count} 個連結。",
+  "@sessionRecapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "finishZync": "完成今次 Zync",
+  "findingQuestion": "諗緊一條值得傾嘅問題…",
+  "keepDiscovering": "繼續發現",
+  "sharedOnlyStart": "共同興趣只係開始。再發現一啲你原本唔知道對方嘅事。",
+  "askAboutThem": "問下對方",
+  "letThemAskYou": "畀對方問你",
+  "surpriseUs": "畀我哋一個驚喜",
+  "finishAndRecap": "完成並睇回顧",
+  "backToIdeas": "返去其他話題",
+  "theirInterest": "對方其中一個興趣",
+  "yourInterest": "你其中一個興趣",
+  "socialLinks": "社交帳戶",
+  "socialLinksSubtitle": "可選。加入你願意Zync之後分享嘅公開帳戶。",
+  "instagram": "Instagram",
+  "threads": "Threads",
+  "facebook": "Facebook",
+  "shareAfterZync": "Zync後分享",
+  "shareAfterZyncExplain": "只有你明確開啟分享嘅帳戶先會放入Zync QR，並喺session完結後顯示畀對方。",
+  "stayConnected": "想繼續聯絡？",
+  "openProfile": "開啟帳戶",
+  "showQr": "顯示QR",
+  "saveSocialLinks": "儲存社交帳戶",
+  "questionsSavedCount": "已儲存問題：{count}",
+  "@questionsSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "zyncSessionsMeta": "Zync 次數：{count} · 最近：{date}",
+  "@zyncSessionsMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "thingsYouBothLike": "你哋都鍾意嘅嘢",
+  "noSharedSaved": "暫時冇已儲存嘅共同興趣。",
+  "thingsLearnedAboutThem": "你發現咗對方啲咩",
+  "nothingExtraSaved": "最近一次Zync未有儲存其他對方興趣。",
+  "questionsYouTalkedAbout": "你哋傾過嘅問題",
+  "questionsNextTime": "下次Zync出現過嘅問題會儲喺呢部手機。",
+  "sharedSocials": "對方分享過嘅社交帳戶"
+}
