@@ -242,6 +242,28 @@ void main() {
     );
   });
 
+  test('engine can use taxonomy defaults for interests without explicit metadata', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('gaming.strategy', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('gaming.strategy', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      seed: 'taxonomy-default',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('gaming.strategy')),
+      isTrue,
+    );
+  });
+
   test('surprise mode is deterministic for the same session seed', () {
     final participants = [
       participant('a', [
