@@ -10,6 +10,7 @@ import {
   createAccountSession,
   createAuthChallenge,
   resolveAccountSession,
+  revokeAllAccountSessions,
 } from '../../api/_cardverse/session_store.js';
 
 const migration = await readFile(
@@ -120,17 +121,26 @@ const SESSION = '33333333-3333-4333-8333-333333333333';
 
 {
   let tokenHash = null;
+  let cleanupSeen = false;
   const db = {
     async query(text, params) {
-      assert.match(text, /INSERT INTO zync_account_sessions/);
-      tokenHash = params[1];
-      return [{ session_id: SESSION, expires_at: '2026-10-20T02:00:00.000Z' }];
+      if (text.includes('INSERT INTO zync_account_sessions')) {
+        tokenHash = params[1];
+        return [{ session_id: SESSION, expires_at: '2026-10-20T02:00:00.000Z' }];
+      }
+      assert.match(text, /UPDATE zync_account_sessions/);
+      assert.match(text, /LIMIT \$2/);
+      assert.equal(params[0], ACCOUNT);
+      assert.equal(params[1], 8);
+      cleanupSeen = true;
+      return [];
     },
   };
   const session = await createAccountSession(db, ACCOUNT, { ttlDays: 30 });
   assert.equal(session.sessionId, SESSION);
   assert.match(session.token, /^[A-Za-z0-9_-]{43}$/);
   assert.equal(tokenHash, createHash('sha256').update(session.token).digest('hex'));
+  assert.equal(cleanupSeen, true);
   assert.equal(bearerTokenFromAuthorization('Bearer ' + session.token), session.token);
 }
 
@@ -160,6 +170,18 @@ const SESSION = '33333333-3333-4333-8333-333333333333';
   assert.equal(call, 2);
 }
 
+{
+  const db = {
+    async query(text, params) {
+      assert.match(text, /WHERE account_id = \$1 AND revoked_at IS NULL/);
+      assert.equal(params[0], ACCOUNT);
+      return [{ session_id: SESSION }, { session_id: CHALLENGE }];
+    },
+  };
+  const result = await revokeAllAccountSessions(db, ACCOUNT);
+  assert.equal(result.revoked, 2);
+}
+
 assert.throws(
   () => bearerTokenFromAuthorization('Bearer too-short'),
   /cardverse_session_missing/,
@@ -172,6 +194,10 @@ for (const modulePath of [
   '../../api/v1/cardverse/auth/challenge.js',
   '../../api/v1/cardverse/auth/provider.js',
   '../../api/v1/cardverse/auth/logout.js',
+  '../../api/v1/cardverse/auth/logout-all.js',
+  '../../api/v1/cardverse/auth/link.js',
+  '../../api/v1/cardverse/auth/unlink.js',
+  '../../api/v1/cardverse/account/delete.js',
   '../../api/v1/cardverse/inventory.js',
 ]) {
   const loaded = await import(modulePath);
@@ -185,23 +211,30 @@ console.log('✓ Cardverse auth endpoint module resolution passed');
   const gate = await import('../../api/_cardverse/runtime_gate.js');
   const beforeApi = process.env.CARDVERSE_API_ENABLED;
   const beforePack = process.env.CARDVERSE_PACK_OPEN_ENABLED;
+  const beforeLifecycle = process.env.CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED;
 
   delete process.env.CARDVERSE_API_ENABLED;
   delete process.env.CARDVERSE_PACK_OPEN_ENABLED;
+  delete process.env.CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED;
   assert.equal(gate.cardverseApiEnabled(), false);
   assert.equal(gate.cardversePackOpenEnabled(), false);
+  assert.equal(gate.cardverseAccountLifecycleEnabled(), false);
 
   process.env.CARDVERSE_API_ENABLED = 'true';
   assert.equal(gate.cardverseApiEnabled(), true);
   assert.equal(gate.cardversePackOpenEnabled(), false);
 
   process.env.CARDVERSE_PACK_OPEN_ENABLED = 'true';
+  process.env.CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED = 'true';
   assert.equal(gate.cardversePackOpenEnabled(), true);
+  assert.equal(gate.cardverseAccountLifecycleEnabled(), true);
 
   if (beforeApi == null) delete process.env.CARDVERSE_API_ENABLED;
   else process.env.CARDVERSE_API_ENABLED = beforeApi;
   if (beforePack == null) delete process.env.CARDVERSE_PACK_OPEN_ENABLED;
   else process.env.CARDVERSE_PACK_OPEN_ENABLED = beforePack;
+  if (beforeLifecycle == null) delete process.env.CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED;
+  else process.env.CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED = beforeLifecycle;
 }
 
 console.log('✓ Cardverse runtime kill-switch contracts passed');
