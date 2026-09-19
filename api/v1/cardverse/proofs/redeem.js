@@ -1,4 +1,4 @@
-import { getCardverseDatabase } from '../../../_cardverse/db.js';
+import {\n  applyCardverseAbuseHeaders,\n  enforceCardverseAccountRateLimit,\n  enforceCardverseIpRateLimit,\n} from '../../../_cardverse/abuse_guard.js';\nimport { getCardverseDatabase } from '../../../_cardverse/db.js';
 import { redeemRelayCompletionTicket } from '../../../_cardverse/proof_ticket_redemption.js';
 import {
   cardverseProofRedeemEnabled,
@@ -20,7 +20,7 @@ const BAD_REQUEST = new Set([
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured' ||
       error?.code === 'cardverse_proof_secret_not_configured') return 503;
-  if (error?.code === 'cardverse_session_missing' ||
+  if (error?.code === 'cardverse_rate_limited') return 429;\n  if (error?.code === 'cardverse_session_missing' ||
       error?.code === 'cardverse_session_invalid') return 401;
   if (BAD_REQUEST.has(error?.code)) return 400;
   if (error?.code === 'cardverse_proof_ticket_already_redeemed') return 409;
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
   try {
     const token = bearerTokenFromAuthorization(req.headers?.authorization);
     const db = await getCardverseDatabase();
-    const session = await resolveAccountSession(db, token);
+    const session = await resolveAccountSession(db, token);\n    await enforceCardverseAccountRateLimit(session.accountId, 'proof_redeem_account');
     const receipt = await redeemRelayCompletionTicket(
       db,
       session.accountId,
