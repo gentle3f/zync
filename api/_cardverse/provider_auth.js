@@ -1,4 +1,4 @@
-import { ensureAccountForIdentity } from './ownership_store.js';
+import { ensureAccountForIdentity, linkIdentityToAccount } from './ownership_store.js';
 import {
   consumeAuthChallenge,
   createAccountSession,
@@ -135,6 +135,35 @@ export async function authenticateProvider(db, input = {}, options = {}) {
     account: accountResult.account,
     accountCreated: accountResult.created,
     session,
+    identity: {
+      provider: identity.provider,
+      emailVerified: identity.emailVerified,
+    },
+  };
+}
+
+
+export async function verifyProviderAccountAction(db, input = {}, options = {}) {
+  const identity = await verifyProviderIdToken(
+    input.provider,
+    input.idToken,
+    options,
+  );
+
+  await consumeAuthChallenge(db, {
+    challengeId: input.challengeId,
+    provider: identity.provider,
+    nonce: identity.nonce,
+  });
+
+  return identity;
+}
+
+export async function linkProviderIdentityToAccount(db, accountId, input = {}, options = {}) {
+  const identity = await verifyProviderAccountAction(db, input, options);
+  const linked = await linkIdentityToAccount(db, accountId, identity);
+  return {
+    ...linked,
     identity: {
       provider: identity.provider,
       emailVerified: identity.emailVerified,
