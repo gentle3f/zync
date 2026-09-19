@@ -18,8 +18,6 @@ class InterestLocalizationPolicy {
   /// enforce the translations permanently.
   static const Set<String> migrationBacklogClusters = {
     'movies/subgenres',
-    'gaming/subgenres',
-    'tabletop/categories_mechanics',
     'music/styles',
     'books/subgenres',
     'food/cuisines',
