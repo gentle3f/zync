@@ -1,34 +1,63 @@
 # Zync — Business Proposal & Product Vision
 
-> Canonical business/narrative context for future Zync work.
+> Canonical business, product and long-term strategic context for Zync.
 >
-> This document explains **why Zync exists, what problem it is trying to solve, what V1 is meant to prove, how the product can grow, and what should not be overbuilt too early**. Future chats should read this together with `docs/ZYNC_V1_PRODUCT_SPEC.md` and the current `AI_STATE/LATEST_HANDOFF.md` before making strategic changes.
+> This document explains **why Zync exists, what problem it is solving, what the current V1 is meant to prove, how the experience should evolve, how gamification and Cardverse fit the core product, how real-world decision support can become a major utility, and how future brands / venues / commerce can participate without corrupting user trust**.
+>
+> Future work should read this together with `docs/ZYNC_V1_PRODUCT_SPEC.md` and the current `AI_STATE/LATEST_HANDOFF.md`. The V1 Product Spec describes the currently shipped / certified core. This document is broader and may describe future product layers that are intentionally not yet in V1.
 
 ---
 
 ## 1. Executive summary
 
-**Zync helps people discover the connections they did not know existed — including shared interests, differences worth asking about, and surprising crossovers — and turns those discoveries into real conversations.**
+**Zync helps people discover the connections they did not know existed, turns those discoveries into real conversations, and can grow into a playable interest layer that helps people decide what to do together in real life.**
 
-The starting experience is deliberately simple:
+The original core experience is deliberately simple:
 
 1. each person builds a lightweight interest profile;
 2. one person shows a QR code and the other scans it;
-3. Zync compares their interests locally;
+3. Zync compares their interests;
 4. exact shared interests are revealed progressively rather than dumped as a list;
-5. AI turns the revealed connection into a natural conversation prompt;
-6. once the strongest shared interests are exhausted, Zync can keep the icebreaker alive by inviting one person to talk about an interest the other did not select, letting the roles reverse, or using a crossover;
-7. if there is no exact shared interest, Zync starts from a local crossover instead of showing a dead end.
+5. AI turns each useful discovery into a real two-person interaction;
+6. differences and crossovers keep the conversation alive after exact matches are exhausted;
+7. a successful session produces memory, progress and future discovery rather than ending as a disposable report.
 
-The emotional product moment is not “matching data.” It is the human reaction:
+The signature emotional moment remains:
 
 > **“Wait — you like that too?”**
 
-A representative example is two people who have known each other for years, yet only through Zync discover that both of them watch *JoJo’s Bizarre Adventure*. They may already be friends, colleagues or classmates, but this hidden overlap never came up naturally. Zync surfaces the overlap and gives them a reason to talk about it.
+But the expanded product vision is now larger:
 
-V1 is designed as a **low-cost, multilingual, privacy-first social experiment**. It does not require accounts, a user database, Firebase, a social graph or a large backend. Interest profiles remain on the device. QR exchange handles person-to-person discovery. AI calls go through a small Vercel proxy to OpenRouter, with local fallback questions if AI is unavailable.
+> **Zync should help people discover each other, discover themselves, and turn interests into things they can actually do together.**
 
-The long-term vision is much larger: a global **interest layer** connecting people, interests, places and intent. But V1 exists to test whether the smallest version of that idea produces enough delight, invitation behaviour and repeat use to justify building the larger network.
+That includes solving ordinary real-life friction such as:
+
+- What should we eat?
+- What should we do tonight?
+- Where should we go this weekend?
+- What can four people with different interests all enjoy?
+- What hobby should I try next?
+- What could we do together that neither of us would have thought of?
+
+The product should therefore evolve around one connected system:
+
+```text
+Interest Graph
+      ↓
+Real-world Zync
+      ↓
+AI Interaction / Decision Engine
+      ↓
+Cardverse + Collection + Quests + Trading
+      ↓
+Group Zync + Events + Guest Zync
+      ↓
+Places + Activities + Brands + Communities
+      ↓
+Hobbies Economy
+```
+
+The current V1 remains a low-cost, multilingual, privacy-first test of the two-person magic moment. The larger system should only be layered on in a way that strengthens that core rather than burying it.
 
 ---
 
@@ -50,11 +79,15 @@ That leads to a second question:
 
 > **Once the connection is found, can AI turn it into a better conversation instead of just displaying a match?**
 
-That combination — **interest discovery + conversational activation** — is the core of Zync.
+And now a third:
+
+> **Once Zync understands the interests of the people together, can it help them turn those interests into a real decision or shared experience?**
+
+That combination — **interest discovery + conversational activation + real-world action** — is the expanded core of Zync.
 
 ---
 
-## 3. The problem
+## 3. The larger real-world problem
 
 ### 3.1 Social identity is fragmented
 
@@ -63,9 +96,9 @@ A person’s interests are scattered across what they watch, play, read, collect
 Existing products tend to organise people around one context:
 
 - LinkedIn: professional identity;
-- Instagram/TikTok: content and self-presentation;
+- Instagram / TikTok: content and self-presentation;
 - Facebook Groups / Reddit / Discord: communities around topics;
-- Meetup: activities/events;
+- Meetup: activities / events;
 - dating apps: romantic matching;
 - messaging apps: communication after people already know whom they want to talk to.
 
@@ -83,23 +116,46 @@ The narrower the interest, the more emotionally meaningful the discovery can bec
 
 Many networking and social tools ask generic questions that could be shown to anyone. They do not know the participants.
 
-Zync’s goal is different: the question should come **after** the product has learned enough about both people to create relevance.
+Zync’s goal is different: the interaction should come **after** the product knows enough about both people to make it relevant.
 
 ### 3.4 Language creates unnecessary separation
 
 Two people can share the same interest but describe it in different languages. “Badminton,” “羽毛球,” “バドミントン” and “배드민턴” should not become four separate identities.
 
-Zync therefore treats the underlying interest as language-neutral and only localises its display.
+Zync therefore treats the underlying concept as language-neutral and only localises its display.
+
+### 3.5 People constantly suffer from shared decision paralysis
+
+A second major real-world problem is not discovering what people like, but **deciding what to do with that information**.
+
+Groups repeatedly ask:
+
+- “食咩好？” / “What should we eat?”
+- “去邊好？” / “Where should we go?”
+- “有咩做？” / “What should we do?”
+- “Weekend 做咩？”
+- “四個人興趣完全唔同，點揀一樣大家都接受？”
+
+This is often inefficient because:
+
+- one loud person dominates the decision;
+- people do not want to reject each other’s ideas;
+- nobody remembers everyone’s preferences;
+- people repeat the same familiar choices;
+- useful local activities / venues are difficult to discover;
+- the group knows what it does **not** want, but cannot generate good alternatives.
+
+Zync can use its interest graph, shared profile context and AI interaction layer to solve this problem directly.
 
 ---
 
-## 4. What Zync V1 is
+## 4. Current Zync V1
 
 A concise definition:
 
 > **Zync V1 = multilingual interest identity + QR ritual + hidden connection discovery + AI-activated conversation.**
 
-The product is deliberately local-first.
+The current product is deliberately local-first.
 
 ### Core V1 experience
 
@@ -111,105 +167,944 @@ The product is deliberately local-first.
 - Compare canonical interest IDs locally on-device.
 - Collapse broad taxonomy ancestors into stronger connection threads rather than revealing a hierarchy as a checklist.
 - Create the **YOU ZYNC!** impact moment, then reveal one meaningful connection at a time.
-- Put the AI conversation prompt inside that reveal moment instead of forcing users into a separate report-then-chat flow.
+- Put the AI interaction inside that reveal moment rather than forcing users into a separate report-then-chat flow.
 - If there is no exact match, use the local Interest Graph to choose a plausible crossover and let AI turn it into a question.
-- Keep conversation modes such as Fun, Deep, Debate, Guess or Surprise as secondary controls.
-- Keep local history so people can **Zync Again** later, revisit questions they talked about, and remember selected things they learned about each other.
-- Use stable ridiculous aliases for anonymous peers instead of sterile raw-ID names.
-- Let users optionally exchange explicitly consented public social-profile links after a successful Zync, without requiring a Zync account or social-media login.
-- Show an **Interest DNA** summary of the user's own interest profile.
-- Support different languages between two participants and show equivalent versions of the same semantic question.
+- Continue after exact matches through **Ask about them**, **Let them ask you**, crossovers and Surprise moments.
+- Keep local People / Zync Again history.
+- Use stable ridiculous aliases for anonymous peers instead of sterile raw IDs.
+- Allow explicitly consented public social-profile exchange after a successful Zync.
+- Show Interest DNA as a descriptive interest identity.
+- Support bilingual peers with equivalent semantic interactions.
 
 ### What makes the interaction distinctive
 
-The product should not behave like a spreadsheet saying:
+Zync should not behave like a spreadsheet saying:
 
 > Shared interests: F1, JoJo, Japan.
 
 It should create suspense and discovery:
 
-> **YOU ZYNC!**  
+> **YOU ZYNC!**
 > You found hidden connections.
 
-Then reveal one connection that is specific enough to make somebody react:
+Then reveal something specific enough to cause a reaction:
 
 > **JoJo's Bizarre Adventure**
 
-The conversation can start immediately. The user should not need to reveal every result before Zync becomes useful.
+The second half of the icebreaker is **curiosity**, not just similarity.
 
-This protects the strongest emotional moment: the surprise of learning something unexpected about another person.
+A useful Zync can be:
 
-The second half of the icebreaker is **curiosity**, not just similarity. A useful Zync can be: "Wait — you like that too?" but it can also be: "I never knew you were into that — tell me about it." Exact shared interests remain the signature hook because they create the strongest surprise, while different interests and crossovers keep the conversation alive after the obvious matches are gone.
+> “Wait — you like that too?”
 
-A good session therefore should not feel like a short match report with a fixed ending. It should give the pair a few strong conversational doors and let them decide when they are done.
+but also:
 
----
+> “I never knew you were into that — tell me about it.”
 
-## 5. Why QR matters
-
-QR is not used because QR itself is novel. It is useful because it gives Zync a strong real-world ritual and a low-friction privacy model.
-
-A user deliberately chooses to show Zync to the person physically in front of them. The other person scans once. There is no need to search usernames, exchange phone numbers, create friend requests or maintain a permanent central pairing database.
-
-The current one-scan architecture uses a minimal temporary relay: the scanner encrypts the limited profile response on-device with a one-time key carried in the QR, the relay stores only opaque ciphertext for a short lifetime, and the host decrypts locally. The private host capability is not in the QR, and abandoned relay state expires automatically.
-
-For V1 this allows:
-
-- no account requirement;
-- no permanent cloud profile requirement;
-- no permanent person-to-person pairing database;
-- lower privacy risk;
-- near-zero fixed infrastructure cost;
-- a visible, understandable “Zync with me” interaction;
-- both phones to enter the same post-scan experience after one scan.
-
-The QR and relay carry only what is needed for the Zync interaction. They do not need email, phone number, precise location or an advertising identifier.
+The session should create multiple conversational doors and let the people decide when they are done.
 
 ---
 
-## 6. Why AI belongs in V1
+## 5. Product constitution
 
-AI is not being added simply because AI is fashionable. Its most important V1 role is to convert a discovered connection into a better human conversation.
+Future product decisions should be tested against the following principles.
 
-### 6.1 Interest coverage without an AI gate
-
-A fixed hobby list will always be incomplete, so Zync's interest system is designed around a large multilingual canonical taxonomy, aliases, related-interest graph and instant local custom interests.
-
-The current V1 user should not have to wait for AI to approve an interest. If the local catalog does not contain what they type, Zync can create a deterministic local custom-interest identity immediately.
-
-AI may still help future catalog maintenance, normalization research or user-authorised Interest DNA workflows, but the shipped V1 interest-entry loop must remain fast and local-first.
-
-### 6.2 Conversation generation
-
-If both people like F1, a generic database question such as “Who is your favourite driver?” is usable but limited.
-
-AI can create a more interactive prompt:
-
-> “If you could both attend one Grand Prix for free, which race would you choose — and if you disagree, how would you convince the other person?”
-
-The prompt should focus on the connection currently being revealed rather than summarizing two whole profiles.
-
-When there is no exact match, the local Interest Graph first selects a plausible bridge. AI then turns that bridge into a discussable crossover instead of inventing a false shared interest.
-
-Person A may like F1 while Person B likes street photography. Zync can turn that into a question rather than saying “No match.”
-
-This is a core product principle:
-
-> **Zero exact matches should still lead to a conversation, not a failure state.**
-
-For a one-scan session, both phones should receive the same semantic question. A short-lived shared question cache may be used so language order or two simultaneous AI calls do not create two different conversations.
-
-AI is therefore part of the V1 value proposition, while local fallback prompts ensure the app still works if the model is unavailable or rate-limited.
+1. **Real people first.** Real-world connection matters more than screen time.
+2. **Surprise with meaning.** Surprise should lead to discovery, memory or action — not empty stimulation.
+3. **Every reward should reinforce a Desired Action.** Rewards should not exist merely to manufacture tapping.
+4. **Ownership must be durable.** Anything users emotionally own — especially cards — must survive reinstall and device change.
+5. **Social before competitive.** Collaboration, discovery, trading and group play are usually more aligned with Zync than public status races.
+6. **Black-Hat mechanics are seasoning, not the meal.** Scarcity and unpredictability may create excitement, but guilt, punishment and artificial pressure should not become the retention strategy.
+7. **Privacy by architecture.** Do not collect more relationship data merely because cloud infrastructure exists.
+8. **Side loops must feed the core loop.** Cards, quests, achievements and trading should create more discovery, more real interaction or more useful action.
+9. **Small first action, deep later journey.** First use should be extremely easy; sophistication unlocks progressively.
+10. **Do not ship a mechanic without knowing what behaviour it is meant to improve.**
+11. **Commercial participation must not manufacture personal truth.** A brand cannot pay to become somebody’s “interest” or create a false match.
+12. **Professional graphics, motion, sound and haptics are product functionality when emotion matters.** Pack opening and reveal moments must be designed, not merely labelled.
 
 ---
 
-## 7. Multilingual by architecture, not as an afterthought
+## 6. The four connected Zync loops
 
-Zync is intended to be international.
+Zync should be designed as several loops that feed one another rather than one long feature list.
 
-The key design decision is that an interest is represented by a **canonical ID**, not by the displayed text.
+### 6.1 The 30-second Magic Loop
 
-For example:
+```text
+Scan
+→ Mystery
+→ Reveal
+→ Human reaction
+```
+
+This is the fastest proof of value.
+
+A first-time user should not need to understand communities, cards, quests or a large profile before this works.
+
+### 6.2 The Zync Session Loop
+
+```text
+Reveal
+→ Guess / Pick / Rank / Defend / Recommend / Build
+→ React
+→ next connection
+→ crossover
+→ surprise
+→ recap
+```
+
+AI is not merely a question generator. It is a **conversation director / lightweight game master**.
+
+### 6.3 The Daily / Weekly Meta Loop
+
+A user can continue to get value even while alone:
+
+```text
+Quests
+→ packs
+→ card reveals
+→ collection
+→ Want to Try
+→ wishlist / trading
+→ Interest DNA growth
+```
+
+This creates a reason to reopen Zync without replacing its social purpose.
+
+### 6.4 The Months / Years Identity Loop
+
+Over time Zync should become a personal **My Zync World**:
+
+- interests explored;
+- people discovered;
+- cards collected;
+- Encounter cards;
+- things the user wants to try;
+- categories explored;
+- achievements;
+- trades;
+- memorable discoveries;
+- future real-world activities completed.
+
+The user should eventually feel:
+
+> **“This is my world of interests and experiences.”**
+
+---
+
+## 7. AI should evolve from question generator to interaction director
+
+The long-term AI layer should generate structured interactions, not merely one sentence.
+
+Example:
+
+```text
+Interaction: GUESS
+
+Setup:
+One person secretly chooses a favourite option.
+
+Person A:
+Predict first.
+
+Person B:
+Do not reveal yet.
+
+Reveal:
+Show the answer.
+
+Follow-up:
+If the guess was wrong, explain why the guess still made sense.
+```
+
+Useful mechanics include:
+
+- Guess;
+- Pick;
+- Rank;
+- Compare;
+- Defend;
+- Recommend;
+- Reveal;
+- Build together;
+- Trade-off;
+- Memory;
+- Challenge;
+- Crossover.
+
+The system should avoid repeating the same interaction style throughout one session.
+
+It may use:
+
+- shared / non-shared interests;
+- interest category;
+- session stage;
+- previously shown interactions;
+- Want-to-Try signals;
+- Cardverse collection context where appropriate.
+
+It should not make creepy psychological claims or infer intimate traits that the user did not provide.
+
+---
+
+## 8. Zync Now — solving “What should we do / eat / where should we go?”
+
+A major future product mode should turn Zync’s interest graph into **shared decision support**.
+
+Working name:
+
+> **Zync Now**
+
+Zync Now should help one person, a pair or a group turn vague intent into a few concrete possibilities.
+
+### 8.1 Eat Together
+
+Inputs may include:
+
+- cuisines people like;
+- cuisines people want to try;
+- dietary constraints;
+- approximate budget;
+- time available;
+- desired vibe;
+- optional location context.
+
+The product can privately collect preferences first so one person does not dominate.
+
+Then it can reveal:
+
+> **3 options everyone has a reason to accept**
+
+The important output is not merely a restaurant ranking. It should explain the connection:
+
+> “You both like Japanese food, one of you wants to try yakitori, and the group selected casual / under 90 minutes.”
+
+### 8.2 Do Something
+
+Inputs may include:
+
+- indoor / outdoor;
+- active / relaxed;
+- time;
+- budget;
+- group size;
+- categories already in Interest DNA;
+- things people marked Want to Try.
+
+Example output:
+
+> Bouldering + coffee
+>
+> One person already likes climbing, another marked it Want to Try, and both like coffee. Try an indoor climbing session followed by a nearby café.
+
+### 8.3 Go Somewhere
+
+The same model can help with:
+
+- a free afternoon;
+- a weekend;
+- travel planning;
+- “something new near us”;
+- group itineraries.
+
+### 8.4 Creativity as the differentiator
+
+Zync should not only search existing options. It can combine interests into experiences nobody explicitly asked for.
+
+Example:
+
+Person A:
+- Cinema
+- Coffee
+
+Person B:
+- Cycling
+- Photography
+
+Zync can build:
+
+> Cycle through an old neighbourhood → photo challenge → coffee → cult movie.
+
+This is one of the most promising long-term mechanics because it turns interests into **co-created experiences**, not just recommendations.
+
+### 8.5 Decision mechanics can be playful
+
+Examples:
+
+- blind vote;
+- eliminate one;
+- rank top three;
+- “everyone secretly picks”;
+- compromise challenge;
+- mystery option;
+- “one familiar + one new”;
+- build a Sunday from three cards.
+
+The goal is to reduce decision friction while making the decision itself enjoyable.
+
+---
+
+## 9. Interest Graph becomes the strategic asset
+
+The current 3,000+ catalog should not be treated as a JSON list.
+
+It should evolve into a structured **Zync Interest Graph**.
+
+Each canonical concept may have:
+
+- canonical ID;
+- category;
+- subcategory;
+- multilingual labels;
+- search aliases;
+- related interests;
+- crossover relationships;
+- visual family;
+- card identity;
+- interaction-mechanic compatibility;
+- Want-to-Try relationships;
+- geographic / regional relevance;
+- activity / experience links;
+- future venue / brand relationships.
+
+Example:
+
+```text
+Badminton
+→ Racket Sports
+→ Sports
+→ related: Tennis / Pickleball / Squash
+→ activity: casual court / coaching / league
+→ crossover: Fitness / Travel / Sports Photography
+```
+
+This graph can power:
+
+- exact matching;
+- search;
+- AI interactions;
+- cards;
+- quests;
+- Zync Now;
+- future communities;
+- venue discovery;
+- commerce.
+
+This becomes a deeper product asset than the UI alone.
+
+---
+
+## 10. Entity model: hobbies, brands, venues and experiences must remain semantically distinct
+
+The long-term graph should support multiple entity classes.
+
+```text
+Interest Concept
+Brand Affinity
+Media / Franchise
+Venue
+Restaurant
+Activity / Experience
+Place
+Community
+Intent
+```
+
+Examples:
+
+- **Coffee** → Interest Concept
+- **Starbucks** → Brand Affinity
+- **Japanese cuisine** → Interest Concept
+- **Din Tai Fung** → Restaurant / Venue Affinity
+- **JoJo's Bizarre Adventure** → Media / Franchise
+- **Indoor climbing class** → Activity / Experience
+
+A user may genuinely care about a brand or restaurant, so these entities can still be:
+
+- selected;
+- collected;
+- favourited;
+- placed in showcases;
+- matched exactly if both users genuinely selected the same canonical entity;
+- included in Zync Now;
+- represented by cards.
+
+But the type must remain explicit.
+
+### Critical commercial rule
+
+> **A company cannot pay Zync to become an organic user interest or manufacture a shared match.**
+
+Sponsored exposure may exist, but it must be clearly labelled and relevance-gated.
+
+This preserves trust while leaving a large commercial surface.
+
+---
+
+## 11. Brand and restaurant integration
+
+The real-world decision layer creates a natural place for brands, restaurants, venues and experience providers.
+
+### 11.1 Why commercial partners may want to participate
+
+They may want to:
+
+- appear when people are genuinely deciding what to do;
+- have an official brand / venue card;
+- sponsor a themed quest;
+- sponsor a limited card edition;
+- provide an experience reward;
+- host Zync events;
+- offer a booking or reservation path;
+- reach people who have explicitly shown relevant interest.
+
+This is much more valuable than generic display advertising because it occurs close to **real intent**.
+
+### 11.2 Example: restaurant integration
+
+A group uses **Zync Now: Eat**.
+
+Zync determines:
+
+- Japanese food has broad acceptance;
+- one person wants to try yakitori;
+- casual atmosphere was selected;
+- the group has 90 minutes.
+
+Organic restaurant candidates can be shown.
+
+A sponsored restaurant may also appear **only if it meets the same relevance constraints**, and must be labelled clearly:
+
+> Sponsored · matches your selected preferences
+
+The sponsor must not displace every better organic answer merely because it paid.
+
+### 11.3 Brand cards
+
+A brand may have an official collectible card family, for example:
+
+- standard brand card;
+- event edition;
+- collaboration edition;
+- venue encounter card.
+
+But branded cards should not dominate the hobby universe.
+
+Brand-funded visual content can subsidise the ecosystem while users still understand what is organic and what is sponsored.
+
+### 11.4 Sponsored quests
+
+Examples:
+
+> Try a new coffee style this week.
+
+or:
+
+> Complete a group Zync at a participating event.
+
+Rewards may include:
+
+- cosmetic card variants;
+- event packs;
+- non-cash experience rewards;
+- partner benefits.
+
+Sponsored quests must be optional and clearly labelled.
+
+### 11.5 Commercial integrity
+
+Zync should prefer:
+
+- relevance;
+- utility;
+- clear sponsorship labels;
+- measurable real-world value.
+
+It should avoid:
+
+- hidden sponsored ranking;
+- selling raw private interest profiles;
+- fake shared interests;
+- forced brand selection;
+- pretending advertising is an organic recommendation.
+
+---
+
+## 12. Cardverse — turning 3,000+ interests into a collectible world
+
+Cardverse is not merely a trophy system. It is a second loop that turns the existing interest universe into something emotionally ownable.
+
+Every curated canonical interest can have a card identity.
+
+Examples:
+
+- Badminton;
+- Bouldering;
+- Sushi;
+- Cinema;
+- Piano;
+- Astronomy;
+- Pottery;
+- Formula 1;
+- railway photography.
+
+### 12.1 Core card principles
+
+- every interest can become a beautiful card;
+- rarity belongs to the **variant**, not to the social status of the hobby;
+- no hobby is inherently “low-class” because it is Common;
+- graphics must be modular and scalable to 3,000+ cards;
+- professional card art, animation, sound and haptics are essential to the reward moment.
+
+### 12.2 Suggested variants
+
+- Normal;
+- Foil;
+- Holo;
+- Prism;
+- Legendary;
+- Secret;
+- Encounter Edition;
+- Discovery Edition;
+- Event / Collaboration Edition.
+
+### 12.3 Opening experience matters
+
+The feeling of rarity should begin **before the card name appears**.
+
+A rare opening may use:
+
+- unusual pack movement;
+- subtle pre-reveal clues;
+- light leakage;
+- silence / audio change;
+- haptic timing;
+- silhouette;
+- delayed reveal;
+- foil / rainbow shimmer;
+- upgrade escalation.
+
+The system should create anticipation without using deceptive fake near-miss mechanics.
+
+### 12.4 The collection should drive discovery
+
+A card detail can offer:
+
+> **Want to Try**
+
+This connects gacha discovery back to the Interest DNA.
+
+A player may draw a hobby they have never heard of, become curious because the card is beautiful, learn what it is, and add it to Want to Try.
+
+The loop becomes:
+
+```text
+Collect
+→ curiosity
+→ learn
+→ Want to Try
+→ real-world action
+→ future Zync
+```
+
+---
+
+## 13. Card generation must be systematic, not 3,000 manual illustrations
+
+The scalable approach is a procedural / hybrid visual system.
+
+### 13.1 Card generation layers
+
+Each card can be assembled from:
+
+1. frame;
+2. category visual kit;
+3. subcategory motif;
+4. icon / emblem;
+5. typography;
+6. interest label;
+7. rarity overlay;
+8. edition badge;
+9. texture / particles.
+
+### 13.2 Asset strategy
+
+A manageable foundation may consist of:
+
+- 12–16 category kits;
+- 50–100 visual families;
+- reusable geometric / thematic motifs;
+- a curated icon library;
+- rarity overlays;
+- edition stamps;
+- card backs;
+- dynamic foil / holo shaders.
+
+This can support thousands of cards without commissioning thousands of independent illustrations.
+
+### 13.3 Rendering strategy
+
+A strong implementation direction is:
+
+> **pre-render base card assets + render dynamic shiny / reveal effects in the Flutter client**
+
+This reduces runtime cost while preserving motion and premium effects.
+
+---
+
+## 14. Quest system
+
+Tasks should not become meaningless chores.
+
+A quest should encourage one of Zync’s real Desired Actions:
+
+- discover a person;
+- reveal a connection;
+- explore a category;
+- try a new interaction mechanic;
+- add a Want-to-Try interest;
+- collect;
+- trade;
+- do something in real life.
+
+### Quest families
+
+**Daily Curiosity**
+- reveal one connection;
+- open one pack;
+- discover one new card.
+
+**Weekly Journey**
+- Zync with several different people;
+- collect several new cards;
+- complete multiple interaction types.
+
+**Discovery Goals**
+- collect a new category;
+- add something to Want to Try;
+- complete a category row.
+
+**Social Moments**
+- earn an Encounter Pack;
+- trade with another person;
+- finish a Group Zync.
+
+Rewards may include:
+
+- draw tokens;
+- packs;
+- category packs;
+- cosmetics;
+- card backs;
+- opening effects;
+- rare-variant boosts;
+- Encounter packs.
+
+The economy should initially stay simple. Avoid a maze of currencies.
+
+---
+
+## 15. Cloud account becomes necessary for durable collection ownership
+
+The core social Zync experience can remain local-first.
+
+But once users own cards, rare variants, quest progress, packs and tradeable items, **local-only storage is not acceptable**.
+
+Users will reasonably expect their collection to survive:
+
+- reinstall;
+- phone loss;
+- device replacement;
+- multi-device use.
+
+### Account approach
+
+Zync should support a simple account identity such as:
+
+- Sign in with Google;
+- Sign in with Apple.
+
+The account should protect the collectible layer without automatically uploading all local social history.
+
+### Cloud-backed data
+
+Examples:
+
+- Card collection;
+- card variants / quantities;
+- unique card instances;
+- unopened packs;
+- draw tokens;
+- quest progress;
+- collection milestones;
+- cosmetics;
+- card wishlist;
+- Want-to-Try card references where appropriate.
+
+### Data that can remain local-first by default
+
+Examples:
+
+- names / aliases of people met;
+- detailed People history;
+- conversation questions shown;
+- received social links;
+- raw QR payloads;
+- exact person-to-person meeting history.
+
+This separation allows:
+
+> **Cloud durability for possessions without turning Zync into a surveillance graph.**
+
+### Login timing
+
+The first screen should not necessarily be a login wall.
+
+A stronger moment is when the user first earns a persistent collection:
+
+> **Your collection is about to begin.**
+> Keep every card, even when you change phones.
+>
+> Continue with Google / Apple
+
+The value of the account is explained before the user is asked to create it.
+
+---
+
+## 16. Trading-ready architecture
+
+Trading does not need to launch with Cardverse V1, but the inventory model should support it from the beginning.
+
+### 16.1 Why trading fits Zync
+
+Trading turns duplicates from disappointment into social value.
+
+It also creates a natural real-world interaction:
+
+> “I have one you want, and you have one I need.”
+
+That is itself an icebreaker.
+
+### 16.2 Direct trade before marketplace
+
+The first trading model should be:
+
+> **person-to-person card trade**
+
+not:
+
+- cash marketplace;
+- auction house;
+- speculative exchange.
+
+A direct flow may be:
+
+```text
+Zync / QR handshake
+→ both choose cards
+→ preview
+→ both hold to confirm
+→ server performs atomic swap
+→ Trade Complete animation
+```
+
+### 16.3 Wishlist matching
+
+When two people Zync:
+
+> **You each have cards the other wants.**
+
+This can become another useful discovery inside the session.
+
+### 16.4 Soulbound / non-tradable cards
+
+Some cards should represent personal history and should not be transferable.
+
+Examples:
+
+- Encounter Edition;
+- certain achievement rewards;
+- personal milestone cards.
+
+These preserve the distinction between **collection value** and **memory value**.
+
+### 16.5 Server authority
+
+Pack draws and trades should be server-authoritative.
+
+A trade transaction must:
+
+1. lock the offered cards;
+2. verify ownership;
+3. verify tradability;
+4. transfer both sides atomically;
+5. write a ledger;
+6. roll back completely if any step fails.
+
+---
+
+## 17. My Zync World
+
+Trophies should not live as an isolated badge page.
+
+They should become part of a larger ownership surface:
+
+> **My Zync World**
+
+Potential sections:
+
+- Interest DNA;
+- Cards;
+- Collections;
+- Trophies;
+- People discovered;
+- Want to Try;
+- Encounter memories;
+- trades;
+- categories explored;
+- favourite cards / Showcase.
+
+### Showcase
+
+A user might choose six cards that represent them.
+
+This can communicate more personality than a generic bio without making psychological claims.
+
+A Showcase may include:
+
+- Chess;
+- Jazz;
+- Aviation;
+- Sushi;
+- Astronomy;
+- Retro Gaming.
+
+The user owns the presentation.
+
+---
+
+## 18. Creativity should become a major long-term core drive
+
+Zync should not only recognise existing preferences.
+
+It can help people **create combinations**.
+
+Examples:
+
+- Pick three cards → Build My Perfect Sunday.
+- Each person chooses two cards → AI creates one shared activity.
+- Build a dream trip.
+- Design a ridiculous sport.
+- Three cards, one date / friend activity idea.
+- Create a weekend challenge.
+- Build a group itinerary from everyone’s card picks.
+
+This creates a large space of repeatable content without Zync having to hand-author every scenario.
+
+The product becomes not only:
+
+> “What do we both like?”
+
+but:
+
+> **“What can we create from what we like?”**
+
+This is a major bridge between social discovery and Zync Now.
+
+---
+
+## 19. Guest Zync — value before installation
+
+A major growth opportunity is to avoid requiring both people to install the app before the first useful moment.
+
+Possible flow:
+
+```text
+Existing user shows QR
+→ guest scans with ordinary camera
+→ lightweight web experience opens
+→ guest picks 5 interests
+→ hidden connections appear
+→ first Zync happens
+→ guest earns first Encounter / Starter reward
+→ install to save profile and collection
+```
+
+This changes the growth conversation from:
+
+> “Download this app first.”
+
+to:
+
+> **“Scan this — let’s see what we have in common.”**
+
+The product itself becomes the invitation.
+
+---
+
+## 20. Group Zync
+
+Group Zync may become one of Zync’s strongest formats after the one-to-one loop is stable.
+
+Examples:
+
+> **Four people here secretly share one interest. Find who.**
+
+> **Only one person chose this. Guess who.**
+
+> **Everyone privately picks Japan / Korea / Thailand / Europe — now reveal the room.**
+
+Possible settings:
+
+- dinner;
+- party;
+- orientation;
+- conference;
+- school;
+- team building;
+- hostel;
+- networking event;
+- travel group.
+
+A Group Zync can end with:
+
+- group recap;
+- group-created activity idea;
+- Group Encounter Pack;
+- group quest;
+- optional venue / food decision through Zync Now.
+
+This creates a natural bridge from icebreaking to action.
+
+---
+
+## 21. Social design: cooperation before leaderboard competition
+
+Zync should avoid a simplistic global leaderboard such as:
+
+> “Most people Zynced with.”
+
+That would encourage shallow scanning and spam.
+
+More aligned social mechanics include:
+
+- direct trading;
+- group quests;
+- collaborative collection;
+- helping a friend complete a set;
+- showcases;
+- mentorship / recommendations;
+- shared activity creation.
+
+Competition can exist selectively, but it should not redefine the product around status farming.
+
+---
+
+## 22. Multilingual by architecture, not as an afterthought
+
+Interest identity remains based on canonical IDs.
+
+Example:
 
 ```text
 sports.badminton
@@ -225,545 +1120,484 @@ may display as:
 
 The identity remains the same.
 
-This means a Japanese user and a Hong Kong user can still match even if they never use the same written word.
-
-The same principle extends to AI questions. If one user prefers Traditional Chinese and the other Japanese, Zync can generate one semantic question and show equivalent versions in both languages.
-
-This makes Zync relevant not only for ordinary social situations but also for:
+This lets Zync work across:
 
 - international students;
 - exchange programmes;
 - conferences;
-- travellers and hostels;
+- travellers;
 - language exchange;
 - multinational workplaces;
-- university orientation;
-- international events.
+- global events.
+
+The same model can later apply to brand / venue entities while preserving locale-specific display names.
 
 ---
 
-## 8. The retention problem — and how Zync thinks about it
+## 23. Free-text interests versus official collectible entities
 
-A major strategic concern from the beginning has been that an “icebreaker app” could be used once and forgotten.
+Users should remain able to type interests that are not yet in the curated catalog.
 
-Zync should therefore **not** define retention as “open the app every day.” That would force unrelated gamification into the product.
+A custom local interest can immediately join their personal Interest DNA.
 
-The more natural goal is:
+But a custom string should **not automatically mint a tradeable official card**.
 
-> **Whenever a relevant social situation happens, Zync is something the user remembers to open.**
-
-Zync is closer to a reusable social utility than a daily content feed.
-
-V1/V1.1 retention loops include:
-
-### Conversation modes
-
-The same shared interests can produce different kinds of interactions:
-
-- Easy
-- Fun
-- Deep
-- Debate
-- Guess
-- Surprise Me
-
-This allows two people to reuse Zync without simply seeing the same result again.
-
-### Hidden Match reveal
-
-Do not reveal every match instantly. Progressive reveal creates more curiosity and turns matching into an experience rather than a report.
-
-### Zync Again
-
-Interests change over time.
-
-When two people Zync months later, the app can show that new overlaps have appeared. This gives repeat use a natural meaning.
-
-### Interest DNA
-
-Users can keep refining a local picture of what they are into. The value of Zync therefore grows even when they are not actively meeting a new person.
-
-### Group Zync
-
-A later V1.1 extension can make one device the host for a dinner, orientation, networking session, party or team-building activity. This is especially interesting because one user can expose several new people to Zync in the same session.
-
----
-
-## 9. Why V1 is intentionally narrow
-
-The old vision for Zync became too broad: identity platform, career matching, social media analysis, advertising, community, data products, networking and more.
-
-Those ideas may contain future opportunities, but putting them into the first product creates the wrong test.
-
-V1 needs to answer a much simpler question:
-
-> **Do people enjoy discovering hidden common interests enough to invite another person and use Zync again?**
-
-If the answer is no, a bigger backend will not rescue the concept.
-
-If the answer is yes, the larger network becomes much more defensible to build.
-
-Therefore V1 explicitly avoids:
-
-- login and cloud accounts;
-- Firebase profiles;
-- public feeds;
-- messaging;
-- communities;
-- nearby people;
-- location matching;
-- dating matching;
-- career matching;
-- merchant systems;
-- advertising;
-- subscription infrastructure;
-- social-media account imports.
-
-This is product discipline, not a lack of ambition.
-
----
-
-## 10. Phase 1 business objective: prove behaviour, not scale infrastructure
-
-The original MVP already demonstrated that the basic concept can be built. The purpose of the current V1 rebuild is to produce a product that is polished enough to test real behaviour.
-
-The main unknowns are distribution and usage:
-
-- Will people complete an interest profile?
-- Will one user successfully bring another person into a Zync interaction?
-- Does the Hidden Match moment feel rewarding?
-- Do AI questions actually start conversations?
-- Do people Zync with more than one person?
-- Do users return later for another Zync?
-- Can an active user cause another person to install or try the product?
-
-The strongest Phase 1 funding story is therefore not “we need money to build a huge backend.”
-
-It is:
-
-> **The MVP exists. Funding lets us validate real social behaviour, improve the product, run structured pilots and discover whether the interaction can spread person-to-person.**
-
-This means spending should be framed around **market validation, pilot deployment, user acquisition experiments, product polish and measurement**, not generic advertising or speculative infrastructure.
-
----
-
-## 11. Go-to-market logic
-
-Pure paid app-install advertising may be inefficient for Zync because a person can install the app while alone and have nobody to Zync with.
-
-Zync is more naturally demonstrated where both sides of the interaction are present at the same time.
-
-Promising early environments include:
-
-- university orientation;
-- student societies;
-- exchange-student programmes;
-- conferences and networking events;
-- startup / incubator communities;
-- team-building sessions;
-- language-exchange events;
-- hostels and travel communities;
-- social dinners and parties;
-- corporate onboarding.
-
-These environments create a cleaner growth experiment:
-
-1. one person tries Zync;
-2. another person must interact with them;
-3. the second person experiences the value immediately;
-4. the product can observe whether that person then Zyncs with somebody else.
-
-That is much closer to Zync’s intended growth loop than simply buying isolated installs.
-
----
-
-## 12. Metrics that actually matter
-
-Daily Active Users alone would be a misleading V1 metric because Zync may be episodic.
-
-The more useful funnel is:
+A safe model is:
 
 ```text
-First open
-→ completes interests
-→ attempts first Zync
-→ completes first Zync
-→ reveals matches
-→ generates/uses a question
-→ Zyncs with another person later
+Personal Custom Interest
+→ repeated demand / candidate
+→ review / canonicalisation
+→ Official Zync Entity
+→ eligible for card universe
 ```
 
-Important measurements include:
+This prevents abuse such as arbitrary strings becoming scarce tradeable assets.
 
-- interest-profile completion rate;
-- first-Zync completion rate;
-- QR scan completion rate;
-- question-generation / question-next usage;
-- number of distinct people Zynced with;
-- repeat Zync within 30 days;
-- invitations / new users caused by an existing user;
-- qualitative response: “Did you learn something new about this person?”;
-- qualitative response: “Did this start a conversation you would not otherwise have had?”
-
-A particularly important growth question is:
-
-> **Can each active user create meaningful exposure to another potential user?**
-
-Do not claim a viral coefficient or guaranteed network effect before real data exists.
+The same review discipline should apply to new brands, restaurants and venues entering the official graph.
 
 ---
 
-## 13. Long-term vision: the interest layer
+## 24. Privacy and trust
 
-If V1 validates the behaviour, Zync can evolve beyond a two-person icebreaker.
+The current core privacy principles remain important even as some future layers require accounts.
 
-The long-term model is best thought of as:
+### Current core
+
+- no account required for basic V1 Zync;
+- no public profile by default;
+- QR is deliberately shown;
+- no phone number / precise location required for a basic Zync;
+- limited AI context;
+- short-lived encrypted relay.
+
+### Future cloud collection
+
+Cloud infrastructure should store what is needed for durable digital ownership and trading, without automatically uploading every real-world relationship.
+
+### Encounter privacy
+
+An Encounter card can record:
+
+> obtained through Zync
+
+without recording the identity of the other person in the card’s server metadata.
+
+### Location
+
+Zync Now may eventually need location to recommend actual places.
+
+That should be:
+
+- contextual;
+- permissioned;
+- purpose-specific;
+- not a hidden permanent location history by default.
+
+Trust is a product feature, not a policy-page exercise.
+
+---
+
+## 25. Reliability in real-world environments
+
+Zync will often be used in:
+
+- restaurants;
+- parties;
+- conference halls;
+- schools;
+- hostels;
+- travel;
+- venues with weak connectivity.
+
+Therefore poor-network recovery is core product quality.
+
+The social session should degrade gracefully.
+
+Examples:
+
+- local exact-match reveal should continue where possible;
+- pending rewards can sync later;
+- AI can fall back locally;
+- trading can require connectivity because it is an atomic cloud transaction.
+
+The product should never lose a valuable card because a network response was interrupted.
+
+---
+
+## 26. Growth engine
+
+Zync has a potentially natural person-to-person growth loop:
 
 ```text
-Person ↔ Interest ↔ Place ↔ Intent
+I want to Zync
+→ I involve another person
+→ that person experiences value
+→ they earn / discover something
+→ they later involve a third person
 ```
 
-### Person
+This is much stronger than:
 
-A user has a living interest identity that changes over time.
+> “Invite five friends for ten coins.”
 
-### Interest
+Guest Zync can make this loop dramatically easier because the first experience may occur before installation.
 
-Interests are canonical concepts with aliases, relationships, categories and multilingual labels.
+Cardverse can reinforce it:
 
-### Place
+- Encounter Pack earned from real Zync;
+- trade opportunity requires another person;
+- Group quests require people;
+- Zync Now creates useful group outcomes.
 
-The same interest may matter at different geographic levels:
-
-```text
-Global
-→ Country
-→ Region
-→ City
-```
-
-A user should not see an empty local experience just because a niche interest has low density nearby. Zync can widen the geographic scope intelligently.
-
-### Intent
-
-Two people who both like badminton may have different intentions:
-
-- I love watching it;
-- I play every week;
-- I want to learn;
-- I want people to play with;
-- I want to join a community.
-
-Intent becomes more important once the network has enough density.
+The social action itself becomes acquisition.
 
 ---
 
-## 14. Future community vision
+## 27. Retention should not mean screen addiction
 
-The long-term community idea is not simply “make another Facebook Group or Reddit clone.”
+Zync should not optimise for raw time spent in app.
 
-The useful concept is that users should not need to hunt manually for the entrance to every hobby community.
+A healthy loop is:
 
-If someone already has “Badminton” in their interest identity and moves to Singapore, Zync should be able to surface relevant Singapore badminton communities.
+> **Open Zync → achieve something socially or personally useful → leave with a better real-world experience.**
 
-If someone loves JoJo but none of their current friends talk about it, Zync could surface a broader JoJo community.
+Cardverse may create more frequent revisits, but the strategic objective remains real-world usefulness.
 
-If someone has a niche interest such as railways and there are too few nearby users, Zync can widen from city → region → country → global instead of showing an empty screen.
+The product should avoid:
 
-Persistent searchable topic communities are valuable — Reddit proves that general pattern — but Zync’s differentiation would come from the **interest identity + geography + intent + person graph** surrounding those communities.
+- guilt streaks;
+- punishing missed days;
+- fake scarcity timers;
+- deceptive near-miss effects;
+- endless loot-box pressure.
 
-This is Phase 2+, not something V1 should build prematurely.
+Unpredictability should create delight, not dependence.
 
 ---
 
-## 15. The “hobbies economy” vision
+## 28. North Star and metrics
 
-The broadest long-term thesis is that interests are an economic layer as well as a social layer.
+The primary product North Star should be closer to:
+
+> **Meaningful Zyncs**
+
+A Meaningful Zync may require:
+
+- successful person-to-person pairing;
+- at least one meaningful reveal;
+- at least one interaction / discovery step.
+
+Important supporting metrics include:
+
+- time from first open to first Meaningful Zync;
+- first-Zync completion;
+- repeat Meaningful Zync within 7 / 30 days;
+- distinct people Zynced with;
+- connections revealed;
+- interaction types used;
+- whether people report learning something new;
+- whether a session starts a conversation that would not otherwise have happened;
+- Cardverse collection continuation;
+- percentage of packs earned through meaningful actions;
+- Want-to-Try conversion from card discovery;
+- Guest Zync → save / install conversion;
+- Group Zync completion.
+
+A future second major outcome metric can be:
+
+> **Real-world decisions resolved**
+
+Examples:
+
+- group picked a restaurant;
+- group chose an activity;
+- user booked / saved an experience;
+- users converted a Want-to-Try interest into action.
+
+DAU and screen time may be useful operational metrics, but should not define product success alone.
+
+---
+
+## 29. Commercial model: do not force it too early
+
+The product does not need to decide its final monetisation model before proving strong behaviour.
+
+In fact, early monetisation pressure could distort the experience.
+
+### Potential long-term revenue surfaces
+
+**Event / Host products**
+- company team building;
+- school orientation;
+- conferences;
+- hospitality;
+- organised social events.
+
+**Premium cosmetics**
+- binder themes;
+- card backs;
+- visual frames;
+- opening effects.
+
+**Collector premium**
+- advanced organisation / showcase tools;
+- premium cosmetic customisation.
+
+**Venue / restaurant discovery**
+- booking / reservation commissions;
+- relevant promoted placement;
+- lead generation.
+
+**Activity / experience marketplace**
+- classes;
+- workshops;
+- sports sessions;
+- experiences;
+- travel activities.
+
+**Brand integrations**
+- official cards;
+- collaboration editions;
+- sponsored quests;
+- event packs;
+- real-world activations.
+
+**Community / organiser tools**
+- paid administration / event features.
+
+### Early caution on paid random draws
+
+Selling random paid draws is not required for Cardverse and should not be assumed.
+
+It may create:
+
+- trust problems;
+- fairness pressure;
+- regulatory complexity;
+- stronger risks once trading creates perceived card value.
+
+Zync can build an exciting collectible system first without depending on paid loot-box economics.
+
+---
+
+## 30. The hobbies economy
+
+The broad long-term thesis remains that interests are both a social layer and an economic layer.
 
 Almost every hobby has:
 
 - communities;
 - equipment;
 - venues;
-- teachers/coaches;
+- teachers / coaches;
 - events;
 - travel;
 - specialist merchants;
 - content;
 - services;
 - bookings;
-- second-hand transactions;
 - local experts.
 
-If Zync eventually knows that a person is genuinely interested in something, knows where they are, and knows what they intend to do, the platform can connect them to relevant opportunities without becoming a generic ad network.
+The Interest Graph can eventually connect:
 
-Possible future monetisation may include:
+```text
+Person
+↕
+Interest
+↕
+Intent
+↕
+People / Place / Activity / Brand / Community
+```
 
-- event / organiser tools;
-- community management or discovery tools;
-- premium services for interest-based organisations;
-- relevant listings;
-- booking / transaction fees;
-- merchant or venue discovery;
-- optional premium user features;
-- sponsored opportunities that are clearly relevant to a confirmed interest.
-
-The preferred direction is to create value around the interest ecosystem — **not to sell raw personal data**.
-
----
-
-## 16. Optional social-account import — later, not V1
-
-A future Zync may allow users to connect authorised data sources or provide exports so AI can suggest interests from their existing digital activity.
-
-Examples might include posts, followed topics, photos, travel history or other user-authorised signals where platform access permits it.
-
-The product principle should be:
-
-> **AI proposes; the user confirms.**
-
-Do not silently convert behavioural data into permanent identity labels.
-
-A stronger framing is **“Discover your Interest DNA”**, where Zync helps the user recover their own fragmented interests from different places, then lets them approve, reject or edit the result.
-
-This could become a meaningful long-term advantage because Zync would aggregate interest identity across contexts rather than depending on a single social platform.
-
-However, API restrictions, privacy, compliance and platform policies make this inappropriate for the lean V1.
+The business model should create value around this ecosystem rather than sell raw personal data.
 
 ---
 
-## 17. Privacy and trust as a product advantage
+## 31. Product phases
 
-V1 intentionally starts with a strong privacy posture:
+The phase boundaries should remain evidence-driven, but the expanded roadmap is now clearer.
 
-- no account required;
-- no public profile by default;
-- interest profile stored locally;
-- QR shared only when the user deliberately shows it;
-- no email/phone/precise location required for a Zync;
-- AI receives only the limited context required to generate the relevant output;
-- API secrets remain server-side;
-- local fallback works if AI is unavailable.
+### Phase 1 — Prove the two-person magic moment
 
-A simple user-facing idea is:
+Core:
 
-> **Your interests live on your phone. You choose when to Zync.**
+- multilingual interest identity;
+- QR pairing;
+- hidden connection reveal;
+- AI interaction;
+- curiosity / crossover;
+- People history;
+- Interest DNA.
 
-This matters strategically. If later phases ask users to share more information, trust is easier to build from a product that originally minimised collection rather than one that collected everything from day one.
+Goal:
 
----
+> prove that Zync creates real conversation and person-to-person spread.
 
-## 18. Competitive positioning
+### Phase 1.5 — Build the engagement foundation
 
-Zync should not be described as a replacement for every social product.
+After the core loop is stable:
 
-It occupies a more specific starting position.
+- five-interest quick-start onboarding;
+- richer structured interaction mechanics;
+- mystery progression;
+- achievements;
+- Cardverse foundation;
+- cloud-backed collection account;
+- quests;
+- Want to Try integration;
+- My Zync World.
 
-### Zync is not primarily a dating app
+Trading architecture should be prepared even if direct trading launches later.
 
-It does not assume romantic intent.
-
-### Zync is not primarily Meetup
-
-It does not start from finding a scheduled activity or stranger nearby.
-
-### Zync is not primarily Reddit/Facebook Groups
-
-It does not start from browsing communities.
-
-### Zync is not primarily LinkedIn
-
-It is not a professional CV identity.
-
-### Zync starts from the space between two people
-
-> **Who are you, what are you into, what do we unexpectedly share, and how can that become a real conversation right now?**
-
-If that interaction earns repeat usage, the broader social/community layer can grow around it later.
-
----
-
-## 19. Why the product should not start with “find someone to do X tonight”
-
-Activity matching sounds attractive but is a poor cold-start foundation.
-
-A new network has low local density. Random meetups with strangers introduce trust and safety concerns. Existing sports/activity groups already coordinate well in many cities.
-
-Zync’s more realistic path is:
-
-1. help people discover connection with people already in front of them;
-2. build a richer interest identity;
-3. build familiarity and trust;
-4. surface communities as network density grows;
-5. only then make activity matching useful where there is enough context and supply.
-
-This sequencing reduces the cold-start burden.
-
----
-
-## 20. Product and business phases
-
-### Phase 1 — Validate the magic moment
-
-Goal: prove that hidden common-interest discovery creates real conversations and person-to-person spread.
-
-Product:
-
-- local interest identity;
-- QR exchange;
-- Hidden Match;
-- AI shared/crossover questions;
-- conversation modes;
-- Zync Again;
-- Interest DNA;
-- multilingual/bilingual interaction;
-- optional Group Zync after the two-person loop is stable.
-
-Business focus:
-
-- pilot environments;
-- acquisition experiments;
-- product polish;
-- behavioural measurement;
-- no heavy monetisation burden.
-
-### Phase 2 — Build the Interest Graph and communities
-
-Only after Phase 1 evidence.
+### Phase 2 — Expand from two people into shared action
 
 Potential additions:
 
-- optional account/cloud sync;
+- Direct Card Trading;
+- Guest Zync;
+- Group Zync;
+- Zync Now;
 - richer Interest Graph;
-- geography hierarchy;
+- group decision mechanics;
+- activities / place relationships;
+- wishlist matching.
+
+### Phase 3 — Build communities and the hobbies economy
+
+Potential additions:
+
 - persistent topic communities;
-- intent states;
+- geography-aware discovery;
 - event / organiser tools;
-- more robust group experiences;
-- optional import of user-authorised interest signals.
+- venue / restaurant integrations;
+- experience / booking links;
+- brand integrations;
+- community quests;
+- commercial partner tooling.
 
-### Phase 3 — Build the hobbies economy
-
-With enough identity, community and intent data, connect users to:
-
-- events;
-- venues;
-- coaches/teachers;
-- merchants;
-- experiences;
-- bookings;
-- relevant products/services;
-- specialist local and global opportunities.
-
-Monetisation should come from useful transactions/services, not from selling private conversation data.
+The exact order should change if real user evidence points somewhere stronger.
 
 ---
 
-## 21. The funding story
+## 32. Funding story
 
-A credible funding narrative should remain focused.
+Zync is not merely a concept. An earlier MVP was built and the current product is a ground-up modern rebuild.
 
-### What already exists
+Early funding should primarily answer behavioural and distribution questions:
 
-Zync is not merely a concept. An earlier MVP was built and published, and the current V1 is a ground-up modern rebuild designed for proper product testing.
+- can Zync create a magic moment quickly?;
+- do people bring another person into the experience?;
+- does structured interaction improve real conversation?;
+- do users return?;
+- does Cardverse strengthen rather than distract from social behaviour?;
+- can Guest / Group formats accelerate spread?;
+- does Zync Now solve meaningful real-world decisions?;
+- which contexts — universities, events, teams, travel, dining — produce the strongest loops?
 
-### What funding is for
+The strongest story is not:
 
-The highest-value use of early funding is to answer behavioural questions:
+> “We need a huge backend.”
 
-- can we acquire users in contexts where Zync is immediately usable?;
-- will users complete profiles and Zync successfully?;
-- is the Hidden Match experience strong enough to create delight?;
-- do users invite the next person?;
-- do they come back later?;
-- which settings — universities, networking, travel, events, teams — produce the strongest usage loop?;
+It is:
 
-Therefore funding should be presented as **validation capital**, not as money required to build an enormous data platform before product-market evidence exists.
-
-Do not rely on inflated market-size figures or unsupported financial forecasts. The stronger story is behavioural evidence and a disciplined path from a small product into a much larger network if that evidence is positive.
+> **“The product creates a new playable interest layer; funding helps us prove which parts generate durable real-world behaviour and scale the winning loops.”**
 
 ---
 
-## 22. What success would mean
+## 33. What success would mean
 
-Phase 1 success does not require Zync to become a daily habit immediately.
+A strong early product outcome would look like:
 
-A strong result would look more like:
-
-- users understand the product quickly;
-- most users who start an interest profile complete it;
-- a meaningful portion complete their first Zync;
-- people report discovering something genuinely new about each other;
-- users generate multiple questions instead of stopping immediately;
-- users Zync with more than one person;
+- users understand Zync quickly;
+- first-use setup feels small;
+- users complete a first Meaningful Zync;
+- they discover something genuinely surprising;
+- the AI interaction leads to actual conversation;
+- they use more than one interaction mechanic;
+- they Zync with more than one person;
 - existing users cause new people to experience the product;
-- some users return weeks later for another Zync.
+- Cardverse gives users a reason to care about their interest world;
+- Want to Try converts curiosity into exploration;
+- some users use Zync to decide what to eat / do / visit;
+- group use begins to emerge naturally;
+- users trust Zync enough to keep a durable collection and return.
 
-The product should earn the right to become a network.
+The product should earn the right to become a network and then an ecosystem.
 
 ---
 
-## 23. The North Star
+## 34. Updated North Star vision
 
 The smallest Zync interaction is:
 
 > **Two people discover something they never knew they shared.**
 
+The next level is:
+
+> **Those people turn interests into a conversation, a game, a collection or something real they do together.**
+
 The largest version of Zync is:
 
-> **A global interest layer that helps people discover their own interests, discover what they share with others, find relevant communities wherever they are, and participate in the social and economic ecosystems around the things they care about.**
-
-The path between those two ideas should remain evidence-driven.
+> **A global playable interest layer that helps people discover themselves, discover each other, decide what to do together, find relevant communities and places, and participate in the social and economic ecosystems around the things they care about.**
 
 ---
 
-## 24. Short pitches
+## 35. Short pitches
 
 ### One sentence
 
-**Zync helps people discover hidden shared interests and uses AI to turn those discoveries into real conversations.**
+**Zync turns interests into real-world connection — helping people discover what they share, talk about it, and decide what to do together.**
 
 ### 15-second pitch
 
-**Zync is a multilingual social icebreaker built around interests. Two people exchange their interest profiles by QR, Zync reveals the things they unexpectedly have in common, and AI gives them a conversation worth having.**
+**Zync is a multilingual social discovery app built around interests. People Zync by QR, uncover hidden connections, play AI-guided interactions, collect the world of hobbies, and can eventually use those interests to decide what to eat, where to go and what to do together.**
 
 ### 60-second pitch
 
-**People often know each other for months or years without discovering the niche interests they actually share. Zync turns those hidden overlaps into a social experience. Each person builds a lightweight interest profile, one shows a QR and the other scans it, and the app reveals their common interests progressively. AI then generates a question around those interests — or, if there is no exact match, finds a crossover between their different hobbies so the interaction never ends in “no match.” V1 is multilingual, local-first and privacy-conscious, with no account or central profile database required. The immediate goal is to validate whether this interaction makes people invite others and reuse Zync. If it works, the same interest identity can later become the foundation for communities, geography, activities and a broader global hobbies economy.**
+**People often know each other for months or years without discovering the niche interests they actually share — and even when friends are together, they constantly struggle with simple questions like what to eat, where to go or what to do. Zync turns interests into a playable real-world layer. Two people scan a QR, uncover hidden connections and play AI-guided interactions around what they share or what they never knew about each other. A Cardverse makes thousands of hobbies collectible and discoverable, while quests, Want to Try and future trading connect collection back to real experiences. Over time, the same Interest Graph can power group play, decision-making, communities, restaurants, activities and brand integrations. The goal is not to keep people staring at Zync — it is to help them do more with the people and interests in their real lives.**
 
 ---
 
-## 25. Strategic guardrails for future chats
+## 36. Strategic guardrails for future work
 
-Future work should preserve the following unless the user explicitly changes direction:
+Future work should preserve the following unless explicitly changed.
 
-1. **Do not turn V1 into a giant social network before validating the two-person loop.**
-2. **Do not remove AI conversation generation from V1.** Shared-interest and crossover questions are intentional product features; AI interest normalization is no longer a mandatory gate in the shipped interest-entry flow.
-3. **Do not replace QR casually.** QR is central to the low-cost, local-first architecture and real-world ritual.
-4. **Do not regress the post-scan experience into a match report.** The canonical flow is a unified Zync Session: impact → meaningful reveal → conversation → next reveal → recap.
-5. **Do not require accounts/Firebase/community infrastructure for the core V1 experience.**
-6. **Do not treat daily retention as the only definition of success.** Zync may be episodic but still valuable.
-7. **Do not force activity matching as the initial product.** Network density and trust are not ready for that at cold start.
-8. **Do not split interests by language.** Canonical language-neutral IDs are foundational.
-9. **Do not let related-interest or regional-ranking logic manufacture a false exact match.**
-10. **Do not oversell “Interest DNA” as psychology.** It is a descriptive interest identity, not scientific personality analysis.
-11. **Do not sell raw personal data as the business model.** Prefer useful services, transactions and ecosystem value.
-12. **Do not lose the emotional core:** “Wait — you like that too?” is more important than a complicated recommendation engine.
-13. **Keep both phones in the same Zync Session semantics.** Reveal order and shared AI question meaning should not silently diverge between devices.
-14. **Professional UI/UX and graphics are part of the product, not optional decoration.**
-15. **Keep infrastructure near-zero-cost while validating Phase 1.** Scale infrastructure only when usage justifies it.
+1. **Do not bury the two-person magic moment under the larger vision.**
+2. **Do not remove AI interaction generation from the core experience.**
+3. **Do not replace QR casually; it is a useful real-world ritual and growth primitive.**
+4. **Do not regress Zync into a match report.**
+5. **The current core V1 must not suddenly require cloud identity merely because Cardverse will need one.**
+6. **Cardverse cloud identity should protect possessions without uploading all relationship history by default.**
+7. **Do not treat daily retention or screen time as the only success metrics.**
+8. **Do not split canonical interests by language.**
+9. **Do not manufacture false exact matches from related interests, AI, commercial partners or regional ranking.**
+10. **Do not oversell Interest DNA as scientific personality analysis.**
+11. **Do not sell raw personal data.**
+12. **A brand cannot pay to become an organic user interest or shared match.**
+13. **Sponsored recommendations must be clearly labelled and relevance-gated.**
+14. **Do not let gacha mechanics become punitive or exploitative retention.**
+15. **Do not build a cash card marketplace as the first trading model.**
+16. **Encounter / personal-history cards may be soulbound.**
+17. **Professional graphics, sound, haptics and animation are core to Cardverse reward quality.**
+18. **Quests should reinforce Desired Actions, not meaningless tapping.**
+19. **Group / Guest / Zync Now architecture may be anticipated now, but should not destabilise the certified two-person core.**
+20. **Every side system must feed back into discovery, conversation, action or ownership.**
 
 ---
 
-## 26. Relationship to the current codebase
+## 37. Relationship to the current codebase
 
-This document is the **business/product narrative**, not the technical handoff.
+This document is the **canonical business and product vision**, not the technical handoff.
 
-For implementation status, current CI, release blockers, production URLs, Android signing and exact continuation steps, always read:
+For exact implementation state, CI, release blockers, preview URLs, Android signing and continuation steps, always read:
 
 1. `AI_STATE/LATEST_HANDOFF.md`
 2. the authoritative handoff it points to
 3. `docs/ZYNC_V1_PRODUCT_SPEC.md`
 4. `docs/ZYNC_V1_VISUAL_SYSTEM.md`
 
-Do not infer current deployment/release status from this proposal alone.
+Where this document describes Cardverse, cloud collection, trading, Guest Zync, Group Zync, Zync Now, brand integration or the hobbies economy, those are **strategic product directions unless the current handoff explicitly says they have been implemented**.
+
+Do not infer production / release status from this proposal alone.
