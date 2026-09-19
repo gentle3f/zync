@@ -47,6 +47,7 @@ class ZyncNowCandidate {
     required this.mode,
     required this.templateId,
     required this.sourceInterestIds,
+    required this.repeatKey,
     required this.score,
     required this.selectedParticipantCount,
     required this.participantCount,
@@ -57,6 +58,11 @@ class ZyncNowCandidate {
   final ZyncNowMode mode;
   final String templateId;
   final List<String> sourceInterestIds;
+
+  /// Stable across Zync Now modes so doing the same underlying activity through
+  /// Familiar and later Surprise still counts as a recent repeat.
+  final String repeatKey;
+
   final double score;
   final int selectedParticipantCount;
   final int participantCount;
@@ -84,6 +90,7 @@ class ZyncNowEngine {
     required List<ZyncNowParticipant> participants,
     required ZyncNowMode mode,
     ZyncNowConstraints constraints = const ZyncNowConstraints(),
+    Set<String> priorActivityKeys = const {},
     String seed = '',
     int limit = 3,
   }) {
@@ -107,12 +114,14 @@ class ZyncNowEngine {
         ? _crossoverCandidates(
             participants: participants,
             constraints: constraints,
+            priorActivityKeys: priorActivityKeys,
             seed: seed,
           )
         : _singleInterestCandidates(
             participants: participants,
             mode: mode,
             constraints: constraints,
+            priorActivityKeys: priorActivityKeys,
             seed: seed,
           );
 
@@ -165,6 +174,7 @@ class ZyncNowEngine {
         mode: source.mode,
         templateId: source.templateId,
         sourceInterestIds: source.sourceInterestIds,
+        repeatKey: source.repeatKey,
         score: source.score,
         selectedParticipantCount: source.selectedParticipantCount,
         participantCount: source.participantCount,
@@ -174,6 +184,7 @@ class ZyncNowEngine {
     required List<ZyncNowParticipant> participants,
     required ZyncNowMode mode,
     required ZyncNowConstraints constraints,
+    required Set<String> priorActivityKeys,
     required String seed,
   }) {
     final result = <ZyncNowCandidate>[];
@@ -231,6 +242,9 @@ class ZyncNowEngine {
       final meanFit =
           fits.fold<double>(0, (sum, value) => sum + value) / fits.length;
       final coverage = selectedCount / participants.length;
+      final repeatKey = _repeatKey(templateId, [interestId]);
+      final repeatPenalty =
+          priorActivityKeys.contains(repeatKey) ? 18.0 : 0.0;
       final score = minFit * 30 +
           meanFit * 25 +
           coverage * 20 +
@@ -248,7 +262,8 @@ class ZyncNowEngine {
           _jitter(
             '$seed|${mode.name}|${interestId}|$templateId',
             mode == ZyncNowMode.surprise ? 8.0 : 0.8,
-          );
+          ) -
+          repeatPenalty;
 
       result.add(
         ZyncNowCandidate(
@@ -257,6 +272,7 @@ class ZyncNowEngine {
           mode: mode,
           templateId: templateId,
           sourceInterestIds: [interestId],
+          repeatKey: repeatKey,
           score: score,
           selectedParticipantCount: selectedCount,
           participantCount: participants.length,
@@ -270,6 +286,7 @@ class ZyncNowEngine {
   static List<ZyncNowCandidate> _crossoverCandidates({
     required List<ZyncNowParticipant> participants,
     required ZyncNowConstraints constraints,
+    required Set<String> priorActivityKeys,
     required String seed,
   }) {
     final ids = <String>{};
@@ -342,12 +359,19 @@ class ZyncNowEngine {
             ? 0.75 + boundedSharedTags * 0.08
             : 0.55;
 
+        final repeatKey = _repeatKey(
+          'activity.crossover_challenge',
+          [aId, bId],
+        );
+        final repeatPenalty =
+            priorActivityKeys.contains(repeatKey) ? 18.0 : 0.0;
         final score = minFit * 30 +
             meanFit * 25 +
             coverage * 20 +
             crossFit * 20 +
             5 +
-            _jitter('$seed|crossover|$aId|$bId', 1.2);
+            _jitter('$seed|crossover|$aId|$bId', 1.2) -
+            repeatPenalty;
 
         result.add(
           ZyncNowCandidate(
@@ -356,6 +380,7 @@ class ZyncNowEngine {
             mode: ZyncNowMode.meetInTheMiddle,
             templateId: 'activity.crossover_challenge',
             sourceInterestIds: [aId, bId],
+            repeatKey: repeatKey,
             score: score,
             selectedParticipantCount: selectedCount,
             participantCount: participants.length,
@@ -567,6 +592,14 @@ class ZyncNowEngine {
       hash = (hash * 0x01000193) & 0x7fffffff;
     }
     return hash;
+  }
+
+  static String _repeatKey(
+    String templateId,
+    List<String> sourceInterestIds,
+  ) {
+    final ids = sourceInterestIds.toList()..sort();
+    return '$templateId|${ids.join('|')}';
   }
 
   static String _candidateFamily(ZyncNowCandidate candidate) {
