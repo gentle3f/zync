@@ -8,6 +8,7 @@ import 'package:zync/core/cardverse_cloud_client.dart';
 void main() {
   test('cloud client never sends accountId when redeeming a proof', () async {
     late http.Request seen;
+    final sessionToken = 'A' * 43;
     final client = CardverseCloudClient(
       baseUrl: 'https://zync.example',
       httpClient: MockClient((request) async {
@@ -24,14 +25,14 @@ void main() {
     );
 
     await client.redeemProof(
-      sessionToken: 'A' * 43,
+      sessionToken: sessionToken,
       ticket: 'ZP1.payload.signature',
       clientEventId: 'event-1',
       timezoneOffsetMinutes: 480,
     );
 
     expect(seen.url.path, '/api/v1/cardverse/proofs/redeem');
-    expect(seen.headers['authorization'], 'Bearer NaN');
+    expect(seen.headers['authorization'], 'Bearer $sessionToken');
     final body = jsonDecode(seen.body) as Map<String, dynamic>;
     expect(body.containsKey('accountId'), isFalse);
     expect(body['timezoneOffsetMinutes'], 480);
