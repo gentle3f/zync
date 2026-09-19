@@ -20,15 +20,18 @@ class CardverseProofSync {
   CardverseProofSync({
     required CardverseCloudClient cloud,
     required CardverseSessionStore sessions,
+    CardverseProofCache? proofs,
   })  : _cloud = cloud,
-        _sessions = sessions;
+        _sessions = sessions,
+        _proofs = proofs ?? CardverseProofCache();
 
   final CardverseCloudClient _cloud;
   final CardverseSessionStore _sessions;
+  final CardverseProofCache _proofs;
 
   Future<CardverseProofSyncResult> syncPending() async {
     final credential = await _sessions.load();
-    final pending = await CardverseProofCache.loadTickets();
+    final pending = await _proofs.loadTickets();
     if (credential == null || pending.isEmpty) {
       return CardverseProofSyncResult(
         redeemed: 0,
@@ -50,7 +53,7 @@ class CardverseProofSync {
           clientEventId: proof.clientEventId,
           timezoneOffsetMinutes: proof.timezoneOffsetMinutes,
         );
-        await CardverseProofCache.removeTicket(
+        await _proofs.removeTicket(
           ticket: proof.ticket,
           clientEventId: proof.clientEventId,
         );
@@ -67,7 +70,7 @@ class CardverseProofSync {
             error.serverCode == 'cardverse_proof_ticket_expired' ||
             error.serverCode == 'cardverse_proof_ticket_already_redeemed';
         if (irrecoverable) {
-          await CardverseProofCache.removeTicket(
+          await _proofs.removeTicket(
             ticket: proof.ticket,
             clientEventId: proof.clientEventId,
           );
@@ -80,7 +83,7 @@ class CardverseProofSync {
       }
     }
 
-    final remaining = (await CardverseProofCache.loadTickets()).length;
+    final remaining = (await _proofs.loadTickets()).length;
     return CardverseProofSyncResult(
       redeemed: redeemed,
       discarded: discarded,

@@ -11,13 +11,14 @@ class CardverseRelayProofCapture {
     required String clientEventId,
     DateTime? capturedAt,
     int? timezoneOffsetMinutes,
+    CardverseProofCache? cache,
   }) async {
     final ticket = proofTicket?.trim() ?? '';
     if (ticket.isEmpty) return;
     final localNow = capturedAt ?? DateTime.now();
     final offset =
         timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
-    await CardverseProofCache.saveTicket(
+    await (cache ?? CardverseProofCache()).saveTicket(
       PendingCardverseProofTicket(
         ticket: ticket,
         clientEventId: clientEventId,
@@ -33,6 +34,7 @@ class CardverseRelayProofCapture {
     required String? proofCapability,
     required String clientEventId,
     int? timezoneOffsetMinutes,
+    CardverseProofCache? cache,
     List<Duration> retryDelays = const [
       Duration.zero,
       Duration(milliseconds: 650),
@@ -43,6 +45,7 @@ class CardverseRelayProofCapture {
     final capability = proofCapability?.trim() ?? '';
     if (capability.isEmpty) return;
 
+    final proofCache = cache ?? CardverseProofCache();
     final localNow = DateTime.now();
     final capturedAt = localNow.toUtc();
     final offset =
@@ -55,7 +58,7 @@ class CardverseRelayProofCapture {
           proofCapability: capability,
         );
         if (result.isReady && result.proofTicket != null) {
-          await CardverseProofCache.saveTicket(
+          await proofCache.saveTicket(
             PendingCardverseProofTicket(
               ticket: result.proofTicket!,
               clientEventId: clientEventId,
@@ -63,7 +66,7 @@ class CardverseRelayProofCapture {
               timezoneOffsetMinutes: offset,
             ),
           );
-          await CardverseProofCache.removeCapability(
+          await proofCache.removeCapability(
             sessionId: sessionId,
             clientEventId: clientEventId,
           );
@@ -72,7 +75,7 @@ class CardverseRelayProofCapture {
       } on RelayException catch (error) {
         if (error.kind == RelayFailureKind.expired ||
             error.kind == RelayFailureKind.invalid) {
-          await CardverseProofCache.removeCapability(
+          await proofCache.removeCapability(
             sessionId: sessionId,
             clientEventId: clientEventId,
           );
@@ -81,7 +84,7 @@ class CardverseRelayProofCapture {
       }
     }
 
-    await CardverseProofCache.saveCapability(
+    await proofCache.saveCapability(
       PendingRelayProofCapability(
         sessionId: sessionId,
         proofCapability: capability,
@@ -92,8 +95,12 @@ class CardverseRelayProofCapture {
     );
   }
 
-  static Future<void> resumePending(RelayClient relay) async {
-    final pending = await CardverseProofCache.loadCapabilities();
+  static Future<void> resumePending(
+    RelayClient relay, {
+    CardverseProofCache? cache,
+  }) async {
+    final proofCache = cache ?? CardverseProofCache();
+    final pending = await proofCache.loadCapabilities();
     for (final item in pending) {
       unawaited(
         captureScanner(
@@ -102,6 +109,7 @@ class CardverseRelayProofCapture {
           proofCapability: item.proofCapability,
           clientEventId: item.clientEventId,
           timezoneOffsetMinutes: item.timezoneOffsetMinutes,
+          cache: proofCache,
           retryDelays: const [Duration.zero],
         ),
       );

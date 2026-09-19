@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zync/core/cardverse_cloud_client.dart';
 import 'package:zync/core/cardverse_proof_cache.dart';
 import 'package:zync/core/cardverse_proof_sync.dart';
@@ -25,12 +24,10 @@ class _MemorySecureStore implements SecureKeyValueStore {
 }
 
 void main() {
-  setUp(() {
-    SharedPreferences.setMockInitialValues({});
-  });
-
-  test('pending anonymous proof redeems only after a secure session exists', () async {
-    await CardverseProofCache.saveTicket(
+  test('pending anonymous proof redeems only after secure session exists', () async {
+    final secure = _MemorySecureStore();
+    final proofs = CardverseProofCache(storage: secure);
+    await proofs.saveTicket(
       PendingCardverseProofTicket(
         ticket: 'ZP1.pending.signature',
         clientEventId: 'relay:event:host',
@@ -39,7 +36,6 @@ void main() {
       ),
     );
 
-    final secure = _MemorySecureStore();
     final sessions = CardverseSessionStore(storage: secure);
     var requests = 0;
     final cloud = CardverseCloudClient(
@@ -52,6 +48,7 @@ void main() {
     final sync = CardverseProofSync(
       cloud: cloud,
       sessions: sessions,
+      proofs: proofs,
     );
 
     final beforeLogin = await sync.syncPending();
@@ -73,7 +70,9 @@ void main() {
   });
 
   test('401 clears secure session but preserves pending proof', () async {
-    await CardverseProofCache.saveTicket(
+    final secure = _MemorySecureStore();
+    final proofs = CardverseProofCache(storage: secure);
+    await proofs.saveTicket(
       PendingCardverseProofTicket(
         ticket: 'ZP1.pending.signature',
         clientEventId: 'relay:event:host',
@@ -82,7 +81,6 @@ void main() {
       ),
     );
 
-    final secure = _MemorySecureStore();
     final sessions = CardverseSessionStore(storage: secure);
     await sessions.save(
       CardverseSessionCredential(
@@ -103,6 +101,7 @@ void main() {
     final result = await CardverseProofSync(
       cloud: cloud,
       sessions: sessions,
+      proofs: proofs,
     ).syncPending();
 
     expect(result.sessionCleared, isTrue);

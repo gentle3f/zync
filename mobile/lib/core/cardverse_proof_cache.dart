@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'secure_key_value_store.dart';
 
 class PendingCardverseProofTicket {
   const PendingCardverseProofTicket({
@@ -77,7 +77,7 @@ class PendingRelayProofCapability {
     final capturedAt = DateTime.tryParse((json['capturedAt'] as String?) ?? '');
     final timezoneOffsetMinutes =
         (json['timezoneOffsetMinutes'] as num?)?.toInt();
-    if (!RegExp(r'^[A-Za-z0-9_-]{22,64}
+    if (!RegExp(r'^[A-Za-z0-9_-]{22,64}$').hasMatch(sessionId) ||
         !RegExp(r'^[A-Za-z0-9_-]{43}$').hasMatch(capability) ||
         eventId.isEmpty ||
         eventId.length > 160 ||
@@ -98,7 +98,9 @@ class PendingRelayProofCapability {
 }
 
 class CardverseProofCache {
-  const CardverseProofCache._();
+  CardverseProofCache({
+    SecureKeyValueStore? storage,
+  }) : _storage = storage ?? FlutterSecureKeyValueStore();
 
   static const _ticketKey = 'zync.cardverse.proof_tickets.v1';
   static const _capabilityKey = 'zync.cardverse.proof_capabilities.v1';
@@ -106,48 +108,45 @@ class CardverseProofCache {
   static const _capabilityLifetime = Duration(minutes: 10);
   static const _ticketLocalLifetime = Duration(days: 90);
 
-  static Future<List<PendingCardverseProofTicket>> loadTickets({
+  final SecureKeyValueStore _storage;
+
+  Future<List<PendingCardverseProofTicket>> loadTickets({
     DateTime? now,
   }) async {
     final current = (now ?? DateTime.now()).toUtc();
-    final prefs = await SharedPreferences.getInstance();
     final items = _decodeList(
-      prefs.getString(_ticketKey),
+      await _storage.read(_ticketKey),
       PendingCardverseProofTicket.fromJson,
     ).where(
       (item) => current.difference(item.capturedAt) <= _ticketLocalLifetime,
     ).toList()
       ..sort((a, b) => a.capturedAt.compareTo(b.capturedAt));
     await _writeList(
-      prefs,
       _ticketKey,
       items.map((item) => item.toJson()).toList(),
     );
     return List.unmodifiable(items);
   }
 
-  static Future<List<PendingRelayProofCapability>> loadCapabilities({
+  Future<List<PendingRelayProofCapability>> loadCapabilities({
     DateTime? now,
   }) async {
     final current = (now ?? DateTime.now()).toUtc();
-    final prefs = await SharedPreferences.getInstance();
     final items = _decodeList(
-      prefs.getString(_capabilityKey),
+      await _storage.read(_capabilityKey),
       PendingRelayProofCapability.fromJson,
     ).where(
       (item) => current.difference(item.capturedAt) <= _capabilityLifetime,
     ).toList()
       ..sort((a, b) => a.capturedAt.compareTo(b.capturedAt));
     await _writeList(
-      prefs,
       _capabilityKey,
       items.map((item) => item.toJson()).toList(),
     );
     return List.unmodifiable(items);
   }
 
-  static Future<void> saveTicket(PendingCardverseProofTicket ticket) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> saveTicket(PendingCardverseProofTicket ticket) async {
     final current = (await loadTickets()).toList();
     current.removeWhere(
       (item) =>
@@ -159,17 +158,15 @@ class CardverseProofCache {
         ? current
         : current.sublist(current.length - _maxItems);
     await _writeList(
-      prefs,
       _ticketKey,
       bounded.map((item) => item.toJson()).toList(),
     );
   }
 
-  static Future<void> removeTicket({
+  Future<void> removeTicket({
     required String ticket,
     required String clientEventId,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
     final current = (await loadTickets()).toList();
     current.removeWhere(
       (item) =>
@@ -177,16 +174,14 @@ class CardverseProofCache {
           item.clientEventId == clientEventId,
     );
     await _writeList(
-      prefs,
       _ticketKey,
       current.map((item) => item.toJson()).toList(),
     );
   }
 
-  static Future<void> saveCapability(
+  Future<void> saveCapability(
     PendingRelayProofCapability capability,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
     final current = (await loadCapabilities()).toList();
     current.removeWhere(
       (item) =>
@@ -198,17 +193,15 @@ class CardverseProofCache {
         ? current
         : current.sublist(current.length - _maxItems);
     await _writeList(
-      prefs,
       _capabilityKey,
       bounded.map((item) => item.toJson()).toList(),
     );
   }
 
-  static Future<void> removeCapability({
+  Future<void> removeCapability({
     required String sessionId,
     required String clientEventId,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
     final current = (await loadCapabilities()).toList();
     current.removeWhere(
       (item) =>
@@ -216,13 +209,12 @@ class CardverseProofCache {
           item.clientEventId == clientEventId,
     );
     await _writeList(
-      prefs,
       _capabilityKey,
       current.map((item) => item.toJson()).toList(),
     );
   }
 
-  static List<T> _decodeList<T>(
+  List<T> _decodeList<T>(
     String? raw,
     T Function(Map<String, dynamic>) decoder,
   ) {
@@ -234,7 +226,7 @@ class CardverseProofCache {
         try {
           result.add(decoder(Map<String, dynamic>.from(item)));
         } catch (_) {
-          // Drop malformed local cache entries instead of poisoning the queue.
+          // Drop malformed secure-cache entries instead of poisoning the queue.
         }
       }
       return result;
@@ -243,181 +235,9 @@ class CardverseProofCache {
     }
   }
 
-  static Future<void> _writeList(
-    SharedPreferences prefs,
+  Future<void> _writeList(
     String key,
     List<Map<String, dynamic>> items,
-  ) async {
-    await prefs.setString(key, jsonEncode(items));
-  }
-}
-).hasMatch(sessionId) ||
-        !RegExp(r'^[A-Za-z0-9_-]{43}$').hasMatch(capability) ||
-        eventId.isEmpty ||
-        eventId.length > 160 ||
-        capturedAt == null) {
-      throw const FormatException('Invalid pending relay proof capability');
-    }
-    return PendingRelayProofCapability(
-      sessionId: sessionId,
-      proofCapability: capability,
-      clientEventId: eventId,
-      capturedAt: capturedAt.toUtc(),
-    );
-  }
-}
-
-class CardverseProofCache {
-  const CardverseProofCache._();
-
-  static const _ticketKey = 'zync.cardverse.proof_tickets.v1';
-  static const _capabilityKey = 'zync.cardverse.proof_capabilities.v1';
-  static const _maxItems = 100;
-  static const _capabilityLifetime = Duration(minutes: 10);
-  static const _ticketLocalLifetime = Duration(days: 90);
-
-  static Future<List<PendingCardverseProofTicket>> loadTickets({
-    DateTime? now,
-  }) async {
-    final current = (now ?? DateTime.now()).toUtc();
-    final prefs = await SharedPreferences.getInstance();
-    final items = _decodeList(
-      prefs.getString(_ticketKey),
-      PendingCardverseProofTicket.fromJson,
-    ).where(
-      (item) => current.difference(item.capturedAt) <= _ticketLocalLifetime,
-    ).toList()
-      ..sort((a, b) => a.capturedAt.compareTo(b.capturedAt));
-    await _writeList(
-      prefs,
-      _ticketKey,
-      items.map((item) => item.toJson()).toList(),
-    );
-    return List.unmodifiable(items);
-  }
-
-  static Future<List<PendingRelayProofCapability>> loadCapabilities({
-    DateTime? now,
-  }) async {
-    final current = (now ?? DateTime.now()).toUtc();
-    final prefs = await SharedPreferences.getInstance();
-    final items = _decodeList(
-      prefs.getString(_capabilityKey),
-      PendingRelayProofCapability.fromJson,
-    ).where(
-      (item) => current.difference(item.capturedAt) <= _capabilityLifetime,
-    ).toList()
-      ..sort((a, b) => a.capturedAt.compareTo(b.capturedAt));
-    await _writeList(
-      prefs,
-      _capabilityKey,
-      items.map((item) => item.toJson()).toList(),
-    );
-    return List.unmodifiable(items);
-  }
-
-  static Future<void> saveTicket(PendingCardverseProofTicket ticket) async {
-    final prefs = await SharedPreferences.getInstance();
-    final current = (await loadTickets()).toList();
-    current.removeWhere(
-      (item) =>
-          item.clientEventId == ticket.clientEventId ||
-          item.ticket == ticket.ticket,
-    );
-    current.add(ticket);
-    final bounded = current.length <= _maxItems
-        ? current
-        : current.sublist(current.length - _maxItems);
-    await _writeList(
-      prefs,
-      _ticketKey,
-      bounded.map((item) => item.toJson()).toList(),
-    );
-  }
-
-  static Future<void> removeTicket({
-    required String ticket,
-    required String clientEventId,
-  }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final current = (await loadTickets()).toList();
-    current.removeWhere(
-      (item) =>
-          item.ticket == ticket &&
-          item.clientEventId == clientEventId,
-    );
-    await _writeList(
-      prefs,
-      _ticketKey,
-      current.map((item) => item.toJson()).toList(),
-    );
-  }
-
-  static Future<void> saveCapability(
-    PendingRelayProofCapability capability,
-  ) async {
-    final prefs = await SharedPreferences.getInstance();
-    final current = (await loadCapabilities()).toList();
-    current.removeWhere(
-      (item) =>
-          item.clientEventId == capability.clientEventId ||
-          item.sessionId == capability.sessionId,
-    );
-    current.add(capability);
-    final bounded = current.length <= _maxItems
-        ? current
-        : current.sublist(current.length - _maxItems);
-    await _writeList(
-      prefs,
-      _capabilityKey,
-      bounded.map((item) => item.toJson()).toList(),
-    );
-  }
-
-  static Future<void> removeCapability({
-    required String sessionId,
-    required String clientEventId,
-  }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final current = (await loadCapabilities()).toList();
-    current.removeWhere(
-      (item) =>
-          item.sessionId == sessionId &&
-          item.clientEventId == clientEventId,
-    );
-    await _writeList(
-      prefs,
-      _capabilityKey,
-      current.map((item) => item.toJson()).toList(),
-    );
-  }
-
-  static List<T> _decodeList<T>(
-    String? raw,
-    T Function(Map<String, dynamic>) decoder,
-  ) {
-    if (raw == null || raw.isEmpty) return <T>[];
-    try {
-      final source = jsonDecode(raw) as List;
-      final result = <T>[];
-      for (final item in source.whereType<Map>()) {
-        try {
-          result.add(decoder(Map<String, dynamic>.from(item)));
-        } catch (_) {
-          // Drop malformed local cache entries instead of poisoning the queue.
-        }
-      }
-      return result;
-    } catch (_) {
-      return <T>[];
-    }
-  }
-
-  static Future<void> _writeList(
-    SharedPreferences prefs,
-    String key,
-    List<Map<String, dynamic>> items,
-  ) async {
-    await prefs.setString(key, jsonEncode(items));
-  }
+  ) =>
+      _storage.write(key, jsonEncode(items));
 }
