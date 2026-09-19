@@ -214,6 +214,7 @@ class _MatchScreenState extends State<MatchScreen> {
           'source': finalResult.fromAi ? 'ai' : 'fallback',
           'match_type': _connections.isEmpty ? 'crossover' : 'shared',
           'bilingual': finalResult.secondaryQuestion?.isNotEmpty ?? false,
+          'interaction_type': finalResult.interactionType,
         },
       ),
     );
@@ -266,6 +267,16 @@ class _MatchScreenState extends State<MatchScreen> {
     if (_connections.isEmpty || !mounted) return;
     unawaited(HapticFeedback.mediumImpact());
     setState(() => _revealedIndex = 0);
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.connectionRevealed,
+        properties: {
+          'revealed_count': 1,
+          'total_count': _connections.length,
+          'remaining_count': _connections.length - 1,
+        },
+      ),
+    );
     unawaited(_ensureQuestion());
   }
 
@@ -279,6 +290,15 @@ class _MatchScreenState extends State<MatchScreen> {
         _activeOwnerIsMatchMine = null;
         _mode = ConversationMode.fun;
       });
+      unawaited(
+        ZyncAnalytics.instance.track(
+          AnalyticsEvent.sessionContinue,
+          properties: const {
+            'continue_source': 'explore_hub',
+            'remaining_count': 0,
+          },
+        ),
+      );
       return;
     }
     if (!mounted) return;
@@ -287,6 +307,27 @@ class _MatchScreenState extends State<MatchScreen> {
       _revealedIndex += 1;
       _mode = ConversationMode.fun;
     });
+    final revealed = _revealedIndex + 1;
+    final remaining = _connections.length - revealed;
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionContinue,
+        properties: {
+          'continue_source': 'reveal_next',
+          'remaining_count': remaining,
+        },
+      ),
+    );
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.connectionRevealed,
+        properties: {
+          'revealed_count': revealed,
+          'total_count': _connections.length,
+          'remaining_count': remaining,
+        },
+      ),
+    );
     unawaited(_ensureQuestion());
   }
 
@@ -332,6 +373,15 @@ class _MatchScreenState extends State<MatchScreen> {
       _activeOwnerIsMatchMine = ownerIsMatchMine;
       _mode = ConversationMode.fun;
     });
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionContinue,
+        properties: {
+          'continue_source': ownerIsLocal ? 'about_me' : 'about_them',
+          'remaining_count': 0,
+        },
+      ),
+    );
     unawaited(_ensureQuestion());
   }
 
@@ -355,6 +405,15 @@ class _MatchScreenState extends State<MatchScreen> {
       _activeOwnerIsMatchMine = null;
       _mode = ConversationMode.fun;
     });
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionContinue,
+        properties: const {
+          'continue_source': 'crossover',
+          'remaining_count': 0,
+        },
+      ),
+    );
     unawaited(_ensureQuestion());
   }
 
@@ -408,6 +467,26 @@ class _MatchScreenState extends State<MatchScreen> {
       ),
     );
     unawaited(_ensureQuestion());
+  }
+
+  void _openRecap() {
+    final total = _connections.isNotEmpty
+        ? _connections.length
+        : (_crossover == null ? 0 : 1);
+    final revealed = _connections.isNotEmpty
+        ? (_revealedIndex < 0 ? 0 : _revealedIndex + 1)
+        : (_crossover == null ? 0 : 1);
+    unawaited(
+      ZyncAnalytics.instance.track(
+        AnalyticsEvent.sessionRecap,
+        properties: {
+          'revealed_count': revealed,
+          'total_count': total,
+          'repeat_peer': widget.isRepeatPeer,
+        },
+      ),
+    );
+    setState(() => _recap = true);
   }
 
   void _finish() => Navigator.of(context).pop();
@@ -887,7 +966,7 @@ class _MatchScreenState extends State<MatchScreen> {
           ],
           const SizedBox(height: 28),
           FilledButton.icon(
-            onPressed: () => setState(() => _recap = true),
+            onPressed: _openRecap,
             icon: const Icon(Icons.check_rounded),
             label: Text(l10n.finishAndRecap),
           ),
@@ -961,7 +1040,7 @@ class _MatchScreenState extends State<MatchScreen> {
           ),
           const SizedBox(height: 10),
           FilledButton.icon(
-            onPressed: () => setState(() => _recap = true),
+            onPressed: _openRecap,
             icon: const Icon(Icons.check_rounded),
             label: Text(l10n.finishAndRecap),
           ),
