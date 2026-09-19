@@ -447,6 +447,126 @@ class LocalizedDomainText {
     return _pick(locale, values);
   }
 
+  static String groupZyncTitle(String locale) => _pick(locale, {
+        'en':'Group Zync','zh-Hant':'Group Zync','zh-Hans':'Group Zync',
+        'ja':'Group Zync','ko':'Group Zync','es':'Group Zync','fr':'Group Zync','pt':'Group Zync',
+      });
+
+  static String groupZyncSubtitle(String locale) => _pick(locale, {
+        'en':'Discover what connects the room — then decide what to do together.',
+        'zh-Hant':'一班人一齊發現彼此嘅連結，再決定一齊做咩。',
+        'zh-Hans':'一群人一起发现彼此的连接，再决定一起做什么。',
+        'ja':'みんなのつながりを見つけて、一緒に何をするか決めよう。',
+        'ko':'함께 연결점을 발견하고 무엇을 할지 정해 보세요.',
+        'es':'Descubrid qué conecta al grupo y decidid qué hacer juntos.',
+        'fr':'Découvrez ce qui relie le groupe, puis choisissez quoi faire ensemble.',
+        'pt':'Descubram o que liga o grupo e decidam o que fazer juntos.',
+      });
+
+  static String startGroupZync(String locale) => _pick(locale, {
+        'en':'Start a Group Zync','zh-Hant':'開始 Group Zync','zh-Hans':'开始 Group Zync',
+        'ja':'Group Zyncを開始','ko':'Group Zync 시작','es':'Iniciar Group Zync',
+        'fr':'Démarrer un Group Zync','pt':'Iniciar Group Zync',
+      });
+
+  static String groupHostHint(String locale) => _pick(locale, {
+        'en':'Show this QR. Everyone joins privately with only the interests needed for this room.',
+        'zh-Hant':'俾大家掃呢個 QR。每個人只會為今次房間分享所需嘅興趣資料。',
+        'zh-Hans':'让大家扫描这个 QR。每个人只会为这次房间分享所需的兴趣资料。',
+        'ja':'このQRを見せてください。この部屋に必要な興味だけが共有されます。',
+        'ko':'이 QR을 보여주세요. 이 방에 필요한 관심사만 공유됩니다.',
+        'es':'Muestra este QR. Solo se comparten los intereses necesarios para esta sala.',
+        'fr':'Montrez ce QR. Seuls les intérêts nécessaires à cette session sont partagés.',
+        'pt':'Mostre este QR. Só os interesses necessários para esta sala são partilhados.',
+      });
+
+  static String groupReadyCount(int count, int max, String locale) => _pick(locale, {
+        'en':'$count of $max people in the room',
+        'zh-Hant':'房間已有 $count / $max 人',
+        'zh-Hans':'房间已有 $count / $max 人',
+        'ja':'$count / $max 人が参加中',
+        'ko':'$count / $max명 참여 중',
+        'es':'$count de $max personas en la sala',
+        'fr':'$count personnes sur $max dans la salle',
+        'pt':'$count de $max pessoas na sala',
+      });
+
+  static String groupNeedThree(String locale) => _pick(locale, {
+        'en':'Group Zync starts with 3 people.',
+        'zh-Hant':'Group Zync 3 個人就可以開始。',
+        'zh-Hans':'Group Zync 3 个人就可以开始。',
+        'ja':'Group Zyncは3人から開始できます。',
+        'ko':'Group Zync는 3명부터 시작할 수 있어요.',
+        'es':'Group Zync empieza con 3 personas.',
+        'fr':'Group Zync commence à 3 personnes.',
+        'pt':'Group Zync começa com 3 pessoas.',
+      });
+
+  static String everyoneReady(String locale) => _pick(locale, {
+        'en':'Everyone is ready','zh-Hant':'大家都準備好','zh-Hans':'大家都准备好了',
+        'ja':'全員準備完了','ko':'모두 준비됐어요','es':'Todo el mundo está listo',
+        'fr':'Tout le monde est prêt','pt':'Todos estão prontos',
+      });
+
+  static String startFirstRound(String locale) => _pick(locale, {
+        'en':'Start the first round','zh-Hant':'開始第一回合','zh-Hans':'开始第一回合',
+        'ja':'最初のラウンドを開始','ko':'첫 라운드 시작','es':'Empezar la primera ronda',
+        'fr':'Commencer le premier tour','pt':'Começar a primeira ronda',
+      });
+
+  static String waitingForHost(String locale) => _pick(locale, {
+        'en':'You’re in. Waiting for the host…','zh-Hant':'你已加入，等 host 開始…','zh-Hans':'你已加入，等待主持人开始…',
+        'ja':'参加しました。ホストを待っています…','ko':'참여했어요. 호스트를 기다리는 중…',
+        'es':'Ya estás dentro. Esperando al anfitrión…','fr':'Vous êtes dedans. En attente de l’hôte…',
+        'pt':'Já entrou. A aguardar o anfitrião…',
+      });
+
+  static String privateAnswerHint(String locale) => _pick(locale, {
+        'en':'Your answer stays private until the reveal.',
+        'zh-Hant':'你嘅答案會保持私下，揭曉嗰刻先顯示。',
+        'zh-Hans':'你的答案会保持私密，揭晓时才显示。',
+        'ja':'回答は公開の瞬間まで非公開です。','ko':'답변은 공개할 때까지 비공개예요.',
+        'es':'Tu respuesta seguirá privada hasta la revelación.',
+        'fr':'Votre réponse reste privée jusqu’à la révélation.',
+        'pt':'A sua resposta fica privada até à revelação.',
+      });
+
+  static String answerSubmitted(String locale) => _pick(locale, {
+        'en':'Answer locked. Waiting for everyone else…',
+        'zh-Hant':'答案已鎖定，等埋其他人…','zh-Hans':'答案已锁定，等待其他人…',
+        'ja':'回答を確定しました。ほかの人を待っています…','ko':'답변을 확정했어요. 다른 사람을 기다리는 중…',
+        'es':'Respuesta guardada. Esperando al resto…','fr':'Réponse verrouillée. En attente des autres…',
+        'pt':'Resposta confirmada. A aguardar os restantes…',
+      });
+
+  static String groupConnectionIssue(String locale) => _pick(locale, {
+        'en':'Group Zync lost the connection. Try again while the room is still open.',
+        'zh-Hant':'Group Zync 連線中斷。房間未過期前可以再試。',
+        'zh-Hans':'Group Zync 连接中断。房间未过期前可以重试。',
+        'ja':'接続が切れました。部屋が有効なうちに再試行してください。',
+        'ko':'연결이 끊겼어요. 방이 열려 있는 동안 다시 시도해 주세요.',
+        'es':'Se perdió la conexión. Vuelve a intentarlo mientras la sala siga abierta.',
+        'fr':'Connexion perdue. Réessayez tant que la salle est ouverte.',
+        'pt':'A ligação caiu. Tente novamente enquanto a sala estiver aberta.',
+      });
+
+  static String zyncNowTitle(String locale) => _pick(locale, {
+        'en':'Zync Now','zh-Hant':'Zync Now','zh-Hans':'Zync Now','ja':'Zync Now','ko':'Zync Now',
+        'es':'Zync Now','fr':'Zync Now','pt':'Zync Now',
+      });
+
+  static String zyncNowGroupCta(String locale) => _pick(locale, {
+        'en':'What should we do together?','zh-Hant':'我哋一齊做咩好？','zh-Hans':'我们一起做什么好？',
+        'ja':'一緒に何をする？','ko':'우리 같이 뭐 할까?','es':'¿Qué hacemos juntos?',
+        'fr':'Qu’est-ce qu’on fait ensemble ?','pt':'O que fazemos juntos?',
+      });
+
+  static String anotherGroupRound(String locale) => _pick(locale, {
+        'en':'Discover another connection','zh-Hant':'再發現一個連結','zh-Hans':'再发现一个连接',
+        'ja':'もう一つ発見する','ko':'연결 하나 더 발견하기','es':'Descubrir otra conexión',
+        'fr':'Découvrir une autre connexion','pt':'Descobrir outra ligação',
+      });
+
   static String _pick(String locale, Map<String, String> values) {
     final code = _localeCode(locale);
     return values[code] ?? values[code.split('-').first] ?? values['en']!;
