@@ -352,7 +352,7 @@ class _CardversePackOpeningLabScreenState
           ),
         ] else ...[
           FilledButton.icon(
-            key: const ValueKey('pack-lab-reveal-next'),
+            key: ValueKey('pack-lab-reveal-next-$revealedCount'),
             onPressed: _revealNext,
             icon: const Icon(Icons.auto_awesome_rounded),
             label: Text(
