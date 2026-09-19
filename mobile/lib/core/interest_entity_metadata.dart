@@ -15,6 +15,7 @@ enum ActivityVerb {
   learn,
   watch,
   listen,
+  read,
   discuss,
   explore,
   practice,
