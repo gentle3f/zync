@@ -86,10 +86,14 @@ jobs:
           node --check api/_cardverse/pack_store.js
           node --check api/_cardverse/session_store.js
           node --check api/_cardverse/provider_auth.js
+          node --check api/_cardverse/catalog_v1.js
+          node --check api/_cardverse/pack_policy_v1.js
+          node --check api/_cardverse/runtime_gate.js
           node --check api/v1/cardverse/auth/challenge.js
           node --check api/v1/cardverse/auth/provider.js
           node --check api/v1/cardverse/auth/logout.js
           node --check api/v1/cardverse/inventory.js
+          node --check api/v1/cardverse/packs/open.js
           node --check .github/scripts/serverless_contracts.mjs
           node --check .github/scripts/relay_contracts.mjs
           node --check .github/scripts/group_relay_contracts.mjs
@@ -101,6 +105,7 @@ jobs:
           node --check .github/scripts/cardverse_ownership_contracts.mjs
           node --check .github/scripts/cardverse_pack_open_contracts.mjs
           node --check .github/scripts/cardverse_auth_contracts.mjs
+          node --check .github/scripts/cardverse_pack_policy_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
@@ -113,6 +118,9 @@ jobs:
 
       - name: Test Cardverse auth/session contracts
         run: node .github/scripts/cardverse_auth_contracts.mjs
+
+      - name: Test Cardverse server catalog and pack policy contracts
+        run: node .github/scripts/cardverse_pack_policy_contracts.mjs
 
       - name: Test encrypted relay contracts
         run: node .github/scripts/relay_contracts.mjs

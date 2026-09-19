@@ -375,3 +375,48 @@ Runtime configuration required before provider login can work:
 The default server session lifetime is 30 days and may be reduced with `CARDVERSE_SESSION_TTL_DAYS`. Auth nonce challenges default to 10 minutes.
 
 This slice does not add a mobile login button yet. Mobile provider credentials and secure token storage must be configured and tested before the first real collection login UX is enabled.
+
+
+## 18. Pack policy fail-closed boundary
+
+The server now has an internal V1 pack catalog mirrored from the currently approved expanded Cardverse visual proof set:
+
+- `api/_cardverse/catalog_v1.js`
+- 50 canonical interest IDs;
+- art system version 1;
+- CI drift-checks the server allowlist against the Dart `proofInterestIds + expandedProofInterestIds` lists.
+
+This does **not** mean all 50 cards or their odds are production-approved. It is an internal server allowlist for the current proof surface.
+
+No default pack odds are embedded.
+
+A real pack open requires explicit server configuration in `CARDVERSE_PACK_POLICY_V1`. The configured policy must provide, separately for Standard and Discovery packs:
+
+- policy version;
+- catalog version;
+- edition ID;
+- integer interest weights;
+- integer finish weights;
+- an explicit guarantee rule (`none` or `at_least_one_finish`).
+
+Interest selection and finish selection are performed independently with Node's cryptographic RNG. A configured guarantee is applied only after the five independent finish rolls.
+
+If the policy is absent, malformed, references an unapproved catalog interest, invents a finish tier, or specifies an unreachable guarantee, pack opening fails closed.
+
+The authenticated pack-open endpoint now exists at:
+
+- `POST /api/v1/cardverse/packs/open`
+
+It resolves the account from the bearer session and delegates to the already-transactional `openPack()` domain service. The request body still cannot choose account ID, RNG seed, cards, finish, rarity, odds, result, or policy version.
+
+### Runtime kill switches
+
+Every current Cardverse HTTP endpoint now defaults to hidden/disabled unless:
+
+- `CARDVERSE_API_ENABLED=true`
+
+Pack opening additionally requires:
+
+- `CARDVERSE_PACK_OPEN_ENABLED=true`
+
+Therefore merely deploying this branch or configuring a database cannot accidentally expose Cardverse cloud ownership. Public enablement still requires an explicit server-side release action after rate-limit/security review and final policy approval.

@@ -1,3 +1,4 @@
+import { cardverseApiEnabled, rejectDisabledCardverse } from '../../../_cardverse/runtime_gate.js';
 import { getCardverseDatabase } from '../../../_cardverse/db.js';
 import {
   bearerTokenFromAuthorization,
@@ -13,6 +14,7 @@ function statusFor(error) {
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  if (!cardverseApiEnabled()) return rejectDisabledCardverse(res);
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'method_not_allowed' });

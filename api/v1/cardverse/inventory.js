@@ -1,3 +1,4 @@
+import { cardverseApiEnabled, rejectDisabledCardverse } from '../../_cardverse/runtime_gate.js';
 import { getCardverseDatabase } from '../../_cardverse/db.js';
 import { listOwnershipSnapshot } from '../../_cardverse/ownership_store.js';
 import {
@@ -14,6 +15,7 @@ function statusFor(error) {
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  if (!cardverseApiEnabled()) return rejectDisabledCardverse(res);
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'method_not_allowed' });

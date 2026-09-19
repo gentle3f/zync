@@ -179,3 +179,29 @@ for (const modulePath of [
 }
 
 console.log('✓ Cardverse auth endpoint module resolution passed');
+
+
+{
+  const gate = await import('../../api/_cardverse/runtime_gate.js');
+  const beforeApi = process.env.CARDVERSE_API_ENABLED;
+  const beforePack = process.env.CARDVERSE_PACK_OPEN_ENABLED;
+
+  delete process.env.CARDVERSE_API_ENABLED;
+  delete process.env.CARDVERSE_PACK_OPEN_ENABLED;
+  assert.equal(gate.cardverseApiEnabled(), false);
+  assert.equal(gate.cardversePackOpenEnabled(), false);
+
+  process.env.CARDVERSE_API_ENABLED = 'true';
+  assert.equal(gate.cardverseApiEnabled(), true);
+  assert.equal(gate.cardversePackOpenEnabled(), false);
+
+  process.env.CARDVERSE_PACK_OPEN_ENABLED = 'true';
+  assert.equal(gate.cardversePackOpenEnabled(), true);
+
+  if (beforeApi == null) delete process.env.CARDVERSE_API_ENABLED;
+  else process.env.CARDVERSE_API_ENABLED = beforeApi;
+  if (beforePack == null) delete process.env.CARDVERSE_PACK_OPEN_ENABLED;
+  else process.env.CARDVERSE_PACK_OPEN_ENABLED = beforePack;
+}
+
+console.log('✓ Cardverse runtime kill-switch contracts passed');
