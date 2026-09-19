@@ -7,6 +7,7 @@ import '../core/group_zync_protocol.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../core/zync_now_consensus.dart';
+import '../core/zync_now_constraints_transport.dart';
 import '../core/zync_now_room_coordinator.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_now_constraints_form.dart';
@@ -112,7 +113,7 @@ class _ZyncNowParticipantScreenState
     });
   }
 
-  Future<void> _submitConstraints(context) async {
+  Future<void> _submitConstraints(ZyncNowPrivateContext context) async {
     final coordinator = _coordinator;
     final state = coordinator?.latestState;
     if (coordinator == null || state == null) return;
