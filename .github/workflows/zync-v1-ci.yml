@@ -83,6 +83,7 @@ jobs:
           node --check api/v1/interest-popularity.js
           node --check api/_cardverse/db.js
           node --check api/_cardverse/abuse_guard.js
+          node --check api/_cardverse/account_lifecycle.js
           node --check api/_cardverse/ownership_store.js
           node --check api/_cardverse/pack_store.js
           node --check api/_cardverse/session_store.js
@@ -96,6 +97,10 @@ jobs:
           node --check api/v1/cardverse/auth/challenge.js
           node --check api/v1/cardverse/auth/provider.js
           node --check api/v1/cardverse/auth/logout.js
+          node --check api/v1/cardverse/auth/logout-all.js
+          node --check api/v1/cardverse/auth/link.js
+          node --check api/v1/cardverse/auth/unlink.js
+          node --check api/v1/cardverse/account/delete.js
           node --check api/v1/cardverse/inventory.js
           node --check api/v1/cardverse/packs/open.js
           node --check api/v1/cardverse/quests/claim.js
@@ -112,6 +117,7 @@ jobs:
           node --check .github/scripts/cardverse_pack_open_contracts.mjs
           node --check .github/scripts/cardverse_auth_contracts.mjs
           node --check .github/scripts/cardverse_abuse_guard_contracts.mjs
+          node --check .github/scripts/cardverse_account_lifecycle_contracts.mjs
           node --check .github/scripts/cardverse_pack_policy_contracts.mjs
           node --check .github/scripts/cardverse_reward_contracts.mjs
           node --check .github/scripts/cardverse_proof_ticket_contracts.mjs
@@ -130,6 +136,9 @@ jobs:
 
       - name: Test Cardverse distributed abuse/rate-limit contracts
         run: node .github/scripts/cardverse_abuse_guard_contracts.mjs
+
+      - name: Test Cardverse account/session lifecycle contracts
+        run: node .github/scripts/cardverse_account_lifecycle_contracts.mjs
 
       - name: Test Cardverse server catalog and pack policy contracts
         run: node .github/scripts/cardverse_pack_policy_contracts.mjs
