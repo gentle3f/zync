@@ -4,7 +4,7 @@ const PROTOCOL_VERSION = 1;
 const MAX_ROOM_SECONDS = 1800;
 const MIN_ROOM_SECONDS = 30;
 const MAX_PARTICIPANTS = 8;
-const MIN_PARTICIPANTS = 3;
+const MIN_PARTICIPANTS = 2;
 const MAX_OPAQUE_CHARS = 48 * 1024;
 const CREATE_LIMIT_PER_MINUTE = 20;
 const JOIN_LIMIT_PER_MINUTE = 90;
@@ -399,7 +399,7 @@ async function joinRoom(
     '-- group_join',
     "local meta=redis.call('GET',KEYS[1])",
     "if not meta then return 'missing' end",
-    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([2-8])|([LS])$')",
     "if not join then return 'invalid' end",
     "if join~=ARGV[1] then return 'forbidden' end",
     "if phase~='L' then return 'locked' end",
@@ -516,7 +516,7 @@ async function leaveRoom(
     '-- group_leave',
     "local meta=redis.call('GET',KEYS[1])",
     "if not meta then return 'missing' end",
-    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([2-8])|([LS])$')",
     "if not join then return 'invalid' end",
     "if join~=ARGV[1] then return 'forbidden_room' end",
     "if phase~='L' then return 'locked' end",
@@ -677,7 +677,7 @@ async function lockRoom(
     '-- group_lock',
     "local meta=redis.call('GET',KEYS[1])",
     "if not meta then return 'missing' end",
-    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([2-8])|([LS])$')",
     "if not host then return 'invalid' end",
     "if host~=ARGV[1] then return 'forbidden' end",
     "if phase=='S' then return 'same' end",
@@ -769,7 +769,7 @@ async function submitInput(
     '-- group_input',
     "local meta=redis.call('GET',KEYS[1])",
     "if not meta then return 'missing' end",
-    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([2-8])|([LS])$')",
     "if not join then return 'invalid' end",
     "if join~=ARGV[1] then return 'forbidden_room' end",
     "if phase~='S' then return 'not_started' end",
