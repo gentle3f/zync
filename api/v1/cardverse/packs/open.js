@@ -1,4 +1,9 @@
-import {\n  applyCardverseAbuseHeaders,\n  enforceCardverseAccountRateLimit,\n  enforceCardverseIpRateLimit,\n} from '../../../_cardverse/abuse_guard.js';\nimport { getCardverseDatabase } from '../../../_cardverse/db.js';
+import {
+  applyCardverseAbuseHeaders,
+  enforceCardverseAccountRateLimit,
+  enforceCardverseIpRateLimit,
+} from '../../../_cardverse/abuse_guard.js';
+import { getCardverseDatabase } from '../../../_cardverse/db.js';
 import { openPack } from '../../../_cardverse/pack_store.js';
 import { createCardversePackRoller } from '../../../_cardverse/pack_policy_v1.js';
 import {
@@ -20,7 +25,8 @@ const BAD_REQUEST = new Set([
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured' ||
       error?.code === 'cardverse_pack_policy_not_configured') return 503;
-  if (error?.code === 'cardverse_rate_limited') return 429;\n  if (error?.code === 'cardverse_session_missing' ||
+  if (error?.code === 'cardverse_rate_limited') return 429;
+  if (error?.code === 'cardverse_session_missing' ||
       error?.code === 'cardverse_session_invalid') return 401;
   if (BAD_REQUEST.has(error?.code)) return 400;
   if (error?.code === 'cardverse_pack_not_found') return 404;
@@ -44,7 +50,8 @@ export default async function handler(req, res) {
   try {
     const token = bearerTokenFromAuthorization(req.headers?.authorization);
     const db = await getCardverseDatabase();
-    const session = await resolveAccountSession(db, token);\n    await enforceCardverseAccountRateLimit(session.accountId, 'pack_open_account');
+    const session = await resolveAccountSession(db, token);
+    await enforceCardverseAccountRateLimit(session.accountId, 'pack_open_account');
     const rollPack = createCardversePackRoller();
     const receipt = await openPack(db, session.accountId, req.body, { rollPack });
     return res.status(200).json(receipt);
