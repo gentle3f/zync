@@ -252,7 +252,26 @@ function parseCached(value) {
   }
 }
 
-function responseFromQuestions(questions, requestedPrimary, requestedSecondary, model, cached) {
+function interactionForMode(mode, prompt) {
+  const base = { version: 1, prompt };
+  switch (mode) {
+    case 'easy':
+      return { ...base, type: 'pick', turnPattern: ['choose', 'compare'] };
+    case 'debate':
+      return { ...base, type: 'defend', turnPattern: ['choose', 'defend', 'compare'] };
+    case 'deep':
+      return { ...base, type: 'reveal', turnPattern: ['share', 'react'] };
+    case 'guess':
+      return { ...base, type: 'guess', turnPattern: ['predict', 'reveal', 'react'] };
+    case 'surprise':
+      return { ...base, type: 'surprise', turnPattern: ['react', 'compare'] };
+    case 'fun':
+    default:
+      return { ...base, type: 'play', turnPattern: ['act', 'react'] };
+  }
+}
+
+function responseFromQuestions(questions, requestedPrimary, requestedSecondary, model, cached, mode = 'fun') {
   const question = questions?.[requestedPrimary];
   const secondaryQuestion = requestedSecondary ? questions?.[requestedSecondary] : null;
   if (typeof question !== 'string' || !question.trim()) return null;
@@ -262,14 +281,15 @@ function responseFromQuestions(questions, requestedPrimary, requestedSecondary, 
     ...(requestedSecondary ? { secondaryQuestion: secondaryQuestion.trim(), secondaryLanguage: requestedSecondary } : {}),
     model,
     cached,
+    interaction: interactionForMode(mode, question.trim()),
   };
 }
 
-async function readCached(config, key, primary, secondary, model) {
+async function readCached(config, key, primary, secondary, model, mode = 'fun') {
   try {
     const raw = await redis(config, ['GET', key]);
     const questions = parseCached(raw);
-    return questions ? responseFromQuestions(questions, primary, secondary, model, true) : null;
+    return questions ? responseFromQuestions(questions, primary, secondary, model, true, mode) : null;
   } catch (_) {
     return null;
   }
@@ -315,6 +335,7 @@ export default async function handler(req, res) {
       requestedPrimary,
       requestedSecondary,
       model,
+      mode,
     );
     if (cached) {
       res.setHeader('Cache-Control', 'no-store');
@@ -431,6 +452,7 @@ export default async function handler(req, res) {
             requestedPrimary,
             requestedSecondary,
             model,
+            mode,
           );
           if (winner) {
             res.setHeader('Cache-Control', 'no-store');
@@ -449,6 +471,7 @@ export default async function handler(req, res) {
       requestedSecondary,
       servedModel,
       false,
+      mode,
     );
     if (!response) {
       return res.status(502).json({ error: 'bilingual_response_invalid' });
