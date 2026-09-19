@@ -31,6 +31,9 @@ List<int> _groupRandomBytes(int length) {
   );
 }
 
+String generateGroupParticipantId() =>
+    _groupBase64UrlNoPad(_groupRandomBytes(18));
+
 class GroupRoomBootstrap {
   const GroupRoomBootstrap({
     required this.roomId,
@@ -259,6 +262,52 @@ class GroupParticipantProfile {
   }
 }
 
+
+class GroupPrivateInput {
+  const GroupPrivateInput({
+    required this.roundNumber,
+    required this.participantId,
+    required this.answerIds,
+  });
+
+  final int roundNumber;
+  final String participantId;
+
+  /// Structured option IDs only. Free-text answers are deliberately excluded
+  /// from the first Group Zync protocol to reduce accidental sensitive sharing.
+  final List<String> answerIds;
+
+  Map<String, dynamic> toJson() => {
+        'round': roundNumber,
+        'pid': participantId,
+        'answers': answerIds,
+      };
+
+  factory GroupPrivateInput.fromJson(Map<String, dynamic> json) {
+    final roundNumber = (json['round'] as num?)?.toInt() ?? 0;
+    final participantId = (json['pid'] as String?)?.trim() ?? '';
+    final answers = ((json['answers'] as List?) ?? const [])
+        .whereType<String>()
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty && item.length <= 96)
+        .take(8)
+        .toList(growable: false);
+
+    if (roundNumber < 1 ||
+        roundNumber > 99 ||
+        !_groupRoomIdPattern.hasMatch(participantId) ||
+        answers.isEmpty) {
+      throw const FormatException('Invalid Group Zync private input');
+    }
+
+    return GroupPrivateInput(
+      roundNumber: roundNumber,
+      participantId: participantId,
+      answerIds: answers,
+    );
+  }
+}
+
 enum GroupRoomPhase {
   lobby,
   ready,
@@ -353,6 +402,15 @@ class GroupCrypto {
   ) =>
       utf8.encode('zync-group-v1:$roomId:state:$revision');
 
+  static List<int> _inputAad(
+    String roomId,
+    String participantId,
+    int roundNumber,
+  ) =>
+      utf8.encode(
+        'zync-group-v1:$roomId:input:$roundNumber:$participantId',
+      );
+
   static Future<String> encryptParticipant({
     required GroupJoinQrPayload room,
     required GroupParticipantProfile participant,
@@ -415,6 +473,77 @@ class GroupCrypto {
       rethrow;
     } catch (_) {
       throw const FormatException('Invalid encrypted Group Zync participant');
+    }
+  }
+
+
+  static Future<String> encryptPrivateInput({
+    required GroupJoinQrPayload room,
+    required GroupPrivateInput input,
+  }) async {
+    if (input.roundNumber < 1 ||
+        input.roundNumber > 99 ||
+        input.answerIds.isEmpty) {
+      throw const FormatException('Invalid Group Zync private input');
+    }
+    final clear = utf8.encode(jsonEncode({
+      'v': groupZyncProtocolVersion,
+      'rid': room.roomId,
+      'exp': room.expiresAt.toUtc().millisecondsSinceEpoch,
+      'input': input.toJson(),
+    }));
+    if (clear.length > _groupMaxDecodedBytes) {
+      throw const FormatException('Group private input is too large');
+    }
+    final box = await _algorithm.encrypt(
+      clear,
+      secretKey: SecretKey(room.secretBytes),
+      aad: _inputAad(
+        room.roomId,
+        input.participantId,
+        input.roundNumber,
+      ),
+    );
+    return _encodeEnvelope(box);
+  }
+
+  static Future<GroupPrivateInput> decryptPrivateInput({
+    required GroupRoomBootstrap room,
+    required String participantId,
+    required int roundNumber,
+    required String opaquePayload,
+    DateTime? now,
+  }) async {
+    try {
+      final clear = await _decryptEnvelope(
+        opaquePayload: opaquePayload,
+        secretBytes: room.secretBytes,
+        aad: _inputAad(room.roomId, participantId, roundNumber),
+      );
+      final json =
+          Map<String, dynamic>.from(jsonDecode(utf8.decode(clear)) as Map);
+      if ((json['v'] as num?)?.toInt() != groupZyncProtocolVersion ||
+          json['rid'] != room.roomId ||
+          (json['exp'] as num?)?.toInt() !=
+              room.expiresAt.toUtc().millisecondsSinceEpoch) {
+        throw const FormatException('Group private input session mismatch');
+      }
+      final current = (now ?? DateTime.now()).toUtc();
+      if (!current.isBefore(room.expiresAt)) {
+        throw const FormatException('Group private input expired');
+      }
+      final input = GroupPrivateInput.fromJson(
+        Map<String, dynamic>.from(json['input'] as Map),
+      );
+      if (input.participantId != participantId ||
+          input.roundNumber != roundNumber) {
+        throw const FormatException('Group private input identity mismatch');
+      }
+      return input;
+    } on FormatException {
+      rethrow;
+    } catch (_) {
+      throw const FormatException('Invalid encrypted Group Zync input');
     }
   }
 
