@@ -79,11 +79,11 @@ export async function ensureAccountForIdentity(db, rawInput) {
     );
 
     const existing = await tx.query(
-      \`SELECT a.id, a.status, a.created_at
+      `SELECT a.id, a.status, a.created_at
          FROM zync_identity_links l
          JOIN zync_accounts a ON a.id = l.account_id
         WHERE l.provider = $1 AND l.provider_subject = $2
-        FOR UPDATE OF l\`,
+        FOR UPDATE OF l`,
       [input.provider, input.providerSubject],
     );
 
@@ -99,17 +99,17 @@ export async function ensureAccountForIdentity(db, rawInput) {
     }
 
     const accounts = await tx.query(
-      \`INSERT INTO zync_accounts DEFAULT VALUES
-       RETURNING id, status, created_at\`,
+      `INSERT INTO zync_accounts DEFAULT VALUES
+       RETURNING id, status, created_at`,
     );
     const account = accounts[0];
     if (!account?.id) throw domainError('cardverse_account_create_failed');
 
     await tx.query(
-      \`INSERT INTO zync_identity_links (
+      `INSERT INTO zync_identity_links (
          account_id, provider, provider_subject, provider_email,
          email_verified, last_verified_at
-       ) VALUES ($1, $2, $3, $4, $5, now())\`,
+       ) VALUES ($1, $2, $3, $4, $5, now())`,
       [
         account.id,
         input.provider,
@@ -143,9 +143,9 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
     );
 
     const accounts = await tx.query(
-      \`SELECT id, status FROM zync_accounts
+      `SELECT id, status FROM zync_accounts
         WHERE id = $1
-        FOR UPDATE\`,
+        FOR UPDATE`,
       [accountId],
     );
     if (accounts.length === 0 || accounts[0].status !== 'active') {
@@ -153,10 +153,10 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
     }
 
     const providerOwner = await tx.query(
-      \`SELECT account_id
+      `SELECT account_id
          FROM zync_identity_links
         WHERE provider = $1 AND provider_subject = $2
-        FOR UPDATE\`,
+        FOR UPDATE`,
       [input.provider, input.providerSubject],
     );
     if (providerOwner.length > 0 && providerOwner[0].account_id !== accountId) {
@@ -164,10 +164,10 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
     }
 
     const accountProvider = await tx.query(
-      \`SELECT provider_subject
+      `SELECT provider_subject
          FROM zync_identity_links
         WHERE account_id = $1 AND provider = $2
-        FOR UPDATE\`,
+        FOR UPDATE`,
       [accountId, input.provider],
     );
     if (
@@ -178,7 +178,7 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
     }
 
     await tx.query(
-      \`INSERT INTO zync_identity_links (
+      `INSERT INTO zync_identity_links (
          account_id, provider, provider_subject, provider_email,
          email_verified, last_verified_at
        ) VALUES ($1, $2, $3, $4, $5, now())
@@ -186,7 +186,7 @@ export async function linkIdentityToAccount(db, accountIdValue, rawInput) {
        DO UPDATE SET
          provider_email = EXCLUDED.provider_email,
          email_verified = EXCLUDED.email_verified,
-         last_verified_at = now()\`,
+         last_verified_at = now()`,
       [
         accountId,
         input.provider,
@@ -247,28 +247,28 @@ export async function issuePackEntitlement(db, rawInput) {
 
   return db.transaction(async (tx) => {
     const accounts = await tx.query(
-      \`SELECT id FROM zync_accounts
+      `SELECT id FROM zync_accounts
         WHERE id = $1 AND status = 'active'
-        FOR UPDATE\`,
+        FOR UPDATE`,
       [input.accountId],
     );
     if (accounts.length === 0) throw domainError('cardverse_account_not_active');
 
     const reserved = await tx.query(
-      \`INSERT INTO cardverse_idempotency_records (
+      `INSERT INTO cardverse_idempotency_records (
          account_id, scope, idempotency_key, request_hash
        ) VALUES ($1, $2, $3, $4)
        ON CONFLICT (account_id, scope, idempotency_key) DO NOTHING
-       RETURNING request_hash\`,
+       RETURNING request_hash`,
       [input.accountId, scope, input.idempotencyKey, requestHash],
     );
 
     if (reserved.length === 0) {
       const prior = await tx.query(
-        \`SELECT request_hash, response_json
+        `SELECT request_hash, response_json
            FROM cardverse_idempotency_records
           WHERE account_id = $1 AND scope = $2 AND idempotency_key = $3
-          FOR UPDATE\`,
+          FOR UPDATE`,
         [input.accountId, scope, input.idempotencyKey],
       );
       if (prior.length === 0) throw domainError('cardverse_idempotency_lost');
@@ -281,10 +281,10 @@ export async function issuePackEntitlement(db, rawInput) {
     }
 
     const existingGrant = await tx.query(
-      \`SELECT pack_id, account_id, grant_id, pack_type, status, version, issued_at
+      `SELECT pack_id, account_id, grant_id, pack_type, status, version, issued_at
          FROM cardverse_pack_entitlements
         WHERE grant_id = $1
-        FOR UPDATE\`,
+        FOR UPDATE`,
       [input.grantId],
     );
 
@@ -297,21 +297,21 @@ export async function issuePackEntitlement(db, rawInput) {
       response = packResponse(row);
     } else {
       const packs = await tx.query(
-        \`INSERT INTO cardverse_pack_entitlements (
+        `INSERT INTO cardverse_pack_entitlements (
            account_id, grant_id, pack_type
          ) VALUES ($1, $2, $3)
-         RETURNING pack_id, account_id, grant_id, pack_type, status, version, issued_at\`,
+         RETURNING pack_id, account_id, grant_id, pack_type, status, version, issued_at`,
         [input.accountId, input.grantId, input.packType],
       );
       const pack = packs[0];
       if (!pack?.pack_id) throw domainError('cardverse_pack_issue_failed');
 
       const ledger = await tx.query(
-        \`INSERT INTO cardverse_inventory_ledger (
+        `INSERT INTO cardverse_inventory_ledger (
            account_id, event_type, asset_kind, asset_key,
            quantity_delta, correlation_id, metadata
          ) VALUES ($1, 'pack_grant', 'pack', $2, 1, $3, $4::jsonb)
-         RETURNING sequence, event_id\`,
+         RETURNING sequence, event_id`,
         [
           input.accountId,
           pack.pack_id,
@@ -327,9 +327,9 @@ export async function issuePackEntitlement(db, rawInput) {
     }
 
     await tx.query(
-      \`UPDATE cardverse_idempotency_records
+      `UPDATE cardverse_idempotency_records
           SET response_json = $4::jsonb, completed_at = now()
-        WHERE account_id = $1 AND scope = $2 AND idempotency_key = $3\`,
+        WHERE account_id = $1 AND scope = $2 AND idempotency_key = $3`,
       [
         input.accountId,
         scope,
@@ -347,42 +347,42 @@ export async function listOwnershipSnapshot(db, accountIdValue) {
   const accountId = cleanUuid(accountIdValue, 'cardverse_account_id_invalid');
 
   const accounts = await db.query(
-    \`SELECT id, status, created_at
+    `SELECT id, status, created_at
        FROM zync_accounts
-      WHERE id = $1\`,
+      WHERE id = $1`,
     [accountId],
   );
   if (accounts.length === 0) throw domainError('cardverse_account_not_found');
 
   const balances = await db.query(
-    \`SELECT variant_key, quantity, locked_quantity, version, updated_at
+    `SELECT variant_key, quantity, locked_quantity, version, updated_at
        FROM cardverse_stack_balances
       WHERE account_id = $1
-      ORDER BY variant_key\`,
+      ORDER BY variant_key`,
     [accountId],
   );
 
   const uniqueInstances = await db.query(
-    \`SELECT instance_id, canonical_interest_id, finish, edition,
+    `SELECT instance_id, canonical_interest_id, finish, edition,
             art_system_version, soulbound, locked, version, acquired_at, metadata
        FROM cardverse_unique_instances
       WHERE account_id = $1
-      ORDER BY acquired_at, instance_id\`,
+      ORDER BY acquired_at, instance_id`,
     [accountId],
   );
 
   const unopenedPacks = await db.query(
-    \`SELECT pack_id, grant_id, pack_type, status, version, issued_at
+    `SELECT pack_id, grant_id, pack_type, status, version, issued_at
        FROM cardverse_pack_entitlements
       WHERE account_id = $1 AND status = 'unopened'
-      ORDER BY issued_at, pack_id\`,
+      ORDER BY issued_at, pack_id`,
     [accountId],
   );
 
   const cursorRows = await db.query(
-    \`SELECT COALESCE(MAX(sequence), 0) AS ledger_cursor
+    `SELECT COALESCE(MAX(sequence), 0) AS ledger_cursor
        FROM cardverse_inventory_ledger
-      WHERE account_id = $1\`,
+      WHERE account_id = $1`,
     [accountId],
   );
 
