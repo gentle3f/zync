@@ -324,83 +324,83 @@ Wild by Cheryl Strayed
     cluster: 'food/cuisines',
     rankStart: 4850,
     raw: r'''
-Teochew Cuisine|潮州菜
-Hakka Cuisine|客家菜
-Shanghainese Cuisine|上海菜
-Beijing Cuisine|京菜
+Teochew Cuisine|潮州菜|潮州菜|潮州菜
+Hakka Cuisine|客家菜|客家菜|客家菜
+Shanghainese Cuisine|上海菜|上海菜|上海菜
+Beijing Cuisine|京菜|京菜|京菜
 Shandong Cuisine|魯菜|鲁菜
-Hunan Cuisine|湘菜
+Hunan Cuisine|湘菜|湘菜|湘菜
 Fujian Cuisine|閩菜|闽菜
 Jiangsu Cuisine|蘇菜|苏菜
-Zhejiang Cuisine|浙菜
+Zhejiang Cuisine|浙菜|浙菜|浙菜
 Yunnan Cuisine|雲南菜|云南菜
-Xinjiang Cuisine|新疆菜
-Chaoshan Cuisine|潮汕菜
+Xinjiang Cuisine|新疆菜|新疆菜|新疆菜
+Chaoshan Cuisine|潮汕菜|潮汕菜|潮汕菜
 Macanese Cuisine|澳門菜|澳门菜
 Okinawan Cuisine|沖繩料理|沖縄料理|冲绳料理
 Kaiseki|懷石料理|懐石料理|怀石料理
-Izakaya Food|居酒屋料理
+Izakaya Food|居酒屋料理|居酒屋料理|居酒屋料理
 Yakitori|燒鳥|焼き鳥|烧鸟
 Yakiniku|日式燒肉|焼肉|日式烧肉
 Korean BBQ|韓式燒肉|韩式烤肉
 Korean Fried Chicken|韓式炸雞|韩式炸鸡
-Temple Food
-Burmese Cuisine
-Filipino Cuisine
-Indonesian Cuisine
-Balinese Cuisine
-Cambodian Cuisine
-Laotian Cuisine
-Nepalese Cuisine
-Sri Lankan Cuisine
-Bangladeshi Cuisine
-Pakistani Cuisine
-Persian Cuisine
-Lebanese Cuisine
-Turkish Cuisine
-Greek Cuisine
-Israeli Cuisine
-Moroccan Cuisine
-Ethiopian Cuisine
-Egyptian Cuisine
-South African Cuisine
-West African Cuisine
-Nigerian Cuisine
-Brazilian Cuisine
-Argentinian Cuisine
-Peruvian Cuisine
-Colombian Cuisine
-Cuban Cuisine
-Caribbean Cuisine
-Tex-Mex
-Cajun Cuisine
-Creole Cuisine
-Southern US Food
-New York Food
-Californian Cuisine
-Nordic Cuisine
-British Food
-Irish Food
-German Food
-Austrian Food
-Swiss Food
-Portuguese Food
-Basque Cuisine
-Catalan Cuisine
-Eastern European Food
-Polish Food
-Hungarian Food
-Georgian Cuisine
-Russian Food
-Ukrainian Food
-Balkan Cuisine
-Fusion Cuisine
-Farm-to-Table
-Plant-Based Cooking
-Raw Food
-Gluten-Free Food
-Halal Food
-Kosher Food
+Temple Food|寺院料理|寺院料理
+Burmese Cuisine|緬甸菜|缅甸菜
+Filipino Cuisine|菲律賓菜|菲律宾菜
+Indonesian Cuisine|印尼菜|印尼菜
+Balinese Cuisine|峇里島料理|巴厘岛料理
+Cambodian Cuisine|柬埔寨菜|柬埔寨菜
+Laotian Cuisine|老撾菜|老挝菜
+Nepalese Cuisine|尼泊爾菜|尼泊尔菜
+Sri Lankan Cuisine|斯里蘭卡菜|斯里兰卡菜
+Bangladeshi Cuisine|孟加拉菜|孟加拉菜
+Pakistani Cuisine|巴基斯坦菜|巴基斯坦菜
+Persian Cuisine|波斯菜|波斯菜
+Lebanese Cuisine|黎巴嫩菜|黎巴嫩菜
+Turkish Cuisine|土耳其菜|土耳其菜
+Greek Cuisine|希臘菜|希腊菜
+Israeli Cuisine|以色列菜|以色列菜
+Moroccan Cuisine|摩洛哥菜|摩洛哥菜
+Ethiopian Cuisine|埃塞俄比亞菜|埃塞俄比亚菜
+Egyptian Cuisine|埃及菜|埃及菜
+South African Cuisine|南非菜|南非菜
+West African Cuisine|西非菜|西非菜
+Nigerian Cuisine|尼日利亞菜|尼日利亚菜
+Brazilian Cuisine|巴西菜|巴西菜
+Argentinian Cuisine|阿根廷菜|阿根廷菜
+Peruvian Cuisine|秘魯菜|秘鲁菜
+Colombian Cuisine|哥倫比亞菜|哥伦比亚菜
+Cuban Cuisine|古巴菜|古巴菜
+Caribbean Cuisine|加勒比菜|加勒比菜
+Tex-Mex|德州墨西哥菜|德州墨西哥菜
+Cajun Cuisine|卡真菜|卡真菜
+Creole Cuisine|克里奧爾菜|克里奥尔菜
+Southern US Food|美國南方菜|美国南方菜
+New York Food|紐約美食|纽约美食
+Californian Cuisine|加州料理|加州料理
+Nordic Cuisine|北歐料理|北欧料理
+British Food|英國菜|英国菜
+Irish Food|愛爾蘭菜|爱尔兰菜
+German Food|德國菜|德国菜
+Austrian Food|奧地利菜|奥地利菜
+Swiss Food|瑞士菜|瑞士菜
+Portuguese Food|葡萄牙菜|葡萄牙菜
+Basque Cuisine|巴斯克料理|巴斯克料理
+Catalan Cuisine|加泰隆尼亞料理|加泰罗尼亚料理
+Eastern European Food|東歐菜|东欧菜
+Polish Food|波蘭菜|波兰菜
+Hungarian Food|匈牙利菜|匈牙利菜
+Georgian Cuisine|格魯吉亞菜|格鲁吉亚菜
+Russian Food|俄羅斯菜|俄罗斯菜
+Ukrainian Food|烏克蘭菜|乌克兰菜
+Balkan Cuisine|巴爾幹菜|巴尔干菜
+Fusion Cuisine|融合料理|融合料理
+Farm-to-Table|農場直送餐飲|农场直供餐饮
+Plant-Based Cooking|植物性飲食料理|植物性饮食料理
+Raw Food|生食飲食|生食饮食
+Gluten-Free Food|無麩質飲食|无麸质饮食
+Halal Food|清真食品|清真食品
+Kosher Food|猶太潔食|犹太洁食
 ''',
   ),
   ...parseInterestFamily(
@@ -538,58 +538,58 @@ Crème Brûlée
     cluster: 'food/drinks',
     rankStart: 5250,
     raw: r'''
-Cold Brew Coffee
-Flat White
-Cappuccino
-Café Latte
-Americano
-Mocha
-Single-Origin Coffee
-Coffee Roasting
-Home Espresso
-Coffee Grinders
-Coffee Gear
-Tea Ceremony
-Gongfu Tea|工夫茶
-Pu-erh Tea|普洱茶
+Cold Brew Coffee|冷萃咖啡|冷萃咖啡
+Flat White|澳白咖啡|澳白咖啡
+Cappuccino|卡布奇諾|卡布奇诺
+Café Latte|拿鐵咖啡|拿铁咖啡
+Americano|美式咖啡|美式咖啡
+Mocha|摩卡咖啡|摩卡咖啡
+Single-Origin Coffee|單品咖啡|单品咖啡
+Coffee Roasting|咖啡烘焙|咖啡烘焙
+Home Espresso|家用意式濃縮咖啡|家用意式浓缩咖啡
+Coffee Grinders|咖啡磨豆機|咖啡磨豆机
+Coffee Gear|咖啡器材|咖啡器材
+Tea Ceremony|茶道|茶道
+Gongfu Tea|工夫茶|工夫茶|工夫茶
+Pu-erh Tea|普洱茶|普洱茶|普洱茶
 Oolong Tea|烏龍茶|乌龙茶
-Jasmine Tea|茉莉花茶
+Jasmine Tea|茉莉花茶|茉莉花茶|茉莉花茶
 Green Tea|綠茶|绿茶
 Black Tea|紅茶|红茶
-Herbal Tea|花草茶
-Milk Tea
-Thai Milk Tea
-Chai
-Yerba Mate
-Hot Chocolate
-Fresh Juice
-Smoothies
-Kombucha
-Mocktails
-Craft Soda
-Sparkling Water
-Wine Appreciation
-Red Wine
-White Wine
-Natural Wine
-Champagne
-Craft Beer
-IPA Beer
-Stout Beer
-Belgian Beer
-Japanese Sake|日本酒
-Whisky Appreciation
-Japanese Whisky
-Scotch Whisky
-Bourbon
-Gin
-Rum
-Tequila
-Cocktails
-Classic Cocktails
-Tiki Cocktails
-Cocktail Bars
-Home Bartending
+Herbal Tea|花草茶|花草茶|花草茶
+Milk Tea|奶茶|奶茶
+Thai Milk Tea|泰式奶茶|泰式奶茶
+Chai|印度香料茶|印度香料茶
+Yerba Mate|馬黛茶|马黛茶
+Hot Chocolate|熱朱古力|热巧克力
+Fresh Juice|鮮榨果汁|鲜榨果汁
+Smoothies|果昔|果昔
+Kombucha|康普茶|康普茶
+Mocktails|無酒精雞尾酒|无酒精鸡尾酒
+Craft Soda|手工汽水|手工汽水
+Sparkling Water|氣泡水|气泡水
+Wine Appreciation|葡萄酒品鑑|葡萄酒品鉴
+Red Wine|紅酒|红酒
+White Wine|白葡萄酒|白葡萄酒
+Natural Wine|自然酒|自然酒
+Champagne|香檳|香槟
+Craft Beer|手工啤酒|精酿啤酒
+IPA Beer|IPA 啤酒|IPA 啤酒
+Stout Beer|世濤啤酒|世涛啤酒
+Belgian Beer|比利時啤酒|比利时啤酒
+Japanese Sake|日本酒|日本酒|日本酒
+Whisky Appreciation|威士忌品鑑|威士忌品鉴
+Japanese Whisky|日本威士忌|日本威士忌
+Scotch Whisky|蘇格蘭威士忌|苏格兰威士忌
+Bourbon|波本威士忌|波本威士忌
+Gin|氈酒|金酒
+Rum|朗姆酒|朗姆酒
+Tequila|龍舌蘭酒|龙舌兰酒
+Cocktails|雞尾酒|鸡尾酒
+Classic Cocktails|經典雞尾酒|经典鸡尾酒
+Tiki Cocktails|Tiki 雞尾酒|Tiki 鸡尾酒
+Cocktail Bars|雞尾酒吧|鸡尾酒吧
+Home Bartending|家庭調酒|家庭调酒
 ''',
   ),
   ...parseInterestFamily(
@@ -686,74 +686,74 @@ Antarctica Travel|南極旅行|南极旅行
     cluster: 'travel/styles',
     rankStart: 5600,
     raw: r'''
-Slow Travel
-Digital Nomad Travel
-Working Holidays
-Long-Haul Travel
-Weekend Getaways
-Island Hopping
-Rail Pass Travel
-Night Trains
-Scenic Train Journeys
-Sleeper Trains
-Luxury Trains
-Road Tripping
-Campervan Travel
-Motorcycle Touring
-Cycling Tours
-Walking Holidays
-Pilgrimage Routes
-Mountain Travel
-Ski Holidays
-Diving Trips
-Surf Trips
-Wellness Retreats
-Spa Travel
-Onsen Travel
-Food Tours
-Wine Travel
-Coffee Travel
-Architecture Travel
-Museum Travel
-Art Travel
-Music Festival Travel
-Film Location Travel
+Slow Travel|慢旅行|慢旅行
+Digital Nomad Travel|數碼遊牧旅行|数字游民旅行
+Working Holidays|工作假期|打工度假
+Long-Haul Travel|長途旅行|长途旅行
+Weekend Getaways|週末短途旅行|周末短途旅行
+Island Hopping|跳島旅行|跳岛旅行
+Rail Pass Travel|鐵路通票旅行|铁路通票旅行
+Night Trains|夜行列車旅行|夜行列车旅行
+Scenic Train Journeys|景觀鐵路旅行|景观铁路旅行
+Sleeper Trains|臥鋪列車旅行|卧铺列车旅行
+Luxury Trains|豪華列車旅行|豪华列车旅行
+Road Tripping|自駕遊|自驾游
+Campervan Travel|露營車旅行|房车旅行
+Motorcycle Touring|電單車旅行|摩托车旅行
+Cycling Tours|單車旅行|骑行旅行
+Walking Holidays|徒步假期|徒步旅行
+Pilgrimage Routes|朝聖路線旅行|朝圣路线旅行
+Mountain Travel|山區旅行|山地旅行
+Ski Holidays|滑雪假期|滑雪假期
+Diving Trips|潛水旅行|潜水旅行
+Surf Trips|滑浪旅行|冲浪旅行
+Wellness Retreats|身心療癒旅行|康养度假
+Spa Travel|水療旅行|水疗旅行
+Onsen Travel|溫泉旅行|温泉旅行
+Food Tours|美食之旅|美食之旅
+Wine Travel|葡萄酒旅行|葡萄酒旅行
+Coffee Travel|咖啡旅行|咖啡旅行
+Architecture Travel|建築旅行|建筑旅行
+Museum Travel|博物館之旅|博物馆之旅
+Art Travel|藝術旅行|艺术旅行
+Music Festival Travel|音樂節旅行|音乐节旅行
+Film Location Travel|電影取景地旅行|电影取景地旅行
 Anime Pilgrimage|聖地巡禮|圣地巡礼
-Theme Park Travel
-Disney Parks Travel
-Universal Studios Travel
-National Parks Travel
-Wildlife Travel
-Photography Travel
+Theme Park Travel|主題樂園旅行|主题乐园旅行
+Disney Parks Travel|迪士尼樂園旅行|迪士尼乐园旅行
+Universal Studios Travel|環球影城旅行|环球影城旅行
+National Parks Travel|國家公園旅行|国家公园旅行
+Wildlife Travel|野生動物旅行|野生动物旅行
+Photography Travel|攝影旅行|摄影旅行
 Aurora Hunting|極光旅行|极光旅行
-Stargazing Trips
-Volcano Travel
-Desert Travel
-Jungle Travel
-Archaeology Travel
-Historical Site Travel
-UNESCO Heritage Travel
-Cruise Travel
-River Cruises
-Expedition Cruises
-Backpacking Southeast Asia
-Gap-Year Travel
-Student Travel
-Pet-Friendly Travel
-Accessible Travel
-Travel Hacking
-Airline Miles & Points
-Hotel Loyalty Programs
-Travel Planning
-Travel Journaling
-Travel Vlogging
-Travel Blogging
-Packing Light
-One-Bag Travel
-Carry-On Only Travel
-Airport Lounges
-Aviation Travel
-Ferry Travel
+Stargazing Trips|觀星旅行|观星旅行
+Volcano Travel|火山旅行|火山旅行
+Desert Travel|沙漠旅行|沙漠旅行
+Jungle Travel|叢林旅行|丛林旅行
+Archaeology Travel|考古旅行|考古旅行
+Historical Site Travel|歷史古蹟旅行|历史古迹旅行
+UNESCO Heritage Travel|世界遺產旅行|世界遗产旅行
+Cruise Travel|郵輪旅行|邮轮旅行
+River Cruises|河川郵輪旅行|内河游轮旅行
+Expedition Cruises|探險郵輪|探险邮轮
+Backpacking Southeast Asia|東南亞背包旅行|东南亚背包旅行
+Gap-Year Travel|間隔年旅行|间隔年旅行
+Student Travel|學生旅行|学生旅行
+Pet-Friendly Travel|寵物友善旅行|宠物友好旅行
+Accessible Travel|無障礙旅行|无障碍旅行
+Travel Hacking|旅遊省錢技巧|旅行省钱技巧
+Airline Miles & Points|航空里數與積分|航空里程与积分
+Hotel Loyalty Programs|酒店會員計劃|酒店会员计划
+Travel Planning|旅行規劃|旅行规划
+Travel Journaling|旅行手帳|旅行日志
+Travel Vlogging|旅行影片創作|旅行视频创作
+Travel Blogging|旅行部落格|旅行博客
+Packing Light|輕裝旅行|轻装旅行
+One-Bag Travel|一袋旅行|单包旅行
+Carry-On Only Travel|只帶手提行李旅行|只带随身行李旅行
+Airport Lounges|機場貴賓室|机场贵宾室
+Aviation Travel|航空主題旅行|航空主题旅行
+Ferry Travel|渡輪旅行|轮渡旅行
 ''',
   ),
 ]);
