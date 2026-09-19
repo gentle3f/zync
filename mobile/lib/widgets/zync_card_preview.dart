@@ -14,6 +14,7 @@ class ZyncCardPreview extends StatelessWidget {
     this.finish = CardFinishTier.normal,
     this.editionLabel = 'CORE',
     this.cardNumberLabel,
+    this.animateFinish = false,
   });
 
   final CardVisualRecipe recipe;
@@ -22,6 +23,9 @@ class ZyncCardPreview extends StatelessWidget {
   final CardFinishTier finish;
   final String editionLabel;
   final String? cardNumberLabel;
+
+  /// Grid/binder previews keep this false. Enable only for a focused card.
+  final bool animateFinish;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,11 @@ class ZyncCardPreview extends StatelessWidget {
                   palette: palette,
                 ),
               ),
-              _finishOverlay(palette),
+              _CardFinishOverlay(
+                finish: finish,
+                palette: palette,
+                animate: animateFinish,
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
                 child: Column(
@@ -137,40 +145,6 @@ class ZyncCardPreview extends StatelessWidget {
     );
   }
 
-  Widget _finishOverlay(_CardPalette palette) {
-    if (finish == CardFinishTier.normal) {
-      return const SizedBox.shrink();
-    }
-
-    final opacity = switch (finish) {
-      CardFinishTier.foil => 0.14,
-      CardFinishTier.holo => 0.22,
-      CardFinishTier.prism => 0.30,
-      CardFinishTier.legendary => 0.36,
-      CardFinishTier.secret => 0.42,
-      CardFinishTier.normal => 0.0,
-    };
-
-    return IgnorePointer(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: const Alignment(-1, -0.8),
-            end: const Alignment(1, 0.8),
-            colors: [
-              Colors.white.withValues(alpha: 0),
-              palette.accent.withValues(alpha: opacity),
-              Colors.white.withValues(alpha: opacity * 0.75),
-              palette.secondary.withValues(alpha: opacity),
-              Colors.white.withValues(alpha: 0),
-            ],
-            stops: const [0.0, 0.24, 0.48, 0.7, 1.0],
-          ),
-        ),
-      ),
-    );
-  }
-
   Color _borderColor(_CardPalette palette) => switch (finish) {
         CardFinishTier.normal => palette.ink.withValues(alpha: 0.24),
         CardFinishTier.foil => Colors.white.withValues(alpha: 0.72),
@@ -179,6 +153,206 @@ class ZyncCardPreview extends StatelessWidget {
         CardFinishTier.legendary => Colors.white.withValues(alpha: 0.92),
         CardFinishTier.secret => palette.ink.withValues(alpha: 0.82),
       };
+}
+
+class _CardFinishOverlay extends StatefulWidget {
+  const _CardFinishOverlay({
+    required this.finish,
+    required this.palette,
+    required this.animate,
+  });
+
+  final CardFinishTier finish;
+  final _CardPalette palette;
+  final bool animate;
+
+  @override
+  State<_CardFinishOverlay> createState() => _CardFinishOverlayState();
+}
+
+class _CardFinishOverlayState extends State<_CardFinishOverlay>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _controller;
+
+  bool get _supportsMotion =>
+      widget.finish == CardFinishTier.holo ||
+      widget.finish == CardFinishTier.prism ||
+      widget.finish == CardFinishTier.legendary ||
+      widget.finish == CardFinishTier.secret;
+
+  bool get _motionEnabled {
+    final media = MediaQuery.maybeOf(context);
+    return widget.animate &&
+        _supportsMotion &&
+        !(media?.disableAnimations ?? false);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncController();
+  }
+
+  @override
+  void didUpdateWidget(covariant _CardFinishOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncController();
+  }
+
+  void _syncController() {
+    if (_motionEnabled) {
+      final controller = _controller ??=
+          AnimationController(
+            vsync: this,
+            duration: const Duration(milliseconds: 2400),
+          );
+      if (!controller.isAnimating) {
+        controller.repeat();
+      }
+    } else {
+      _controller?.stop();
+      _controller?.value = 0.42;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.finish == CardFinishTier.normal) {
+      return const SizedBox.shrink();
+    }
+
+    if (!_motionEnabled || _controller == null) {
+      return IgnorePointer(
+        key: const ValueKey('card-finish-static'),
+        child: _StaticFinishLayer(
+          finish: widget.finish,
+          palette: widget.palette,
+          progress: 0.42,
+        ),
+      );
+    }
+
+    return IgnorePointer(
+      key: const ValueKey('card-finish-animated'),
+      child: AnimatedBuilder(
+        animation: _controller!,
+        builder: (context, _) => _StaticFinishLayer(
+          finish: widget.finish,
+          palette: widget.palette,
+          progress: _controller!.value,
+        ),
+      ),
+    );
+  }
+}
+
+class _StaticFinishLayer extends StatelessWidget {
+  const _StaticFinishLayer({
+    required this.finish,
+    required this.palette,
+    required this.progress,
+  });
+
+  final CardFinishTier finish;
+  final _CardPalette palette;
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final opacity = switch (finish) {
+      CardFinishTier.foil => 0.14,
+      CardFinishTier.holo => 0.22,
+      CardFinishTier.prism => 0.30,
+      CardFinishTier.legendary => 0.36,
+      CardFinishTier.secret => 0.42,
+      CardFinishTier.normal => 0.0,
+    };
+    final sweep = -1.6 + progress * 3.2;
+    final secondarySweep = 1.2 - progress * 2.4;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment(sweep - 1.0, -0.9),
+              end: Alignment(sweep + 1.0, 0.9),
+              colors: [
+                Colors.white.withValues(alpha: 0),
+                palette.accent.withValues(alpha: opacity * 0.82),
+                Colors.white.withValues(alpha: opacity),
+                palette.secondary.withValues(alpha: opacity * 0.88),
+                Colors.white.withValues(alpha: 0),
+              ],
+              stops: const [0.0, 0.24, 0.48, 0.72, 1.0],
+            ),
+          ),
+        ),
+        if (finish == CardFinishTier.prism ||
+            finish == CardFinishTier.legendary ||
+            finish == CardFinishTier.secret)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(secondarySweep, -0.25),
+                radius: 0.78,
+                colors: [
+                  Colors.white.withValues(alpha: opacity * 0.74),
+                  palette.accent.withValues(alpha: opacity * 0.28),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.42, 1.0],
+              ),
+            ),
+          ),
+        if (finish == CardFinishTier.legendary ||
+            finish == CardFinishTier.secret)
+          CustomPaint(
+            painter: _FinishSparkPainter(
+              progress: progress,
+              color: Colors.white.withValues(alpha: opacity * 1.5),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _FinishSparkPainter extends CustomPainter {
+  const _FinishSparkPainter({
+    required this.progress,
+    required this.color,
+  });
+
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(1.2, size.width * 0.008).toDouble();
+
+    for (var i = 0; i < 9; i++) {
+      final phase = (progress + i * 0.137) % 1.0;
+      final x = size.width * (0.10 + ((i * 37) % 79) / 100);
+      final y = size.height * (0.10 + phase * 0.54);
+      final radius = size.width * (0.010 + (i % 3) * 0.004);
+      canvas.drawCircle(Offset(x, y), radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _FinishSparkPainter oldDelegate) =>
+      oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
 class _EditionSeal extends StatelessWidget {
