@@ -153,6 +153,15 @@ class GroupHostCoordinator {
       if (round.input.options.every((item) => item.id != input.participantId)) {
         throw const FormatException('Unknown Group Zync input participant');
       }
+      if (input.answerIds.length != round.input.requiredSelections ||
+          input.answerIds.toSet().length != input.answerIds.length) {
+        throw const FormatException('Invalid Group Zync answer count');
+      }
+      final allowedAnswerIds =
+          round.input.options.map((item) => item.id).toSet();
+      if (input.answerIds.any((id) => !allowedAnswerIds.contains(id))) {
+        throw const FormatException('Unknown Group Zync answer');
+      }
       result.add(input);
     }
     return List.unmodifiable(result);
@@ -275,12 +284,17 @@ class GroupParticipantCoordinator {
     required this.relay,
     required this.room,
     required this.participant,
+    required this.participantToken,
     required this.participantCount,
   });
 
   final GroupRelayClient relay;
   final GroupJoinQrPayload room;
   final GroupParticipantProfile participant;
+
+  /// Private write capability for this ephemeral room participant. It is never
+  /// included in bounded room state or shared with other participants.
+  final String participantToken;
 
   int participantCount;
   int _lastRevision = -1;
@@ -300,6 +314,7 @@ class GroupParticipantCoordinator {
       profile: profile,
       shareNickname: shareNickname,
     );
+    final participantToken = generateGroupParticipantCapability();
     final payload = await GroupCrypto.encryptParticipant(
       room: room,
       participant: participant,
@@ -307,6 +322,7 @@ class GroupParticipantCoordinator {
     final participantCount = await relay.join(
       room: room,
       participantId: participant.participantId,
+      participantToken: participantToken,
       payload: payload,
     );
 
@@ -314,6 +330,7 @@ class GroupParticipantCoordinator {
       relay: relay,
       room: room,
       participant: participant,
+      participantToken: participantToken,
       participantCount: participantCount,
     );
   }
@@ -371,6 +388,7 @@ class GroupParticipantCoordinator {
     await relay.submitInput(
       room: room,
       participantId: participant.participantId,
+      participantToken: participantToken,
       roundNumber: state.roundNumber,
       payload: payload,
     );
@@ -379,5 +397,6 @@ class GroupParticipantCoordinator {
   Future<void> leave() => relay.leave(
         room: room,
         participantId: participant.participantId,
+        participantToken: participantToken,
       );
 }
