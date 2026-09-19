@@ -228,6 +228,7 @@ async function joinRoom(req, res, config, body) {
     !validBase(body) ||
     !validCapability(body.joinToken) ||
     !validId(body.participantId) ||
+    !validCapability(body.participantToken) ||
     !validOpaque(body.payload)
   ) {
     return json(res, 400, { error: 'group_join_invalid' });
@@ -245,10 +246,4205 @@ async function joinRoom(req, res, config, body) {
     "if join~=ARGV[1] then return 'forbidden' end",
     "if phase~='L' then return 'locked' end",
     "local existing=redis.call('HGET',KEYS[2],ARGV[2])",
-    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "if existing then",
+    "  local auth,payload=string.match(existing,'^A|([0-9a-f]+)|([A-Za-z0-9_-]+)
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
+    "return 'joined'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    hashCapability(body.participantToken),
+    body.payload,
+  ]);
+
+  if (result === 'joined' || result === 'same') {
+    const guestCount = Number(
+      await redis(config, ['HLEN', participantsKey(body.roomId)]),
+    );
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_joined' : 'joined',
+      participantCount: guestCount + 1,
+    });
+  }
+  if (result === 'full') return json(res, 409, { error: 'group_room_full' });
+  if (result === 'locked') return json(res, 409, { error: 'group_room_locked' });
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_participant_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function leaveRoom(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !validCapability(body.participantToken)
+  ) {
+    return json(res, 400, { error: 'group_leave_invalid' });
+  }
+
+  const script = [
+    "-- group_leave",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    const stored = /^A\|([a-f0-9]{64})\|([A-Za-z0-9_-]+)$/.exec(raw[i + 1]);
+    if (!stored) {
+      return json(res, 502, { error: 'group_room_state_invalid' });
+    }
+    participants.push({
+      participantId: raw[i],
+      payload: stored[2],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !validCapability(body.participantToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local auth=string.match(member,'^A|([0-9a-f]+)|[A-Za-z0-9_-]+
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    hashCapability(body.participantToken),
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'participant_forbidden') {
+    return json(res, 403, { error: 'group_participant_not_authorized' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "  if not auth then return 'invalid' end",
+    "  if auth==ARGV[3] and payload==ARGV[4] then return 'same' else return 'duplicate' end",
+    "end",
     "local guestLimit=tonumber(max)-1",
     "if redis.call('HLEN',KEYS[2])>=guestLimit then return 'full' end",
-    "redis.call('HSET',KEYS[2],ARGV[2],ARGV[3])",
+    "redis.call('HSET',KEYS[2],ARGV[2],'A|'..ARGV[3]..'|'..ARGV[4])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
+    "return 'joined'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+
+  if (result === 'joined' || result === 'same') {
+    const guestCount = Number(
+      await redis(config, ['HLEN', participantsKey(body.roomId)]),
+    );
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_joined' : 'joined',
+      participantCount: guestCount + 1,
+    });
+  }
+  if (result === 'full') return json(res, 409, { error: 'group_room_full' });
+  if (result === 'locked') return json(res, 409, { error: 'group_room_locked' });
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_participant_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function leaveRoom(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId)
+  ) {
+    return json(res, 400, { error: 'group_leave_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (meta.phase !== 'L') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  await redis(config, ['HDEL', participantsKey(body.roomId), body.participantId]);
+  return json(res, 200, { ok: true });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden_room' end",
+    "if phase~='L' then return 'locked' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'missing_member' end",
+    "local auth=string.match(member,'^A|([0-9a-f]+)|[A-Za-z0-9_-]+
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "  if not auth then return 'invalid' end",
+    "  if auth==ARGV[3] and payload==ARGV[4] then return 'same' else return 'duplicate' end",
+    "end",
+    "local guestLimit=tonumber(max)-1",
+    "if redis.call('HLEN',KEYS[2])>=guestLimit then return 'full' end",
+    "redis.call('HSET',KEYS[2],ARGV[2],'A|'..ARGV[3]..'|'..ARGV[4])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
+    "return 'joined'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+
+  if (result === 'joined' || result === 'same') {
+    const guestCount = Number(
+      await redis(config, ['HLEN', participantsKey(body.roomId)]),
+    );
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_joined' : 'joined',
+      participantCount: guestCount + 1,
+    });
+  }
+  if (result === 'full') return json(res, 409, { error: 'group_room_full' });
+  if (result === 'locked') return json(res, 409, { error: 'group_room_locked' });
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_participant_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function leaveRoom(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId)
+  ) {
+    return json(res, 400, { error: 'group_leave_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (meta.phase !== 'L') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  await redis(config, ['HDEL', participantsKey(body.roomId), body.participantId]);
+  return json(res, 200, { ok: true });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "if not auth then return 'invalid' end",
+    "if auth~=ARGV[3] then return 'forbidden_participant' end",
+    "redis.call('HDEL',KEYS[2],ARGV[2])",
+    "return 'left'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    hashCapability(body.participantToken),
+  ]);
+  if (result === 'left' || result === 'missing_member') {
+    return json(res, 200, { ok: true });
+  }
+  if (result === 'locked') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  if (result === 'forbidden_room') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'forbidden_participant') {
+    return json(res, 403, { error: 'group_participant_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "  if not auth then return 'invalid' end",
+    "  if auth==ARGV[3] and payload==ARGV[4] then return 'same' else return 'duplicate' end",
+    "end",
+    "local guestLimit=tonumber(max)-1",
+    "if redis.call('HLEN',KEYS[2])>=guestLimit then return 'full' end",
+    "redis.call('HSET',KEYS[2],ARGV[2],'A|'..ARGV[3]..'|'..ARGV[4])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
+    "return 'joined'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+
+  if (result === 'joined' || result === 'same') {
+    const guestCount = Number(
+      await redis(config, ['HLEN', participantsKey(body.roomId)]),
+    );
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_joined' : 'joined',
+      participantCount: guestCount + 1,
+    });
+  }
+  if (result === 'full') return json(res, 409, { error: 'group_room_full' });
+  if (result === 'locked') return json(res, 409, { error: 'group_room_locked' });
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_participant_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function leaveRoom(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId)
+  ) {
+    return json(res, 400, { error: 'group_leave_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (meta.phase !== 'L') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  await redis(config, ['HDEL', participantsKey(body.roomId), body.participantId]);
+  return json(res, 200, { ok: true });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "if not auth then return 'invalid' end",
+    "if auth~=ARGV[3] then return 'participant_forbidden' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[4] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[4])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "  if not auth then return 'invalid' end",
+    "  if auth==ARGV[3] and payload==ARGV[4] then return 'same' else return 'duplicate' end",
+    "end",
+    "local guestLimit=tonumber(max)-1",
+    "if redis.call('HLEN',KEYS[2])>=guestLimit then return 'full' end",
+    "redis.call('HSET',KEYS[2],ARGV[2],'A|'..ARGV[3]..'|'..ARGV[4])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
+    "return 'joined'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+
+  if (result === 'joined' || result === 'same') {
+    const guestCount = Number(
+      await redis(config, ['HLEN', participantsKey(body.roomId)]),
+    );
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_joined' : 'joined',
+      participantCount: guestCount + 1,
+    });
+  }
+  if (result === 'full') return json(res, 409, { error: 'group_room_full' });
+  if (result === 'locked') return json(res, 409, { error: 'group_room_locked' });
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_participant_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function leaveRoom(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId)
+  ) {
+    return json(res, 400, { error: 'group_leave_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (meta.phase !== 'L') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  await redis(config, ['HDEL', participantsKey(body.roomId), body.participantId]);
+  return json(res, 200, { ok: true });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden_room' end",
+    "if phase~='L' then return 'locked' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'missing_member' end",
+    "local auth=string.match(member,'^A|([0-9a-f]+)|[A-Za-z0-9_-]+
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "  if not auth then return 'invalid' end",
+    "  if auth==ARGV[3] and payload==ARGV[4] then return 'same' else return 'duplicate' end",
+    "end",
+    "local guestLimit=tonumber(max)-1",
+    "if redis.call('HLEN',KEYS[2])>=guestLimit then return 'full' end",
+    "redis.call('HSET',KEYS[2],ARGV[2],'A|'..ARGV[3]..'|'..ARGV[4])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
+    "return 'joined'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+
+  if (result === 'joined' || result === 'same') {
+    const guestCount = Number(
+      await redis(config, ['HLEN', participantsKey(body.roomId)]),
+    );
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_joined' : 'joined',
+      participantCount: guestCount + 1,
+    });
+  }
+  if (result === 'full') return json(res, 409, { error: 'group_room_full' });
+  if (result === 'locked') return json(res, 409, { error: 'group_room_locked' });
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_participant_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function leaveRoom(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId)
+  ) {
+    return json(res, 400, { error: 'group_leave_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (meta.phase !== 'L') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  await redis(config, ['HDEL', participantsKey(body.roomId), body.participantId]);
+  return json(res, 200, { ok: true });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "if not auth then return 'invalid' end",
+    "if auth~=ARGV[3] then return 'forbidden_participant' end",
+    "redis.call('HDEL',KEYS[2],ARGV[2])",
+    "return 'left'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    hashCapability(body.joinToken),
+    body.participantId,
+    hashCapability(body.participantToken),
+  ]);
+  if (result === 'left' || result === 'missing_member') {
+    return json(res, 200, { ok: true });
+  }
+  if (result === 'locked') {
+    return json(res, 409, { error: 'group_room_locked' });
+  }
+  if (result === 'forbidden_room') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'forbidden_participant') {
+    return json(res, 403, { error: 'group_participant_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeParticipants(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken)
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, ['HGETALL', participantsKey(body.roomId)])) || [];
+  const participants = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    participants.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    participantCount: participants.length + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+    participants,
+  });
+}
+
+async function lockRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const script = [
+    "-- group_lock",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "if phase=='S' then return 'same' end",
+    "redis.call('SET',KEYS[1],'M|'..host..'|'..join..'|'..max..'|S','KEEPTTL','XX')",
+    "return 'locked'",
+  ].join('\n');
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    1,
+    metaKey(body.roomId),
+    hashCapability(body.hostToken),
+  ]);
+  if (result === 'locked' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_locked' : 'locked',
+    });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function submitInput(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !validId(body.participantId) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_input_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'input', JOIN_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_input",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host,join,max,phase=string.match(meta,'^M|([0-9a-f]+)|([0-9a-f]+)|([3-8])|([LS])$')",
+    "if not join then return 'invalid' end",
+    "if join~=ARGV[1] then return 'forbidden' end",
+    "if phase~='S' then return 'not_started' end",
+    "local member=redis.call('HGET',KEYS[2],ARGV[2])",
+    "if not member then return 'unknown' end",
+    "local existing=redis.call('HGET',KEYS[3],ARGV[2])",
+    "if existing then if existing==ARGV[3] then return 'same' else return 'duplicate' end end",
+    "redis.call('HSET',KEYS[3],ARGV[2],ARGV[3])",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl>0 then redis.call('EXPIRE',KEYS[3],ttl) end",
+    "return 'accepted'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    3,
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    inputKey(body.roomId, body.roundNumber),
+    hashCapability(body.joinToken),
+    body.participantId,
+    body.payload,
+  ]);
+  if (result === 'accepted' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_received' : 'received',
+    });
+  }
+  if (result === 'duplicate') {
+    return json(res, 409, { error: 'group_input_already_received' });
+  }
+  if (result === 'not_started') {
+    return json(res, 409, { error: 'group_round_not_started' });
+  }
+  if (result === 'unknown') {
+    return json(res, 403, { error: 'group_participant_unknown' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function takeInputs(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.roundNumber) ||
+    body.roundNumber < 1 ||
+    body.roundNumber > 99
+  ) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  const raw =
+    (await redis(config, [
+      'HGETALL',
+      inputKey(body.roomId, body.roundNumber),
+    ])) || [];
+  const inputs = [];
+  for (let i = 0; i + 1 < raw.length; i += 2) {
+    inputs.push({
+      participantId: raw[i],
+      payload: raw[i + 1],
+    });
+  }
+  return json(res, 200, { status: 'ready', inputs });
+}
+
+async function publishState(req, res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.hostToken) ||
+    !Number.isInteger(body.revision) ||
+    body.revision < 0 ||
+    body.revision > 9999 ||
+    !validOpaque(body.payload)
+  ) {
+    return json(res, 400, { error: 'group_state_invalid' });
+  }
+  if (!(await enforceRateLimit(config, req, 'state', STATE_LIMIT_PER_MINUTE))) {
+    return json(res, 429, { error: 'group_rate_limited' });
+  }
+
+  const script = [
+    "-- group_publish_state",
+    "local meta=redis.call('GET',KEYS[1])",
+    "if not meta then return 'missing' end",
+    "local host=string.match(meta,'^M|([0-9a-f]+)|')",
+    "if not host then return 'invalid' end",
+    "if host~=ARGV[1] then return 'forbidden' end",
+    "local current=redis.call('GET',KEYS[2])",
+    "if current then",
+    "  local rev,payload=string.match(current,'^S|([0-9]+)|([A-Za-z0-9_-]+)$')",
+    "  if not rev then return 'invalid' end",
+    "  rev=tonumber(rev)",
+    "  local nextRev=tonumber(ARGV[2])",
+    "  if rev>nextRev then return 'stale' end",
+    "  if rev==nextRev then if payload==ARGV[3] then return 'same' else return 'conflict' end end",
+    "end",
+    "local ttl=redis.call('TTL',KEYS[1])",
+    "if ttl<=0 then return 'missing' end",
+    "redis.call('SET',KEYS[2],'S|'..ARGV[2]..'|'..ARGV[3],'EX',ttl)",
+    "return 'published'",
+  ].join('\n');
+
+  const result = await redis(config, [
+    'EVAL',
+    script,
+    2,
+    metaKey(body.roomId),
+    stateKey(body.roomId),
+    hashCapability(body.hostToken),
+    String(body.revision),
+    body.payload,
+  ]);
+  if (result === 'published' || result === 'same') {
+    return json(res, 200, {
+      ok: true,
+      status: result === 'same' ? 'already_published' : 'published',
+    });
+  }
+  if (result === 'stale' || result === 'conflict') {
+    return json(res, 409, { error: 'group_state_conflict' });
+  }
+  if (result === 'forbidden') {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+  if (result === 'invalid') {
+    return json(res, 502, { error: 'group_room_state_invalid' });
+  }
+  return json(res, 410, { error: 'group_room_expired' });
+}
+
+async function pollState(res, config, body) {
+  if (
+    !validBase(body) ||
+    !validCapability(body.joinToken) ||
+    !Number.isInteger(body.sinceRevision) ||
+    body.sinceRevision < -1 ||
+    body.sinceRevision > 9999
+  ) {
+    return json(res, 400, { error: 'group_poll_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 410, { error: 'group_room_expired' });
+  if (meta.joinHash !== hashCapability(body.joinToken)) {
+    return json(res, 403, { error: 'group_join_not_authorized' });
+  }
+  const guestCount = Number(
+    await redis(config, ['HLEN', participantsKey(body.roomId)]),
+  );
+  const stored = await redis(config, ['GET', stateKey(body.roomId)]);
+  if (stored == null) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision: -1,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  const match = /^S\|([0-9]+)\|([A-Za-z0-9_-]+)$/.exec(stored);
+  if (!match) return json(res, 502, { error: 'group_room_state_invalid' });
+  const revision = Number(match[1]);
+  if (revision <= body.sinceRevision) {
+    return json(res, 200, {
+      status: 'waiting',
+      revision,
+      participantCount: guestCount + 1,
+      maxParticipants: meta.maxParticipants,
+      locked: meta.phase === 'S',
+    });
+  }
+  return json(res, 200, {
+    status: 'ready',
+    revision,
+    payload: match[2],
+    participantCount: guestCount + 1,
+    maxParticipants: meta.maxParticipants,
+    locked: meta.phase === 'S',
+  });
+}
+
+async function closeRoom(res, config, body) {
+  if (!validBase(body) || !validCapability(body.hostToken)) {
+    return json(res, 400, { error: 'group_host_request_invalid' });
+  }
+  const meta = await loadMeta(config, body.roomId);
+  if (meta == null) return json(res, 200, { ok: true });
+  if (meta.hostHash !== hashCapability(body.hostToken)) {
+    return json(res, 403, { error: 'group_host_not_authorized' });
+  }
+
+  const keys = [
+    metaKey(body.roomId),
+    participantsKey(body.roomId),
+    stateKey(body.roomId),
+  ];
+  for (let round = 1; round <= 12; round += 1) {
+    keys.push(inputKey(body.roomId, round));
+  }
+  await redis(config, ['DEL', ...keys]);
+  return json(res, 200, { ok: true });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const config = configuration();
+  if (!config) return json(res, 503, { error: 'group_relay_not_configured' });
+  const body =
+    req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+      ? req.body
+      : {};
+
+  try {
+    switch (body.action) {
+      case 'create':
+        return await createRoom(req, res, config, body);
+      case 'join':
+        return await joinRoom(req, res, config, body);
+      case 'leave':
+        return await leaveRoom(res, config, body);
+      case 'take_participants':
+        return await takeParticipants(res, config, body);
+      case 'lock':
+        return await lockRoom(res, config, body);
+      case 'submit_input':
+        return await submitInput(req, res, config, body);
+      case 'take_inputs':
+        return await takeInputs(res, config, body);
+      case 'publish_state':
+        return await publishState(req, res, config, body);
+      case 'poll_state':
+        return await pollState(res, config, body);
+      case 'close':
+        return await closeRoom(res, config, body);
+      default:
+        return json(res, 400, { error: 'group_action_invalid' });
+    }
+  } catch (_) {
+    return json(res, 503, { error: 'group_relay_temporarily_unavailable' });
+  }
+}
+)",
+    "  if not auth then return 'invalid' end",
+    "  if auth==ARGV[3] and payload==ARGV[4] then return 'same' else return 'duplicate' end",
+    "end",
+    "local guestLimit=tonumber(max)-1",
+    "if redis.call('HLEN',KEYS[2])>=guestLimit then return 'full' end",
+    "redis.call('HSET',KEYS[2],ARGV[2],'A|'..ARGV[3]..'|'..ARGV[4])",
     "local ttl=redis.call('TTL',KEYS[1])",
     "if ttl>0 then redis.call('EXPIRE',KEYS[2],ttl) end",
     "return 'joined'",
