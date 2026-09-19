@@ -58,6 +58,13 @@ void main() {
 
     expect(find.text('standardPack'), findsOneWidget);
     expect(find.text('lab-server-pack-1'), findsWidgets);
+
+    await tester.drag(
+      find.byKey(const ValueKey('reward-loop-lab')),
+      const Offset(0, -520),
+    );
+    await tester.pumpAndSettle();
+
     expect(
       find.byKey(const ValueKey('reward-loop-open-pack')),
       findsOneWidget,
@@ -84,9 +91,15 @@ void main() {
     );
     await tester.pump();
 
+    await tester.drag(
+      find.byKey(const ValueKey('reward-loop-lab')),
+      const Offset(0, -520),
+    );
+    await tester.pumpAndSettle();
+
     final openButton =
         find.byKey(const ValueKey('reward-loop-open-pack'));
-    await tester.ensureVisible(openButton);
+    expect(openButton, findsOneWidget);
     await tester.tap(openButton);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
