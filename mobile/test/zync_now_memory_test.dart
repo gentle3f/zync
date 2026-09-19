@@ -59,6 +59,24 @@ void main() {
     expect(stored.single.chosenAt, chosenAt);
   });
 
+  test('saved activity reconstructs its localized candidate recipe', () async {
+    final candidate = await _candidate();
+    final memory = await LocalStore.recordZyncNowChoice(candidate: candidate);
+
+    final restored = memory.toCandidate();
+
+    expect(restored.id, candidate.id);
+    expect(restored.repeatKey, candidate.repeatKey);
+    expect(restored.templateId, candidate.templateId);
+    expect(restored.sourceInterestIds, candidate.sourceInterestIds);
+    expect(restored.participantCount, candidate.participantCount);
+    expect(restored.titleFor('en'), candidate.titleFor('en'));
+    expect(
+      restored.instructionFor('zh-Hant'),
+      candidate.instructionFor('zh-Hant'),
+    );
+  });
+
   test('Did it outcome turns a choice into completed Tried Together memory',
       () async {
     final candidate = await _candidate();
