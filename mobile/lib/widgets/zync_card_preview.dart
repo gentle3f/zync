@@ -282,7 +282,7 @@ class _CardScenePainter extends CustomPainter {
     final line = Paint()
       ..color = Colors.white.withValues(alpha: 0.54)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = math.max(2, size.width * 0.012);
+      ..strokeWidth = math.max(2.0, size.width * 0.012).toDouble();
 
     final court = RRect.fromRectAndRadius(
       Rect.fromLTWH(
