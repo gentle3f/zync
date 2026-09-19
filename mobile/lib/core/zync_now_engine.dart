@@ -31,6 +31,7 @@ class ZyncNowConstraints {
     this.energy,
     this.setting,
     this.hardVetoVerbs = const {},
+    this.hardVetoCategories = const {},
   });
 
   final ActivityDurationBand? duration;
@@ -38,6 +39,7 @@ class ZyncNowConstraints {
   final ActivityEnergy? energy;
   final ActivitySetting? setting;
   final Set<ActivityVerb> hardVetoVerbs;
+  final Set<String> hardVetoCategories;
 }
 
 class ZyncNowCandidate {
@@ -209,8 +211,14 @@ class ZyncNowEngine {
       participants: participants,
       participantConstraints: participantConstraints,
     );
+    final hardVetoCategories = _effectiveHardVetoCategories(
+      sharedConstraints: constraints,
+      participants: participants,
+      participantConstraints: participantConstraints,
+    );
 
     for (final item in InterestCatalog.seed) {
+      if (hardVetoCategories.contains(item.category)) continue;
       final activity = InterestActivityResolver.resolve(item);
       if (activity == null || !activity.eligible) continue;
       if (!_profileFitsAll(
@@ -332,6 +340,11 @@ class ZyncNowEngine {
 
     final orderedIds = ids.toList()..sort();
     final result = <ZyncNowCandidate>[];
+    final hardVetoCategories = _effectiveHardVetoCategories(
+      sharedConstraints: constraints,
+      participants: participants,
+      participantConstraints: participantConstraints,
+    );
 
     for (var i = 0; i < orderedIds.length; i++) {
       for (var j = i + 1; j < orderedIds.length; j++) {
@@ -339,6 +352,12 @@ class ZyncNowEngine {
         final bId = orderedIds[j];
         final aDefinition = InterestCatalog.byId(aId);
         final bDefinition = InterestCatalog.byId(bId);
+        if ((aDefinition != null &&
+                hardVetoCategories.contains(aDefinition.category)) ||
+            (bDefinition != null &&
+                hardVetoCategories.contains(bDefinition.category))) {
+          continue;
+        }
         final a = aDefinition == null
             ? null
             : InterestActivityResolver.resolve(aDefinition);
@@ -551,6 +570,27 @@ class ZyncNowEngine {
         participantConstraints[participant.id]?.hardVetoVerbs ?? const {},
       );
     }
+    return result;
+  }
+
+  static Set<String> _effectiveHardVetoCategories({
+    required ZyncNowConstraints sharedConstraints,
+    required List<ZyncNowParticipant> participants,
+    required Map<String, ZyncNowConstraints> participantConstraints,
+  }) {
+    final result = <String>{
+      ...sharedConstraints.hardVetoCategories.map(
+        (item) => item.trim().toLowerCase(),
+      ),
+    };
+    for (final participant in participants) {
+      result.addAll(
+        (participantConstraints[participant.id]?.hardVetoCategories ??
+                const <String>{})
+            .map((item) => item.trim().toLowerCase()),
+      );
+    }
+    result.removeWhere((item) => item.isEmpty);
     return result;
   }
 
