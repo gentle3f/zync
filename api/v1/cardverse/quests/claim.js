@@ -46,6 +46,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await enforceCardverseIpRateLimit(req, 'quest_claim_ip');
     const token = bearerTokenFromAuthorization(req.headers?.authorization);
     const db = await getCardverseDatabase();
     const session = await resolveAccountSession(db, token);
@@ -53,6 +54,7 @@ export default async function handler(req, res) {
     const receipt = await claimQuestReward(db, session.accountId, req.body);
     return res.status(200).json(receipt);
   } catch (error) {
+    applyCardverseAbuseHeaders(res, error);
     const status = statusFor(error);
     if (status >= 500) console.error('Cardverse Quest claim failed', error?.code || error?.message);
     return res.status(status).json({ error: error?.code || 'cardverse_quest_claim_failed' });
