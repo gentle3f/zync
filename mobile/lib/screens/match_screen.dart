@@ -601,6 +601,28 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
             ],
           ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(99),
+            child: LinearProgressIndicator(
+              value: (_revealedIndex + 1) / _connections.length,
+              minHeight: 7,
+              backgroundColor: const Color(0xFFEDEAF3),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            last
+                ? LocalizedDomainText.allHiddenRevealed(locale)
+                : LocalizedDomainText.hiddenRemaining(
+                    _connections.length - _revealedIndex - 1,
+                    locale,
+                  ),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: ZyncPalette.inkSoft),
+          ),
           const SizedBox(height: 14),
           KeyedSubtree(
             key: ValueKey('zync-connection-${connection.id}'),
