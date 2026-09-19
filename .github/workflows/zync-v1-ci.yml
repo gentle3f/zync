@@ -73,9 +73,11 @@ jobs:
           node --check api/v1/normalize-interest.js
           node --check api/v1/analytics.js
           node --check api/v1/relay.js
+          node --check api/v1/group-relay.js
           node --check api/v1/interest-popularity.js
           node --check .github/scripts/serverless_contracts.mjs
           node --check .github/scripts/relay_contracts.mjs
+          node --check .github/scripts/group_relay_contracts.mjs
           node --check .github/scripts/interest_popularity_contracts.mjs
           node --check .github/scripts/openrouter_privacy_contracts.mjs
           node --check .github/scripts/live_api_smoke.mjs
@@ -87,6 +89,9 @@ jobs:
 
       - name: Test encrypted relay contracts
         run: node .github/scripts/relay_contracts.mjs
+
+      - name: Test Group Zync relay contracts
+        run: node .github/scripts/group_relay_contracts.mjs
 
       - name: Test regional interest popularity contracts
         run: node .github/scripts/interest_popularity_contracts.mjs
