@@ -49,7 +49,7 @@ class ActivityProfile {
     this.equipmentLikely = false,
     this.locationDependency = LocationDependency.none,
     this.crossoverTags = const {},
-    this.templateIds = const [],
+    this.templateIds = const {},
   });
 
   final bool eligible;
