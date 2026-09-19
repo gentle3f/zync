@@ -174,6 +174,55 @@ void main() {
     expect(relay.closed, isTrue);
   });
 
+  test('host rejects semantically forged encrypted participant answer',
+      () async {
+    final relay = _MemoryGroupRelay();
+    final host = await GroupHostCoordinator.create(
+      relay: relay,
+      hostProfile: hostProfile,
+      maxParticipants: 4,
+    );
+    final guest1 = await GroupParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guest1Profile,
+    );
+    await GroupParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guest2Profile,
+    );
+
+    await host.refreshLobby();
+    await host.prepareNextRound(seed: 'semantic-forgery');
+
+    final forged = GroupPrivateInput(
+      roundNumber: host.session.roundNumber,
+      participantId: guest1.participant.participantId,
+      answerIds: const [
+        'NOT_A_REAL_PARTICIPANT_01',
+        'NOT_A_REAL_PARTICIPANT_02',
+      ],
+    );
+    final forgedPayload = await GroupCrypto.encryptPrivateInput(
+      room: host.room.qr,
+      input: forged,
+    );
+    await relay.submitInput(
+      room: host.room.qr,
+      participantId: guest1.participant.participantId,
+      participantToken: guest1.participantToken,
+      roundNumber: host.session.roundNumber,
+      payload: forgedPayload,
+    );
+
+    await host.lockInput();
+    await expectLater(
+      host.takeGuestInputs(),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
   test('late Group Zync participant cannot join after host locks room',
       () async {
     final relay = _MemoryGroupRelay();
