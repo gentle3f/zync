@@ -169,7 +169,7 @@ void main() {
     expect(host.session.phase, GroupRoomPhase.complete);
 
     final zyncNow = host.generateZyncNow(
-      mode: ZyncNowMode.familiar,
+      mode: ZyncNowMode.surprise,
       seed: 'after-group-round',
     );
     expect(zyncNow, isNotEmpty);
