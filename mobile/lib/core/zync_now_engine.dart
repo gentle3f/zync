@@ -190,6 +190,10 @@ class ZyncNowEngine {
           .whereType<SelectedInterest>()
           .where((item) => item.strength != InterestStrength.wantToTry)
           .length;
+      final wantToTryCount = selected
+          .whereType<SelectedInterest>()
+          .where((item) => item.strength == InterestStrength.wantToTry)
+          .length;
 
       final fits = <double>[
         for (var i = 0; i < participants.length; i++)
@@ -206,6 +210,7 @@ class ZyncNowEngine {
         participantCount: participants.length,
         selectedCount: selectedCount,
         selectedStrongCount: selectedStrongCount,
+        wantToTryCount: wantToTryCount,
         activity: activity,
         fits: fits,
       )) {
@@ -230,6 +235,7 @@ class ZyncNowEngine {
                 mode: mode,
                 selectedCount: selectedCount,
                 selectedStrongCount: selectedStrongCount,
+                wantToTryCount: wantToTryCount,
                 participantCount: participants.length,
                 activity: activity,
                 meanFit: meanFit,
@@ -358,6 +364,7 @@ class ZyncNowEngine {
     required int participantCount,
     required int selectedCount,
     required int selectedStrongCount,
+    required int wantToTryCount,
     required ActivityProfile activity,
     required List<double> fits,
   }) {
@@ -366,16 +373,16 @@ class ZyncNowEngine {
 
     return switch (mode) {
       ZyncNowMode.familiar =>
-        selectedCount >= 2 &&
-            selectedCount / participantCount >= 0.5 &&
+        selectedStrongCount >= 2 &&
+            selectedStrongCount / participantCount >= 0.5 &&
             meanFit >= 0.45,
       ZyncNowMode.passThePassion =>
         selectedStrongCount >= 1 &&
-            selectedCount < participantCount &&
+            selectedStrongCount < participantCount &&
             activity.peerTeachable &&
             activity.firstTimerFriendly,
       ZyncNowMode.newToEveryone =>
-        selectedCount == 0 &&
+        selectedStrongCount == 0 &&
             activity.firstTimerFriendly &&
             meanFit >= 0.22,
       ZyncNowMode.surprise => meanFit >= 0.18,
@@ -387,17 +394,21 @@ class ZyncNowEngine {
     required ZyncNowMode mode,
     required int selectedCount,
     required int selectedStrongCount,
+    required int wantToTryCount,
     required int participantCount,
     required ActivityProfile activity,
     required double meanFit,
   }) =>
       switch (mode) {
-        ZyncNowMode.familiar => selectedCount / participantCount,
+        ZyncNowMode.familiar => selectedStrongCount / participantCount,
         ZyncNowMode.passThePassion =>
-          (selectedStrongCount / participantCount) * 0.5 +
-              (activity.peerTeachable ? 0.5 : 0),
+          (selectedStrongCount / participantCount) * 0.4 +
+              (wantToTryCount / participantCount) * 0.2 +
+              (activity.peerTeachable ? 0.4 : 0),
         ZyncNowMode.newToEveryone =>
-          activity.firstTimerFriendly ? 0.8 + meanFit * 0.2 : 0,
+          activity.firstTimerFriendly
+              ? 0.6 + (wantToTryCount / participantCount) * 0.3 + meanFit * 0.1
+              : 0,
         ZyncNowMode.surprise => 0.5 + meanFit * 0.5,
         ZyncNowMode.meetInTheMiddle => 0,
       };
