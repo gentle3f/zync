@@ -18,6 +18,9 @@ class AnalyticsEvent {
   static const questionNext = 'question_next';
   static const modeSelected = 'mode_selected';
   static const zyncAgain = 'zync_again';
+  static const connectionRevealed = 'connection_revealed';
+  static const sessionContinue = 'session_continue';
+  static const sessionRecap = 'session_recap';
 
   static const values = <String>{
     appOpen,
@@ -31,6 +34,9 @@ class AnalyticsEvent {
     questionNext,
     modeSelected,
     zyncAgain,
+    connectionRevealed,
+    sessionContinue,
+    sessionRecap,
   };
 }
 
@@ -61,6 +67,11 @@ class ZyncAnalytics {
     'match_type',
     'bilingual',
     'prior_sessions',
+    'revealed_count',
+    'total_count',
+    'remaining_count',
+    'interaction_type',
+    'continue_source',
   };
 
   final String baseUrl;
