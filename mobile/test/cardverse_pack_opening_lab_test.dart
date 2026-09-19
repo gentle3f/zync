@@ -67,7 +67,7 @@ void main() {
 
     for (var i = 0; i < expected.length; i++) {
       await tester.tap(
-        find.byKey(const ValueKey('pack-lab-reveal-next')),
+        find.byKey(ValueKey('pack-lab-reveal-next-$i')),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
@@ -114,7 +114,7 @@ void main() {
     expect(find.text('Bouldering'), findsOneWidget);
 
     await tester.tap(
-      find.byKey(const ValueKey('pack-lab-reveal-next')),
+      find.byKey(const ValueKey('pack-lab-reveal-next-3')),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
