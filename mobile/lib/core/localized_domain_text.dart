@@ -162,6 +162,61 @@ class LocalizedDomainText {
     };
   }
 
+  static String quickStartTitle(String locale) => _pick(locale, {
+        'en':'Pick 5 things that feel like you',
+        'zh-Hant':'揀 5 樣最似你嘅興趣',
+        'zh-Hans':'选 5 个最像你的兴趣',
+        'ja':'自分らしい興味を5つ選ぼう',
+        'ko':'나를 가장 잘 보여주는 관심사 5개를 골라보세요',
+        'es':'Elige 5 cosas que te representen',
+        'fr':'Choisis 5 centres d’intérêt qui te ressemblent',
+        'pt':'Escolhe 5 interesses que tenham a tua cara',
+      });
+
+  static String quickStartSubtitle(String locale) => _pick(locale, {
+        'en':'Five is enough to start Zync. Build the rest of your Interest DNA later.',
+        'zh-Hant':'5 個就足夠開始 Zync。其餘 Interest DNA 可以之後慢慢加。',
+        'zh-Hans':'5 个就足够开始 Zync。其余 Interest DNA 可以之后慢慢补。',
+        'ja':'5つあればZyncを始められます。残りのInterest DNAは後から育てられます。',
+        'ko':'5개면 Zync를 시작하기에 충분해요. 나머지 Interest DNA는 나중에 채워도 됩니다.',
+        'es':'Con 5 basta para empezar Zync. Completa tu Interest DNA más adelante.',
+        'fr':'Cinq suffisent pour commencer Zync. Tu pourras enrichir ton Interest DNA plus tard.',
+        'pt':'Cinco chegam para começar no Zync. Completa o teu Interest DNA mais tarde.',
+      });
+
+  static String quickPicks(String locale) => _pick(locale, {
+        'en':'Quick picks',
+        'zh-Hant':'快速揀選',
+        'zh-Hans':'快速选择',
+        'ja':'クイック選択',
+        'ko':'빠른 선택',
+        'es':'Selección rápida',
+        'fr':'Choix rapides',
+        'pt':'Escolhas rápidas',
+      });
+
+  static String readyToZync(String locale) => _pick(locale, {
+        'en':'Ready to Zync',
+        'zh-Hant':'可以開始 Zync',
+        'zh-Hans':'可以开始 Zync',
+        'ja':'Zyncを始める',
+        'ko':'Zync 시작하기',
+        'es':'Listo para Zync',
+        'fr':'Prêt pour Zync',
+        'pt':'Pronto para Zync',
+      });
+
+  static String readyToZyncHint(String locale) => _pick(locale, {
+        'en':'You can add more interests anytime.',
+        'zh-Hant':'之後任何時候都可以再加興趣。',
+        'zh-Hans':'之后任何时候都可以继续添加兴趣。',
+        'ja':'興味はいつでも追加できます。',
+        'ko':'관심사는 언제든 더 추가할 수 있어요.',
+        'es':'Puedes añadir más intereses cuando quieras.',
+        'fr':'Tu pourras ajouter d’autres centres d’intérêt à tout moment.',
+        'pt':'Podes adicionar mais interesses quando quiseres.',
+      });
+
   static String achievementsTitle(String locale) => _pick(locale, {
         'en':'Trophy Case','zh-Hant':'成就收藏','zh-Hans':'成就收藏','ja':'トロフィー','ko':'트로피','es':'Trofeos','fr':'Trophées','pt':'Troféus',
       });
