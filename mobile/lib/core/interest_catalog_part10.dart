@@ -8,141 +8,141 @@ final List<InterestDefinition> kInterestCatalogPart10 = List.unmodifiable([
     cluster: 'books/subgenres',
     rankStart: 4400,
     raw: r'''
-Literary Fiction
-Contemporary Fiction
-Historical Fiction
-Family Saga
-Coming-of-Age Fiction
-Short Stories
-Novellas
-Classics
-Modern Classics
-Experimental Fiction
-Magical Realism
-Satirical Fiction
-Humorous Fiction
-Women's Fiction
-Domestic Fiction
-Campus Novels
-Epistolary Novels
-Adventure Fiction
-Sea Fiction
-Western Fiction
-War Fiction
-Political Fiction
-Legal Fiction
-Medical Fiction
-Business Fiction
-Crime Fiction
-Detective Fiction
-Police Procedural Books
-Cozy Mystery Books
-Locked-Room Mystery
-Hard-Boiled Mystery
-Noir Fiction
-Spy Fiction
-Espionage Thrillers
-Psychological Thrillers
-Domestic Thrillers
-Legal Thrillers
-Techno Thrillers
-Historical Mysteries
-True Crime Books
-Horror Fiction
-Gothic Horror
-Cosmic Horror
-Folk Horror Books
-Body Horror Books
-Ghost Stories
-Vampire Fiction
-Zombie Fiction
-Occult Fiction
-Dark Fantasy Books
-Epic Fantasy
-High Fantasy
-Low Fantasy
-Urban Fantasy Books
-Romantic Fantasy Books
-Sword and Sorcery Books
-Mythic Fantasy
-Fairy-Tale Retellings
-Progression Fantasy
-LitRPG
-Science Fiction Books
-Hard Science Fiction
-Space Opera Books
-Cyberpunk Books
-Dystopian Fiction
-Post-Apocalyptic Fiction
-Time Travel Fiction
-Alternate History Books
-First Contact Fiction
-Military Science Fiction
-Climate Fiction|cli-fi
-Solarpunk
-Romance Novels
-Contemporary Romance
-Historical Romance Books
-Romantic Comedy Books
-Dark Romance Books
-Sports Romance
-Fantasy Romance|romantasy
-Queer Romance
-Young Adult Fiction
-YA Fantasy
-YA Romance
-Middle Grade Fiction
-Children's Classics
-Picture Books
-Graphic Novels
-Superhero Comics
-Independent Comics
-European Comics
-Manga Reading
-Manhwa Reading
-Webtoon Reading
-Memoirs
-Autobiography
-Biography
-History Books
-Popular Science Books
-Science Writing
-Nature Writing
-Travel Writing
-Food Writing
-Music Books
-Film Books
-Art Books
-Architecture Books
-Philosophy Books
-Psychology Books
-Economics Books
-Business Books
-Management Books
-Marketing Books
-Startup Books
-Personal Finance Books
-Investing Books
-Self-Help Books
-Productivity Books
-Leadership Books
-Technology Books
-Programming Books
-Design Books
-Poetry Collections
-Essays
-Literary Criticism
-Book Collecting
-Rare Books
-Audiobooks
-E-books
-Book Blogging
-BookTok
-BookTube
-Bookstagram
-Library Visits
-Independent Bookstores
-Second-Hand Bookstores
+Literary Fiction|文學小說|文学小说
+Contemporary Fiction|當代小說|当代小说
+Historical Fiction|歷史小說|历史小说
+Family Saga|家族史詩小說|家族史诗小说
+Coming-of-Age Fiction|成長小說|成长小说
+Short Stories|短篇小說|短篇小说
+Novellas|中篇小說|中篇小说
+Classics|經典文學|经典文学
+Modern Classics|現代經典文學|现代经典文学
+Experimental Fiction|實驗小說|实验小说
+Magical Realism|魔幻現實主義小說|魔幻现实主义小说
+Satirical Fiction|諷刺小說|讽刺小说
+Humorous Fiction|幽默小說|幽默小说
+Women's Fiction|女性題材小說|女性题材小说
+Domestic Fiction|家庭題材小說|家庭题材小说
+Campus Novels|校園小說|校园小说
+Epistolary Novels|書信體小說|书信体小说
+Adventure Fiction|冒險小說|冒险小说
+Sea Fiction|海洋小說|海洋小说
+Western Fiction|西部小說|西部小说
+War Fiction|戰爭小說|战争小说
+Political Fiction|政治小說|政治小说
+Legal Fiction|法律小說|法律小说
+Medical Fiction|醫療小說|医疗小说
+Business Fiction|商業小說|商业小说
+Crime Fiction|犯罪小說|犯罪小说
+Detective Fiction|偵探小說|侦探小说
+Police Procedural Books|警察程序小說|警察程序小说
+Cozy Mystery Books|輕鬆推理小說|轻松推理小说
+Locked-Room Mystery|密室推理|密室推理
+Hard-Boiled Mystery|硬漢派推理|硬汉派推理
+Noir Fiction|黑色小說|黑色小说
+Spy Fiction|間諜小說|间谍小说
+Espionage Thrillers|諜報驚悚小說|谍报惊悚小说
+Psychological Thrillers|心理驚悚小說|心理惊悚小说
+Domestic Thrillers|家庭驚悚小說|家庭惊悚小说
+Legal Thrillers|法律驚悚小說|法律惊悚小说
+Techno Thrillers|科技驚悚小說|科技惊悚小说
+Historical Mysteries|歷史推理小說|历史推理小说
+True Crime Books|真實犯罪書籍|真实犯罪书籍
+Horror Fiction|恐怖小說|恐怖小说
+Gothic Horror|哥德式恐怖小說|哥特式恐怖小说
+Cosmic Horror|宇宙恐怖小說|宇宙恐怖小说
+Folk Horror Books|民俗恐怖小說|民俗恐怖小说
+Body Horror Books|身體恐怖小說|身体恐怖小说
+Ghost Stories|鬼故事|鬼故事
+Vampire Fiction|吸血鬼小說|吸血鬼小说
+Zombie Fiction|喪屍小說|丧尸小说
+Occult Fiction|神秘學小說|神秘学小说
+Dark Fantasy Books|黑暗奇幻小說|黑暗奇幻小说
+Epic Fantasy|史詩奇幻|史诗奇幻
+High Fantasy|高幻想小說|高幻想小说
+Low Fantasy|低幻想小說|低幻想小说
+Urban Fantasy Books|都市奇幻小說|都市奇幻小说
+Romantic Fantasy Books|愛情奇幻小說|爱情奇幻小说
+Sword and Sorcery Books|劍與魔法小說|剑与魔法小说
+Mythic Fantasy|神話奇幻|神话奇幻
+Fairy-Tale Retellings|童話改寫|童话改写
+Progression Fantasy|成長型奇幻|成长型奇幻
+LitRPG|遊戲化角色扮演小說|游戏化角色扮演小说
+Science Fiction Books|科幻小說|科幻小说
+Hard Science Fiction|硬科幻|硬科幻
+Space Opera Books|太空歌劇小說|太空歌剧小说
+Cyberpunk Books|賽博朋克小說|赛博朋克小说
+Dystopian Fiction|反烏托邦小說|反乌托邦小说
+Post-Apocalyptic Fiction|末日後小說|末日后小说
+Time Travel Fiction|時間旅行小說|时间旅行小说
+Alternate History Books|架空歷史小說|架空历史小说
+First Contact Fiction|初次接觸科幻小說|首次接触科幻小说
+Military Science Fiction|軍事科幻小說|军事科幻小说
+Climate Fiction|氣候小說|cli-fi|气候小说
+Solarpunk|太陽朋克|太阳朋克
+Romance Novels|愛情小說|爱情小说
+Contemporary Romance|當代愛情小說|当代爱情小说
+Historical Romance Books|歷史愛情小說|历史爱情小说
+Romantic Comedy Books|愛情喜劇小說|爱情喜剧小说
+Dark Romance Books|黑暗愛情小說|黑暗爱情小说
+Sports Romance|體育愛情小說|体育爱情小说
+Fantasy Romance|奇幻愛情小說|romantasy|奇幻爱情小说
+Queer Romance|酷兒愛情小說|酷儿爱情小说
+Young Adult Fiction|青少年小說|青少年小说
+YA Fantasy|青少年奇幻|青少年奇幻
+YA Romance|青少年愛情|青少年爱情
+Middle Grade Fiction|中年級兒童小說|中年级儿童小说
+Children's Classics|兒童經典文學|儿童经典文学
+Picture Books|圖畫書|绘本
+Graphic Novels|圖像小說|图像小说
+Superhero Comics|超級英雄漫畫|超级英雄漫画
+Independent Comics|獨立漫畫|独立漫画
+European Comics|歐洲漫畫|欧洲漫画
+Manga Reading|漫畫閱讀|漫画阅读
+Manhwa Reading|韓漫閱讀|韩漫阅读
+Webtoon Reading|網漫閱讀|网漫阅读
+Memoirs|回憶錄|回忆录
+Autobiography|自傳|自传
+Biography|傳記|传记
+History Books|歷史書籍|历史书籍
+Popular Science Books|科普書籍|科普书籍
+Science Writing|科學寫作|科学写作
+Nature Writing|自然寫作|自然写作
+Travel Writing|旅行寫作|旅行写作
+Food Writing|飲食寫作|饮食写作
+Music Books|音樂書籍|音乐书籍
+Film Books|電影書籍|电影书籍
+Art Books|藝術書籍|艺术书籍
+Architecture Books|建築書籍|建筑书籍
+Philosophy Books|哲學書籍|哲学书籍
+Psychology Books|心理學書籍|心理学书籍
+Economics Books|經濟學書籍|经济学书籍
+Business Books|商業書籍|商业书籍
+Management Books|管理書籍|管理书籍
+Marketing Books|市場推廣書籍|市场营销书籍
+Startup Books|初創企業書籍|创业书籍
+Personal Finance Books|個人理財書籍|个人理财书籍
+Investing Books|投資書籍|投资书籍
+Self-Help Books|自助成長書籍|自我提升书籍
+Productivity Books|生產力書籍|效率提升书籍
+Leadership Books|領導力書籍|领导力书籍
+Technology Books|科技書籍|科技书籍
+Programming Books|編程書籍|编程书籍
+Design Books|設計書籍|设计书籍
+Poetry Collections|詩集|诗集
+Essays|散文|散文
+Literary Criticism|文學評論|文学评论
+Book Collecting|書籍收藏|书籍收藏
+Rare Books|珍本書收藏|珍本书收藏
+Audiobooks|有聲書|有声书
+E-books|電子書|电子书
+Book Blogging|書籍部落格創作|图书博客
+BookTok|BookTok|BookTok
+BookTube|BookTube|BookTube
+Bookstagram|Bookstagram|Bookstagram
+Library Visits|逛圖書館|逛图书馆
+Independent Bookstores|獨立書店|独立书店
+Second-Hand Bookstores|二手書店|二手书店
 ''',
   ),
   ...parseInterestFamily(
