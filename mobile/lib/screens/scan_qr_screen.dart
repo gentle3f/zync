@@ -15,6 +15,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 import 'group_zync_participant_screen.dart';
 import 'match_screen.dart';
+import 'zync_now_participant_screen.dart';
 
 class ScanQrScreen extends StatefulWidget {
   const ScanQrScreen({
@@ -95,11 +96,17 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       if (!mounted) return;
       await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => GroupZyncParticipantScreen(
-            profile: widget.profile,
-            room: room,
-            relayClient: widget.groupRelayClient,
-          ),
+          builder: (_) => room.kind == SharedZyncRoomKind.zyncNow
+              ? ZyncNowParticipantScreen(
+                  profile: widget.profile,
+                  room: room,
+                  relayClient: widget.groupRelayClient,
+                )
+              : GroupZyncParticipantScreen(
+                  profile: widget.profile,
+                  room: room,
+                  relayClient: widget.groupRelayClient,
+                ),
         ),
       );
     } on FormatException catch (error) {
