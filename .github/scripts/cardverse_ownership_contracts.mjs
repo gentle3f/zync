@@ -272,7 +272,19 @@ assert.deepEqual(
   const responses = [
     [{ id: ACCOUNT, status: 'active', created_at: '2026-09-20T00:00:00.000Z' }],
     [{ variant_key: 'sports.badminton|core|normal', quantity: 2, locked_quantity: 1, version: 3, updated_at: '2026-09-20T00:02:00.000Z' }],
-    [],
+    [{
+      instance_id: '55555555-5555-4555-8555-555555555555',
+      canonical_interest_id: 'music.piano',
+      finish_id: 'secret',
+      edition_id: 'event_2026',
+      art_system_version: 2,
+      acquisition_source: 'event',
+      soulbound: true,
+      locked: false,
+      version: 4,
+      acquired_at: '2026-09-20T00:01:30.000Z',
+      metadata: {},
+    }],
     [{ pack_id: PACK, grant_id: GRANT, pack_type: 'standard', status: 'unopened', version: 1, issued_at: '2026-09-20T00:01:00.000Z' }],
     [{ ledger_cursor: 7 }],
   ];
@@ -286,6 +298,10 @@ assert.deepEqual(
   assert.equal(snapshot.ledgerCursor, 7);
   assert.equal(snapshot.balances[0].quantity, 2);
   assert.equal(snapshot.balances[0].lockedQuantity, 1);
+  assert.equal(snapshot.uniqueInstances[0].finishId, 'secret');
+  assert.equal(snapshot.uniqueInstances[0].editionId, 'event_2026');
+  assert.equal(snapshot.uniqueInstances[0].variantKey, 'music.piano::secret::event_2026');
+  assert.equal(snapshot.uniqueInstances[0].acquisitionSource, 'event');
   assert.equal(snapshot.unopenedPacks[0].packId, PACK);
 }
 

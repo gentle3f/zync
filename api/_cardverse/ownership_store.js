@@ -363,8 +363,9 @@ export async function listOwnershipSnapshot(db, accountIdValue) {
   );
 
   const uniqueInstances = await db.query(
-    `SELECT instance_id, canonical_interest_id, finish, edition,
-            art_system_version, soulbound, locked, version, acquired_at, metadata
+    `SELECT instance_id, canonical_interest_id, finish_id, edition_id,
+            art_system_version, acquisition_source, soulbound, locked,
+            version, acquired_at, metadata
        FROM cardverse_unique_instances
       WHERE account_id = $1
       ORDER BY acquired_at, instance_id`,
@@ -403,9 +404,11 @@ export async function listOwnershipSnapshot(db, accountIdValue) {
     uniqueInstances: uniqueInstances.map((row) => ({
       instanceId: row.instance_id,
       canonicalInterestId: row.canonical_interest_id,
-      finish: row.finish,
-      edition: row.edition,
+      finishId: row.finish_id,
+      editionId: row.edition_id,
+      variantKey: row.canonical_interest_id + '::' + row.finish_id + '::' + row.edition_id,
       artSystemVersion: Number(row.art_system_version),
+      acquisitionSource: row.acquisition_source,
       soulbound: row.soulbound === true,
       locked: row.locked === true,
       version: Number(row.version),
