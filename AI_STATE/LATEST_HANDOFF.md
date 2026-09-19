@@ -1,6 +1,10 @@
-# Zync V1 — Latest Handoff
+# Zync — Latest Handoff
 
 Authoritative continuation checkpoint:
+
+`AI_STATE/HANDOFF_20260920_CARDVERSE_REWARD_LOOP_CERTIFIED.md`
+
+Previous authoritative continuation checkpoint:
 
 `AI_STATE/HANDOFF_20260918_ICEBREAKING_SOCIAL_AI_LIVE_QA_READY.md`
 
@@ -12,7 +16,7 @@ Latest strategic product-vision checkpoint:
 
 `AI_STATE/MINI_HANDOFF_20260919_MASTER_PRODUCT_VISION_EXPANDED.md`
 
-Latest certified implementation / physical-QA checkpoint:
+Latest certified implementation / physical-QA checkpoint before the Cardverse expansion:
 
 `AI_STATE/MINI_HANDOFF_20260919_OCTALYSIS_BATCH1_QA_CERTIFIED.md`
 
@@ -42,30 +46,39 @@ Canonical product/business sources:
 - `docs/ZYNC_MASTER_EXECUTION_PLAN.md`
 - `docs/ZYNC_V1_PRODUCT_SPEC.md`
 - `docs/REAL_DEVICE_QA.md`
+- `docs/ZYNC_CARDVERSE_ARCHITECTURE_V1.md`
+- `docs/ZYNC_CARD_VISUAL_SPEC_V1.md`
+- `docs/ZYNC_CARD_GENERATION_PIPELINE_V1.md`
 
 Branch:
 
 `zync-v1-rebuild-20260917`
 
-Read the authoritative continuation checkpoint **in full** before doing any work. Preserve all earlier additive handoff lineage. Do not restart repository discovery or old Thunkable archaeology.
+Read the authoritative continuation checkpoint **in full** before doing any work. Preserve all earlier additive handoff lineage. Do not restart repository discovery, old Thunkable archaeology, or re-derive the Cardverse reward/pack trust boundary.
+
+Current certified head before this handoff-doc update:
+
+`958ffeef642e6970ff79678a11efa7d0f281ed6a`
+
+Latest certified checks at that implementation head:
+
+- Zync V1 CI #823 — SUCCESS
+- Zync V1 CI #822 — SUCCESS
+- Zync QA Preview APK #201 — SUCCESS
 
 Current state in one sentence:
 
-> Octalysis Batch 1 is certified and QA-ready: five-interest quick-start onboarding, backward-compatible structured interaction mechanics, visible mystery/reveal progression, meaningful privacy-safe journey metrics, and responsive Trophy access are implemented on top of the prior feedback-driven V1; full CI, live Preview smoke, and the new separate-install QA APK all passed.
-
-Current controlled Preview:
-
-`https://zync-9d2g9vk18-gens-projects-4f99f8b9.vercel.app`
-
-Current QA artifact:
-
-- artifact ID: `10578206304`
-- artifact: `zync-qa-octalysis-batch1`
-- APK SHA-256: `8be9c792a04cc7bc780240b38e71501db1cc6eb043c82fb9351ff647dcaaacf9`
-- package: `com.gmail.gentle3f.myproject.qa`
+> Zync’s pair/group utility, standalone group-native Zync Now, real-world Quest progression, 50-card procedural Cardverse proof, Collection/Binder UX, receipt-driven resumable Pack Opening, and an end-to-end real action → Quest eligibility → server-owned reward grant → unopened pack → server roll → reveal proof are implemented and CI-certified; the next major task is replacing the mocked Cardverse server boundary with real durable cloud ownership and a transactional backend without weakening the local-first/privacy model.
 
 Current active task:
 
-> **Physical Android QA of Octalysis Batch 1.**
+> **Milestone 5 foundation — Durable Cardverse Ownership. Freeze the real cloud API/domain boundary, select a transactional backend, then implement internal account + cloud inventory/ledger before exposing production Claim/Collection.**
 
-Production and Play remain closed. Branch auto-deploy is disabled. Do not promote Production or upload Play without explicit user instruction.
+Important:
+
+- Cardverse Visual / Collection / Pack / Reward Loop screens remain internal Labs and are not exposed on Home.
+- The Reward Loop Lab uses a mocked server boundary; do not claim real cloud inventory exists yet.
+- Production remains CLOSED.
+- Google Play remains CLOSED.
+- Branch auto-deploy remains disabled.
+- Draft PR #1 remains **DO NOT MERGE**.
