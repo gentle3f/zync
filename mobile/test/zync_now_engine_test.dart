@@ -1,0 +1,253 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/core/interest_entity_metadata.dart';
+import 'package:zync/core/models.dart';
+import 'package:zync/core/zync_now_engine.dart';
+
+SelectedInterest interest(
+  String id, [
+  InterestStrength strength = InterestStrength.like,
+]) =>
+    SelectedInterest(id: id, strength: strength);
+
+ZyncNowParticipant participant(
+  String id,
+  List<SelectedInterest> interests,
+) =>
+    ZyncNowParticipant(id: id, interests: interests);
+
+void main() {
+  test('requires between two and eight participants', () {
+    expect(
+      () => ZyncNowEngine.generate(
+        participants: [
+          participant('a', [interest('sports.badminton')]),
+        ],
+        mode: ZyncNowMode.familiar,
+      ),
+      throwsArgumentError,
+    );
+
+    expect(
+      () => ZyncNowEngine.generate(
+        participants: [
+          for (var i = 0; i < 9; i++)
+            participant('p$i', [interest('sports.badminton')]),
+        ],
+        mode: ZyncNowMode.familiar,
+      ),
+      throwsArgumentError,
+    );
+  });
+
+  test('two-person familiar mode prefers an exact shared activity', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('sports.badminton', InterestStrength.love),
+          interest('food.coffee'),
+        ]),
+        participant('b', [
+          interest('sports.badminton', InterestStrength.like),
+          interest('media.movies'),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      seed: 'pair-familiar',
+    );
+
+    expect(result, isNotEmpty);
+    expect(result.first.sourceInterestIds, contains('sports.badminton'));
+    expect(result.first.selectedParticipantCount, 2);
+    expect(result.first.participantCount, 2);
+    expect(result.first.titleFor('zh-HK'), contains('羽毛球'));
+  });
+
+  test('familiar mode is group-native rather than requiring universal overlap', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [interest('sports.badminton', InterestStrength.love)]),
+        participant('b', [interest('sports.badminton')]),
+        participant('c', [interest('sports.tennis')]),
+        participant('d', [interest('sports.tennis')]),
+      ],
+      mode: ZyncNowMode.familiar,
+      seed: 'group-familiar',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('sports.badminton') ||
+          candidate.sourceInterestIds.contains('sports.tennis')),
+      isTrue,
+    );
+    expect(result.every((candidate) => candidate.participantCount == 4), isTrue);
+  });
+
+  test('pass the passion finds an activity one person can introduce', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('outdoors.bouldering', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('food.coffee', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.passThePassion,
+      seed: 'teach',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.templateId == 'activity.peer_teaches_beginner'),
+      isTrue,
+    );
+    expect(
+      result.every((candidate) =>
+          candidate.selectedParticipantCount < candidate.participantCount),
+      isTrue,
+    );
+  });
+
+  test('new to everyone only proposes interests nobody selected', () {
+    final participants = [
+      participant('a', [interest('sports.badminton', InterestStrength.love)]),
+      participant('b', [interest('sports.badminton', InterestStrength.like)]),
+    ];
+    final selectedIds = participants
+        .expand((item) => item.interests)
+        .map((item) => item.id)
+        .toSet();
+
+    final result = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.newToEveryone,
+      seed: 'new',
+    );
+
+    expect(result, isNotEmpty);
+    for (final candidate in result) {
+      expect(candidate.selectedParticipantCount, 0);
+      expect(
+        candidate.sourceInterestIds.any(selectedIds.contains),
+        isFalse,
+      );
+    }
+  });
+
+  test('meet in the middle creates a crossover from different interests', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('photography.general', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('crafts.diy', InterestStrength.love),
+        ]),
+        participant('c', [
+          interest('photography.general'),
+          interest('crafts.diy'),
+        ]),
+      ],
+      mode: ZyncNowMode.meetInTheMiddle,
+      seed: 'creative-cross',
+    );
+
+    expect(result, isNotEmpty);
+    expect(result.first.sourceInterestIds, hasLength(2));
+    expect(result.first.templateId, 'activity.crossover_challenge');
+    expect(result.first.titleFor('zh-Hant'), contains('×'));
+  });
+
+  test('hard verb veto is respected by the chosen template', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('food.cooking', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('food.cooking', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      constraints: const ZyncNowConstraints(
+        hardVetoVerbs: {ActivityVerb.make},
+      ),
+      seed: 'no-make',
+    );
+
+    for (final candidate in result) {
+      final required = candidate.template?.requiredVerbs ?? const {};
+      expect(required.contains(ActivityVerb.make), isFalse);
+    }
+  });
+
+  test('free-only budget removes activities with no free-cost profile', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('outdoors.bouldering', InterestStrength.love),
+          interest('sports.basketball', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('outdoors.bouldering', InterestStrength.like),
+          interest('sports.basketball', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      constraints: const ZyncNowConstraints(
+        maxCost: ActivityCostBand.free,
+      ),
+      seed: 'free-only',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('outdoors.bouldering')),
+      isFalse,
+    );
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('sports.basketball')),
+      isTrue,
+    );
+  });
+
+  test('surprise mode is deterministic for the same session seed', () {
+    final participants = [
+      participant('a', [
+        interest('sports.badminton'),
+        interest('food.coffee'),
+        interest('media.movies'),
+      ]),
+      participant('b', [
+        interest('sports.tennis'),
+        interest('music.pop'),
+        interest('gaming.video'),
+      ]),
+      participant('c', [
+        interest('crafts.diy'),
+        interest('photography.general'),
+      ]),
+    ];
+
+    final first = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.surprise,
+      seed: 'same-session',
+    );
+    final second = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.surprise,
+      seed: 'same-session',
+    );
+
+    expect(
+      first.map((candidate) => candidate.id).toList(),
+      second.map((candidate) => candidate.id).toList(),
+    );
+  });
+}
