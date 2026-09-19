@@ -242,6 +242,137 @@ void main() {
     );
   });
 
+  test('one participant private free-only budget filters paid activity for everyone',
+      () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('outdoors.bouldering', InterestStrength.love),
+          interest('sports.basketball', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('outdoors.bouldering', InterestStrength.like),
+          interest('sports.basketball', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      participantConstraints: const {
+        'b': ZyncNowConstraints(maxCost: ActivityCostBand.free),
+      },
+      seed: 'private-free-only',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('outdoors.bouldering')),
+      isFalse,
+    );
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('sports.basketball')),
+      isTrue,
+    );
+  });
+
+  test('one participant private hard veto changes the chosen template', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('food.cooking', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('food.cooking', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      participantConstraints: const {
+        'b': ZyncNowConstraints(
+          hardVetoVerbs: {ActivityVerb.make},
+        ),
+      },
+      seed: 'private-no-make',
+    );
+
+    expect(result, isNotEmpty);
+    for (final candidate in result) {
+      expect(
+        candidate.template?.requiredVerbs.contains(ActivityVerb.make) ?? false,
+        isFalse,
+      );
+    }
+  });
+
+  test('private setting constraint is enforced for the whole candidate set', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('media.movies', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('media.movies', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      participantConstraints: const {
+        'b': ZyncNowConstraints(setting: ActivitySetting.outdoor),
+      },
+      seed: 'private-outdoor',
+    );
+
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('media.movies')),
+      isFalse,
+    );
+  });
+
+  test('flexible time and either setting behave as no-preference wildcards', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('sports.badminton', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('sports.badminton', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      participantConstraints: const {
+        'a': ZyncNowConstraints(
+          duration: ActivityDurationBand.flexible,
+          setting: ActivitySetting.either,
+        ),
+      },
+      seed: 'private-flexible',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('sports.badminton')),
+      isTrue,
+    );
+  });
+
+  test('private constraints reject unknown participant IDs', () {
+    expect(
+      () => ZyncNowEngine.generate(
+        participants: [
+          participant('a', [interest('sports.badminton')]),
+          participant('b', [interest('sports.badminton')]),
+        ],
+        mode: ZyncNowMode.familiar,
+        participantConstraints: const {
+          'not-in-room': ZyncNowConstraints(
+            maxCost: ActivityCostBand.free,
+          ),
+        },
+      ),
+      throwsArgumentError,
+    );
+  });
+
   test('engine can use taxonomy defaults for interests without explicit metadata', () {
     final result = ZyncNowEngine.generate(
       participants: [
