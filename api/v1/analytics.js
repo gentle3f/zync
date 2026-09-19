@@ -29,6 +29,7 @@ const EVENT_PROPERTIES = {
     source: 'question_source',
     match_type: 'match_type',
     bilingual: 'boolean',
+    interaction_type: 'interaction_type',
   },
   question_next: {
     mode: 'mode',
@@ -39,6 +40,20 @@ const EVENT_PROPERTIES = {
   zync_again: {
     prior_sessions: 'count',
   },
+  connection_revealed: {
+    revealed_count: 'count',
+    total_count: 'count',
+    remaining_count: 'count',
+  },
+  session_continue: {
+    continue_source: 'continue_source',
+    remaining_count: 'count',
+  },
+  session_recap: {
+    revealed_count: 'count',
+    total_count: 'count',
+    repeat_peer: 'boolean',
+  },
 };
 
 const LOCALES = new Set(['en', 'zh-Hant', 'zh-Hans', 'ja', 'ko', 'es', 'fr', 'pt']);
@@ -47,6 +62,8 @@ const INTEREST_SOURCES = new Set(['seed', 'saved_custom', 'ai_normalized']);
 const QUESTION_SOURCES = new Set(['ai', 'fallback']);
 const MATCH_TYPES = new Set(['shared', 'crossover']);
 const TRANSPORTS = new Set(['legacy', 'compressed']);
+const INTERACTION_TYPES = new Set(['pick', 'play', 'defend', 'reveal', 'guess', 'surprise']);
+const CONTINUE_SOURCES = new Set(['reveal_next', 'explore_hub', 'about_them', 'about_me', 'crossover']);
 const UUIDISH = /^[a-zA-Z0-9-]{16,64}$/;
 
 function canonicalLocale(value) {
@@ -77,6 +94,12 @@ function sanitizeProperty(type, value) {
   }
   if (type === 'transport') {
     return typeof value === 'string' && TRANSPORTS.has(value) ? value : undefined;
+  }
+  if (type === 'interaction_type') {
+    return typeof value === 'string' && INTERACTION_TYPES.has(value) ? value : undefined;
+  }
+  if (type === 'continue_source') {
+    return typeof value === 'string' && CONTINUE_SOURCES.has(value) ? value : undefined;
   }
   return undefined;
 }
