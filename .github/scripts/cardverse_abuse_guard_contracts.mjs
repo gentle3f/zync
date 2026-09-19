@@ -125,6 +125,10 @@ const endpointExpectations = new Map([
   ['../../api/v1/cardverse/proofs/redeem.js', ['proof_redeem_ip', 'proof_redeem_account']],
   ['../../api/v1/cardverse/quests/claim.js', ['quest_claim_ip', 'quest_claim_account']],
   ['../../api/v1/cardverse/packs/open.js', ['pack_open_ip', 'pack_open_account']],
+  ['../../api/v1/cardverse/auth/link.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../api/v1/cardverse/auth/unlink.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../api/v1/cardverse/auth/logout-all.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../api/v1/cardverse/account/delete.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
 ]);
 
 for (const [modulePath, profiles] of endpointExpectations) {
