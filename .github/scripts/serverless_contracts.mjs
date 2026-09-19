@@ -85,6 +85,10 @@ test('question returns one same-language question', async () => {
   assert.equal(r.status, 200);
   assert.equal(r.body.question, 'Which F1 race would you both most want to attend together?');
   assert.equal(r.body.secondaryQuestion, undefined);
+  assert.equal(r.body.interaction.version, 1);
+  assert.equal(r.body.interaction.type, 'play');
+  assert.deepEqual(r.body.interaction.turnPattern, ['act', 'react']);
+  assert.equal(r.body.interaction.prompt, r.body.question);
   assert.equal(r.headers['cache-control'], 'no-store');
 });
 
@@ -113,9 +117,18 @@ test('question prompt is interaction-first instead of interview-style', async ()
   assert.equal(prompt.includes('friends talking, not an interview'), true);
 });
 
-test('question modes carry distinct interaction directions', async () => {
+test('question modes carry distinct interaction directions and machine-readable mechanics', async () => {
   enableTestAi();
   const prompts = {};
+  const interactionTypes = {};
+  const expectedTypes = {
+    easy: 'pick',
+    fun: 'play',
+    debate: 'defend',
+    deep: 'reveal',
+    guess: 'guess',
+    surprise: 'surprise',
+  };
   for (const mode of ['easy', 'fun', 'debate', 'deep', 'guess', 'surprise']) {
     mockFetch(
       { choices: [{ message: { content: 'Would you pick A or B?' } }] },
@@ -131,6 +144,11 @@ test('question modes carry distinct interaction directions', async () => {
       shared: ['Basketball'],
     });
     assert.equal(r.status, 200);
+    interactionTypes[mode] = r.body.interaction?.type;
+    assert.equal(r.body.interaction?.version, 1);
+    assert.equal(r.body.interaction?.prompt, r.body.question);
+    assert.ok(Array.isArray(r.body.interaction?.turnPattern));
+    assert.ok(r.body.interaction.turnPattern.length >= 2);
   }
 
   assert.match(prompts.easy, /low-pressure forced choice/i);
@@ -139,6 +157,7 @@ test('question modes carry distinct interaction directions', async () => {
   assert.match(prompts.deep, /meaningful preference/i);
   assert.match(prompts.guess, /predict the other person/i);
   assert.match(prompts.surprise, /unexpected but plausible/i);
+  assert.deepEqual(interactionTypes, expectedTypes);
 });
 
 test('question accepts routed typed text content parts', async () => {
