@@ -1,4 +1,8 @@
-import {\n  applyCardverseAbuseHeaders,\n  enforceCardverseIpRateLimit,\n} from '../../../_cardverse/abuse_guard.js';\nimport { cardverseApiEnabled, rejectDisabledCardverse } from '../../../_cardverse/runtime_gate.js';
+import {
+  applyCardverseAbuseHeaders,
+  enforceCardverseIpRateLimit,
+} from '../../../_cardverse/abuse_guard.js';
+import { cardverseApiEnabled, rejectDisabledCardverse } from '../../../_cardverse/runtime_gate.js';
 import { getCardverseDatabase } from '../../../_cardverse/db.js';
 import { authenticateProvider } from '../../../_cardverse/provider_auth.js';
 
