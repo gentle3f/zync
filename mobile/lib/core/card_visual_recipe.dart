@@ -179,6 +179,15 @@ class CardVisualRecipeResolver {
 
   static const expandedProofInterestIds = <String>[
     ...proofInterestIds,
+    'sports.tennis',
+    'sports.running',
+    'sports.hiking',
+    'collecting.lego',
+    'motorsport.formula1',
+    'sports.table_tennis',
+    'sports.pickleball',
+    'outdoors.swimming',
+    'photography.street',
     'travel.general',
     'travel.japan',
     'travel.roadtrip',
