@@ -177,5 +177,19 @@ class ActivityTemplates {
       requiredVerbs: {ActivityVerb.read},
     ),
 
+    'activity.crossover_challenge': ActivityTemplate(
+      id: 'activity.crossover_challenge',
+      titleLabels: {
+        'en': 'Mix two interests',
+        'zh-Hant': '將兩個興趣混埋一齊',
+        'zh-Hans': '把两个兴趣混在一起',
+      },
+      instructionLabels: {
+        'en': 'Combine the two interests into one small activity or challenge that uses something from both.',
+        'zh-Hant': '將兩個興趣各抽一樣元素，砌成一個大家一齊做到嘅小活動或者挑戰。',
+        'zh-Hans': '从两个兴趣各取一个元素，组合成一个大家能一起完成的小活动或挑战。',
+      },
+    ),
+
   };
 }
