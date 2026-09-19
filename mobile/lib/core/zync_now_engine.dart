@@ -260,14 +260,14 @@ class ZyncNowEngine {
               20 +
           5 +
           _jitter(
-            '$seed|${mode.name}|${interestId}|$templateId',
+            '$seed|${mode.name}|$interestId|$templateId',
             mode == ZyncNowMode.surprise ? 8.0 : 0.8,
           ) -
           repeatPenalty;
 
       result.add(
         ZyncNowCandidate(
-          id: 'zyncnow.${mode.name}.${interestId}.$templateId',
+          id: 'zyncnow.${mode.name}.$interestId.$templateId',
           kind: ZyncNowCandidateKind.safe,
           mode: mode,
           templateId: templateId,
