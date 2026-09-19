@@ -225,6 +225,7 @@ class _CardverseCollectionLabScreenState
   Widget _filterStrip() => SizedBox(
         height: 42,
         child: ListView(
+          key: const ValueKey('collection-filter-strip'),
           scrollDirection: Axis.horizontal,
           children: [
             _filterChip(
