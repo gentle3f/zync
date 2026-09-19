@@ -122,6 +122,52 @@ void main() {
     );
   });
 
+  test('serialized reveal checkpoint resumes only the same server roll', () {
+    final plan = CardversePackRevealPlan.fromReceipt(receipt());
+    final checkpoint = CardversePackRevealCheckpoint.fromJson(const {
+      'serverRollId': 'server-roll-proof-1',
+      'revealedCount': 3,
+    });
+
+    final resumed = checkpoint.resume(plan);
+
+    expect(resumed.revealedCount, 3);
+    expect(
+      resumed.nextItem!.variant.interestId,
+      'music.piano',
+    );
+    expect(
+      checkpoint.toJson(),
+      {
+        'serverRollId': 'server-roll-proof-1',
+        'revealedCount': 3,
+      },
+    );
+
+    final otherReceipt = CardversePackOpenReceipt.serverValidated(
+      packId: 'other-pack',
+      serverRollId: 'different-roll',
+      idempotencyKey: 'other-open',
+      rolledAt: DateTime.utc(2026, 9, 19),
+      items: const [
+        CardversePackResultItem(
+          variant: CardVariantKey(
+            interestId: 'sports.badminton',
+            finishId: 'normal',
+            editionId: 'core_set_1',
+          ),
+          quantity: 1,
+        ),
+      ],
+    );
+    final otherPlan = CardversePackRevealPlan.fromReceipt(otherReceipt);
+
+    expect(
+      () => checkpoint.resume(otherPlan),
+      throwsStateError,
+    );
+  });
+
   test('Reduce Motion removes suspense without changing card finish', () {
     expect(
       CardverseRevealTiming.suspenseFor(
