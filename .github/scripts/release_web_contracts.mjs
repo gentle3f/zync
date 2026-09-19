@@ -120,7 +120,9 @@ assert.match(relay, /Cache-Control', 'no-store'/);
 assert.ok(!/console\.(log|error|warn)/.test(relay), 'relay must not log opaque pairing payloads or secrets');
 assert.match(relayClient, /AesGcm\.with256bits\(\)/);
 assert.match(relayClient, /Random\.secure\(\)/);
-assert.match(relayClient, /Future<void> consume/);
+assert.match(relayClient, /Future<RelayConsumeResult> consume/);
+assert.match(relayClient, /Future<RelayProofResult> proof/);
+assert.ok(!/accountId/.test(relay), 'anonymous relay must not bind pairing sessions to Cardverse accounts');
 
 assert.match(signedRelease, /Smoke production API and privacy policy/);
 assert.match(signedRelease, /live_api_smoke\.mjs/);
