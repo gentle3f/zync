@@ -264,6 +264,43 @@ void main() {
     );
   });
 
+  test('recent activity repeat key lowers the same candidate score', () {
+    final participants = [
+      participant('a', [
+        interest('sports.badminton', InterestStrength.love),
+        interest('sports.tennis', InterestStrength.like),
+      ]),
+      participant('b', [
+        interest('sports.badminton', InterestStrength.like),
+        interest('sports.tennis', InterestStrength.like),
+      ]),
+    ];
+
+    final baseline = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      seed: 'repeat-penalty',
+      limit: 20,
+    );
+    final badminton = baseline.firstWhere(
+      (candidate) =>
+          candidate.sourceInterestIds.contains('sports.badminton'),
+    );
+
+    final repeated = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      priorActivityKeys: {badminton.repeatKey},
+      seed: 'repeat-penalty',
+      limit: 20,
+    );
+    final same = repeated.firstWhere(
+      (candidate) => candidate.id == badminton.id,
+    );
+
+    expect(same.score, lessThan(badminton.score));
+  });
+
   test('surprise mode is deterministic for the same session seed', () {
     final participants = [
       participant('a', [
