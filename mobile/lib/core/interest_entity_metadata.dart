@@ -613,6 +613,300 @@ class InterestEntityMetadataRegistry {
       ),
     ),
 
+
+    // Expanded Cardverse visual-proof metadata. These entries intentionally
+    // add card presentation only; activity semantics remain separate.
+    'travel.general': InterestEntityMetadata(
+      interestId: 'travel.general',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'travel_route',
+        iconKey: 'travel_route',
+        categoryKit: 'travel',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'travel.japan': InterestEntityMetadata(
+      interestId: 'travel.japan',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'travel_destination',
+        iconKey: 'destination_japan',
+        categoryKit: 'travel',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'travel.roadtrip': InterestEntityMetadata(
+      interestId: 'travel.roadtrip',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'travel_roadtrip',
+        iconKey: 'roadtrip',
+        categoryKit: 'travel',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'travel.food_travel': InterestEntityMetadata(
+      interestId: 'travel.food_travel',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'travel_food',
+        iconKey: 'food_travel',
+        categoryKit: 'travel',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'technology.ai': InterestEntityMetadata(
+      interestId: 'technology.ai',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'technology_ai',
+        iconKey: 'ai_nodes',
+        categoryKit: 'technology',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'technology.programming': InterestEntityMetadata(
+      interestId: 'technology.programming',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'technology_code',
+        iconKey: 'code_brackets',
+        categoryKit: 'technology',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'technology.robotics': InterestEntityMetadata(
+      interestId: 'technology.robotics',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'technology_robotics',
+        iconKey: 'robotics',
+        categoryKit: 'technology',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'technology.mechanical_keyboards': InterestEntityMetadata(
+      interestId: 'technology.mechanical_keyboards',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'technology_hardware',
+        iconKey: 'keyboard',
+        categoryKit: 'technology',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'outdoors.camping': InterestEntityMetadata(
+      interestId: 'outdoors.camping',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'outdoors_camp',
+        iconKey: 'tent',
+        categoryKit: 'outdoors',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'outdoors.surfing': InterestEntityMetadata(
+      interestId: 'outdoors.surfing',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'outdoors_water',
+        iconKey: 'surfboard',
+        categoryKit: 'outdoors',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'outdoors.stargazing': InterestEntityMetadata(
+      interestId: 'outdoors.stargazing',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'nature_night_sky',
+        iconKey: 'stars',
+        categoryKit: 'nature',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'outdoors.birdwatching': InterestEntityMetadata(
+      interestId: 'outdoors.birdwatching',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'nature_wildlife',
+        iconKey: 'bird',
+        categoryKit: 'nature',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'wellness.pilates': InterestEntityMetadata(
+      interestId: 'wellness.pilates',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'wellness_mind_body',
+        iconKey: 'pilates',
+        categoryKit: 'wellness',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'wellness.meditation': InterestEntityMetadata(
+      interestId: 'wellness.meditation',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'wellness_mind_body',
+        iconKey: 'meditation',
+        categoryKit: 'wellness',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'sports.gym': InterestEntityMetadata(
+      interestId: 'sports.gym',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'wellness_fitness',
+        iconKey: 'fitness',
+        categoryKit: 'wellness',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'arts.drawing': InterestEntityMetadata(
+      interestId: 'arts.drawing',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'arts_visual',
+        iconKey: 'pencil',
+        categoryKit: 'arts',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'arts.watercolor': InterestEntityMetadata(
+      interestId: 'arts.watercolor',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'arts_visual',
+        iconKey: 'watercolor',
+        categoryKit: 'arts',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'arts.ceramics': InterestEntityMetadata(
+      interestId: 'arts.ceramics',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'arts_ceramics',
+        iconKey: 'ceramics',
+        categoryKit: 'arts',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'food.japanese': InterestEntityMetadata(
+      interestId: 'food.japanese',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'food_cuisine',
+        iconKey: 'japanese_food',
+        categoryKit: 'food',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'food.dim_sum': InterestEntityMetadata(
+      interestId: 'food.dim_sum',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'food_cuisine',
+        iconKey: 'dim_sum',
+        categoryKit: 'food',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'food.sushi': InterestEntityMetadata(
+      interestId: 'food.sushi',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'food_cuisine',
+        iconKey: 'sushi',
+        categoryKit: 'food',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'music.rock': InterestEntityMetadata(
+      interestId: 'music.rock',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'music_genre',
+        iconKey: 'rock_music',
+        categoryKit: 'music',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'music.piano': InterestEntityMetadata(
+      interestId: 'music.piano',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'music_instrument',
+        iconKey: 'piano',
+        categoryKit: 'music',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'music.concerts': InterestEntityMetadata(
+      interestId: 'music.concerts',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'music_live',
+        iconKey: 'concert',
+        categoryKit: 'music',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'gaming.board': InterestEntityMetadata(
+      interestId: 'gaming.board',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'gaming_tabletop',
+        iconKey: 'board_game',
+        categoryKit: 'gaming',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'gaming.strategy': InterestEntityMetadata(
+      interestId: 'gaming.strategy',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'gaming_strategy',
+        iconKey: 'strategy',
+        categoryKit: 'gaming',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'learning.languages': InterestEntityMetadata(
+      interestId: 'learning.languages',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'learning_languages',
+        iconKey: 'languages',
+        categoryKit: 'learning',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'history.general': InterestEntityMetadata(
+      interestId: 'history.general',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'learning_history',
+        iconKey: 'history',
+        categoryKit: 'learning',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+    'crafts.knitting': InterestEntityMetadata(
+      interestId: 'crafts.knitting',
+      card: CardProfile(
+        collectible: true,
+        visualFamily: 'crafts_textile',
+        iconKey: 'knitting',
+        categoryKit: 'crafts',
+        artPolicy: CardArtPolicy.originalGeneric,
+      ),
+    ),
+
   };
 
   static InterestEntityMetadata? byInterestId(String id) => entries[id];
