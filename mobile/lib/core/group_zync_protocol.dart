@@ -321,6 +321,9 @@ enum GroupRoomPhase {
   reaction,
   complete,
   zyncNowOptional,
+  zyncNowInputOpen,
+  zyncNowInputLocked,
+  zyncNowResult,
   ended,
 }
 
@@ -363,6 +366,7 @@ class GroupBoundedState {
     this.requiredSelections = 0,
     this.options = const [],
     this.followUp = '',
+    this.resultOptionId,
     this.hiddenSubsetSize,
     this.revealInterestId,
     this.revealParticipantIds = const [],
@@ -380,6 +384,7 @@ class GroupBoundedState {
   final int requiredSelections;
   final List<GroupBoundedOption> options;
   final String followUp;
+  final String? resultOptionId;
   final int? hiddenSubsetSize;
   final String? revealInterestId;
   final List<String> revealParticipantIds;
@@ -398,6 +403,7 @@ class GroupBoundedState {
         if (options.isNotEmpty)
           'options': options.map((item) => item.toJson()).toList(growable: false),
         if (followUp.isNotEmpty) 'followUp': followUp,
+        if (resultOptionId != null) 'resultOption': resultOptionId,
         if (hiddenSubsetSize != null) 'subset': hiddenSubsetSize,
         if (revealInterestId != null) 'interest': revealInterestId,
         if (revealParticipantIds.isNotEmpty) 'participants': revealParticipantIds,
@@ -430,6 +436,7 @@ class GroupBoundedState {
           )
           .toList(growable: false),
       followUp: (json['followUp'] as String?) ?? '',
+      resultOptionId: json['resultOption'] as String?,
       hiddenSubsetSize: (json['subset'] as num?)?.toInt(),
       revealInterestId: json['interest'] as String?,
       revealParticipantIds: ((json['participants'] as List?) ?? const [])
