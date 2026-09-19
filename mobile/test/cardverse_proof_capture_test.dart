@@ -21,6 +21,18 @@ class _MemorySecureStore implements SecureKeyValueStore {
   }
 }
 
+class _ThrowingSecureStore implements SecureKeyValueStore {
+  @override
+  Future<String?> read(String key) => Future.error(StateError('locked'));
+
+  @override
+  Future<void> write(String key, String value) =>
+      Future.error(StateError('locked'));
+
+  @override
+  Future<void> delete(String key) => Future.error(StateError('locked'));
+}
+
 class _FakeRelay implements RelayClient {
   int proofCalls = 0;
 
@@ -105,5 +117,31 @@ void main() {
     );
     expect(tickets.single.ticket, 'ZP1.host.signature');
     expect(tickets.single.timezoneOffsetMinutes, 480);
+  });
+
+  test('secure-storage failure never breaks host Zync completion', () async {
+    final cache = CardverseProofCache(storage: _ThrowingSecureStore());
+
+    await CardverseRelayProofCapture.saveHostTicket(
+      proofTicket: 'ZP1.host.signature',
+      clientEventId: 'relay:event:host',
+      timezoneOffsetMinutes: 480,
+      cache: cache,
+    );
+  });
+
+  test('secure-storage failure never breaks scanner Zync completion', () async {
+    final relay = _FakeRelay();
+    final cache = CardverseProofCache(storage: _ThrowingSecureStore());
+
+    await CardverseRelayProofCapture.captureScanner(
+      relay: relay,
+      sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
+      proofCapability: 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+      clientEventId: 'relay:event:scanner',
+      timezoneOffsetMinutes: 480,
+      cache: cache,
+      retryDelays: const [Duration.zero, Duration.zero],
+    );
   });
 }

@@ -13,19 +13,23 @@ class CardverseRelayProofCapture {
     int? timezoneOffsetMinutes,
     CardverseProofCache? cache,
   }) async {
-    final ticket = proofTicket?.trim() ?? '';
-    if (ticket.isEmpty) return;
-    final localNow = capturedAt ?? DateTime.now();
-    final offset =
-        timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
-    await (cache ?? CardverseProofCache()).saveTicket(
-      PendingCardverseProofTicket(
-        ticket: ticket,
-        clientEventId: clientEventId,
-        capturedAt: localNow.toUtc(),
-        timezoneOffsetMinutes: offset,
-      ),
-    );
+    try {
+      final ticket = proofTicket?.trim() ?? '';
+      if (ticket.isEmpty) return;
+      final localNow = capturedAt ?? DateTime.now();
+      final offset =
+          timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
+      await (cache ?? CardverseProofCache()).saveTicket(
+        PendingCardverseProofTicket(
+          ticket: ticket,
+          clientEventId: clientEventId,
+          capturedAt: localNow.toUtc(),
+          timezoneOffsetMinutes: offset,
+        ),
+      );
+    } catch (_) {
+      // Cardverse proof persistence is a sidecar. It must never break Zync.
+    }
   }
 
   static Future<void> captureScanner({
@@ -42,77 +46,86 @@ class CardverseRelayProofCapture {
       Duration(milliseconds: 2200),
     ],
   }) async {
-    final capability = proofCapability?.trim() ?? '';
-    if (capability.isEmpty) return;
+    try {
+      final capability = proofCapability?.trim() ?? '';
+      if (capability.isEmpty) return;
 
-    final proofCache = cache ?? CardverseProofCache();
-    final localNow = DateTime.now();
-    final capturedAt = localNow.toUtc();
-    final offset =
-        timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
-    for (final delay in retryDelays) {
-      if (delay > Duration.zero) await Future<void>.delayed(delay);
-      try {
-        final result = await relay.proof(
-          sessionId: sessionId,
-          proofCapability: capability,
-        );
-        if (result.isReady && result.proofTicket != null) {
-          await proofCache.saveTicket(
-            PendingCardverseProofTicket(
-              ticket: result.proofTicket!,
+      final proofCache = cache ?? CardverseProofCache();
+      final localNow = DateTime.now();
+      final capturedAt = localNow.toUtc();
+      final offset =
+          timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
+      for (final delay in retryDelays) {
+        if (delay > Duration.zero) await Future<void>.delayed(delay);
+        try {
+          final result = await relay.proof(
+            sessionId: sessionId,
+            proofCapability: capability,
+          );
+          if (result.isReady && result.proofTicket != null) {
+            await proofCache.saveTicket(
+              PendingCardverseProofTicket(
+                ticket: result.proofTicket!,
+                clientEventId: clientEventId,
+                capturedAt: capturedAt,
+                timezoneOffsetMinutes: offset,
+              ),
+            );
+            await proofCache.removeCapability(
+              sessionId: sessionId,
               clientEventId: clientEventId,
-              capturedAt: capturedAt,
-              timezoneOffsetMinutes: offset,
-            ),
-          );
-          await proofCache.removeCapability(
-            sessionId: sessionId,
-            clientEventId: clientEventId,
-          );
-          return;
-        }
-      } on RelayException catch (error) {
-        if (error.kind == RelayFailureKind.expired ||
-            error.kind == RelayFailureKind.invalid) {
-          await proofCache.removeCapability(
-            sessionId: sessionId,
-            clientEventId: clientEventId,
-          );
-          return;
+            );
+            return;
+          }
+        } on RelayException catch (error) {
+          if (error.kind == RelayFailureKind.expired ||
+              error.kind == RelayFailureKind.invalid) {
+            await proofCache.removeCapability(
+              sessionId: sessionId,
+              clientEventId: clientEventId,
+            );
+            return;
+          }
         }
       }
-    }
 
-    await proofCache.saveCapability(
-      PendingRelayProofCapability(
-        sessionId: sessionId,
-        proofCapability: capability,
-        clientEventId: clientEventId,
-        capturedAt: capturedAt,
-        timezoneOffsetMinutes: offset,
-      ),
-    );
+      await proofCache.saveCapability(
+        PendingRelayProofCapability(
+          sessionId: sessionId,
+          proofCapability: capability,
+          clientEventId: clientEventId,
+          capturedAt: capturedAt,
+          timezoneOffsetMinutes: offset,
+        ),
+      );
+    } catch (_) {
+      // Proof capture is optional. The face-to-face Zync already succeeded.
+    }
   }
 
   static Future<void> resumePending(
     RelayClient relay, {
     CardverseProofCache? cache,
   }) async {
-    final proofCache = cache ?? CardverseProofCache();
-    final pending = await proofCache.loadCapabilities();
-    for (final item in pending) {
-      unawaited(
-        captureScanner(
-          relay: relay,
-          sessionId: item.sessionId,
-          proofCapability: item.proofCapability,
-          clientEventId: item.clientEventId,
-          timezoneOffsetMinutes: item.timezoneOffsetMinutes,
-          cache: proofCache,
-          retryDelays: const [Duration.zero],
-        ),
-      );
+    try {
+      final proofCache = cache ?? CardverseProofCache();
+      final pending = await proofCache.loadCapabilities();
+      for (final item in pending) {
+        unawaited(
+          captureScanner(
+            relay: relay,
+            sessionId: item.sessionId,
+            proofCapability: item.proofCapability,
+            clientEventId: item.clientEventId,
+            timezoneOffsetMinutes: item.timezoneOffsetMinutes,
+            cache: proofCache,
+            retryDelays: const [Duration.zero],
+          ),
+        );
+      }
+    } catch (_) {
+      // Secure-store availability must never affect ordinary pairing.
     }
   }
+
 }
