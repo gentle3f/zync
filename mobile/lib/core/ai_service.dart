@@ -260,13 +260,14 @@ class AiService {
     required ConversationMode mode,
   }) {
     return AiQuestionResult(
-      question: _fallbackQuestion(language: language, match: match),
+      question: _fallbackQuestion(language: language, match: match, mode: mode),
       fromAi: false,
       secondaryQuestion: secondaryLanguage == null
           ? null
           : _fallbackQuestion(
               language: secondaryLanguage,
               match: match,
+              mode: mode,
             ),
       secondaryLanguage: secondaryLanguage,
       interactionType: _interactionTypeForMode(mode),
@@ -277,27 +278,76 @@ class AiService {
   String _fallbackQuestion({
     required String language,
     required MatchResult match,
+    required ConversationMode mode,
   }) {
     String label(SelectedInterest item) => _label(item, language);
 
     if (match.shared.isNotEmpty) {
       final interest = label(match.shared.first);
-      final templates = <String, String>{
-        'zh-Hant':
-            '你哋第一次對「$interest」產生興趣係幾時？當時發生咗咩？',
-        'zh-Hans':
-            '你们第一次对“$interest”产生兴趣是什么时候？当时发生了什么？',
-        'ja': '二人が「$interest」に興味を持ったきっかけは何ですか？',
-        'ko': '두 분이 처음 “$interest”에 관심을 갖게 된 계기는 무엇인가요?',
-        'es':
-            '¿Qué hizo que cada uno se interesara por $interest por primera vez?',
-        'fr':
-            'Qu’est-ce qui vous a donné envie de découvrir $interest pour la première fois ?',
-        'pt':
-            'O que fez cada um de vocês se interessar por $interest pela primeira vez?',
-        'en': 'What first got each of you interested in $interest?',
+      final code = ZyncLanguage.canonical(language);
+      final templates = switch (mode) {
+        ConversationMode.easy => <String, String>{
+            'zh-Hant':'講「$interest」時，一齊揀：你偏向預先計劃，定係到時先算？揀完先比較。',
+            'zh-Hans':'说到“$interest”，一起选：你偏向提前计划，还是到时再说？选完再比较。',
+            'ja':'「$interest」なら、計画派？その場派？同時に選んで比べよう。',
+            'ko':'“$interest”라면 계획형인가요, 즉흥형인가요? 동시에 고르고 비교해 보세요.',
+            'es':'Con $interest, ¿sois más de planear o improvisar? Elegid a la vez y comparad.',
+            'fr':'Pour $interest, plutôt tout planifier ou improviser ? Choisissez en même temps puis comparez.',
+            'pt':'Com $interest, preferem planear ou improvisar? Escolham ao mesmo tempo e comparem.',
+            'en':'For $interest, are you more plan-it-out or wing-it? Choose at the same time, then compare.',
+          },
+        ConversationMode.debate => <String, String>{
+            'zh-Hant':'講「$interest」，邊樣更重要：跟公認做法，定係用自己方式享受？各揀一邊再辯護。',
+            'zh-Hans':'说到“$interest”，哪个更重要：遵循公认做法，还是用自己的方式享受？各选一边再辩护。',
+            'ja':'「$interest」では、王道を守ることと自分流で楽しむこと、どちらが大事？立場を選んで弁護しよう。',
+            'ko':'“$interest”에서는 정석을 따르는 것과 자기 방식으로 즐기는 것 중 무엇이 더 중요할까요? 한쪽을 골라 변호해 보세요.',
+            'es':'En $interest, ¿importa más hacerlo “bien” o disfrutarlo a tu manera? Elegid un lado y defendedlo.',
+            'fr':'Pour $interest, vaut-il mieux respecter les codes ou en profiter à sa façon ? Choisissez un camp et défendez-le.',
+            'pt':'Em $interest, importa mais seguir a forma certa ou aproveitar à tua maneira? Escolham um lado e defendam-no.',
+            'en':'For $interest, what matters more: doing it the “right” way or enjoying it your own way? Pick a side and defend it.',
+          },
+        ConversationMode.deep => <String, String>{
+            'zh-Hant':'如果一年完全冇得接觸「$interest」，你最掛住嘅會係邊一部分？一個先講，另一個再回應。',
+            'zh-Hans':'如果一年完全不能接触“$interest”，你最想念的会是哪一部分？一个先说，另一个再回应。',
+            'ja':'もし1年間「$interest」に触れられないなら、何が一番恋しくなる？一人が先に話し、もう一人が反応しよう。',
+            'ko':'1년 동안 “$interest”를 전혀 못 한다면 무엇이 가장 그리울까요? 한 사람이 먼저 말하고 다른 사람이 반응하세요.',
+            'es':'Si pasarais un año sin $interest, ¿qué echaríais más de menos? Uno comparte primero y el otro reacciona.',
+            'fr':'Si vous deviez passer un an sans $interest, qu’est-ce qui vous manquerait le plus ? L’un partage, l’autre réagit.',
+            'pt':'Se passassem um ano sem $interest, do que teriam mais saudades? Um partilha primeiro e o outro reage.',
+            'en':'If you had to go a year without $interest, what part would you miss most? One shares first; the other reacts.',
+          },
+        ConversationMode.guess => <String, String>{
+            'zh-Hant':'先估對方會推薦「$interest」邊一樣畀完全新手，估完先畀對方揭曉真正答案。',
+            'zh-Hans':'先猜对方会把“$interest”的什么推荐给完全新手，猜完再让对方揭晓真正答案。',
+            'ja':'相手が「$interest」の初心者に最初に勧めるものを予想してから、本当の答えを聞こう。',
+            'ko':'상대가 “$interest” 완전 초보에게 무엇을 먼저 추천할지 맞혀본 뒤 실제 답을 공개하세요.',
+            'es':'Adivina qué recomendaría primero la otra persona a un principiante total en $interest; luego que revele su respuesta.',
+            'fr':'Devine ce que l’autre conseillerait d’abord à un débutant complet en $interest, puis laisse-le révéler sa réponse.',
+            'pt':'Adivinha o que a outra pessoa recomendaria primeiro a um completo iniciante em $interest; depois revela a resposta.',
+            'en':'Guess what the other person would recommend first to a complete beginner in $interest, then let them reveal the real answer.',
+          },
+        ConversationMode.surprise => <String, String>{
+            'zh-Hant':'你突然得一個鐘、零準備，要令一個陌生人明白「$interest」點解有趣——你第一步會做咩？',
+            'zh-Hans':'你突然只有一小时、零准备，要让一个陌生人明白“$interest”为什么有趣——你第一步会做什么？',
+            'ja':'準備ゼロで1時間だけ使って、知らない人に「$interest」の面白さを伝えるなら最初に何をする？',
+            'ko':'준비 없이 한 시간 안에 낯선 사람에게 “$interest”의 재미를 보여줘야 한다면 가장 먼저 무엇을 할까요?',
+            'es':'Tienes una hora y cero preparación para enseñarle a un desconocido por qué $interest es divertido. ¿Qué haces primero?',
+            'fr':'Tu as une heure et zéro préparation pour montrer à un inconnu pourquoi $interest est intéressant. Tu fais quoi d’abord ?',
+            'pt':'Tens uma hora e zero preparação para mostrar a um desconhecido porque $interest é divertido. O que fazes primeiro?',
+            'en':'You get one hour and zero preparation to show a stranger why $interest is fun. What do you do first?',
+          },
+        ConversationMode.fun => <String, String>{
+            'zh-Hant':'一人幫「$interest」加一條荒謬新規則；邊個版本會更好玩？',
+            'zh-Hans':'每人给“$interest”加一条荒谬新规则；谁的版本会更好玩？',
+            'ja':'「$interest」に一人ずつ変な新ルールを追加するとしたら？どちらの方が面白くなる？',
+            'ko':'각자 “$interest”에 황당한 새 규칙 하나를 추가해 보세요. 누구의 버전이 더 재미있을까요?',
+            'es':'Inventad cada uno una regla absurda nueva para $interest. ¿Cuál haría que fuera más divertido?',
+            'fr':'Inventez chacun une nouvelle règle absurde pour $interest. Laquelle le rendrait plus drôle ?',
+            'pt':'Inventem cada um uma nova regra absurda para $interest. Qual tornaria tudo mais divertido?',
+            'en':'Each invent one ridiculous new rule for $interest. Whose version would make it more fun?',
+          },
       };
-      return templates[ZyncLanguage.canonical(language)] ?? templates['en']!;
+      return templates[code] ?? templates['en']!;
     }
 
     if (match.onlyMine.isNotEmpty && match.onlyTheirs.isEmpty) {
