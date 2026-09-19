@@ -321,6 +321,31 @@ enum GroupRoomPhase {
   ended,
 }
 
+
+class GroupBoundedOption {
+  const GroupBoundedOption({
+    required this.id,
+    required this.label,
+  });
+
+  final String id;
+  final String label;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'label': label,
+      };
+
+  factory GroupBoundedOption.fromJson(Map<String, dynamic> json) {
+    final id = (json['id'] as String?)?.trim() ?? '';
+    final label = (json['label'] as String?)?.trim() ?? '';
+    if (!_groupRoomIdPattern.hasMatch(id) || label.isEmpty || label.length > 80) {
+      throw const FormatException('Invalid Group Zync bounded option');
+    }
+    return GroupBoundedOption(id: id, label: label);
+  }
+}
+
 class GroupBoundedState {
   const GroupBoundedState({
     required this.revision,
@@ -329,7 +354,12 @@ class GroupBoundedState {
     required this.readyCount,
     required this.roundNumber,
     this.mechanicType = '',
+    this.title = '',
     this.prompt = '',
+    this.inputKind = '',
+    this.requiredSelections = 0,
+    this.options = const [],
+    this.followUp = '',
     this.hiddenSubsetSize,
     this.revealInterestId,
     this.revealParticipantIds = const [],
@@ -341,7 +371,12 @@ class GroupBoundedState {
   final int readyCount;
   final int roundNumber;
   final String mechanicType;
+  final String title;
   final String prompt;
+  final String inputKind;
+  final int requiredSelections;
+  final List<GroupBoundedOption> options;
+  final String followUp;
   final int? hiddenSubsetSize;
   final String? revealInterestId;
   final List<String> revealParticipantIds;
@@ -353,7 +388,13 @@ class GroupBoundedState {
         'ready': readyCount,
         'round': roundNumber,
         if (mechanicType.isNotEmpty) 'mechanic': mechanicType,
+        if (title.isNotEmpty) 'title': title,
         if (prompt.isNotEmpty) 'prompt': prompt,
+        if (inputKind.isNotEmpty) 'input': inputKind,
+        if (requiredSelections > 0) 'required': requiredSelections,
+        if (options.isNotEmpty)
+          'options': options.map((item) => item.toJson()).toList(growable: false),
+        if (followUp.isNotEmpty) 'followUp': followUp,
         if (hiddenSubsetSize != null) 'subset': hiddenSubsetSize,
         if (revealInterestId != null) 'interest': revealInterestId,
         if (revealParticipantIds.isNotEmpty) 'participants': revealParticipantIds,
@@ -373,7 +414,19 @@ class GroupBoundedState {
       readyCount: (json['ready'] as num?)?.toInt() ?? 0,
       roundNumber: (json['round'] as num?)?.toInt() ?? 0,
       mechanicType: (json['mechanic'] as String?) ?? '',
+      title: (json['title'] as String?) ?? '',
       prompt: (json['prompt'] as String?) ?? '',
+      inputKind: (json['input'] as String?) ?? '',
+      requiredSelections: (json['required'] as num?)?.toInt() ?? 0,
+      options: ((json['options'] as List?) ?? const [])
+          .whereType<Map>()
+          .map(
+            (item) => GroupBoundedOption.fromJson(
+              Map<String, dynamic>.from(item),
+            ),
+          )
+          .toList(growable: false),
+      followUp: (json['followUp'] as String?) ?? '',
       hiddenSubsetSize: (json['subset'] as num?)?.toInt(),
       revealInterestId: json['interest'] as String?,
       revealParticipantIds: ((json['participants'] as List?) ?? const [])
