@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import 'interest_catalog.dart';
 import 'models.dart';
+import 'progress_event.dart';
 import 'zync_now_engine.dart';
 import 'zync_now_memory.dart';
 
@@ -13,6 +15,7 @@ class LocalStore {
   static const _profileKey = 'zync.profile.v1';
   static const _historyKey = 'zync.history.v1';
   static const _zyncNowActivityKey = 'zync.zync_now.activities.v1';
+  static const _progressEventKey = 'zync.progress.events.v1';
   static const _uuid = Uuid();
 
   static Future<LocalProfile> loadOrCreateProfile({required String language}) async {
@@ -115,7 +118,25 @@ class LocalStore {
       history.add(updated);
     }
 
-    await prefs.setString(_historyKey, jsonEncode(history.map((entry) => entry.toJson()).toList()));
+    await prefs.setString(
+      _historyKey,
+      jsonEncode(history.map((entry) => entry.toJson()).toList()),
+    );
+    await _appendProgressEvent(
+      prefs,
+      ZyncProgressEvent(
+        id: _uuid.v4(),
+        type: ZyncProgressEventType.oneToOneZync,
+        source: ZyncProgressSource.oneToOne,
+        occurredAt: now,
+        participantCount: 2,
+        repeatPerson: index >= 0,
+        interestCategories: _interestCategories({
+          ...sharedIds,
+          ...peerInterests.map((item) => item.id),
+        }),
+      ),
+    );
     return updated;
   }
 
@@ -214,15 +235,33 @@ class LocalStore {
     if (index < 0) return null;
 
     final previous = history[index];
+    final completedAt = status == ZyncNowActivityStatus.completed
+        ? (at ?? DateTime.now()).toUtc()
+        : previous.completedAt;
     final updated = previous.copyWith(
       status: status,
-      completedAt:
-          status == ZyncNowActivityStatus.completed
-              ? (at ?? DateTime.now()).toUtc()
-              : previous.completedAt,
+      completedAt: completedAt,
     );
     history[index] = updated;
     await _saveZyncNowActivities(prefs, history);
+
+    if (status == ZyncNowActivityStatus.completed &&
+        previous.status != ZyncNowActivityStatus.completed) {
+      await _appendProgressEvent(
+        prefs,
+        ZyncProgressEvent(
+          id: _uuid.v4(),
+          type: ZyncProgressEventType.triedTogetherCompleted,
+          source: ZyncProgressSource.zyncNow,
+          occurredAt: completedAt!,
+          participantCount: previous.groupSize,
+          mode: previous.mode,
+          interestCategories: _interestCategories(
+            previous.sourceInterestIds.toSet(),
+          ),
+        ),
+      );
+    }
     return updated;
   }
 
@@ -249,6 +288,62 @@ class LocalStore {
       _zyncNowActivityKey,
       jsonEncode(bounded.map((item) => item.toJson()).toList()),
     );
+  }
+
+  static Future<List<ZyncProgressEvent>> loadProgressEvents() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_progressEventKey);
+    if (raw == null) return const [];
+    try {
+      final decoded = jsonDecode(raw) as List;
+      final items = decoded
+          .whereType<Map>()
+          .map(
+            (item) => ZyncProgressEvent.fromJson(
+              Map<String, dynamic>.from(item),
+            ),
+          )
+          .toList()
+        ..sort((a, b) => b.occurredAt.compareTo(a.occurredAt));
+      return List.unmodifiable(items);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<void> _appendProgressEvent(
+    SharedPreferences prefs,
+    ZyncProgressEvent event,
+  ) async {
+    final events = (await loadProgressEvents()).toList();
+    if (events.any((item) => item.id == event.id)) return;
+    events.insert(0, event);
+    final bounded = events.take(500).toList(growable: false);
+    await prefs.setString(
+      _progressEventKey,
+      jsonEncode(bounded.map((item) => item.toJson()).toList()),
+    );
+  }
+
+  static List<String> _interestCategories(Set<String> interestIds) {
+    final categories = <String>{};
+    for (final id in interestIds) {
+      final category = InterestCatalog.byId(id)?.category.trim().toLowerCase();
+      if (category != null &&
+          category.isNotEmpty &&
+          RegExp(r'^[a-z0-9_]+    final history = await loadHistory();
+    for (final entry in history) {
+      if (entry.peerId == peerId) return entry;
+    }
+    return null;
+  }
+}
+).hasMatch(category)) {
+        categories.add(category);
+      }
+    }
+    final ordered = categories.toList()..sort();
+    return List.unmodifiable(ordered);
   }
 
   static Future<ZyncHistoryEntry?> findHistory(String peerId) async {
