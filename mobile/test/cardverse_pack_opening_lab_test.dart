@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/core/interest_catalog.dart';
 import 'package:zync/screens/cardverse_pack_opening_lab_screen.dart';
 
 Widget lab({
@@ -57,12 +58,15 @@ void main() {
 
     expect(find.text('0 / 5'), findsOneWidget);
 
-    const expected = [
-      'Badminton',
-      'Coffee',
-      'Bouldering',
-      'Piano',
-      'Japan',
+    final expected = [
+      for (final id in const [
+        'sports.badminton',
+        'food.coffee',
+        'outdoors.bouldering',
+        'music.piano',
+        'travel.japan',
+      ])
+        InterestCatalog.byId(id)!.labelFor('en'),
     ];
 
     for (var i = 0; i < expected.length; i++) {
