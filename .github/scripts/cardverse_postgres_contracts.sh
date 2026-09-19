@@ -109,6 +109,26 @@ expect_sql_failure \
   "one persisted server roll per pack" \
   "INSERT INTO cardverse_pack_rolls (pack_id, account_id, idempotency_key, client_reveal_version, policy_version) VALUES ('$PACK', '$ACCOUNT', 'pack-open-attempt-0002', 1, 1)"
 
+# Account lifecycle migration keeps provider tombstones unique and records logical deletion metadata.
+deleted_col="$(psql_zync -Atc "SELECT is_nullable FROM information_schema.columns WHERE table_name='zync_accounts' AND column_name='deleted_at'")"
+test "$deleted_col" = "YES"
+unlinked_col="$(psql_zync -Atc "SELECT is_nullable FROM information_schema.columns WHERE table_name='zync_identity_links' AND column_name='unlinked_at'")"
+test "$unlinked_col" = "YES"
+
+SECOND_ACCOUNT="66666666-6666-4666-8666-666666666666"
+psql_zync <<SQL
+INSERT INTO zync_accounts (id) VALUES ('$SECOND_ACCOUNT');
+INSERT INTO zync_identity_links (
+  account_id, provider, provider_subject, provider_email, email_verified, unlinked_at
+) VALUES (
+  '$ACCOUNT', 'google', 'tombstone-provider-subject', NULL, false, now()
+);
+SQL
+
+expect_sql_failure \
+  "soft-unlinked provider subject cannot be recycled to another owner" \
+  "INSERT INTO zync_identity_links (account_id, provider, provider_subject) VALUES ('$SECOND_ACCOUNT', 'google', 'tombstone-provider-subject')"
+
 echo "✓ PostgreSQL Cardverse migrations and hard constraints passed"
 
 
