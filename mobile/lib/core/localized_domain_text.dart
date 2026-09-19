@@ -162,6 +162,102 @@ class LocalizedDomainText {
     };
   }
 
+  static String interactionLabel(String type, String locale) {
+    final values = switch (type) {
+      'pick' => {
+          'en':'Pick together','zh-Hant':'一齊揀','zh-Hans':'一起选','ja':'一緒に選ぶ','ko':'함께 고르기',
+          'es':'Elegid juntos','fr':'Choisissez ensemble','pt':'Escolham juntos',
+        },
+      'defend' => {
+          'en':'Defend your pick','zh-Hant':'為你嘅選擇辯護','zh-Hans':'为你的选择辩护','ja':'選択を弁護','ko':'선택을 변호하기',
+          'es':'Defiende tu elección','fr':'Défends ton choix','pt':'Defende a tua escolha',
+        },
+      'reveal' => {
+          'en':'Share & react','zh-Hant':'分享再回應','zh-Hans':'分享再回应','ja':'共有して反応','ko':'공유하고 반응하기',
+          'es':'Comparte y reacciona','fr':'Partage et réagis','pt':'Partilha e reage',
+        },
+      'guess' => {
+          'en':'Guess first','zh-Hant':'先估對方','zh-Hans':'先猜对方','ja':'先に予想','ko':'먼저 맞혀보기',
+          'es':'Adivina primero','fr':'Devine d’abord','pt':'Adivinha primeiro',
+        },
+      'surprise' => {
+          'en':'Surprise round','zh-Hant':'驚喜回合','zh-Hans':'惊喜回合','ja':'サプライズラウンド','ko':'서프라이즈 라운드',
+          'es':'Ronda sorpresa','fr':'Tour surprise','pt':'Ronda surpresa',
+        },
+      _ => {
+          'en':'Quick play','zh-Hant':'快速玩法','zh-Hans':'快速玩法','ja':'クイックプレイ','ko':'빠른 플레이',
+          'es':'Juego rápido','fr':'Jeu rapide','pt':'Jogo rápido',
+        },
+    };
+    return _pick(locale, values);
+  }
+
+  static String interactionHint(String type, String locale) {
+    final values = switch (type) {
+      'pick' => {
+          'en':'Choose at the same time, then compare.',
+          'zh-Hant':'同一時間揀，之後先比較答案。',
+          'zh-Hans':'同时选择，然后再比较答案。',
+          'ja':'同時に選んでから答えを比べよう。',
+          'ko':'동시에 고른 뒤 서로 비교해 보세요.',
+          'es':'Elegid a la vez y después comparad.',
+          'fr':'Choisissez en même temps, puis comparez.',
+          'pt':'Escolham ao mesmo tempo e depois comparem.',
+        },
+      'defend' => {
+          'en':'Pick a side, then defend it to each other.',
+          'zh-Hant':'各自揀一邊，再向對方講點解。',
+          'zh-Hans':'各自选一边，再向对方说明为什么。',
+          'ja':'立場を選び、相手に理由を説明しよう。',
+          'ko':'한쪽을 고른 뒤 서로 이유를 말해 보세요.',
+          'es':'Elegid un lado y defendedlo ante la otra persona.',
+          'fr':'Choisis un camp, puis défends-le face à l’autre.',
+          'pt':'Escolhe um lado e depois defende-o perante a outra pessoa.',
+        },
+      'reveal' => {
+          'en':'One shares first; the other reacts and follows up.',
+          'zh-Hant':'一個先分享，另一個即場回應再追問。',
+          'zh-Hans':'一个先分享，另一个即时回应再追问。',
+          'ja':'一人が先に話し、もう一人が反応して掘り下げよう。',
+          'ko':'한 사람이 먼저 말하고, 다른 사람이 반응하며 이어가세요.',
+          'es':'Una persona comparte primero; la otra reacciona y continúa.',
+          'fr':'Une personne partage d’abord; l’autre réagit et rebondit.',
+          'pt':'Uma pessoa partilha primeiro; a outra reage e continua.',
+        },
+      'guess' => {
+          'en':'Predict first. Do not reveal the answer until after the guess.',
+          'zh-Hant':'先估，對方等你估完先揭曉答案。',
+          'zh-Hans':'先猜，对方等你猜完再揭晓答案。',
+          'ja':'先に予想し、答えは予想の後で明かそう。',
+          'ko':'먼저 예측하세요. 추측이 끝난 뒤 정답을 공개하세요.',
+          'es':'Adivina primero. No reveles la respuesta hasta después.',
+          'fr':'Devine d’abord. Ne révèle la réponse qu’ensuite.',
+          'pt':'Adivinha primeiro. Só depois revelem a resposta.',
+        },
+      'surprise' => {
+          'en':'React instinctively first, then compare what surprised you.',
+          'zh-Hant':'先憑直覺即時回應，再比較邊樣最出乎意料。',
+          'zh-Hans':'先凭直觉即时回应，再比较什么最出乎意料。',
+          'ja':'まず直感で反応し、何が意外だったか比べよう。',
+          'ko':'먼저 직감적으로 반응한 뒤 무엇이 놀라웠는지 비교하세요.',
+          'es':'Reaccionad por instinto y luego comparad qué os sorprendió.',
+          'fr':'Réagissez d’instinct, puis comparez ce qui vous a surpris.',
+          'pt':'Reajam por instinto e depois comparem o que vos surpreendeu.',
+        },
+      _ => {
+          'en':'Do the prompt, then react to each other.',
+          'zh-Hant':'跟住題目玩，之後直接回應對方。',
+          'zh-Hans':'跟着题目玩，然后直接回应对方。',
+          'ja':'お題をやってから、お互いの答えに反応しよう。',
+          'ko':'질문대로 해본 뒤 서로의 답에 반응하세요.',
+          'es':'Seguid la propuesta y reaccionad a la respuesta del otro.',
+          'fr':'Suivez le prompt, puis réagissez à la réponse de l’autre.',
+          'pt':'Sigam o desafio e reajam à resposta um do outro.',
+        },
+    };
+    return _pick(locale, values);
+  }
+
   static String quickStartTitle(String locale) => _pick(locale, {
         'en':'Pick 5 things that feel like you',
         'zh-Hant':'揀 5 樣最似你嘅興趣',
