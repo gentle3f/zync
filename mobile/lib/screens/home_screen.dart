@@ -6,6 +6,7 @@ import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 import 'achievement_screen.dart';
+import 'group_zync_host_lobby_screen.dart';
 import 'history_screen.dart';
 import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
@@ -205,6 +206,22 @@ class HomeScreen extends StatelessWidget {
       );
 
   List<_MenuSpec> _menuSpecs(BuildContext context, AppLocalizations l10n, Uri? privacyUri) => [
+        _MenuSpec(
+          icon: Icons.groups_2_outlined,
+          iconBackground: const Color(0xFFE9E5FF),
+          iconForeground: ZyncPalette.plum,
+          title: LocalizedDomainText.groupZyncTitle(
+            Localizations.localeOf(context).toLanguageTag(),
+          ),
+          subtitle: LocalizedDomainText.groupZyncSubtitle(
+            Localizations.localeOf(context).toLanguageTag(),
+          ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => GroupZyncHostLobbyScreen(profile: profile),
+            ),
+          ),
+        ),
         _MenuSpec(
           icon: Icons.favorite_outline_rounded,
           iconBackground: ZyncPalette.peach,
