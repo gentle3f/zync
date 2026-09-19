@@ -415,6 +415,14 @@ class GroupHostCoordinator {
     }
   }
 
+  ZyncNowConsensusTransportRound _requireZyncNowConsensus() {
+    final round = _activeZyncNowConsensus;
+    if (round == null) {
+      throw StateError('No active Zync Now consensus round');
+    }
+    return round;
+  }
+
   GroupInteractionRound _requireRound() {
     final round = _activeRound;
     if (round == null) {
