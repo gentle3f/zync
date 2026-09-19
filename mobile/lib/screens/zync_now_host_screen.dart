@@ -11,6 +11,7 @@ import '../core/zync_now_consensus.dart';
 import '../core/zync_now_constraints_transport.dart';
 import '../core/zync_now_engine.dart';
 import '../core/zync_now_memory.dart';
+import '../core/zync_now_relaxation.dart';
 import '../core/zync_now_room_coordinator.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_now_constraints_form.dart';
@@ -166,6 +167,31 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         _pendingActivity = null;
         _hidePendingFollowUp = false;
       });
+    } catch (_) {
+      _fail();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _retryRelaxation(
+    ZyncNowRelaxationKind kind,
+  ) async {
+    final coordinator = _coordinator;
+    if (coordinator == null || _busy) return;
+    setState(() => _busy = true);
+    try {
+      final prior = await LocalStore.recentZyncNowActivityKeys();
+      await coordinator.retryWithRelaxation(
+        kind,
+        priorActivityKeys: prior,
+        seed: coordinator.room.roomId,
+      );
+      _ratings.clear();
+      _hardVetoes.clear();
+      _hostBallotSubmitted = false;
+      _ballotCount = 0;
+      if (mounted) setState(() => _error = null);
     } catch (_) {
       _fail();
     } finally {
@@ -614,18 +640,35 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
     }
 
     if (coordinator.needsRelaxation || chosen == null) {
+      final relaxations = coordinator.availableRelaxations;
       return _message(
         Icons.tune_rounded,
         _isZh
             ? '暫時冇一個選擇適合所有人'
             : 'Nothing fits everyone yet',
         subtitle: _isZh
-            ? 'Zync 冇忽略任何 hard veto。下一步會俾你哋只放寬非必要偏好再試。'
-            : 'Zync did not override any hard veto. Next, relax only a soft preference and try again.',
-        action: FilledButton.icon(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.check_rounded),
-          label: Text(_isZh ? '完成' : 'Done'),
+            ? 'Zync 冇忽略任何 hard veto。只可以明確放寬一個 soft preference再試。'
+            : 'Zync did not override any hard veto. Explicitly relax one soft preference to try again.',
+        action: Column(
+          children: [
+            if (relaxations.isNotEmpty) ...[
+              for (final kind in relaxations) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _busy ? null : () => _retryRelaxation(kind),
+                    icon: Icon(_relaxationIcon(kind)),
+                    label: Text(_relaxationLabel(kind)),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ],
+            TextButton(
+              onPressed: _busy ? null : () => Navigator.of(context).pop(),
+              child: Text(_isZh ? '今次算啦' : 'Leave it for now'),
+            ),
+          ],
         ),
       );
     }
@@ -859,6 +902,33 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
           style: const TextStyle(color: Colors.redAccent),
         ),
       );
+
+  IconData _relaxationIcon(ZyncNowRelaxationKind kind) => switch (kind) {
+        ZyncNowRelaxationKind.time => Icons.schedule_rounded,
+        ZyncNowRelaxationKind.cost => Icons.payments_outlined,
+        ZyncNowRelaxationKind.energy => Icons.directions_run_rounded,
+        ZyncNowRelaxationKind.setting => Icons.wb_sunny_outlined,
+        ZyncNowRelaxationKind.novelty => Icons.explore_outlined,
+      };
+
+  String _relaxationLabel(ZyncNowRelaxationKind kind) {
+    if (_isZh) {
+      return switch (kind) {
+        ZyncNowRelaxationKind.time => '放寬時間',
+        ZyncNowRelaxationKind.cost => '放寬預算',
+        ZyncNowRelaxationKind.energy => '活動強度都可以',
+        ZyncNowRelaxationKind.setting => '室內室外都可以',
+        ZyncNowRelaxationKind.novelty => '熟悉／新鮮都可以',
+      };
+    }
+    return switch (kind) {
+      ZyncNowRelaxationKind.time => 'Relax time',
+      ZyncNowRelaxationKind.cost => 'Relax budget',
+      ZyncNowRelaxationKind.energy => 'Any energy level',
+      ZyncNowRelaxationKind.setting => 'Indoor or outdoor',
+      ZyncNowRelaxationKind.novelty => 'Broaden novelty',
+    };
+  }
 
   String _voteLabel(ZyncNowVote vote) => switch (vote) {
         ZyncNowVote.love => _isZh ? '😍 好想做' : '😍 Love',
