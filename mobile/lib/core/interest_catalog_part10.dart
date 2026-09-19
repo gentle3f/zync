@@ -413,18 +413,18 @@ Cantonese Roast Meat|燒味|烧味
 Char Siu|叉燒|叉烧
 Roast Goose|燒鵝|烧鹅
 Claypot Rice|煲仔飯|煲仔饭
-Congee|粥
+Congee|粥|粥|粥
 Wonton Noodles|雲吞麵|云吞面
 Beef Brisket Noodles|牛腩麵|牛腩面
-Hong Kong Milk Tea|港式奶茶
+Hong Kong Milk Tea|港式奶茶|港式奶茶|港式奶茶
 Pineapple Bun|菠蘿包|菠萝包
 Egg Tart|蛋撻|蛋挞
-French Toast Hong Kong Style|西多士
+French Toast Hong Kong Style|西多士|西多士|西多士
 Rice Noodle Rolls|腸粉|肠粉
 Soup Dumplings|小籠包|小笼包
-Sheng Jian Bao|生煎包
+Sheng Jian Bao|生煎包|生煎包|生煎包
 Peking Duck|北京烤鴨|北京烤鸭
-Mapo Tofu|麻婆豆腐
+Mapo Tofu|麻婆豆腐|麻婆豆腐|麻婆豆腐
 Kung Pao Chicken|宮保雞丁|宫保鸡丁
 Dan Dan Noodles|擔擔麵|担担面
 Sichuan Boiled Fish|水煮魚|水煮鱼
@@ -433,10 +433,10 @@ Xiaolongbao|小籠包|小笼包
 Scallion Pancakes|蔥油餅|葱油饼
 Taiwanese Beef Noodles|台灣牛肉麵|台湾牛肉面
 Lu Rou Fan|滷肉飯|卤肉饭
-Gua Bao|刈包
-Oyster Omelette|蚵仔煎
-Stinky Tofu|臭豆腐
-Japanese Curry|日式咖喱
+Gua Bao|刈包|刈包|刈包
+Oyster Omelette|蚵仔煎|蚵仔煎|蚵仔煎
+Stinky Tofu|臭豆腐|臭豆腐|臭豆腐
+Japanese Curry|日式咖喱|日式咖喱|日式咖喱
 Tonkatsu|吉列豬扒|とんかつ|炸猪排
 Tempura|天婦羅|天ぷら|天妇罗
 Udon|烏冬|うどん|乌冬
@@ -444,92 +444,92 @@ Soba|蕎麥麵|そば|荞麦面
 Okonomiyaki|大阪燒|お好み焼き|大阪烧
 Takoyaki|章魚燒|たこ焼き|章鱼烧
 Onigiri|飯糰|おにぎり|饭团
-Donburi|丼飯|丼
+Donburi|丼飯|丼饭
 Oyakodon|親子丼|親子丼|亲子丼
 Gyudon|牛丼|牛丼
 Omurice|蛋包飯|オムライス|蛋包饭
-Japanese Cheesecake|日式芝士蛋糕
+Japanese Cheesecake|日式芝士蛋糕|日式芝士蛋糕|日式芝士蛋糕
 Mochi|麻糬|餅|麻薯
 Bibimbap|韓式拌飯|비빔밥|韩式拌饭
-Tteokbokki|辣炒年糕|떡볶이
-Kimchi|泡菜|김치
+Tteokbokki|辣炒年糕|辣炒年糕
+Kimchi|泡菜|泡菜
 Kimbap|紫菜包飯|김밥|紫菜包饭
 Samgyeopsal|韓式五花肉|삼겹살|韩式五花肉
-Bulgogi|韓式烤肉|불고기
+Bulgogi|韓式烤肉|韩式烤肉
 Sundubu Jjigae|嫩豆腐鍋|순두부찌개|嫩豆腐锅
 Japchae|韓式炒粉絲|잡채|韩式炒粉丝
 Naengmyeon|冷麵|냉면|冷面
-Pho|越南河粉
-Banh Mi|越南法包
+Pho|越南河粉|越南河粉|越南河粉
+Banh Mi|越南法包|越南法包|越南法棍
 Bun Cha|越南烤肉米線|越南烤肉米线
-Pad Thai|泰式炒河
+Pad Thai|泰式炒河|泰式炒河|泰式炒河
 Tom Yum|冬蔭功|冬阴功
-Green Curry|泰式青咖喱
+Green Curry|泰式青咖喱|泰式青咖喱|泰式青咖喱
 Mango Sticky Rice|芒果糯米飯|芒果糯米饭
 Hainanese Chicken Rice|海南雞飯|海南鸡饭
-Laksa|叻沙
-Bak Kut Teh|肉骨茶
+Laksa|叻沙|叻沙|叻沙
+Bak Kut Teh|肉骨茶|肉骨茶|肉骨茶
 Nasi Lemak|椰漿飯|椰浆饭
 Roti Canai|印度煎餅|印度煎饼
-Satay|沙嗲
+Satay|沙嗲|沙嗲|沙爹
 Biryani|印度香飯|印度香饭
-Butter Chicken
-Tandoori Chicken
-Masala Dosa
-Samosa
-Naan
-Curry Laksa
-Pasta
-Carbonara
-Cacio e Pepe
-Bolognese
-Lasagna
-Risotto
-Neapolitan Pizza
-Tiramisu
-Gelato
-Croissant
-Baguette
-Macarons
-Crêpes
-Ratatouille
-Beef Bourguignon
-Paella
-Tapas
-Tortilla Española
-Churros
-Tacos
-Burritos
-Quesadillas
-Guacamole
-Ceviche
-Empanadas
-Feijoada
-Churrasco
-Steak Frites
-Fish and Chips
-Sunday Roast
-Full English Breakfast
-Poutine
-New York Pizza
-Bagels
-Hot Dogs
-Fried Chicken
-Texas BBQ
-Smoked Brisket
-Lobster Rolls
-Clam Chowder
-Cheesecake
-Brownies
-Cookies
-Donuts
-Pancakes
-Waffles
-French Toast
-Basque Cheesecake
-Soufflé
-Panna Cotta
-Crème Brûlée
+Butter Chicken|印度牛油雞|印度黄油鸡
+Tandoori Chicken|天都里烤雞|坦都里烤鸡
+Masala Dosa|馬薩拉多薩|玛萨拉多萨
+Samosa|印度咖喱角|印度咖喱角
+Naan|印度烤餅|印度烤饼
+Curry Laksa|咖喱叻沙|咖喱叻沙
+Pasta|意大利粉|意大利面
+Carbonara|卡邦尼意粉|卡邦尼意面
+Cacio e Pepe|芝士黑椒意粉|奶酪黑胡椒意面
+Bolognese|肉醬意粉|肉酱意面
+Lasagna|千層麵|千层面
+Risotto|意大利燴飯|意大利烩饭
+Neapolitan Pizza|拿坡里薄餅|那不勒斯披萨
+Tiramisu|提拉米蘇|提拉米苏
+Gelato|意式雪糕|意式冰淇淋
+Croissant|牛角包|牛角包
+Baguette|法國長棍|法棍
+Macarons|馬卡龍|马卡龙
+Crêpes|法式薄餅|法式可丽饼
+Ratatouille|法式雜菜煲|普罗旺斯炖菜
+Beef Bourguignon|勃艮第紅酒燉牛肉|勃艮第红酒炖牛肉
+Paella|西班牙海鮮飯|西班牙海鲜饭
+Tapas|西班牙小食|西班牙小吃
+Tortilla Española|西班牙薯仔蛋餅|西班牙土豆蛋饼
+Churros|西班牙油條|西班牙油条
+Tacos|墨西哥塔可|墨西哥塔可
+Burritos|墨西哥卷餅|墨西哥卷饼
+Quesadillas|墨西哥芝士薄餅|墨西哥奶酪薄饼
+Guacamole|牛油果醬|牛油果酱
+Ceviche|酸橘汁醃魚|酸橘汁腌鱼
+Empanadas|拉丁美洲餡餅|拉丁美洲馅饼
+Feijoada|巴西黑豆燉肉|巴西黑豆炖肉
+Churrasco|巴西烤肉|巴西烤肉
+Steak Frites|牛扒薯條|牛排薯条
+Fish and Chips|炸魚薯條|炸鱼薯条
+Sunday Roast|英式星期日烤肉|英式周日烤肉
+Full English Breakfast|英式全早餐|英式全套早餐
+Poutine|肉汁芝士薯條|肉汁奶酪薯条
+New York Pizza|紐約薄餅|纽约披萨
+Bagels|貝果|贝果
+Hot Dogs|熱狗|热狗
+Fried Chicken|炸雞|炸鸡
+Texas BBQ|德州燒烤|德州烧烤
+Smoked Brisket|煙燻牛胸肉|烟熏牛胸肉
+Lobster Rolls|龍蝦包|龙虾卷
+Clam Chowder|蛤蜊周打湯|蛤蜊浓汤
+Cheesecake|芝士蛋糕|奶酪蛋糕
+Brownies|布朗尼|布朗尼
+Cookies|曲奇|饼干
+Donuts|甜甜圈|甜甜圈
+Pancakes|班戟|美式松饼
+Waffles|窩夫|华夫饼
+French Toast|法式多士|法式吐司
+Basque Cheesecake|巴斯克芝士蛋糕|巴斯克奶酪蛋糕
+Soufflé|梳乎厘|舒芙蕾
+Panna Cotta|意式奶凍|意式奶冻
+Crème Brûlée|法式焦糖燉蛋|法式焦糖布蕾
 ''',
   ),
   ...parseInterestFamily(
