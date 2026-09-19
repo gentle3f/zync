@@ -4,6 +4,10 @@ Authoritative continuation checkpoint:
 
 `AI_STATE/HANDOFF_20260918_ICEBREAKING_SOCIAL_AI_LIVE_QA_READY.md`
 
+Latest master-execution checkpoint:
+
+`AI_STATE/MINI_HANDOFF_20260919_MASTER_EXECUTION_STARTED.md`
+
 Latest strategic product-vision checkpoint:
 
 `AI_STATE/MINI_HANDOFF_20260919_MASTER_PRODUCT_VISION_EXPANDED.md`
