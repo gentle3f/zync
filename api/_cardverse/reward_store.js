@@ -289,7 +289,7 @@ export function evaluateQuestProofs(questIdValue, cycleStartValue, rows) {
       break;
     case 'new_person_zyncs':
       current = proofs.filter(
-        (row) => row.event_type === 'one_to_one_zync' && row.repeat_person !== true,
+        (row) => row.event_type === 'one_to_one_zync' && row.repeat_person === false,
       ).length;
       break;
     case 'tried_together':
