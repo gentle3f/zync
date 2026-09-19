@@ -5,12 +5,15 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../core/achievement_service.dart';
 import '../core/analytics_service.dart';
+import '../core/group_relay_service.dart';
+import '../core/group_zync_protocol.dart';
 import '../core/local_store.dart';
 import '../core/matching_service.dart';
 import '../core/models.dart';
 import '../core/relay_service.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
+import 'group_zync_participant_screen.dart';
 import 'match_screen.dart';
 
 class ScanQrScreen extends StatefulWidget {
@@ -18,10 +21,12 @@ class ScanQrScreen extends StatefulWidget {
     super.key,
     required this.profile,
     this.relayClient,
+    this.groupRelayClient,
   });
 
   final LocalProfile profile;
   final RelayClient? relayClient;
+  final GroupRelayClient? groupRelayClient;
 
   @override
   State<ScanQrScreen> createState() => _ScanQrScreenState();
@@ -73,10 +78,46 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       _error = null;
     });
 
-    if (raw.trim().startsWith('ZH2:')) {
-      await _handleHandshake(raw.trim());
+    final value = raw.trim();
+    if (value.startsWith('ZG1:')) {
+      await _handleGroup(value);
+    } else if (value.startsWith('ZH2:')) {
+      await _handleHandshake(value);
     } else {
       await _handleLegacy(raw);
+    }
+  }
+
+  Future<void> _handleGroup(String raw) async {
+    try {
+      final room = GroupJoinQrPayload.decode(raw);
+      await _controller.stop();
+      if (!mounted) return;
+      await Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => GroupZyncParticipantScreen(
+            profile: widget.profile,
+            room: room,
+            relayClient: widget.groupRelayClient,
+          ),
+        ),
+      );
+    } on FormatException catch (error) {
+      if (!mounted) return;
+      final expired =
+          error.message.toString().toLowerCase().contains('expired');
+      setState(() {
+        _processing = false;
+        _error = expired
+            ? AppLocalizations.of(context).relayExpired
+            : AppLocalizations.of(context).invalidQr;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _processing = false;
+        _error = AppLocalizations.of(context).scanConnectionIssue;
+      });
     }
   }
 
