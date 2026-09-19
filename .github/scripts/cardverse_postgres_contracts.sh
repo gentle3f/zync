@@ -33,7 +33,11 @@ for table in \
   cardverse_pack_rolls \
   cardverse_pack_roll_items \
   cardverse_auth_challenges \
-  zync_account_sessions
+  zync_account_sessions \
+  cardverse_draw_token_balances \
+  cardverse_reward_proofs \
+  cardverse_reward_grants \
+  cardverse_reward_grant_proofs
 do
   value="$(psql_zync -Atc "SELECT to_regclass('public.${table}') IS NOT NULL")"
   test "$value" = "t"

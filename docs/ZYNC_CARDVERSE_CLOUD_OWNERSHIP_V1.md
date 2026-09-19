@@ -420,3 +420,70 @@ Pack opening additionally requires:
 - `CARDVERSE_PACK_OPEN_ENABLED=true`
 
 Therefore merely deploying this branch or configuring a database cannot accidentally expose Cardverse cloud ownership. Public enablement still requires an explicit server-side release action after rate-limit/security review and final policy approval.
+
+
+## 19. Trusted Quest proof and reward grant boundary
+
+Local Quest completion remains UX eligibility only.
+
+Milestone 5 now adds a separate server-authoritative proof/grant layer:
+
+- `db/migrations/0004_cardverse_reward_proofs.sql`
+- `api/_cardverse/reward_store.js`
+- `POST /api/v1/cardverse/quests/claim`
+
+New durable tables:
+
+- `cardverse_reward_proofs`;
+- `cardverse_reward_grants`;
+- `cardverse_reward_grant_proofs`;
+- `cardverse_draw_token_balances`.
+
+A trusted reward proof intentionally stores only coarse Quest facts:
+
+- internal owner UUID;
+- client event ID;
+- one-to-one vs Tried Together;
+- source;
+- timestamp;
+- participant count;
+- repeat-person boolean;
+- broad interest categories;
+- timezone offset and server-computed daily/weekly cycle starts;
+- verifier identifier.
+
+It does **not** store the peer account, peer name, social handle, QR payload, private interests, question transcript or precise location.
+
+### Why proof rows are server-issued
+
+The claim endpoint never accepts raw event details and never creates proof rows.
+
+A future trusted Zync action flow must call `recordTrustedRewardProof()` only after it independently verifies the real-world action. Until that issuer exists, production Quest Claim must remain disabled.
+
+This prevents a modified client from minting rewards by inventing local progress events.
+
+### Server quest rules
+
+The server now independently mirrors the five certified Quest rules and computes the reward kind/amount itself. The client cannot send reward kind, amount, pack ID, finish, rarity or cards.
+
+The server validates:
+
+1. authenticated account;
+2. single-use idempotency key;
+3. one grant per account + quest + server cycle;
+4. every submitted proof ID exists for that account;
+5. every proof belongs to the exact precomputed daily/weekly cycle;
+6. the proof set satisfies the server Quest metric/target;
+7. reward output is derived from the server rule.
+
+A successful Standard/Discovery reward creates the unopened pack entitlement and ledger entry inside the same PostgreSQL transaction.
+
+A Draw Token reward updates a versioned cloud balance and ledger inside the same transaction.
+
+### Separate release switch
+
+Quest Claim additionally requires:
+
+- `CARDVERSE_QUEST_CLAIM_ENABLED=true`
+
+It remains off until a trusted real-world proof issuer and rate-limit/security review are complete.
