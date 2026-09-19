@@ -48,6 +48,30 @@ void main() {
     expect(decoded.maxParticipants, 6);
   });
 
+  test('shared QR keeps room purpose while old default remains Group Zync',
+      () {
+    final now = DateTime.utc(2026, 9, 19, 10);
+
+    final groupRoom = GroupRoomBootstrap.generate(now: now);
+    final groupDecoded = GroupJoinQrPayload.decode(
+      groupRoom.qr.encode(),
+      now: now.add(const Duration(minutes: 1)),
+    );
+    expect(groupDecoded.kind, SharedZyncRoomKind.groupZync);
+
+    final nowRoom = GroupRoomBootstrap.generate(
+      maxParticipants: 2,
+      kind: SharedZyncRoomKind.zyncNow,
+      now: now,
+    );
+    final nowDecoded = GroupJoinQrPayload.decode(
+      nowRoom.qr.encode(),
+      now: now.add(const Duration(minutes: 1)),
+    );
+    expect(nowDecoded.kind, SharedZyncRoomKind.zyncNow);
+    expect(nowDecoded.maxParticipants, 2);
+  });
+
   test('shared relay protocol allows a two-person Zync Now room', () {
     final now = DateTime.utc(2026, 9, 19, 10);
     final room = GroupRoomBootstrap.generate(
