@@ -2,9 +2,9 @@
 """Apply Zync Android branding to a generated Flutter Android wrapper.
 
 This repository intentionally generates the Android wrapper in CI so the legacy
-Play package identity stays auditable. This script makes the brand layer just as
-reproducible: app label, camera permission, SDK pins, launcher icon and launch
-screen are all derived from source-controlled text assets.
+Play package identity stays auditable. This script makes the brand/security layer
+reproducible: app label, camera permission, secure-storage backup policy, SDK pins,
+launcher icon and launch screen are all derived from source-controlled text assets.
 """
 
 from __future__ import annotations
@@ -34,6 +34,19 @@ def patch_manifest(manifest: Path) -> None:
             1,
         )
     text = re.sub(r'android:label="[^"]*"', 'android:label="Zync"', text, count=1)
+    if "android:allowBackup=" in text:
+        text = re.sub(
+            r'android:allowBackup="[^"]*"',
+            'android:allowBackup="false"',
+            text,
+            count=1,
+        )
+    else:
+        text = text.replace(
+            "<application",
+            '<application\n        android:allowBackup="false"',
+            1,
+        )
     text = re.sub(r'android:icon="[^"]*"', 'android:icon="@mipmap/zync_launcher"', text, count=1)
     if "android:roundIcon=" not in text:
         text = text.replace(
