@@ -8,155 +8,155 @@ final List<InterestDefinition> kInterestCatalogPart7 = List.unmodifiable([
     cluster: 'movies/subgenres',
     rankStart: 900,
     raw: r'''
-Action Epic
-Adventure Epic
-Alien Invasion
-Animal Adventure
-B-Movie Action
-Body Horror
-Buddy Comedy
-Buddy Cop
-Caper
-Car Action
-Conspiracy Thriller
-Costume Drama
-Cozy Mystery
-Crime Documentary
-Cyber Thriller
-Cyberpunk
-Dark Comedy
-Dark Fantasy
-Dark Romance
-Desert Adventure
-Dinosaur Adventure
-Disaster Movies
-Docudrama
-Dystopian Sci-Fi
-Epic Cinema
-Erotic Thriller
-Fairy Tale
-Film Noir
-Financial Drama
-Folk Horror
-Found Footage Horror
-Gangster Movies
-Giallo
-Globetrotting Adventure
-Gun Fu
-Hard-boiled Detective
-Heist Movies
-High-Concept Comedy
-Historical Epic
-Holiday Movies
-Jukebox Musical
-Jungle Adventure
-Kaiju
-Kung Fu Movies
-Legal Drama
-Legal Thriller
-Martial Arts Movies
-Medical Drama
-Mockumentary
-Monster Horror
-Mountain Adventure
-Music Documentary
-Nature Documentary
-Parody Movies
-Period Drama
-Police Procedural
-Political Drama
-Political Thriller
-Prison Drama
-Psychological Drama
-Psychological Horror
-Psychological Thriller
-Quest Adventure
-Quirky Comedy
-Road Movies
-Romantic Comedy|romcom
-Romantic Epic
-Samurai Cinema
-Satire
-Sci-Fi Epic
-Screwball Comedy
-Sea Adventure
-Serial Killer Thriller
-Slapstick
-Slasher Horror
-Space Sci-Fi
-Spaghetti Western
-Splatter Horror
-Spy Movies
-Steampunk
-Superhero Movies
-Supernatural Fantasy
-Supernatural Horror
-Survival Movies
-Swashbuckler
-Sword and Sandal
-Sword and Sorcery
-Teen Comedy
-Teen Drama
-Teen Fantasy
-Teen Horror
-Teen Romance
-Time Travel Movies
-Tragedy
-Tragic Romance
-True Crime Documentary
-Urban Adventure
-Vampire Horror
-War Epic
-Werewolf Horror
-Western Epic
-Whodunit
-Witch Horror
-Workplace Drama
+Action Epic|動作史詩片|动作史诗片
+Adventure Epic|冒險史詩片|冒险史诗片
+Alien Invasion|外星入侵片|外星入侵片
+Animal Adventure|動物冒險片|动物冒险片
+B-Movie Action|B 級動作片|B 级动作片
+Body Horror|身體恐怖片|身体恐怖片
+Buddy Comedy|拍檔喜劇|搭档喜剧
+Buddy Cop|拍檔警匪片|搭档警匪片
+Caper|劫案片|劫案片
+Car Action|汽車動作片|汽车动作片
+Conspiracy Thriller|陰謀驚悚片|阴谋惊悚片
+Costume Drama|古裝劇情片|古装剧情片
+Cozy Mystery|輕鬆推理|轻松推理
+Crime Documentary|犯罪紀錄片|犯罪纪录片
+Cyber Thriller|網絡驚悚片|网络惊悚片
+Cyberpunk|賽博朋克|赛博朋克
+Dark Comedy|黑色喜劇|黑色喜剧
+Dark Fantasy|黑暗奇幻|黑暗奇幻
+Dark Romance|黑暗愛情|黑暗爱情
+Desert Adventure|沙漠冒險片|沙漠冒险片
+Dinosaur Adventure|恐龍冒險片|恐龙冒险片
+Disaster Movies|災難片|灾难片
+Docudrama|劇情式紀錄片|剧情式纪录片
+Dystopian Sci-Fi|反烏托邦科幻|反乌托邦科幻
+Epic Cinema|史詩電影|史诗电影
+Erotic Thriller|情色驚悚片|情色惊悚片
+Fairy Tale|童話電影|童话电影
+Film Noir|黑色電影|黑色电影
+Financial Drama|金融劇情片|金融剧情片
+Folk Horror|民俗恐怖片|民俗恐怖片
+Found Footage Horror|偽紀錄式恐怖片|伪纪录式恐怖片
+Gangster Movies|黑幫電影|黑帮电影
+Giallo|意式鉛黃驚悚片|意式铅黄惊悚片
+Globetrotting Adventure|環球冒險片|环球冒险片
+Gun Fu|槍鬥術電影|枪斗术电影
+Hard-boiled Detective|硬漢偵探片|硬汉侦探片
+Heist Movies|劫案電影|劫案电影
+High-Concept Comedy|高概念喜劇|高概念喜剧
+Historical Epic|歷史史詩片|历史史诗片
+Holiday Movies|節日電影|节日电影
+Jukebox Musical|流行金曲音樂劇電影|流行金曲音乐剧电影
+Jungle Adventure|叢林冒險片|丛林冒险片
+Kaiju|怪獸電影|怪兽电影
+Kung Fu Movies|功夫片|功夫片
+Legal Drama|法律劇情片|法律剧情片
+Legal Thriller|法律驚悚片|法律惊悚片
+Martial Arts Movies|武術片|武术片
+Medical Drama|醫療劇情片|医疗剧情片
+Mockumentary|偽紀錄片|伪纪录片
+Monster Horror|怪物恐怖片|怪物恐怖片
+Mountain Adventure|山岳冒險片|山地冒险片
+Music Documentary|音樂紀錄片|音乐纪录片
+Nature Documentary|自然紀錄片|自然纪录片
+Parody Movies|惡搞電影|恶搞电影
+Period Drama|時代劇情片|年代剧情片
+Police Procedural|警務程序片|警察程序片
+Political Drama|政治劇情片|政治剧情片
+Political Thriller|政治驚悚片|政治惊悚片
+Prison Drama|監獄劇情片|监狱剧情片
+Psychological Drama|心理劇情片|心理剧情片
+Psychological Horror|心理恐怖片|心理恐怖片
+Psychological Thriller|心理驚悚片|心理惊悚片
+Quest Adventure|任務冒險片|任务冒险片
+Quirky Comedy|怪趣喜劇|怪趣喜剧
+Road Movies|公路電影|公路电影
+Romantic Comedy|愛情喜劇|romcom|爱情喜剧
+Romantic Epic|愛情史詩片|爱情史诗片
+Samurai Cinema|武士電影|武士电影
+Satire|諷刺電影|讽刺电影
+Sci-Fi Epic|科幻史詩片|科幻史诗片
+Screwball Comedy|神經喜劇|神经喜剧
+Sea Adventure|海上冒險片|海上冒险片
+Serial Killer Thriller|連環殺手驚悚片|连环杀手惊悚片
+Slapstick|鬧劇喜劇|滑稽喜剧
+Slasher Horror|砍殺恐怖片|砍杀恐怖片
+Space Sci-Fi|太空科幻|太空科幻
+Spaghetti Western|意大利西部片|意大利西部片
+Splatter Horror|血腥恐怖片|血腥恐怖片
+Spy Movies|間諜片|间谍片
+Steampunk|蒸汽朋克|蒸汽朋克
+Superhero Movies|超級英雄電影|超级英雄电影
+Supernatural Fantasy|超自然奇幻|超自然奇幻
+Supernatural Horror|超自然恐怖片|超自然恐怖片
+Survival Movies|生存電影|生存电影
+Swashbuckler|劍客冒險片|剑客冒险片
+Sword and Sandal|劍與涼鞋片|剑与凉鞋片
+Sword and Sorcery|劍與魔法|剑与魔法
+Teen Comedy|青春喜劇|青春喜剧
+Teen Drama|青春劇情片|青春剧情片
+Teen Fantasy|青春奇幻|青春奇幻
+Teen Horror|青春恐怖片|青春恐怖片
+Teen Romance|青春愛情片|青春爱情片
+Time Travel Movies|時間旅行電影|时间旅行电影
+Tragedy|悲劇|悲剧
+Tragic Romance|悲劇愛情片|悲剧爱情片
+True Crime Documentary|真實犯罪紀錄片|真实犯罪纪录片
+Urban Adventure|城市冒險片|城市冒险片
+Vampire Horror|吸血鬼恐怖片|吸血鬼恐怖片
+War Epic|戰爭史詩片|战争史诗片
+Werewolf Horror|狼人恐怖片|狼人恐怖片
+Western Epic|西部史詩片|西部史诗片
+Whodunit|誰是兇手式推理|谁是凶手式推理
+Witch Horror|女巫恐怖片|女巫恐怖片
+Workplace Drama|職場劇情片|职场剧情片
 Wuxia Movies|武俠片|武俠片|武侠片
-Zombie Horror
-Coming-of-Age Movies
-Sports Drama
-Courtroom Drama
-Biographical Drama|biopic
-Dance Movies
-Food Movies
-Music Biopics
-Road Trip Comedy
-Family Adventure
-Creature Features
-Home Invasion Thriller
-Techno Thriller
-Eco Thriller
-Neo-Noir
-Mystery Thriller
-Revenge Thriller
-Survival Thriller
-Romantic Fantasy
-Urban Fantasy
-Science Fantasy
-Military Sci-Fi
-Space Opera
-Post-Apocalyptic Movies
-Alternate History
-Historical Romance
-Holiday Romance
-Feel-Good Movies
-Slice-of-Life Movies
-Art House Cinema
-Experimental Cinema
-Silent Cinema
-Black-and-White Cinema
+Zombie Horror|喪屍恐怖片|丧尸恐怖片
+Coming-of-Age Movies|成長電影|成长电影
+Sports Drama|體育劇情片|体育剧情片
+Courtroom Drama|法庭劇情片|法庭剧情片
+Biographical Drama|傳記劇情片|biopic|传记剧情片
+Dance Movies|舞蹈電影|舞蹈电影
+Food Movies|美食電影|美食电影
+Music Biopics|音樂人傳記片|音乐人传记片
+Road Trip Comedy|公路喜劇|公路喜剧
+Family Adventure|家庭冒險片|家庭冒险片
+Creature Features|怪獸類型片|怪兽类型片
+Home Invasion Thriller|入屋驚悚片|入室惊悚片
+Techno Thriller|科技驚悚片|科技惊悚片
+Eco Thriller|生態驚悚片|生态惊悚片
+Neo-Noir|新黑色電影|新黑色电影
+Mystery Thriller|懸疑驚悚片|悬疑惊悚片
+Revenge Thriller|復仇驚悚片|复仇惊悚片
+Survival Thriller|生存驚悚片|生存惊悚片
+Romantic Fantasy|愛情奇幻|爱情奇幻
+Urban Fantasy|都市奇幻|都市奇幻
+Science Fantasy|科學奇幻|科学奇幻
+Military Sci-Fi|軍事科幻|军事科幻
+Space Opera|太空歌劇|太空歌剧
+Post-Apocalyptic Movies|末日後電影|末日后电影
+Alternate History|架空歷史|架空历史
+Historical Romance|歷史愛情|历史爱情
+Holiday Romance|節日愛情|节日爱情
+Feel-Good Movies|療癒電影|治愈电影
+Slice-of-Life Movies|日常系電影|日常系电影
+Art House Cinema|藝術電影|艺术电影
+Experimental Cinema|實驗電影|实验电影
+Silent Cinema|默片|默片
+Black-and-White Cinema|黑白電影|黑白电影
 Hong Kong Action Cinema|港產動作片|港產動作片|港产动作片
-Hong Kong New Wave|香港新浪潮
-Japanese Cinema
+Hong Kong New Wave|香港新浪潮|香港新浪潮|香港新浪潮
+Japanese Cinema|日本電影|日本电影
 Korean Cinema|韓國電影|韓国映画|韩国电影
 Chinese Cinema|華語電影|中国映画|华语电影
-French New Wave
-Italian Neorealism
-Bollywood
-Indian Cinema
-Latin American Cinema
-Nordic Noir Film
+French New Wave|法國新浪潮|法国新浪潮
+Italian Neorealism|意大利新寫實主義|意大利新现实主义
+Bollywood|寶萊塢電影|宝莱坞电影
+Indian Cinema|印度電影|印度电影
+Latin American Cinema|拉丁美洲電影|拉丁美洲电影
+Nordic Noir Film|北歐黑色電影|北欧黑色电影
 ''',
   ),
   ...parseInterestFamily(
