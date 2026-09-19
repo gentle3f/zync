@@ -13,6 +13,8 @@ class AiQuestionResult {
     this.secondaryQuestion,
     this.secondaryLanguage,
     this.model,
+    this.interactionType = 'play',
+    this.turnPattern = const [],
   });
 
   final String question;
@@ -20,6 +22,8 @@ class AiQuestionResult {
   final String? secondaryQuestion;
   final String? secondaryLanguage;
   final String? model;
+  final String interactionType;
+  final List<String> turnPattern;
 }
 
 class NormalizedInterestResult {
@@ -35,6 +39,24 @@ class NormalizedInterestResult {
   final String displayName;
   final String category;
 }
+
+String _interactionTypeForMode(ConversationMode mode) => switch (mode) {
+      ConversationMode.easy => 'pick',
+      ConversationMode.fun => 'play',
+      ConversationMode.debate => 'defend',
+      ConversationMode.deep => 'reveal',
+      ConversationMode.guess => 'guess',
+      ConversationMode.surprise => 'surprise',
+    };
+
+List<String> _turnPatternForMode(ConversationMode mode) => switch (mode) {
+      ConversationMode.easy => const ['choose', 'compare'],
+      ConversationMode.fun => const ['act', 'react'],
+      ConversationMode.debate => const ['choose', 'defend', 'compare'],
+      ConversationMode.deep => const ['share', 'react'],
+      ConversationMode.guess => const ['predict', 'reveal', 'react'],
+      ConversationMode.surprise => const ['react', 'compare'],
+    };
 
 class AiService {
   const AiService({
@@ -95,6 +117,7 @@ class AiService {
     required String language,
     required MatchResult match,
     String? secondaryLanguage,
+    ConversationMode mode = ConversationMode.fun,
   }) {
     final primary = ZyncLanguage.canonical(language);
     final secondary = secondaryLanguage == null
@@ -105,6 +128,7 @@ class AiService {
       secondaryLanguage:
           secondary != null && secondary != primary ? secondary : null,
       match: match,
+      mode: mode,
     );
   }
 
@@ -176,12 +200,28 @@ class AiService {
       }
 
       final servedModel = (json['model'] as String?)?.trim();
+      final interactionRaw = json['interaction'];
+      final interaction = interactionRaw is Map
+          ? Map<String, dynamic>.from(interactionRaw)
+          : const <String, dynamic>{};
+      final interactionType =
+          (interaction['type'] as String?)?.trim() ?? _interactionTypeForMode(mode);
+      final turnPattern = ((interaction['turnPattern'] as List?) ?? const [])
+          .whereType<String>()
+          .map((item) => item.trim())
+          .where((item) => item.isNotEmpty)
+          .take(6)
+          .toList(growable: false);
       return AiQuestionResult(
         question: question,
         fromAi: true,
         secondaryQuestion: wantsSecondary ? secondaryQuestion : null,
         secondaryLanguage: wantsSecondary ? secondary : null,
         model: servedModel == null || servedModel.isEmpty ? null : servedModel,
+        interactionType: interactionType.isEmpty
+            ? _interactionTypeForMode(mode)
+            : interactionType,
+        turnPattern: turnPattern.isEmpty ? _turnPatternForMode(mode) : turnPattern,
       );
     } catch (_) {
       return null;
@@ -209,6 +249,7 @@ class AiService {
           language: language,
           secondaryLanguage: secondaryLanguage,
           match: match,
+          mode: mode,
         );
   }
 
@@ -216,6 +257,7 @@ class AiService {
     required String language,
     required String? secondaryLanguage,
     required MatchResult match,
+    required ConversationMode mode,
   }) {
     return AiQuestionResult(
       question: _fallbackQuestion(language: language, match: match),
@@ -227,6 +269,8 @@ class AiService {
               match: match,
             ),
       secondaryLanguage: secondaryLanguage,
+      interactionType: _interactionTypeForMode(mode),
+      turnPattern: _turnPatternForMode(mode),
     );
   }
 
