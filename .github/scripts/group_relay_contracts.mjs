@@ -648,6 +648,43 @@ test('bounded state is monotonic and join-capability readable', async () => {
   assert.equal(r.status, 409);
 });
 
+test('shared relay accepts a two-person Zync Now room', async () => {
+  const pairRoom = 'PAIRROOMABCDEFGHIJKLMNOPQ';
+  const pairBase = { protocolVersion: 1, roomId: pairRoom };
+
+  let r = await invoke({
+    action: 'create',
+    ...pairBase,
+    hostToken,
+    joinToken,
+    expiresAt: expiry(),
+    maxParticipants: 2,
+  });
+  assert.equal(r.status, 201);
+
+  r = await invoke({
+    action: 'join',
+    ...pairBase,
+    joinToken,
+    participantId: p1,
+    participantToken: p1Token,
+    payload: 'PairOpaque_AAA',
+  });
+  assert.equal(r.status, 200);
+  assert.equal(r.body.participantCount, 2);
+
+  r = await invoke({
+    action: 'join',
+    ...pairBase,
+    joinToken,
+    participantId: p2,
+    participantToken: p2Token,
+    payload: 'PairOpaque_BBB',
+  });
+  assert.equal(r.status, 409);
+  assert.equal(r.body.error, 'group_room_full');
+});
+
 test('room capacity counts host plus guests', async () => {
   const capRoom = 'CAPACITYABCDEFGHIJKLMNOP';
   const capBase = { protocolVersion: 1, roomId: capRoom };
