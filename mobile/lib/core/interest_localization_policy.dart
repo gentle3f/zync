@@ -17,7 +17,6 @@ class InterestLocalizationPolicy {
   /// from this set as soon as its zh-Hant/zh-Hans batch lands; CI will then
   /// enforce the translations permanently.
   static const Set<String> migrationBacklogClusters = {
-    'music/styles',
   };
 
   static const Set<String> _properNameClusters = {
