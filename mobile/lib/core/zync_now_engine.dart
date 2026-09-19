@@ -90,6 +90,7 @@ class ZyncNowEngine {
     required List<ZyncNowParticipant> participants,
     required ZyncNowMode mode,
     ZyncNowConstraints constraints = const ZyncNowConstraints(),
+    Map<String, ZyncNowConstraints> participantConstraints = const {},
     Set<String> priorActivityKeys = const {},
     String seed = '',
     int limit = 3,
@@ -108,12 +109,25 @@ class ZyncNowEngine {
         'Zync Now v1 supports at most eight participants',
       );
     }
+    final participantIds = participants.map((item) => item.id).toSet();
+    if (participantIds.length != participants.length) {
+      throw ArgumentError('Duplicate Zync Now participant IDs');
+    }
+    final unknownConstraintIds =
+        participantConstraints.keys.toSet().difference(participantIds);
+    if (unknownConstraintIds.isNotEmpty) {
+      throw ArgumentError(
+        'Private constraints contain unknown participant IDs',
+      );
+    }
+
     if (limit < 1) return const [];
 
     final raw = mode == ZyncNowMode.meetInTheMiddle
         ? _crossoverCandidates(
             participants: participants,
             constraints: constraints,
+            participantConstraints: participantConstraints,
             priorActivityKeys: priorActivityKeys,
             seed: seed,
           )
@@ -121,6 +135,7 @@ class ZyncNowEngine {
             participants: participants,
             mode: mode,
             constraints: constraints,
+            participantConstraints: participantConstraints,
             priorActivityKeys: priorActivityKeys,
             seed: seed,
           );
@@ -184,15 +199,28 @@ class ZyncNowEngine {
     required List<ZyncNowParticipant> participants,
     required ZyncNowMode mode,
     required ZyncNowConstraints constraints,
+    required Map<String, ZyncNowConstraints> participantConstraints,
     required Set<String> priorActivityKeys,
     required String seed,
   }) {
     final result = <ZyncNowCandidate>[];
+    final hardVetoVerbs = _effectiveHardVetoVerbs(
+      sharedConstraints: constraints,
+      participants: participants,
+      participantConstraints: participantConstraints,
+    );
 
     for (final item in InterestCatalog.seed) {
       final activity = InterestActivityResolver.resolve(item);
       if (activity == null || !activity.eligible) continue;
-      if (!_profileFits(activity, participants.length, constraints)) continue;
+      if (!_profileFitsAll(
+        profile: activity,
+        participants: participants,
+        sharedConstraints: constraints,
+        participantConstraints: participantConstraints,
+      )) {
+        continue;
+      }
 
       final interestId = item.id;
       final selected = [
@@ -234,7 +262,7 @@ class ZyncNowEngine {
       final templateId = _templateFor(
         activity: activity,
         mode: mode,
-        constraints: constraints,
+        hardVetoVerbs: hardVetoVerbs,
       );
       if (templateId == null) continue;
 
@@ -286,6 +314,7 @@ class ZyncNowEngine {
   static List<ZyncNowCandidate> _crossoverCandidates({
     required List<ZyncNowParticipant> participants,
     required ZyncNowConstraints constraints,
+    required Map<String, ZyncNowConstraints> participantConstraints,
     required Set<String> priorActivityKeys,
     required String seed,
   }) {
@@ -317,8 +346,18 @@ class ZyncNowEngine {
             ? null
             : InterestActivityResolver.resolve(bDefinition);
         if (a == null || b == null || !a.eligible || !b.eligible) continue;
-        if (!_profileFits(a, participants.length, constraints) ||
-            !_profileFits(b, participants.length, constraints)) {
+        if (!_profileFitsAll(
+              profile: a,
+              participants: participants,
+              sharedConstraints: constraints,
+              participantConstraints: participantConstraints,
+            ) ||
+            !_profileFitsAll(
+              profile: b,
+              participants: participants,
+              sharedConstraints: constraints,
+              participantConstraints: participantConstraints,
+            )) {
           continue;
         }
 
@@ -449,7 +488,7 @@ class ZyncNowEngine {
   static String? _templateFor({
     required ActivityProfile activity,
     required ZyncNowMode mode,
-    required ZyncNowConstraints constraints,
+    required Set<ActivityVerb> hardVetoVerbs,
   }) {
     final ordered = switch (mode) {
       ZyncNowMode.passThePassion => [
@@ -465,7 +504,7 @@ class ZyncNowEngine {
     for (final templateId in ordered) {
       final template = ActivityTemplates.byId[templateId];
       if (template == null) continue;
-      if (template.requiredVerbs.any(constraints.hardVetoVerbs.contains)) {
+      if (template.requiredVerbs.any(hardVetoVerbs.contains)) {
         continue;
       }
       if (template.requiredVerbs.isNotEmpty &&
@@ -475,6 +514,44 @@ class ZyncNowEngine {
       return templateId;
     }
     return null;
+  }
+
+  static bool _profileFitsAll({
+    required ActivityProfile profile,
+    required List<ZyncNowParticipant> participants,
+    required ZyncNowConstraints sharedConstraints,
+    required Map<String, ZyncNowConstraints> participantConstraints,
+  }) {
+    if (!_profileFits(profile, participants.length, sharedConstraints)) {
+      return false;
+    }
+
+    for (final participant in participants) {
+      final privateConstraints = participantConstraints[participant.id];
+      if (privateConstraints != null &&
+          !_profileFits(
+            profile,
+            participants.length,
+            privateConstraints,
+          )) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static Set<ActivityVerb> _effectiveHardVetoVerbs({
+    required ZyncNowConstraints sharedConstraints,
+    required List<ZyncNowParticipant> participants,
+    required Map<String, ZyncNowConstraints> participantConstraints,
+  }) {
+    final result = <ActivityVerb>{...sharedConstraints.hardVetoVerbs};
+    for (final participant in participants) {
+      result.addAll(
+        participantConstraints[participant.id]?.hardVetoVerbs ?? const {},
+      );
+    }
+    return result;
   }
 
   static bool _profileFits(
@@ -487,6 +564,7 @@ class ZyncNowEngine {
       return false;
     }
     if (constraints.duration != null &&
+        constraints.duration != ActivityDurationBand.flexible &&
         !profile.durationBands.contains(constraints.duration)) {
       return false;
     }
@@ -499,6 +577,7 @@ class ZyncNowEngine {
       return false;
     }
     if (constraints.setting != null &&
+        constraints.setting != ActivitySetting.either &&
         !_fitsSetting(profile.settings, constraints.setting!)) {
       return false;
     }
