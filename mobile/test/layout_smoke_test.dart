@@ -41,6 +41,7 @@ void main() {
     expect(find.text('Show my QR'), findsOneWidget);
     expect(find.text('Scan someone'), findsOneWidget);
     expect(find.text('Group Zync'), findsOneWidget);
+    expect(find.text('Zync Now'), findsOneWidget);
     expect(find.byType(ListView), findsNothing);
     expect(tester.takeException(), isNull);
   });
