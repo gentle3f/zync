@@ -169,7 +169,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         payload: encrypted,
       );
       final progressEventId =
-          'relay:\${handshake.sessionId}:scanner';
+          'relay:${handshake.sessionId}:scanner';
       await LocalStore.recordZync(
         peerId: peer.localId,
         peerNickname: peer.nickname,
