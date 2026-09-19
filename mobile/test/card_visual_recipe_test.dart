@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/card_visual_recipe.dart';
 import 'package:zync/core/interest_entity_metadata.dart';
+import 'package:zync/core/interest_catalog.dart';
 
 void main() {
   test('proof batch resolves twelve deterministic representative recipes', () {
@@ -94,6 +95,60 @@ void main() {
       CardVisualRecipeResolver.resolve('not.a.real.interest'),
       isNull,
     );
+  });
+
+  test('expanded proof batch resolves exactly fifty balanced recipes', () {
+    final recipes = CardVisualRecipeResolver.expandedProofBatch();
+
+    expect(recipes, hasLength(50));
+    expect(
+      recipes.map((item) => item.interestId).toSet(),
+      hasLength(50),
+    );
+    expect(
+      recipes.map((item) => item.categoryKit).toSet(),
+      hasLength(15),
+    );
+    expect(
+      recipes.map((item) => item.visualFamily).toSet().length,
+      greaterThanOrEqualTo(30),
+    );
+    expect(
+      recipes.map((item) => item.visualSeed).toSet(),
+      hasLength(50),
+    );
+  });
+
+  test('all fifty proof interests exist and keep both Chinese scripts', () {
+    for (final recipe in CardVisualRecipeResolver.expandedProofBatch()) {
+      final item = InterestCatalog.byId(recipe.interestId);
+      expect(
+        item,
+        isNotNull,
+        reason: 'Missing canonical interest: ${recipe.interestId}',
+      );
+      expect(
+        item!.labels['zh-Hant']?.trim(),
+        isNotEmpty,
+        reason: '${recipe.interestId} missing zh-Hant',
+      );
+      expect(
+        item.labels['zh-Hans']?.trim(),
+        isNotEmpty,
+        reason: '${recipe.interestId} missing zh-Hans',
+      );
+    }
+  });
+
+  test('expanded proof batch is a superset of the twelve-card review set', () {
+    final reviewIds = CardVisualRecipeResolver.proofBatch()
+        .map((item) => item.interestId)
+        .toSet();
+    final expandedIds = CardVisualRecipeResolver.expandedProofBatch()
+        .map((item) => item.interestId)
+        .toSet();
+
+    expect(expandedIds.containsAll(reviewIds), isTrue);
   });
 
   test('category registry covers every proof recipe kit', () {
