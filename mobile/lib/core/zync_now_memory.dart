@@ -29,6 +29,24 @@ class ZyncNowActivityMemory {
 
   bool get didIt => status == ZyncNowActivityStatus.completed;
 
+  ZyncNowCandidate toCandidate() {
+    final parsedMode = ZyncNowMode.values.firstWhere(
+      (item) => item.name == mode,
+      orElse: () => ZyncNowMode.surprise,
+    );
+    return ZyncNowCandidate(
+      id: candidateId,
+      kind: ZyncNowCandidateKind.safe,
+      mode: parsedMode,
+      templateId: templateId,
+      sourceInterestIds: List.unmodifiable(sourceInterestIds),
+      repeatKey: repeatKey,
+      score: 0,
+      selectedParticipantCount: 0,
+      participantCount: groupSize,
+    );
+  }
+
   ZyncNowActivityMemory copyWith({
     ZyncNowActivityStatus? status,
     DateTime? completedAt,
