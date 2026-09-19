@@ -1,4 +1,5 @@
 import 'activity_templates.dart';
+import 'interest_activity_resolver.dart';
 import 'interest_catalog.dart';
 import 'interest_entity_metadata.dart';
 import 'models.dart';
@@ -177,13 +178,15 @@ class ZyncNowEngine {
   }) {
     final result = <ZyncNowCandidate>[];
 
-    for (final metadata in InterestEntityMetadataRegistry.zyncNowEligible) {
-      final activity = metadata.activity!;
+    for (final item in InterestCatalog.seed) {
+      final activity = InterestActivityResolver.resolve(item);
+      if (activity == null || !activity.eligible) continue;
       if (!_profileFits(activity, participants.length, constraints)) continue;
 
+      final interestId = item.id;
       final selected = [
         for (final participant in participants)
-          _findInterest(participant.interests, metadata.interestId),
+          _findInterest(participant.interests, interestId),
       ];
       final selectedCount = selected.whereType<SelectedInterest>().length;
       final selectedStrongCount = selected
@@ -199,7 +202,7 @@ class ZyncNowEngine {
         for (var i = 0; i < participants.length; i++)
           _participantFit(
             participant: participants[i],
-            interestId: metadata.interestId,
+            interestId: interestId,
             selected: selected[i],
             firstTimerFriendly: activity.firstTimerFriendly,
           ),
@@ -243,17 +246,17 @@ class ZyncNowEngine {
               20 +
           5 +
           _jitter(
-            '$seed|${mode.name}|${metadata.interestId}|$templateId',
+            '$seed|${mode.name}|${interestId}|$templateId',
             mode == ZyncNowMode.surprise ? 8.0 : 0.8,
           );
 
       result.add(
         ZyncNowCandidate(
-          id: 'zyncnow.${mode.name}.${metadata.interestId}.$templateId',
+          id: 'zyncnow.${mode.name}.${interestId}.$templateId',
           kind: ZyncNowCandidateKind.safe,
           mode: mode,
           templateId: templateId,
-          sourceInterestIds: [metadata.interestId],
+          sourceInterestIds: [interestId],
           score: score,
           selectedParticipantCount: selectedCount,
           participantCount: participants.length,
@@ -272,11 +275,10 @@ class ZyncNowEngine {
     final ids = <String>{};
     for (final participant in participants) {
       for (final interest in participant.interests) {
-        if (InterestEntityMetadataRegistry
-                .byInterestId(interest.id)
-                ?.activity
-                ?.eligible ??
-            false) {
+        final definition = InterestCatalog.byId(interest.id);
+        final activity =
+            definition == null ? null : InterestActivityResolver.resolve(definition);
+        if (activity?.eligible ?? false) {
           ids.add(interest.id);
         }
       }
@@ -289,9 +291,15 @@ class ZyncNowEngine {
       for (var j = i + 1; j < orderedIds.length; j++) {
         final aId = orderedIds[i];
         final bId = orderedIds[j];
-        final a = InterestEntityMetadataRegistry.byInterestId(aId)?.activity;
-        final b = InterestEntityMetadataRegistry.byInterestId(bId)?.activity;
-        if (a == null || b == null) continue;
+        final aDefinition = InterestCatalog.byId(aId);
+        final bDefinition = InterestCatalog.byId(bId);
+        final a = aDefinition == null
+            ? null
+            : InterestActivityResolver.resolve(aDefinition);
+        final b = bDefinition == null
+            ? null
+            : InterestActivityResolver.resolve(bDefinition);
+        if (a == null || b == null || !a.eligible || !b.eligible) continue;
         if (!_profileFits(a, participants.length, constraints) ||
             !_profileFits(b, participants.length, constraints)) {
           continue;
