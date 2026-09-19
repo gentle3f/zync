@@ -4,6 +4,10 @@ Authoritative continuation checkpoint:
 
 `AI_STATE/HANDOFF_20260918_ICEBREAKING_SOCIAL_AI_LIVE_QA_READY.md`
 
+Latest strategic product-vision checkpoint:
+
+`AI_STATE/MINI_HANDOFF_20260919_MASTER_PRODUCT_VISION_EXPANDED.md`
+
 Latest certified implementation / physical-QA checkpoint:
 
 `AI_STATE/MINI_HANDOFF_20260919_OCTALYSIS_BATCH1_QA_CERTIFIED.md`
