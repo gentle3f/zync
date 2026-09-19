@@ -60,16 +60,22 @@ void main() {
     await tester.pump();
 
     final target = find.byKey(
-      const ValueKey('card-lab-item-outdoors.bouldering'),
+      const ValueKey('card-lab-item-sports.badminton'),
     );
-    await tester.ensureVisible(target);
+    expect(target, findsOneWidget);
     await tester.tap(target);
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 450));
 
     expect(
       find.byKey(const ValueKey('cardverse-card-detail')),
       findsOneWidget,
     );
+
+    await tester.tap(
+      find.byKey(const ValueKey('finish-chip-holo')),
+    );
+    await tester.pump(const Duration(milliseconds: 250));
     expect(
       find.byKey(const ValueKey('card-finish-animated')),
       findsOneWidget,
