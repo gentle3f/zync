@@ -1,9 +1,9 @@
-import { getCardverseDatabase } from '../../../_cardverse/db.js';
-import { listOwnershipSnapshot } from '../../../_cardverse/ownership_store.js';
+import { getCardverseDatabase } from '../../_cardverse/db.js';
+import { listOwnershipSnapshot } from '../../_cardverse/ownership_store.js';
 import {
   bearerTokenFromAuthorization,
   resolveAccountSession,
-} from '../../../_cardverse/session_store.js';
+} from '../../_cardverse/session_store.js';
 
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured') return 503;

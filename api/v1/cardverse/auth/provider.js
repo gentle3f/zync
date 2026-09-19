@@ -1,5 +1,5 @@
-import { getCardverseDatabase } from '../../../../_cardverse/db.js';
-import { authenticateProvider } from '../../../../_cardverse/provider_auth.js';
+import { getCardverseDatabase } from '../../../_cardverse/db.js';
+import { authenticateProvider } from '../../../_cardverse/provider_auth.js';
 
 const UNAUTHORIZED = new Set([
   'cardverse_provider_token_invalid',

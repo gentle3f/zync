@@ -166,3 +166,16 @@ assert.throws(
 );
 
 console.log('✓ Cardverse auth/session contracts passed');
+
+
+for (const modulePath of [
+  '../../api/v1/cardverse/auth/challenge.js',
+  '../../api/v1/cardverse/auth/provider.js',
+  '../../api/v1/cardverse/auth/logout.js',
+  '../../api/v1/cardverse/inventory.js',
+]) {
+  const loaded = await import(modulePath);
+  assert.equal(typeof loaded.default, 'function');
+}
+
+console.log('✓ Cardverse auth endpoint module resolution passed');

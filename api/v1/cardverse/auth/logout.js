@@ -1,8 +1,8 @@
-import { getCardverseDatabase } from '../../../../_cardverse/db.js';
+import { getCardverseDatabase } from '../../../_cardverse/db.js';
 import {
   bearerTokenFromAuthorization,
   revokeAccountSession,
-} from '../../../../_cardverse/session_store.js';
+} from '../../../_cardverse/session_store.js';
 
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured') return 503;

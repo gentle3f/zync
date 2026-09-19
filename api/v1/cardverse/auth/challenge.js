@@ -1,5 +1,5 @@
-import { getCardverseDatabase } from '../../../../_cardverse/db.js';
-import { createAuthChallenge } from '../../../../_cardverse/session_store.js';
+import { getCardverseDatabase } from '../../../_cardverse/db.js';
+import { createAuthChallenge } from '../../../_cardverse/session_store.js';
 
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured') return 503;
