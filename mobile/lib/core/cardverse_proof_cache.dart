@@ -7,33 +7,42 @@ class PendingCardverseProofTicket {
     required this.ticket,
     required this.clientEventId,
     required this.capturedAt,
+    required this.timezoneOffsetMinutes,
   });
 
   final String ticket;
   final String clientEventId;
   final DateTime capturedAt;
+  final int timezoneOffsetMinutes;
 
   Map<String, dynamic> toJson() => {
         'ticket': ticket,
         'clientEventId': clientEventId,
         'capturedAt': capturedAt.toUtc().toIso8601String(),
+        'timezoneOffsetMinutes': timezoneOffsetMinutes,
       };
 
   factory PendingCardverseProofTicket.fromJson(Map<String, dynamic> json) {
     final ticket = (json['ticket'] as String?)?.trim() ?? '';
     final eventId = (json['clientEventId'] as String?)?.trim() ?? '';
     final capturedAt = DateTime.tryParse((json['capturedAt'] as String?) ?? '');
+    final timezoneOffsetMinutes =
+        (json['timezoneOffsetMinutes'] as num?)?.toInt();
     if (!ticket.startsWith('ZP1.') ||
         ticket.length > 4096 ||
         eventId.isEmpty ||
         eventId.length > 160 ||
-        capturedAt == null) {
+        capturedAt == null ||
+        timezoneOffsetMinutes == null ||
+        timezoneOffsetMinutes < -840 ||
+        timezoneOffsetMinutes > 840) {
       throw const FormatException('Invalid pending Cardverse proof ticket');
     }
     return PendingCardverseProofTicket(
       ticket: ticket,
       clientEventId: eventId,
       capturedAt: capturedAt.toUtc(),
+      timezoneOffsetMinutes: timezoneOffsetMinutes,
     );
   }
 }
@@ -144,6 +153,24 @@ class CardverseProofCache {
       prefs,
       _ticketKey,
       bounded.map((item) => item.toJson()).toList(),
+    );
+  }
+
+  static Future<void> removeTicket({
+    required String ticket,
+    required String clientEventId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final current = (await loadTickets()).toList();
+    current.removeWhere(
+      (item) =>
+          item.ticket == ticket &&
+          item.clientEventId == clientEventId,
+    );
+    await _writeList(
+      prefs,
+      _ticketKey,
+      current.map((item) => item.toJson()).toList(),
     );
   }
 
