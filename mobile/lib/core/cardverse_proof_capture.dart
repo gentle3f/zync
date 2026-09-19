@@ -10,14 +10,19 @@ class CardverseRelayProofCapture {
     required String? proofTicket,
     required String clientEventId,
     DateTime? capturedAt,
+    int? timezoneOffsetMinutes,
   }) async {
     final ticket = proofTicket?.trim() ?? '';
     if (ticket.isEmpty) return;
+    final localNow = capturedAt ?? DateTime.now();
+    final offset =
+        timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
     await CardverseProofCache.saveTicket(
       PendingCardverseProofTicket(
         ticket: ticket,
         clientEventId: clientEventId,
-        capturedAt: (capturedAt ?? DateTime.now()).toUtc(),
+        capturedAt: localNow.toUtc(),
+        timezoneOffsetMinutes: offset,
       ),
     );
   }
@@ -27,6 +32,7 @@ class CardverseRelayProofCapture {
     required String sessionId,
     required String? proofCapability,
     required String clientEventId,
+    int? timezoneOffsetMinutes,
     List<Duration> retryDelays = const [
       Duration.zero,
       Duration(milliseconds: 650),
@@ -37,7 +43,10 @@ class CardverseRelayProofCapture {
     final capability = proofCapability?.trim() ?? '';
     if (capability.isEmpty) return;
 
-    final capturedAt = DateTime.now().toUtc();
+    final localNow = DateTime.now();
+    final capturedAt = localNow.toUtc();
+    final offset =
+        timezoneOffsetMinutes ?? localNow.timeZoneOffset.inMinutes;
     for (final delay in retryDelays) {
       if (delay > Duration.zero) await Future<void>.delayed(delay);
       try {
@@ -50,7 +59,8 @@ class CardverseRelayProofCapture {
             PendingCardverseProofTicket(
               ticket: result.proofTicket!,
               clientEventId: clientEventId,
-              capturedAt: DateTime.now().toUtc(),
+              capturedAt: capturedAt,
+              timezoneOffsetMinutes: offset,
             ),
           );
           await CardverseProofCache.removeCapability(
@@ -77,6 +87,7 @@ class CardverseRelayProofCapture {
         proofCapability: capability,
         clientEventId: clientEventId,
         capturedAt: capturedAt,
+        timezoneOffsetMinutes: offset,
       ),
     );
   }
@@ -90,6 +101,7 @@ class CardverseRelayProofCapture {
           sessionId: item.sessionId,
           proofCapability: item.proofCapability,
           clientEventId: item.clientEventId,
+          timezoneOffsetMinutes: item.timezoneOffsetMinutes,
           retryDelays: const [Duration.zero],
         ),
       );

@@ -62,6 +62,7 @@ void main() {
       sessionId: 'ABCDEFGHIJKLMNOPQRSTUVWX',
       proofCapability: 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
       clientEventId: 'relay:event:scanner',
+      timezoneOffsetMinutes: 480,
       retryDelays: const [Duration.zero, Duration.zero],
     );
 
@@ -70,6 +71,7 @@ void main() {
     expect(tickets, hasLength(1));
     expect(tickets.single.clientEventId, 'relay:event:scanner');
     expect(tickets.single.ticket, 'ZP1.ready.signature');
+    expect(tickets.single.timezoneOffsetMinutes, 480);
     expect(await CardverseProofCache.loadCapabilities(), isEmpty);
   });
 
@@ -78,11 +80,13 @@ void main() {
       proofTicket: 'ZP1.host.signature',
       clientEventId: 'relay:event:host',
       capturedAt: DateTime.utc(2026, 9, 20),
+      timezoneOffsetMinutes: 480,
     );
 
     final tickets = await CardverseProofCache.loadTickets(
       now: DateTime.utc(2026, 9, 20, 0, 1),
     );
     expect(tickets.single.ticket, 'ZP1.host.signature');
+    expect(tickets.single.timezoneOffsetMinutes, 480);
   });
 }

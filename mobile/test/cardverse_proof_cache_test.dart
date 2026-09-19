@@ -12,11 +12,13 @@ void main() {
       ticket: 'ZP1.first.signature',
       clientEventId: 'relay:event:host',
       capturedAt: DateTime.utc(2026, 9, 20),
+      timezoneOffsetMinutes: 480,
     );
     final second = PendingCardverseProofTicket(
       ticket: 'ZP1.second.signature',
       clientEventId: 'relay:event:host',
       capturedAt: DateTime.utc(2026, 9, 20, 0, 1),
+      timezoneOffsetMinutes: 480,
     );
 
     await CardverseProofCache.saveTicket(first);
