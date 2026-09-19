@@ -63,7 +63,7 @@ void main() {
 
     await tester.drag(
       find.byKey(const ValueKey('collection-filter-strip')),
-      const Offset(-320, 0),
+      const Offset(-520, 0),
     );
     await tester.pumpAndSettle();
 
