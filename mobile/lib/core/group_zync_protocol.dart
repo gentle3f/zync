@@ -58,11 +58,11 @@ class GroupRoomBootstrap {
     int maxParticipants = 8,
     DateTime? now,
   }) {
-    if (maxParticipants < 3 || maxParticipants > 8) {
+    if (maxParticipants < 2 || maxParticipants > 8) {
       throw ArgumentError.value(
         maxParticipants,
         'maxParticipants',
-        'Group Zync supports 3 to 8 participants',
+        'Shared Zync transport supports 2 to 8 participants',
       );
     }
     final current = (now ?? DateTime.now()).toUtc();
@@ -155,8 +155,8 @@ class GroupJoinQrPayload {
       }
 
       final maxParticipants = (json['max'] as num?)?.toInt() ?? 0;
-      if (maxParticipants < 3 || maxParticipants > 8) {
-        throw const FormatException('Invalid Group Zync capacity');
+      if (maxParticipants < 2 || maxParticipants > 8) {
+        throw const FormatException('Invalid shared Zync capacity');
       }
 
       final expiryMs = (json['exp'] as num?)?.toInt();
