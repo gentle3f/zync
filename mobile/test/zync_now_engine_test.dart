@@ -84,13 +84,14 @@ void main() {
     expect(result.every((candidate) => candidate.participantCount == 4), isTrue);
   });
 
-  test('pass the passion finds an activity one person can introduce', () {
+  test('pass the passion treats Want to Try as an ideal learner signal', () {
     final result = ZyncNowEngine.generate(
       participants: [
         participant('a', [
           interest('outdoors.bouldering', InterestStrength.love),
         ]),
         participant('b', [
+          interest('outdoors.bouldering', InterestStrength.wantToTry),
           interest('food.coffee', InterestStrength.like),
         ]),
       ],
@@ -105,8 +106,8 @@ void main() {
       isTrue,
     );
     expect(
-      result.every((candidate) =>
-          candidate.selectedParticipantCount < candidate.participantCount),
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('outdoors.bouldering')),
       isTrue,
     );
   });
@@ -135,6 +136,31 @@ void main() {
         isFalse,
       );
     }
+  });
+
+
+  test('new to everyone can prioritize a shared Want to Try interest', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('wellness.yoga', InterestStrength.wantToTry),
+          interest('food.coffee'),
+        ]),
+        participant('b', [
+          interest('wellness.yoga', InterestStrength.wantToTry),
+          interest('media.movies'),
+        ]),
+      ],
+      mode: ZyncNowMode.newToEveryone,
+      seed: 'mutual-want-to-try',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('wellness.yoga')),
+      isTrue,
+    );
   });
 
   test('meet in the middle creates a crossover from different interests', () {
