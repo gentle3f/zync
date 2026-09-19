@@ -546,3 +546,73 @@ The client cannot supply repeat-person status or interest categories. Relay-issu
 This is deliberate. An anonymous relay completion ticket can currently satisfy action-count rules such as `daily_make_a_zync` and `weekly_real_world_three`, but it **cannot** satisfy `weekly_meet_two_new_people` or `weekly_three_interest_worlds` merely from client assertions.
 
 The database enforces global uniqueness of `issuer_ticket_id`, so one anonymous completion ticket cannot be redeemed into two accounts.
+
+
+## 21. Distributed abuse boundary
+
+Cardverse protected endpoints now use a serverless-safe distributed limiter backed by the existing Upstash Redis service:
+
+- `api/_cardverse/abuse_guard.js`
+
+Protected routes include:
+
+- auth challenge;
+- provider authentication;
+- proof redemption;
+- Quest claim;
+- pack open;
+- account lifecycle actions.
+
+The limiter never stores raw client IPs or raw Cardverse account UUIDs in Redis keys. Principals are HMAC-derived with the independent server secret:
+
+- `ZYNC_CARDVERSE_RATE_LIMIT_SECRET`.
+
+Unauthenticated auth flows are limited by anonymous client-address bucket. Authenticated high-value mutations use both an IP bucket and a server-resolved account bucket.
+
+If Cardverse is enabled but the limiter is unconfigured or unavailable, the protected route fails closed. A rate-limit rejection is HTTP 429 with `Retry-After`.
+
+Upstash remains short-lived abuse-control infrastructure only. PostgreSQL remains the ownership/economy source of truth.
+
+## 22. Account and session lifecycle
+
+Milestone 5 now also has a server-side lifecycle boundary.
+
+Additional migration:
+
+- `db/migrations/0006_cardverse_account_lifecycle.sql`
+
+Additional service:
+
+- `api/_cardverse/account_lifecycle.js`
+
+Additional internal endpoints:
+
+- `POST /api/v1/cardverse/auth/link`
+- `POST /api/v1/cardverse/auth/unlink`
+- `POST /api/v1/cardverse/auth/logout-all`
+- `POST /api/v1/cardverse/account/delete`
+
+The routes are hidden unless both:
+
+- `CARDVERSE_API_ENABLED=true`;
+- `CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED=true`.
+
+Security rules:
+
+- provider link/unlink/delete require fresh provider challenge + ID-token verification in addition to an existing Cardverse bearer session;
+- the last active identity cannot be unlinked;
+- unlink revokes every active session on the account;
+- soft-unlinked provider subjects remain tombstoned and cannot silently create a different Cardverse owner;
+- a previously unlinked provider may be restored only from the already-authenticated owning account after provider re-verification;
+- logical account deletion requires literal `DELETE` confirmation and provider re-verification;
+- deletion revokes all sessions and clears stored provider email metadata;
+- immutable ownership ledger rows are not destructively rewritten by account deletion;
+- new login sessions are capped at 8 active sessions by default, configurable up to 32.
+
+The self-service recovery model is deliberately narrow: link a second provider while the account is accessible, then either provider can recover access. No support/admin identity override is approved.
+
+The controlled infrastructure/migration/enablement procedure is documented in:
+
+- `docs/ZYNC_CARDVERSE_LIVE_DEPLOYMENT_CHECKLIST_V1.md`.
+
+Production and Google Play remain CLOSED.
