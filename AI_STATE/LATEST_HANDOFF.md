@@ -35,6 +35,7 @@ Previous certified implementation handoff:
 Canonical product/business sources:
 
 - `docs/ZYNC_BUSINESS_PROPOSAL_AND_VISION.md`
+- `docs/ZYNC_MASTER_EXECUTION_PLAN.md`
 - `docs/ZYNC_V1_PRODUCT_SPEC.md`
 - `docs/REAL_DEVICE_QA.md`
 
