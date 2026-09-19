@@ -504,17 +504,34 @@ class _WaitingRelayClient implements RelayClient {
   }
 
   @override
-  Future<RelayTakeResult> take({required String sessionId, required String hostToken}) async =>
-      const RelayTakeResult.waiting();
+  Future<RelayTakeResult> take({
+    required String sessionId,
+    required String hostToken,
+  }) async => const RelayTakeResult.waiting();
 
   @override
-  Future<void> respond({required String sessionId, required String payload}) async {}
+  Future<RelayRespondResult> respond({
+    required String sessionId,
+    required String payload,
+  }) async => const RelayRespondResult();
 
   @override
-  Future<void> consume({required String sessionId, required String hostToken}) async {}
+  Future<RelayProofResult> proof({
+    required String sessionId,
+    required String proofCapability,
+  }) async => const RelayProofResult.waiting();
 
   @override
-  Future<void> cancel({required String sessionId, required String hostToken}) async {}
+  Future<RelayConsumeResult> consume({
+    required String sessionId,
+    required String hostToken,
+  }) async => const RelayConsumeResult();
+
+  @override
+  Future<void> cancel({
+    required String sessionId,
+    required String hostToken,
+  }) async {}
 }
 
 void _setPhone(WidgetTester tester, {required double width, required double height}) {

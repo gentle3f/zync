@@ -135,18 +135,34 @@ class _HostFlowRelay implements RelayClient {
   }
 
   @override
-  Future<void> respond({required String sessionId, required String payload}) async {
+  Future<RelayRespondResult> respond({
+    required String sessionId,
+    required String payload,
+  }) async {
     throw UnimplementedError('Host flow must not submit a scanner response');
   }
 
   @override
-  Future<void> consume({required String sessionId, required String hostToken}) async {
+  Future<RelayProofResult> proof({
+    required String sessionId,
+    required String proofCapability,
+  }) async => const RelayProofResult.waiting();
+
+  @override
+  Future<RelayConsumeResult> consume({
+    required String sessionId,
+    required String hostToken,
+  }) async {
     consumedSessionId = sessionId;
     consumedHostToken = hostToken;
+    return const RelayConsumeResult();
   }
 
   @override
-  Future<void> cancel({required String sessionId, required String hostToken}) async {
+  Future<void> cancel({
+    required String sessionId,
+    required String hostToken,
+  }) async {
     cancelledSessionId = sessionId;
     expect(hostToken, createdHostToken);
   }

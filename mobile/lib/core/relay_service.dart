@@ -268,9 +268,13 @@ class HttpRelayClient implements RelayClient {
     return uri;
   }
 
-  Future<({int status, Map<String, dynamic> body})> _post(Map<String, dynamic> body) async {
+  Future<({int status, Map<String, dynamic> body})> _post(
+    Map<String, dynamic> body,
+  ) async {
     final uri = _uri;
-    if (uri == null) throw const RelayException(RelayFailureKind.unavailable);
+    if (uri == null) {
+      throw const RelayException(RelayFailureKind.unavailable);
+    }
     try {
       final response = await http
           .post(
@@ -289,8 +293,12 @@ class HttpRelayClient implements RelayClient {
   }
 
   RelayException _mapFailure(int status) {
-    if (status == 409) return const RelayException(RelayFailureKind.alreadyAnswered);
-    if (status == 410) return const RelayException(RelayFailureKind.expired);
+    if (status == 409) {
+      return const RelayException(RelayFailureKind.alreadyAnswered);
+    }
+    if (status == 410) {
+      return const RelayException(RelayFailureKind.expired);
+    }
     if (status == 400 || status == 403 || status == 413 || status == 502) {
       return const RelayException(RelayFailureKind.invalid);
     }
@@ -310,7 +318,9 @@ class HttpRelayClient implements RelayClient {
       'hostToken': hostToken,
       'expiresAt': expiresAt.toUtc().toIso8601String(),
     });
-    if (result.status != 201 && result.status != 200) throw _mapFailure(result.status);
+    if (result.status != 201 && result.status != 200) {
+      throw _mapFailure(result.status);
+    }
   }
 
   @override
@@ -325,14 +335,25 @@ class HttpRelayClient implements RelayClient {
       'payload': payload,
     });
     if (result.status != 200) throw _mapFailure(result.status);
+
     final capability =
         (result.body['proofCapability'] as String?)?.trim();
     if (capability != null &&
         capability.isNotEmpty &&
-        !RegExp(r'^[A-Za-z0-9_-]{43}
+        !RegExp(r'^[A-Za-z0-9_-]{43}$').hasMatch(capability)) {
+      throw const RelayException(RelayFailureKind.invalid);
+    }
+    return RelayRespondResult(
+      proofCapability:
+          capability == null || capability.isEmpty ? null : capability,
+    );
+  }
 
   @override
-  Future<RelayTakeResult> take({required String sessionId, required String hostToken}) async {
+  Future<RelayTakeResult> take({
+    required String sessionId,
+    required String hostToken,
+  }) async {
     final result = await _post({
       'action': 'take',
       'protocolVersion': zyncRelayProtocolVersion,
@@ -340,9 +361,13 @@ class HttpRelayClient implements RelayClient {
       'hostToken': hostToken,
     });
     if (result.status != 200) throw _mapFailure(result.status);
-    if (result.body['status'] == 'waiting') return const RelayTakeResult.waiting();
+    if (result.body['status'] == 'waiting') {
+      return const RelayTakeResult.waiting();
+    }
     final payload = (result.body['payload'] as String?)?.trim();
-    if (result.body['status'] != 'ready' || payload == null || payload.isEmpty) {
+    if (result.body['status'] != 'ready' ||
+        payload == null ||
+        payload.isEmpty) {
       throw const RelayException(RelayFailureKind.invalid);
     }
     return RelayTakeResult.ready(payload);
@@ -404,7 +429,7 @@ class HttpRelayClient implements RelayClient {
         proofTicket: ticket == null || ticket.isEmpty ? null : ticket,
       );
     } catch (_) {
-      // Best effort after authenticated decrypt. TTL remains the hard cleanup guarantee.
+      // Best effort after authenticated decrypt. TTL remains cleanup fallback.
       return const RelayConsumeResult();
     }
   }
@@ -416,60 +441,6 @@ class HttpRelayClient implements RelayClient {
   }) async {
     try {
       await _hostAction('cancel', sessionId, hostToken);
-    } catch (_) {
-      // Best effort only. Server-side TTL is the hard cleanup guarantee.
-    }
-  }
-}
-).hasMatch(capability)) {
-      throw const RelayException(RelayFailureKind.invalid);
-    }
-    return RelayRespondResult(
-      proofCapability:
-          capability == null || capability.isEmpty ? null : capability,
-    );
-  }
-
-  @override
-  Future<RelayTakeResult> take({required String sessionId, required String hostToken}) async {
-    final result = await _post({
-      'action': 'take',
-      'protocolVersion': zyncRelayProtocolVersion,
-      'sessionId': sessionId,
-      'hostToken': hostToken,
-    });
-    if (result.status != 200) throw _mapFailure(result.status);
-    if (result.body['status'] == 'waiting') return const RelayTakeResult.waiting();
-    final payload = (result.body['payload'] as String?)?.trim();
-    if (result.body['status'] != 'ready' || payload == null || payload.isEmpty) {
-      throw const RelayException(RelayFailureKind.invalid);
-    }
-    return RelayTakeResult.ready(payload);
-  }
-
-  Future<void> _delete(String action, String sessionId, String hostToken) async {
-    final result = await _post({
-      'action': action,
-      'protocolVersion': zyncRelayProtocolVersion,
-      'sessionId': sessionId,
-      'hostToken': hostToken,
-    });
-    if (result.status != 200) throw _mapFailure(result.status);
-  }
-
-  @override
-  Future<void> consume({required String sessionId, required String hostToken}) async {
-    try {
-      await _delete('consume', sessionId, hostToken);
-    } catch (_) {
-      // Best effort after authenticated decrypt. TTL remains the hard cleanup guarantee.
-    }
-  }
-
-  @override
-  Future<void> cancel({required String sessionId, required String hostToken}) async {
-    try {
-      await _delete('cancel', sessionId, hostToken);
     } catch (_) {
       // Best effort only. Server-side TTL is the hard cleanup guarantee.
     }
