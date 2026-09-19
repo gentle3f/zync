@@ -34,6 +34,9 @@ List<int> _groupRandomBytes(int length) {
 String generateGroupParticipantId() =>
     _groupBase64UrlNoPad(_groupRandomBytes(18));
 
+String generateGroupParticipantCapability() =>
+    _groupBase64UrlNoPad(_groupRandomBytes(24));
+
 class GroupRoomBootstrap {
   const GroupRoomBootstrap({
     required this.roomId,
