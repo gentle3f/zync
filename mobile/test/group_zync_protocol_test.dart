@@ -48,6 +48,21 @@ void main() {
     expect(decoded.maxParticipants, 6);
   });
 
+  test('shared relay protocol allows a two-person Zync Now room', () {
+    final now = DateTime.utc(2026, 9, 19, 10);
+    final room = GroupRoomBootstrap.generate(
+      maxParticipants: 2,
+      now: now,
+    );
+
+    final decoded = GroupJoinQrPayload.decode(
+      room.qr.encode(),
+      now: now.add(const Duration(minutes: 1)),
+    );
+
+    expect(decoded.maxParticipants, 2);
+  });
+
   test('Group limited profile excludes permanent identity social links and custom interests',
       () {
     const participantId = 'ABCDEFGHIJKLMNOPQRSTUVWX';
