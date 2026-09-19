@@ -427,6 +427,7 @@ test('analytics forwards only allowlisted coarse properties and attaches timeout
       source: 'ai',
       match_type: 'shared',
       bilingual: true,
+      interaction_type: 'guess',
       interest_name: 'Anime',
       canonical_interest_id: 'anime.jojo',
       peer_id: 'secret-peer-id',
@@ -450,10 +451,38 @@ test('analytics forwards only allowlisted coarse properties and attaches timeout
   assert.equal(upstream.properties.source, 'ai');
   assert.equal(upstream.properties.match_type, 'shared');
   assert.equal(upstream.properties.bilingual, true);
+  assert.equal(upstream.properties.interaction_type, 'guess');
   assert.equal('interest_name' in upstream.properties, false);
   assert.equal('canonical_interest_id' in upstream.properties, false);
   assert.equal('peer_id' in upstream.properties, false);
   assert.equal('nickname' in upstream.properties, false);
+});
+
+test('analytics accepts only coarse meaningful-session progression fields', async () => {
+  enableTestAnalytics();
+  let request;
+  mockFetch({}, { capture: (url, options) => { request = { url, options }; } });
+  const r = await invoke(analytics, {
+    event: 'session_continue',
+    installId: '11111111-1111-1111-1111-111111111111',
+    sessionId: '22222222-2222-2222-2222-222222222222',
+    properties: {
+      continue_source: 'reveal_next',
+      remaining_count: 2,
+      interest_name: 'Badminton',
+      canonical_interest_id: 'sports.badminton',
+      peer_id: 'peer-secret',
+    },
+  });
+
+  assert.equal(r.status, 200);
+  const upstream = JSON.parse(request.options.body);
+  assert.equal(upstream.event, 'session_continue');
+  assert.equal(upstream.properties.continue_source, 'reveal_next');
+  assert.equal(upstream.properties.remaining_count, 2);
+  assert.equal('interest_name' in upstream.properties, false);
+  assert.equal('canonical_interest_id' in upstream.properties, false);
+  assert.equal('peer_id' in upstream.properties, false);
 });
 
 test('analytics canonicalizes supported locale and bounds counts', async () => {
