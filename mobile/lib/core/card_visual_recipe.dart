@@ -138,6 +138,28 @@ class CardVisualRecipeResolver {
     'wellness_mind_body': 'wellness_radial_balance',
     'motorsport_racing': 'motorsport_speed_track',
     'collecting_building': 'collecting_build_grid',
+    'outdoors_camp': 'campfire_horizon',
+    'nature_night_sky': 'night_sky_orbit',
+    'nature_wildlife': 'wildlife_observation',
+    'travel_route': 'travel_route_stamp',
+    'travel_destination': 'travel_destination_layers',
+    'travel_roadtrip': 'travel_road_ribbon',
+    'travel_food': 'travel_food_stamp',
+    'technology_ai': 'technology_node_grid',
+    'technology_code': 'technology_code_grid',
+    'technology_robotics': 'technology_mechanical_nodes',
+    'technology_hardware': 'technology_hardware_grid',
+    'wellness_fitness': 'wellness_energy_rings',
+    'arts_visual': 'arts_layered_canvas',
+    'arts_ceramics': 'arts_ceramic_form',
+    'food_cuisine': 'food_plate_stamp',
+    'music_instrument': 'music_keys',
+    'music_live': 'music_stage_lights',
+    'gaming_tabletop': 'gaming_board_grid',
+    'gaming_strategy': 'gaming_strategy_nodes',
+    'learning_languages': 'learning_language_cards',
+    'learning_history': 'learning_timeline',
+    'crafts_textile': 'crafts_thread_weave',
   };
 
   static const proofInterestIds = <String>[
@@ -153,6 +175,39 @@ class CardVisualRecipeResolver {
     'gaming.video',
     'books.reading',
     'crafts.diy',
+  ];
+
+  static const expandedProofInterestIds = <String>[
+    ...proofInterestIds,
+    'travel.general',
+    'travel.japan',
+    'travel.roadtrip',
+    'travel.food_travel',
+    'technology.ai',
+    'technology.programming',
+    'technology.robotics',
+    'technology.mechanical_keyboards',
+    'outdoors.camping',
+    'outdoors.surfing',
+    'outdoors.stargazing',
+    'outdoors.birdwatching',
+    'wellness.pilates',
+    'wellness.meditation',
+    'sports.gym',
+    'arts.drawing',
+    'arts.watercolor',
+    'arts.ceramics',
+    'food.japanese',
+    'food.dim_sum',
+    'food.sushi',
+    'music.rock',
+    'music.piano',
+    'music.concerts',
+    'gaming.board',
+    'gaming.strategy',
+    'learning.languages',
+    'history.general',
+    'crafts.knitting',
   ];
 
   static CardVisualRecipe? resolve(String interestId) {
@@ -192,12 +247,23 @@ class CardVisualRecipeResolver {
     );
   }
 
-  static List<CardVisualRecipe> proofBatch() {
+  static List<CardVisualRecipe> proofBatch() =>
+      _resolveBatch(proofInterestIds, label: 'visual');
+
+  static List<CardVisualRecipe> expandedProofBatch() =>
+      _resolveBatch(expandedProofInterestIds, label: 'expanded');
+
+  static List<CardVisualRecipe> _resolveBatch(
+    List<String> interestIds, {
+    required String label,
+  }) {
     final recipes = <CardVisualRecipe>[];
-    for (final interestId in proofInterestIds) {
+    for (final interestId in interestIds) {
       final recipe = resolve(interestId);
       if (recipe == null) {
-        throw StateError('Missing Cardverse proof recipe for $interestId');
+        throw StateError(
+          'Missing Cardverse $label proof recipe for $interestId',
+        );
       }
       recipes.add(recipe);
     }
