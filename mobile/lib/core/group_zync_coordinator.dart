@@ -268,6 +268,24 @@ class GroupHostCoordinator {
     await relay.closeRoom(room);
   }
 
+  void _validateRoundInput(
+    GroupInteractionRound round,
+    GroupPrivateInput input,
+  ) {
+    if (input.roundNumber != _session.roundNumber) {
+      throw const FormatException('Wrong Group Zync input round');
+    }
+    if (input.answerIds.length != round.input.requiredSelections ||
+        input.answerIds.toSet().length != input.answerIds.length) {
+      throw const FormatException('Invalid Group Zync answer count');
+    }
+    final allowedAnswerIds =
+        round.input.options.map((item) => item.id).toSet();
+    if (input.answerIds.any((id) => !allowedAnswerIds.contains(id))) {
+      throw const FormatException('Unknown Group Zync answer');
+    }
+  }
+
   GroupInteractionRound _requireRound() {
     final round = _activeRound;
     if (round == null) {
