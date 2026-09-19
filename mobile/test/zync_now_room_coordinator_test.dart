@@ -6,6 +6,7 @@ import 'package:zync/core/models.dart';
 import 'package:zync/core/zync_now_consensus.dart';
 import 'package:zync/core/zync_now_constraints_transport.dart';
 import 'package:zync/core/zync_now_engine.dart';
+import 'package:zync/core/zync_now_relaxation.dart';
 import 'package:zync/core/zync_now_room_coordinator.dart';
 
 const hostProfile = LocalProfile(
@@ -261,6 +262,66 @@ void main() {
     expect(state, isNotNull);
     expect(state!.phase, GroupRoomPhase.zyncNowResult);
     expect(state.resultOptionId, isNull);
+  });
+
+  test('explicit time relaxation finds finalists without dropping hard veto',
+      () async {
+    final relay = _MemoryGroupRelay();
+    const shortNoMake = ZyncNowPrivateContext(
+      constraints: ZyncNowConstraints(
+        duration: ActivityDurationBand.under30m,
+        hardVetoVerbs: {ActivityVerb.make},
+      ),
+      novelty: ZyncNowNoveltyPreference.familiar,
+    );
+
+    final host = await ZyncNowRoomHostCoordinator.create(
+      relay: relay,
+      hostProfile: hostProfile,
+      maxParticipants: 2,
+    );
+    final guest = await ZyncNowRoomParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guestProfile,
+    );
+
+    await host.refreshLobby();
+    await host.openPrivateConstraints(shortNoMake);
+    await guest.poll();
+    await guest.submitPrivateContext(shortNoMake);
+
+    final initial = await host.prepareConsensus(seed: 'too-short');
+    expect(initial.length, lessThan(2));
+    expect(host.needsRelaxation, isTrue);
+    expect(
+      host.availableRelaxations,
+      contains(ZyncNowRelaxationKind.time),
+    );
+
+    final relaxed = await host.retryWithRelaxation(
+      ZyncNowRelaxationKind.time,
+      seed: 'relax-time',
+    );
+
+    expect(relaxed.length, greaterThanOrEqualTo(2));
+    expect(host.needsRelaxation, isFalse);
+    expect(host.stage, ZyncNowRoomStage.consensusOpen);
+    expect(
+      host.availableRelaxations,
+      isNot(contains(ZyncNowRelaxationKind.time)),
+    );
+
+    for (final candidate in relaxed) {
+      expect(
+        candidate.template?.requiredVerbs.contains(ActivityVerb.make) ?? false,
+        isFalse,
+      );
+    }
+
+    final voteState = await guest.poll();
+    expect(voteState, isNotNull);
+    expect(voteState!.mechanicType, 'zync_now_consensus');
   });
 
   test('standalone participant rejects a Group Zync QR', () async {
