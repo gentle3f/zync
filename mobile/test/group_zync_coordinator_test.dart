@@ -4,6 +4,7 @@ import 'package:zync/core/group_relay_service.dart';
 import 'package:zync/core/group_zync_coordinator.dart';
 import 'package:zync/core/group_zync_protocol.dart';
 import 'package:zync/core/models.dart';
+import 'package:zync/core/zync_now_consensus.dart';
 import 'package:zync/core/zync_now_engine.dart';
 
 const hostProfile = LocalProfile(
@@ -183,6 +184,73 @@ void main() {
     await host.offerZyncNow();
     expect(host.session.phase, GroupRoomPhase.zyncNowOptional);
 
+    final finalists = zyncNow.take(3).toList(growable: false);
+    expect(finalists.length, greaterThanOrEqualTo(2));
+    final consensusRound = await host.startZyncNowConsensus(
+      candidates: finalists,
+      method: ZyncNowConsensusMethod.quickVote,
+    );
+    expect(host.session.phase, GroupRoomPhase.zyncNowInputOpen);
+
+    final voteState1 = await guest1.poll();
+    final voteState2 = await guest2.poll();
+    expect(voteState1, isNotNull);
+    expect(voteState2, isNotNull);
+    expect(voteState1!.phase, GroupRoomPhase.zyncNowInputOpen);
+    expect(voteState1.options, hasLength(finalists.length));
+
+    Map<String, ZyncNowVote> guestRatings(GroupBoundedState state) => {
+          for (var i = 0; i < state.options.length; i += 1)
+            state.options[i].id:
+                i == 1 ? ZyncNowVote.love : ZyncNowVote.okay,
+        };
+
+    await guest1.submitZyncNowBallot(
+      ratingsByOptionId: guestRatings(voteState1),
+    );
+    await guest2.submitZyncNowBallot(
+      ratingsByOptionId: guestRatings(voteState2!),
+    );
+
+    host.submitHostZyncNowBallot(
+      ZyncNowConsensusBallot(
+        participantId: host.hostParticipant.participantId,
+        ratings: {
+          for (var i = 0; i < consensusRound.candidates.length; i += 1)
+            consensusRound.candidates[i].id:
+                i == 1 ? ZyncNowVote.love : ZyncNowVote.okay,
+        },
+      ),
+    );
+
+    final ballots = await host.collectZyncNowBallots();
+    expect(ballots.complete, isTrue);
+    expect(ballots.ballots, hasLength(3));
+
+    await host.lockZyncNowConsensus();
+    expect(host.session.phase, GroupRoomPhase.zyncNowInputLocked);
+
+    final decision = await host.resolveZyncNowConsensus(
+      seed: 'group-consensus',
+    );
+    expect(decision.hasDecision, isTrue);
+    expect(
+      decision.chosenCandidateId,
+      consensusRound.candidates[1].id,
+    );
+    expect(host.session.phase, GroupRoomPhase.zyncNowResult);
+
+    final resultState1 = await guest1.poll();
+    final resultState2 = await guest2.poll();
+    expect(resultState1, isNotNull);
+    expect(resultState2, isNotNull);
+    expect(resultState1!.phase, GroupRoomPhase.zyncNowResult);
+    expect(resultState1.resultOptionId, isNotNull);
+    expect(
+      resultState1.options.map((item) => item.id),
+      contains(resultState1.resultOptionId),
+    );
+
     await host.end();
     expect(host.session.phase, GroupRoomPhase.ended);
     expect(relay.closed, isTrue);
@@ -243,6 +311,84 @@ void main() {
       throwsA(isA<FormatException>()),
       reason: 'Semantic forgery must fail before input is locked',
     );
+  });
+
+  test('Group Zync Now waits for every private ballot before deciding',
+      () async {
+    final relay = _MemoryGroupRelay();
+    final host = await GroupHostCoordinator.create(
+      relay: relay,
+      hostProfile: hostProfile,
+      maxParticipants: 4,
+    );
+    final guest1 = await GroupParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guest1Profile,
+    );
+    await GroupParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guest2Profile,
+    );
+
+    await host.refreshLobby();
+    final round = await host.prepareNextRound(seed: 'consensus-wait');
+    host.submitHostSelection(
+      round.input.options
+          .take(round.input.requiredSelections)
+          .map((item) => item.id)
+          .toList(),
+    );
+    final state = await guest1.poll();
+    await guest1.submitSelection(
+      state!.options
+          .take(state.requiredSelections)
+          .map((item) => item.id)
+          .toList(),
+    );
+
+    // Explicitly allow one missing discovery guess only to move this test to
+    // Zync Now; Zync Now itself remains strict and requires all ballots.
+    await host.lockInput(allowIncomplete: true);
+    await host.reveal();
+    await host.completeRound();
+    await host.offerZyncNow();
+
+    final finalists = host.generateZyncNow(
+      mode: ZyncNowMode.surprise,
+      seed: 'consensus-wait',
+    );
+    final consensus = await host.startZyncNowConsensus(
+      candidates: finalists.take(3).toList(growable: false),
+    );
+    final voteState = await guest1.poll();
+
+    await guest1.submitZyncNowBallot(
+      ratingsByOptionId: {
+        for (final option in voteState!.options)
+          option.id: ZyncNowVote.okay,
+      },
+    );
+    host.submitHostZyncNowBallot(
+      ZyncNowConsensusBallot(
+        participantId: host.hostParticipant.participantId,
+        ratings: {
+          for (final candidate in consensus.candidates)
+            candidate.id: ZyncNowVote.okay,
+        },
+      ),
+    );
+
+    final collection = await host.collectZyncNowBallots();
+    expect(collection.complete, isFalse);
+    expect(collection.missingParticipantIds, hasLength(1));
+
+    await expectLater(
+      host.lockZyncNowConsensus(),
+      throwsStateError,
+    );
+    expect(host.session.phase, GroupRoomPhase.zyncNowInputOpen);
   });
 
   test('host cannot lock while any ready participant has not answered',
