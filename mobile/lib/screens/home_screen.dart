@@ -75,22 +75,30 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _header(BuildContext context, AppLocalizations l10n) => Row(
+  bool _useCompactHeader(BuildContext context) =>
+      MediaQuery.sizeOf(context).width < 360 ||
+      MediaQuery.textScalerOf(context).scale(1) > 1.15;
+
+  Widget _header(BuildContext context, AppLocalizations l10n) {
+    final compact = _useCompactHeader(context);
+    return Row(
         children: [
           const ZyncMark(size: 38, strokeWidth: 4),
           const SizedBox(width: 10),
           Text('Zync', style: Theme.of(context).textTheme.titleLarge),
           const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.emoji_events_outlined),
-            tooltip: LocalizedDomainText.achievementsTitle(
-              Localizations.localeOf(context).toLanguageTag(),
+          if (!compact) ...[
+            IconButton(
+              icon: const Icon(Icons.emoji_events_outlined),
+              tooltip: LocalizedDomainText.achievementsTitle(
+                Localizations.localeOf(context).toLanguageTag(),
+              ),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AchievementScreen()),
+              ),
             ),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AchievementScreen()),
-            ),
-          ),
-          const SizedBox(width: 2),
+            const SizedBox(width: 2),
+          ],
           IconButton(
             icon: const Icon(Icons.alternate_email_rounded),
             tooltip: l10n.socialLinks,
@@ -125,6 +133,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       );
+  }
 
   Widget _hero(BuildContext context, AppLocalizations l10n, {required bool compact}) => ZyncSurface(
         padding: EdgeInsets.zero,
@@ -221,6 +230,18 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (_) => const HistoryScreen()),
           ),
         ),
+        if (_useCompactHeader(context))
+          _MenuSpec(
+            icon: Icons.emoji_events_outlined,
+            iconBackground: const Color(0xFFFFE9B7),
+            iconForeground: const Color(0xFF8B5A00),
+            title: LocalizedDomainText.achievementsTitle(
+              Localizations.localeOf(context).toLanguageTag(),
+            ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AchievementScreen()),
+            ),
+          ),
         _MenuSpec(
           icon: Icons.bubble_chart_outlined,
           iconBackground: const Color(0xFFE9E5FF),
