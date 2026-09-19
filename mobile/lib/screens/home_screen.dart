@@ -13,6 +13,7 @@ import 'interest_setup_screen.dart';
 import 'scan_qr_screen.dart';
 import 'show_qr_screen.dart';
 import 'social_links_screen.dart';
+import 'zync_now_host_screen.dart';
 
 const _privacyUrl = String.fromEnvironment('ZYNC_PRIVACY_URL');
 
@@ -206,6 +207,22 @@ class HomeScreen extends StatelessWidget {
       );
 
   List<_MenuSpec> _menuSpecs(BuildContext context, AppLocalizations l10n, Uri? privacyUri) => [
+        _MenuSpec(
+          icon: Icons.bolt_rounded,
+          iconBackground: ZyncPalette.mint,
+          iconForeground: const Color(0xFF176B57),
+          title: LocalizedDomainText.zyncNowTitle(
+            Localizations.localeOf(context).toLanguageTag(),
+          ),
+          subtitle: LocalizedDomainText.zyncNowGroupCta(
+            Localizations.localeOf(context).toLanguageTag(),
+          ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ZyncNowHostScreen(profile: profile),
+            ),
+          ),
+        ),
         _MenuSpec(
           icon: Icons.groups_2_outlined,
           iconBackground: const Color(0xFFE9E5FF),
