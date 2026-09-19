@@ -327,18 +327,12 @@ class LocalStore {
 
   static List<String> _interestCategories(Set<String> interestIds) {
     final categories = <String>{};
+    final categoryPattern = RegExp(r'^[a-z0-9_]+\$');
     for (final id in interestIds) {
       final category = InterestCatalog.byId(id)?.category.trim().toLowerCase();
       if (category != null &&
           category.isNotEmpty &&
-          RegExp(r'^[a-z0-9_]+    final history = await loadHistory();
-    for (final entry in history) {
-      if (entry.peerId == peerId) return entry;
-    }
-    return null;
-  }
-}
-).hasMatch(category)) {
+          categoryPattern.hasMatch(category)) {
         categories.add(category);
       }
     }
