@@ -181,6 +181,21 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         .toList();
   }
 
+  List<InterestDefinition> _stableQuickStartResults() {
+    const key = '__quick_start__';
+    final ids = _stableBrowseOrders.putIfAbsent(key, () {
+      return InterestCatalog.popular(
+        region: _region,
+        popularity: _popularity,
+        limit: 24,
+      ).map((item) => item.id).toList(growable: false);
+    });
+    return ids
+        .map(InterestCatalog.byId)
+        .whereType<InterestDefinition>()
+        .toList(growable: false);
+  }
+
   List<InterestDefinition> _stableLeafResults({
     required String category,
     required String? cluster,
@@ -208,6 +223,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final query = _search.text.trim();
+    final quickStart = !widget.editing && widget.profile.interests.length < 5;
 
     final clusters = query.isEmpty && _selectedCategory != null
         ? InterestCatalog.clustersForCategory(_selectedCategory!)
@@ -236,7 +252,9 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                 cluster: _selectedCluster,
                 subcluster: _selectedSubcluster,
               )
-            : const <InterestDefinition>[];
+            : quickStart && _selectedCategory == null
+                ? _stableQuickStartResults()
+                : const <InterestDefinition>[];
     final customResults = _customResults(query, locale);
     final results = <InterestDefinition>[];
     final seen = <String>{};
@@ -254,7 +272,9 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                 ? LocalizedDomainText.taxonomy(_selectedCluster!, locale)
                 : _selectedCategory != null
                     ? LocalizedDomainText.category(_selectedCategory!, locale)
-                    : l10n.pickInterests;
+                    : quickStart
+                        ? LocalizedDomainText.quickPicks(locale)
+                        : l10n.pickInterests;
 
     return Scaffold(
       appBar: widget.editing ? AppBar(title: Text(l10n.myInterests)) : null,
@@ -288,14 +308,45 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         ),
                         const SizedBox(height: 22),
                       ],
-                      Text(l10n.pickInterests, style: Theme.of(context).textTheme.headlineSmall),
-                      const SizedBox(height: 5),
-                      Text(l10n.pickAtLeastFive, style: Theme.of(context).textTheme.bodyMedium),
-                      const SizedBox(height: 3),
                       Text(
-                        LocalizedDomainText.catalogCount(InterestCatalog.count, locale),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+                        quickStart
+                            ? LocalizedDomainText.quickStartTitle(locale)
+                            : l10n.pickInterests,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
+                      const SizedBox(height: 5),
+                      Text(
+                        quickStart
+                            ? LocalizedDomainText.quickStartSubtitle(locale)
+                            : l10n.pickAtLeastFive,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      if (quickStart) ...[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(99),
+                          child: LinearProgressIndicator(
+                            value: (_selected.length / 5).clamp(0.0, 1.0),
+                            minHeight: 7,
+                            backgroundColor: const Color(0xFFEDEAF3),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          _selected.length >= 5
+                              ? LocalizedDomainText.readyToZyncHint(locale)
+                              : l10n.selectedCount(_selected.length),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ZyncPalette.inkSoft),
+                        ),
+                      ] else ...[
+                        Text(
+                          LocalizedDomainText.catalogCount(InterestCatalog.count, locale),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ZyncPalette.inkSoft),
+                        ),
+                      ],
                       const SizedBox(height: 12),
                       TextField(
                         controller: _search,
@@ -459,7 +510,11 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
           child: FilledButton.icon(
             onPressed: _selected.length >= 5 ? _save : null,
             icon: const Icon(Icons.arrow_forward_rounded),
-            label: Text(l10n.saveAndContinue),
+            label: Text(
+              quickStart && _selected.length >= 5
+                  ? LocalizedDomainText.readyToZync(locale)
+                  : l10n.saveAndContinue,
+            ),
           ),
         ),
       ),
