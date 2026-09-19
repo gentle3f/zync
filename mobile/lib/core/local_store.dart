@@ -4,12 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'models.dart';
+import 'zync_now_engine.dart';
+import 'zync_now_memory.dart';
 
 class LocalStore {
   const LocalStore._();
 
   static const _profileKey = 'zync.profile.v1';
   static const _historyKey = 'zync.history.v1';
+  static const _zyncNowActivityKey = 'zync.zync_now.activities.v1';
   static const _uuid = Uuid();
 
   static Future<LocalProfile> loadOrCreateProfile({required String language}) async {
@@ -148,6 +151,103 @@ class LocalStore {
     await prefs.setString(
       _historyKey,
       jsonEncode(history.map((entry) => entry.toJson()).toList()),
+    );
+  }
+
+
+  static Future<List<ZyncNowActivityMemory>> loadZyncNowActivities() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_zyncNowActivityKey);
+    if (raw == null) return const [];
+    try {
+      final decoded = jsonDecode(raw) as List;
+      final items = decoded
+          .whereType<Map>()
+          .map((item) =>
+              ZyncNowActivityMemory.fromJson(Map<String, dynamic>.from(item)))
+          .where((item) => item.id.isNotEmpty && item.repeatKey.isNotEmpty)
+          .toList()
+        ..sort((a, b) => b.chosenAt.compareTo(a.chosenAt));
+      return items;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<ZyncNowActivityMemory> recordZyncNowChoice({
+    required ZyncNowCandidate candidate,
+    DateTime? chosenAt,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final history = (await loadZyncNowActivities()).toList();
+    final memory = ZyncNowActivityMemory(
+      id: _uuid.v4(),
+      candidateId: candidate.id,
+      repeatKey: candidate.repeatKey,
+      templateId: candidate.templateId,
+      sourceInterestIds: List<String>.from(candidate.sourceInterestIds),
+      groupSize: candidate.participantCount,
+      mode: candidate.mode.name,
+      chosenAt: (chosenAt ?? DateTime.now()).toUtc(),
+    );
+    history.insert(0, memory);
+    await _saveZyncNowActivities(prefs, history);
+    return memory;
+  }
+
+  static Future<ZyncNowActivityMemory?> recordZyncNowOutcome({
+    required String memoryId,
+    required ZyncNowActivityStatus status,
+    DateTime? at,
+  }) async {
+    if (status == ZyncNowActivityStatus.chosen) {
+      throw ArgumentError.value(
+        status,
+        'status',
+        'Outcome must be completed or skipped',
+      );
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final history = (await loadZyncNowActivities()).toList();
+    final index = history.indexWhere((item) => item.id == memoryId);
+    if (index < 0) return null;
+
+    final previous = history[index];
+    final updated = previous.copyWith(
+      status: status,
+      completedAt:
+          status == ZyncNowActivityStatus.completed
+              ? (at ?? DateTime.now()).toUtc()
+              : previous.completedAt,
+    );
+    history[index] = updated;
+    await _saveZyncNowActivities(prefs, history);
+    return updated;
+  }
+
+  static Future<Set<String>> recentZyncNowActivityKeys({
+    int limit = 40,
+  }) async {
+    if (limit <= 0) return const {};
+    final history = await loadZyncNowActivities();
+    return history
+        .where((item) => item.status != ZyncNowActivityStatus.skipped)
+        .take(limit)
+        .map((item) => item.repeatKey)
+        .toSet();
+  }
+
+  static Future<void> _saveZyncNowActivities(
+    SharedPreferences prefs,
+    List<ZyncNowActivityMemory> history,
+  ) async {
+    // Bound SharedPreferences growth. This is lightweight local activity memory,
+    // not a permanent event log.
+    final bounded = history.take(200).toList(growable: false);
+    await prefs.setString(
+      _zyncNowActivityKey,
+      jsonEncode(bounded.map((item) => item.toJson()).toList()),
     );
   }
 
