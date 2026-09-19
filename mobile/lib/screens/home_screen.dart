@@ -10,6 +10,7 @@ import 'group_zync_host_lobby_screen.dart';
 import 'history_screen.dart';
 import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
+import 'quest_board_screen.dart';
 import 'scan_qr_screen.dart';
 import 'show_qr_screen.dart';
 import 'social_links_screen.dart';
@@ -220,6 +221,28 @@ class HomeScreen extends StatelessWidget {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => ZyncNowHostScreen(profile: profile),
+            ),
+          ),
+        ),
+        _MenuSpec(
+          icon: Icons.explore_outlined,
+          iconBackground: const Color(0xFFFFE9B7),
+          iconForeground: const Color(0xFF8B5A00),
+          title: Localizations.localeOf(context)
+                  .toLanguageTag()
+                  .toLowerCase()
+                  .startsWith('zh')
+              ? '探索任務板'
+              : 'Curiosity Board',
+          subtitle: Localizations.localeOf(context)
+                  .toLanguageTag()
+                  .toLowerCase()
+                  .startsWith('zh')
+              ? '今日＋今週真實互動任務'
+              : 'Daily + weekly real-world quests',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const QuestBoardScreen(),
             ),
           ),
         ),
