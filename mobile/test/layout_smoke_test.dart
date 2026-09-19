@@ -404,6 +404,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('zync-reveal-first')));
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('zync-next-connection')),
+      180,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Keep discovering'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('zync-next-connection')));
     await tester.pumpAndSettle();
