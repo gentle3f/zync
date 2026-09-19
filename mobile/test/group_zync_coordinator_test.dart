@@ -67,6 +67,21 @@ void main() {
       shareNickname: true,
     );
 
+    await expectLater(
+      relay.leave(
+        room: host.room.qr,
+        participantId: guest1.participant.participantId,
+        participantToken: guest2.participantToken,
+      ),
+      throwsA(
+        isA<GroupRelayException>().having(
+          (error) => error.kind,
+          'kind',
+          GroupRelayFailureKind.unauthorized,
+        ),
+      ),
+    );
+
     await host.refreshLobby();
     expect(host.session.participantCount, 3);
     expect(host.session.readyCount, 3);
@@ -76,6 +91,23 @@ void main() {
     expect(round.mechanic, GroupDiscoveryMechanic.hiddenCluster);
     expect(round.interestId, 'sports.badminton');
     expect(host.session.phase, GroupRoomPhase.inputOpen);
+
+    await expectLater(
+      relay.submitInput(
+        room: host.room.qr,
+        participantId: guest1.participant.participantId,
+        participantToken: guest2.participantToken,
+        roundNumber: host.session.roundNumber,
+        payload: 'ForgedOpaqueInput',
+      ),
+      throwsA(
+        isA<GroupRelayException>().having(
+          (error) => error.kind,
+          'kind',
+          GroupRelayFailureKind.unauthorized,
+        ),
+      ),
+    );
 
     final guest1State = await guest1.poll();
     final guest2State = await guest2.poll();
@@ -194,6 +226,7 @@ void main() {
 class _MemoryGroupRelay implements GroupRelayClient {
   GroupRoomBootstrap? room;
   final Map<String, String> participants = {};
+  final Map<String, String> participantTokens = {};
   final Map<int, Map<String, String>> inputs = {};
   bool locked = false;
   bool closed = false;
@@ -209,6 +242,7 @@ class _MemoryGroupRelay implements GroupRelayClient {
   Future<int> join({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
     required String payload,
   }) async {
     if (closed) {
@@ -221,10 +255,13 @@ class _MemoryGroupRelay implements GroupRelayClient {
       throw const GroupRelayException(GroupRelayFailureKind.full);
     }
     final previous = participants[participantId];
-    if (previous != null && previous != payload) {
+    final previousToken = participantTokens[participantId];
+    if (previous != null &&
+        (previous != payload || previousToken != participantToken)) {
       throw const GroupRelayException(GroupRelayFailureKind.conflict);
     }
     participants[participantId] = payload;
+    participantTokens[participantId] = participantToken;
     return participants.length + 1;
   }
 
@@ -232,11 +269,16 @@ class _MemoryGroupRelay implements GroupRelayClient {
   Future<void> leave({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
   }) async {
     if (locked) {
       throw const GroupRelayException(GroupRelayFailureKind.locked);
     }
+    if (participantTokens[participantId] != participantToken) {
+      throw const GroupRelayException(GroupRelayFailureKind.unauthorized);
+    }
     participants.remove(participantId);
+    participantTokens.remove(participantId);
   }
 
   @override
@@ -266,13 +308,15 @@ class _MemoryGroupRelay implements GroupRelayClient {
   Future<void> submitInput({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
     required int roundNumber,
     required String payload,
   }) async {
     if (!locked) {
       throw const GroupRelayException(GroupRelayFailureKind.locked);
     }
-    if (!participants.containsKey(participantId)) {
+    if (!participants.containsKey(participantId) ||
+        participantTokens[participantId] != participantToken) {
       throw const GroupRelayException(GroupRelayFailureKind.unauthorized);
     }
     final round = inputs.putIfAbsent(roundNumber, () => {});
