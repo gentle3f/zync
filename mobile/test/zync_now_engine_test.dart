@@ -355,6 +355,40 @@ void main() {
     );
   });
 
+  test('one participant private category veto removes sports candidates', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('sports.badminton', InterestStrength.love),
+          interest('food.coffee', InterestStrength.love),
+        ]),
+        participant('b', [
+          interest('sports.badminton', InterestStrength.like),
+          interest('food.coffee', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      participantConstraints: const {
+        'b': ZyncNowConstraints(
+          hardVetoCategories: {'sports'},
+        ),
+      },
+      seed: 'private-no-sports',
+    );
+
+    expect(result, isNotEmpty);
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('sports.badminton')),
+      isFalse,
+    );
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('food.coffee')),
+      isTrue,
+    );
+  });
+
   test('private constraints reject unknown participant IDs', () {
     expect(
       () => ZyncNowEngine.generate(
