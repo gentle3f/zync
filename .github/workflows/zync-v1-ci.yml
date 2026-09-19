@@ -83,6 +83,7 @@ jobs:
           node --check api/v1/interest-popularity.js
           node --check api/_cardverse/db.js
           node --check api/_cardverse/ownership_store.js
+          node --check api/_cardverse/pack_store.js
           node --check .github/scripts/serverless_contracts.mjs
           node --check .github/scripts/relay_contracts.mjs
           node --check .github/scripts/group_relay_contracts.mjs
@@ -92,12 +93,16 @@ jobs:
           node --check .github/scripts/release_web_contracts.mjs
           node --check .github/scripts/play_internal_release_contracts.mjs
           node --check .github/scripts/cardverse_ownership_contracts.mjs
+          node --check .github/scripts/cardverse_pack_open_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
 
       - name: Test Cardverse durable ownership contracts
         run: node .github/scripts/cardverse_ownership_contracts.mjs
+
+      - name: Test Cardverse pack-open transaction contracts
+        run: node .github/scripts/cardverse_pack_open_contracts.mjs
 
       - name: Test encrypted relay contracts
         run: node .github/scripts/relay_contracts.mjs

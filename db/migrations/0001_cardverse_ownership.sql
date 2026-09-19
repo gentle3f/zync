@@ -67,16 +67,21 @@ CREATE TABLE IF NOT EXISTS cardverse_unique_instances (
   account_id uuid NOT NULL REFERENCES zync_accounts(id) ON DELETE RESTRICT,
   canonical_interest_id text NOT NULL
     CHECK (char_length(canonical_interest_id) BETWEEN 1 AND 255),
-  finish text NOT NULL
-    CHECK (finish IN ('normal', 'foil', 'holo', 'prism', 'legendary', 'secret')),
-  edition text NOT NULL
-    CHECK (edition IN ('core', 'encounter', 'discovery', 'event', 'starter', 'achievement')),
+  finish_id text NOT NULL
+    CHECK (char_length(finish_id) BETWEEN 1 AND 80),
+  edition_id text NOT NULL
+    CHECK (char_length(edition_id) BETWEEN 1 AND 120),
   art_system_version integer NOT NULL DEFAULT 1 CHECK (art_system_version >= 1),
+  acquisition_source text NOT NULL
+    CHECK (acquisition_source IN ('pack', 'encounter', 'quest', 'event', 'migration', 'trade')),
   soulbound boolean NOT NULL DEFAULT false,
   locked boolean NOT NULL DEFAULT false,
   version bigint NOT NULL DEFAULT 1 CHECK (version >= 1),
   acquired_at timestamptz NOT NULL DEFAULT now(),
-  metadata jsonb NOT NULL DEFAULT '{}'::jsonb
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+  CHECK (position('::' in canonical_interest_id) = 0),
+  CHECK (position('::' in finish_id) = 0),
+  CHECK (position('::' in edition_id) = 0)
 );
 
 CREATE INDEX IF NOT EXISTS cardverse_unique_instances_owner_idx

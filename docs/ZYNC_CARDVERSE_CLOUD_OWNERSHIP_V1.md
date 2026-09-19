@@ -275,3 +275,55 @@ Therefore:
 - Production remains closed;
 - Google Play remains closed;
 - PR #1 remains draft and unmerged.
+
+
+## 16. Transactional pack-open core
+
+Milestone 5 now also defines and implements the server-only pack-open transaction core.
+
+Additional migration:
+
+- `db/migrations/0002_cardverse_pack_rolls.sql`
+
+Additional domain service:
+
+- `api/_cardverse/pack_store.js`
+
+The service deliberately separates authenticated owner identity from the raw client request:
+
+```text
+openPack(database, serverResolvedAccountId, clientRequest, serverRoller)
+```
+
+The client request may contain only:
+
+- pack ID;
+- idempotency key;
+- client reveal version.
+
+It is rejected if it attempts to provide an account ID, RNG seed, cards, result, finish, rarity, odds, or policy version.
+
+The server-only roller receives only the server-owned pack identity/type. Its committed five-card plan is validated and then persisted inside the same database transaction that updates ownership.
+
+The transaction now has the required shape:
+
+```text
+lock active account
+→ reserve idempotency key
+→ lock unopened pack
+→ obtain server-only roll plan
+→ create one immutable server roll
+→ write ordered result items
+→ credit stackable/unique ownership
+→ append per-asset ledger credits
+→ mark pack opened
+→ append pack-open ledger debit
+→ persist idempotent response
+→ COMMIT
+```
+
+A retry with the same idempotency key returns the persisted receipt without invoking the roller again.
+
+The database also enforces one roll per pack with a unique `pack_id` constraint.
+
+The actual production odds/catalog policy is intentionally **not** frozen by this slice. That policy must be explicit, versioned, auditable and server-owned before a public pack-open endpoint is enabled.
