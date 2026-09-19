@@ -483,7 +483,7 @@ class _MenuTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(compact ? 18 : 22),
           onTap: onTap,
           child: Ink(
-            padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 16, vertical: compact ? 10 : 15),
+            padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 16, vertical: compact ? 5 : 15),
             decoration: BoxDecoration(
               color: ZyncPalette.surface,
               borderRadius: BorderRadius.circular(compact ? 18 : 22),
@@ -495,17 +495,17 @@ class _MenuTile extends StatelessWidget {
                     children: [
                       ZyncIconTile(
                         icon: icon,
-                        size: 38,
+                        size: 30,
                         backgroundColor: iconBackground,
                         foregroundColor: iconForeground,
                       ),
-                      const SizedBox(height: 7),
+                      const SizedBox(height: 3),
                       Text(
                         title,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ],
                   )
