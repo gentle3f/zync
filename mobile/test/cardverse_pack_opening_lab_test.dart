@@ -97,6 +97,17 @@ void main() {
     for (final title in expected) {
       expect(find.text(title), findsOneWidget);
     }
+    final rollId = find.byKey(
+      const ValueKey('pack-lab-server-roll-id'),
+    );
+    await tester.scrollUntilVisible(
+      rollId,
+      500,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.pump();
+
+    expect(rollId, findsOneWidget);
     expect(find.text('serverRollId: proof-server-roll-1'), findsOneWidget);
   });
 
