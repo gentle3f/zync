@@ -188,7 +188,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
       final currentIds = match.shared.map((item) => item.id).toSet();
       final newCount = currentIds.difference(previousIds).length;
       final progressEventId =
-          'relay:\${bootstrap.sessionId}:host';
+          'relay:${bootstrap.sessionId}:host';
       await LocalStore.recordZync(
         peerId: peer.localId,
         peerNickname: peer.nickname,
