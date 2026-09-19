@@ -4,7 +4,11 @@ Authoritative continuation checkpoint:
 
 `AI_STATE/HANDOFF_20260918_ICEBREAKING_SOCIAL_AI_LIVE_QA_READY.md`
 
-Latest physical-QA gate verification:
+Latest certified implementation / physical-QA checkpoint:
+
+`AI_STATE/MINI_HANDOFF_20260919_OCTALYSIS_BATCH1_QA_CERTIFIED.md`
+
+Previous physical-QA gate verification:
 
 `AI_STATE/MINI_HANDOFF_20260918_PHYSICAL_QA_GATE_CONFIRMED.md`
 
@@ -38,28 +42,21 @@ Read the authoritative continuation checkpoint **in full** before doing any work
 
 Current state in one sentence:
 
-> The feedback-driven V1 update is QA-ready: strict hierarchical interest browsing, longer shared+curiosity icebreaking, meaningful People history, deterministic funny aliases, opt-in public social exchange, and real live AI questions are implemented; the controlled Preview passed live relay/AI/social/privacy/bilingual-cache smoke and a new separate-install Zync QA APK has been built.
-
-Physical-QA gate has been re-verified:
-
-- no implementation drift after QA source SHA `6209f04dad24a87f72e5f93ca719f38327ec9748`;
-- controlled Preview remains READY;
-- branch auto-deploy remains disabled;
-- QA artifact remains unexpired;
-- APK bytes independently match SHA-256 `663e8f428e53c90f8e2a6dc367276eeaa9b105c1393e14e5a164715cf3c8f195`.
+> Octalysis Batch 1 is certified and QA-ready: five-interest quick-start onboarding, backward-compatible structured interaction mechanics, visible mystery/reveal progression, meaningful privacy-safe journey metrics, and responsive Trophy access are implemented on top of the prior feedback-driven V1; full CI, live Preview smoke, and the new separate-install QA APK all passed.
 
 Current controlled Preview:
 
-`https://zync-86yxy110d-gens-projects-4f99f8b9.vercel.app`
+`https://zync-9d2g9vk18-gens-projects-4f99f8b9.vercel.app`
 
 Current QA artifact:
 
-- artifact ID: `10553506719`
-- artifact: `zync-qa-preview-ai-live`
-- APK SHA-256: `663e8f428e53c90f8e2a6dc367276eeaa9b105c1393e14e5a164715cf3c8f195`
+- artifact ID: `10578206304`
+- artifact: `zync-qa-octalysis-batch1`
+- APK SHA-256: `8be9c792a04cc7bc780240b38e71501db1cc6eb043c82fb9351ff647dcaaacf9`
+- package: `com.gmail.gentle3f.myproject.qa`
 
 Current active task:
 
-> **Physical Android QA of this new feedback-driven build.**
+> **Physical Android QA of Octalysis Batch 1.**
 
 Production and Play remain closed. Branch auto-deploy is disabled. Do not promote Production or upload Play without explicit user instruction.
