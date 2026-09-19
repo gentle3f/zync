@@ -159,6 +159,7 @@ class _MatchScreenState extends State<MatchScreen> {
           language: language,
           secondaryLanguage: widget.peer.language,
           match: match,
+          mode: requestedMode,
         );
 
     if (mounted) {
@@ -1026,6 +1027,7 @@ class _MatchScreenState extends State<MatchScreen> {
     required bool loading,
   }) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
     final secondary = result?.secondaryQuestion;
     return ZyncSurface(
       padding: const EdgeInsets.all(20),
@@ -1061,6 +1063,55 @@ class _MatchScreenState extends State<MatchScreen> {
               ],
             )
           else ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F5FF),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFE5DFFF)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    _interactionIcon(result.interactionType),
+                    size: 20,
+                    color: ZyncPalette.plum,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          LocalizedDomainText.interactionLabel(
+                            result.interactionType,
+                            locale,
+                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(color: ZyncPalette.plum),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          LocalizedDomainText.interactionHint(
+                            result.interactionType,
+                            locale,
+                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ZyncPalette.inkSoft, height: 1.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
             Text(
               result.question,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(height: 1.4),
@@ -1367,6 +1418,15 @@ class _MatchScreenState extends State<MatchScreen> {
       ),
     );
   }
+
+  IconData _interactionIcon(String type) => switch (type) {
+        'pick' => Icons.compare_arrows_rounded,
+        'defend' => Icons.forum_outlined,
+        'reveal' => Icons.record_voice_over_outlined,
+        'guess' => Icons.psychology_alt_outlined,
+        'surprise' => Icons.auto_awesome_rounded,
+        _ => Icons.sports_esports_outlined,
+      };
 
   String _strengthEmoji(InterestStrength strength) => switch (strength) {
         InterestStrength.love => '❤️',
