@@ -322,8 +322,10 @@ class ZyncNowEngine {
         final meanFit =
             fits.fold<double>(0, (sum, value) => sum + value) / fits.length;
         final coverage = selectedCount / participants.length;
+        final boundedSharedTags =
+            sharedTags.length < 1 ? 1 : (sharedTags.length > 3 ? 3 : sharedTags.length);
         final crossFit = sharedTags.isNotEmpty
-            ? 0.75 + (sharedTags.length.clamp(1, 3) * 0.08)
+            ? 0.75 + boundedSharedTags * 0.08
             : 0.55;
 
         final score = minFit * 30 +
