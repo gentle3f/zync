@@ -20,7 +20,6 @@ class InterestLocalizationPolicy {
     'movies/subgenres',
     'music/styles',
     'books/subgenres',
-    'food/dishes',
   };
 
   static const Set<String> _properNameClusters = {
