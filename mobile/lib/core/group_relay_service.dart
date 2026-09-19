@@ -77,12 +77,14 @@ abstract class GroupRelayClient {
   Future<int> join({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
     required String payload,
   });
 
   Future<void> leave({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
   });
 
   Future<GroupRelayHostSnapshot> takeParticipants(
@@ -94,6 +96,7 @@ abstract class GroupRelayClient {
   Future<void> submitInput({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
     required int roundNumber,
     required String payload,
   });
@@ -202,6 +205,7 @@ class HttpGroupRelayClient implements GroupRelayClient {
   Future<int> join({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
     required String payload,
   }) async {
     final result = await _post({
@@ -210,6 +214,7 @@ class HttpGroupRelayClient implements GroupRelayClient {
       'roomId': room.roomId,
       'joinToken': room.joinToken,
       'participantId': participantId,
+      'participantToken': participantToken,
       'payload': payload,
     });
     if (result.status != 200) {
@@ -222,6 +227,7 @@ class HttpGroupRelayClient implements GroupRelayClient {
   Future<void> leave({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
   }) async {
     final result = await _post({
       'action': 'leave',
@@ -229,6 +235,7 @@ class HttpGroupRelayClient implements GroupRelayClient {
       'roomId': room.roomId,
       'joinToken': room.joinToken,
       'participantId': participantId,
+      'participantToken': participantToken,
     });
     if (result.status != 200) {
       throw _mapFailure(result.status, result.body);
@@ -296,6 +303,7 @@ class HttpGroupRelayClient implements GroupRelayClient {
   Future<void> submitInput({
     required GroupJoinQrPayload room,
     required String participantId,
+    required String participantToken,
     required int roundNumber,
     required String payload,
   }) async {
@@ -305,6 +313,7 @@ class HttpGroupRelayClient implements GroupRelayClient {
       'roomId': room.roomId,
       'joinToken': room.joinToken,
       'participantId': participantId,
+      'participantToken': participantToken,
       'roundNumber': roundNumber,
       'payload': payload,
     });
