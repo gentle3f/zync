@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      ZYNC_API_BASE: https://zync-oomycx2b0-gens-projects-4f99f8b9.vercel.app
-      ZYNC_PRIVACY_URL: https://zync-oomycx2b0-gens-projects-4f99f8b9.vercel.app/privacy
+      ZYNC_API_BASE: https://zync-9d2g9vk18-gens-projects-4f99f8b9.vercel.app
+      ZYNC_PRIVACY_URL: https://zync-9d2g9vk18-gens-projects-4f99f8b9.vercel.app/privacy
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -78,6 +78,10 @@ jobs:
           }
           assert.equal(typeof json.model, 'string');
           assert.ok(json.model.trim().length > 0);
+          assert.equal(json.interaction?.version, 1);
+          assert.equal(json.interaction?.type, 'play');
+          assert.equal(json.interaction?.prompt, json.question);
+          assert.deepEqual(json.interaction?.turnPattern, ['act', 'react']);
           console.log('✓ served AI model:', json.model);
           console.log('✓ sample one-person question:', json.question);
           assert.equal(response.headers.get('x-zync-api-version'), 'v1');
@@ -118,5 +122,8 @@ jobs:
           assert.equal(jp.json.cached, true);
           assert.equal(jp.json.question, hk.json.secondaryQuestion);
           assert.equal(jp.json.secondaryQuestion, hk.json.question);
-          console.log('✓ reversed bilingual phones still reuse one semantic question');
+          assert.equal(hk.json.interaction?.version, 1);
+          assert.equal(hk.json.interaction?.type, 'play');
+          assert.equal(jp.json.interaction?.type, 'play');
+          console.log('✓ reversed bilingual phones still reuse one semantic question and interaction');
           NODE
