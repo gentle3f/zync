@@ -22,6 +22,7 @@ class GroupHostCoordinator {
 
   GroupZyncSession _session;
   GroupInteractionRound? _activeRound;
+  GroupPrivateInput? _hostInput;
 
   GroupZyncSession get session => _session;
   GroupInteractionRound? get activeRound => _activeRound;
@@ -123,17 +124,44 @@ class GroupHostCoordinator {
     }
 
     _activeRound = round;
+    _hostInput = null;
     await _publishActiveRound();
     return round;
   }
 
-  Future<void> lockInput() async {
-    _requireRound();
+  Future<void> lockInput({bool allowIncomplete = false}) async {
+    final round = _requireRound();
     if (_session.phase != GroupRoomPhase.inputOpen) {
       throw StateError('Group Zync input is not open');
     }
+
+    if (round.input.privateInputRequired) {
+      final collection = await collectRoundInputs();
+      if (!collection.complete && !allowIncomplete) {
+        throw StateError(
+          'Group Zync is still waiting for private input from '
+          '${collection.missingParticipantIds.length} participant(s)',
+        );
+      }
+    }
+
     _session = _session.lockInput();
     await _publishActiveRound();
+  }
+
+  void submitHostSelection(List<String> answerIds) {
+    final round = _requireRound();
+    if (_session.phase != GroupRoomPhase.inputOpen) {
+      throw StateError('Group Zync private input is not open');
+    }
+
+    final input = GroupPrivateInput(
+      roundNumber: _session.roundNumber,
+      participantId: hostParticipant.participantId,
+      answerIds: List.unmodifiable(answerIds),
+    );
+    _validateRoundInput(round, input);
+    _hostInput = input;
   }
 
   Future<List<GroupPrivateInput>> takeGuestInputs() async {
@@ -143,28 +171,47 @@ class GroupHostCoordinator {
       roundNumber: _session.roundNumber,
     );
     final result = <GroupPrivateInput>[];
+    final seen = <String>{};
+
     for (final envelope in envelopes) {
+      if (!seen.add(envelope.participantId)) {
+        throw const FormatException('Duplicate Group Zync input participant');
+      }
       final input = await GroupCrypto.decryptPrivateInput(
         room: room,
         participantId: envelope.participantId,
         roundNumber: _session.roundNumber,
         opaquePayload: envelope.payload,
       );
-      if (round.input.options.every((item) => item.id != input.participantId)) {
+      if (input.participantId == hostParticipant.participantId ||
+          !_session.participants.containsKey(input.participantId)) {
         throw const FormatException('Unknown Group Zync input participant');
       }
-      if (input.answerIds.length != round.input.requiredSelections ||
-          input.answerIds.toSet().length != input.answerIds.length) {
-        throw const FormatException('Invalid Group Zync answer count');
-      }
-      final allowedAnswerIds =
-          round.input.options.map((item) => item.id).toSet();
-      if (input.answerIds.any((id) => !allowedAnswerIds.contains(id))) {
-        throw const FormatException('Unknown Group Zync answer');
-      }
+      _validateRoundInput(round, input);
       result.add(input);
     }
     return List.unmodifiable(result);
+  }
+
+  Future<GroupRoundInputCollection> collectRoundInputs() async {
+    final round = _requireRound();
+    if (!round.input.privateInputRequired) {
+      return GroupRoundInputCollection(
+        inputs: const [],
+        expectedParticipantIds: _session.participants.keys.toSet(),
+      );
+    }
+
+    final guestInputs = await takeGuestInputs();
+    final inputs = <GroupPrivateInput>[
+      if (_hostInput != null) _hostInput!,
+      ...guestInputs,
+    ];
+
+    return GroupRoundInputCollection(
+      inputs: List.unmodifiable(inputs),
+      expectedParticipantIds: _session.participants.keys.toSet(),
+    );
   }
 
   Future<void> reveal() async {
@@ -277,6 +324,24 @@ class GroupHostCoordinator {
       payload: payload,
     );
   }
+}
+
+class GroupRoundInputCollection {
+  const GroupRoundInputCollection({
+    required this.inputs,
+    required this.expectedParticipantIds,
+  });
+
+  final List<GroupPrivateInput> inputs;
+  final Set<String> expectedParticipantIds;
+
+  Set<String> get submittedParticipantIds =>
+      inputs.map((item) => item.participantId).toSet();
+
+  Set<String> get missingParticipantIds =>
+      expectedParticipantIds.difference(submittedParticipantIds);
+
+  bool get complete => missingParticipantIds.isEmpty;
 }
 
 class GroupParticipantCoordinator {
