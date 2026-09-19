@@ -295,14 +295,20 @@ class HomeScreen extends StatelessWidget {
         _hero(context, l10n, compact: true),
         const SizedBox(height: 14),
         Expanded(
-          child: Column(
-            children: [
-              Expanded(child: _menuRow(specs, 0)),
-              const SizedBox(height: 10),
-              Expanded(child: _menuRow(specs, 2)),
-            ],
-          ),
+          child: _menuGrid(specs),
         ),
+      ],
+    );
+  }
+
+  Widget _menuGrid(List<_MenuSpec> specs) {
+    final rowCount = (specs.length / 2).ceil();
+    return Column(
+      children: [
+        for (var row = 0; row < rowCount; row++) ...[
+          Expanded(child: _menuRow(specs, row * 2)),
+          if (row != rowCount - 1) const SizedBox(height: 10),
+        ],
       ],
     );
   }
