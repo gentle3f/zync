@@ -229,6 +229,92 @@ class ZyncNowConsensusTransportRound {
     );
   }
 
+  static ZyncNowConsensusMethod methodFromInputKind(String inputKind) {
+    return switch (inputKind) {
+      'zync_now_quick_vote' => ZyncNowConsensusMethod.quickVote,
+      'zync_now_rank' => ZyncNowConsensusMethod.rank,
+      'zync_now_eliminate_one' => ZyncNowConsensusMethod.eliminateOne,
+      _ => throw const FormatException('Unknown Zync Now consensus input kind'),
+    };
+  }
+
+  static GroupPrivateInput encodeBoundedOptionBallot({
+    required GroupBoundedState state,
+    required String participantId,
+    Map<String, ZyncNowVote> ratingsByOptionId = const {},
+    List<String> rankedOptionIds = const [],
+    String? eliminateOptionId,
+    Set<String> hardVetoOptionIds = const {},
+  }) {
+    if (state.phase != GroupRoomPhase.zyncNowInputOpen) {
+      throw StateError('Zync Now consensus input is not open');
+    }
+
+    final method = methodFromInputKind(state.inputKind);
+    final optionIds = state.options.map((item) => item.id).toSet();
+
+    void validateOption(String optionId) {
+      if (!optionIds.contains(optionId)) {
+        throw ArgumentError.value(optionId, 'optionId');
+      }
+    }
+
+    for (final optionId in hardVetoOptionIds) {
+      validateOption(optionId);
+    }
+
+    final answers = <String>[];
+
+    switch (method) {
+      case ZyncNowConsensusMethod.quickVote:
+        if (ratingsByOptionId.length != optionIds.length ||
+            ratingsByOptionId.keys.toSet().difference(optionIds).isNotEmpty ||
+            optionIds.difference(ratingsByOptionId.keys.toSet()).isNotEmpty) {
+          throw ArgumentError('Quick Vote needs one rating per finalist');
+        }
+        for (final option in state.options) {
+          final vote = ratingsByOptionId[option.id]!;
+          final code = switch (vote) {
+            ZyncNowVote.love => 'L',
+            ZyncNowVote.okay => 'O',
+            ZyncNowVote.no => 'N',
+          };
+          answers.add('R-$code-${option.id}');
+        }
+
+      case ZyncNowConsensusMethod.rank:
+        if (rankedOptionIds.length != optionIds.length ||
+            rankedOptionIds.toSet().length != optionIds.length ||
+            rankedOptionIds.toSet().difference(optionIds).isNotEmpty) {
+          throw ArgumentError('Rank needs each finalist exactly once');
+        }
+        for (final optionId in rankedOptionIds) {
+          answers.add('K-$optionId');
+        }
+
+      case ZyncNowConsensusMethod.eliminateOne:
+        if (eliminateOptionId == null) {
+          throw ArgumentError('Eliminate One needs one finalist');
+        }
+        validateOption(eliminateOptionId);
+        answers.add('E-$eliminateOptionId');
+    }
+
+    for (final optionId in hardVetoOptionIds) {
+      answers.add('V-$optionId');
+    }
+
+    if (answers.length > 8) {
+      throw ArgumentError('Consensus ballot is too large');
+    }
+
+    return GroupPrivateInput(
+      roundNumber: state.roundNumber,
+      participantId: participantId,
+      answerIds: List.unmodifiable(answers),
+    );
+  }
+
   String? optionIdForResult(ZyncNowConsensusResult result) {
     final candidateId = result.chosenCandidateId;
     if (candidateId == null) return null;
