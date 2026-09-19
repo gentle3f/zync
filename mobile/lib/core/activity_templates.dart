@@ -134,5 +134,48 @@ class ActivityTemplates {
       },
       requiredVerbs: {ActivityVerb.watch},
     ),
+    'activity.photo_theme_challenge': ActivityTemplate(
+      id: 'activity.photo_theme_challenge',
+      titleLabels: {
+        'en': 'Photo theme challenge',
+        'zh-Hant': '主題攝影挑戰',
+        'zh-Hans': '主题摄影挑战',
+      },
+      instructionLabels: {
+        'en': 'Choose one theme, take a small set of photos each, then reveal your favourite.',
+        'zh-Hant': '揀一個主題，每人影幾張相，再揭曉自己最鍾意嗰張。',
+        'zh-Hans': '选一个主题，每人拍几张照片，再揭晓自己最喜欢的一张。',
+      },
+      requiredVerbs: {ActivityVerb.make, ActivityVerb.challenge},
+    ),
+    'activity.listen_and_compare': ActivityTemplate(
+      id: 'activity.listen_and_compare',
+      titleLabels: {
+        'en': 'Listen, then compare',
+        'zh-Hant': '一齊聽，再比較',
+        'zh-Hans': '一起听，再比较',
+      },
+      instructionLabels: {
+        'en': 'Each person picks one track or short clip, then compare what grabbed your attention.',
+        'zh-Hant': '每人揀一首歌或者一小段，一齊聽完再比較大家最留意咩。',
+        'zh-Hans': '每人选一首歌或一小段，一起听完再比较大家最注意什么。',
+      },
+      requiredVerbs: {ActivityVerb.listen},
+    ),
+    'activity.read_and_compare': ActivityTemplate(
+      id: 'activity.read_and_compare',
+      titleLabels: {
+        'en': 'Read, then compare',
+        'zh-Hant': '一齊讀，再比較',
+        'zh-Hans': '一起读，再比较',
+      },
+      instructionLabels: {
+        'en': 'Pick a short piece or passage, read it together, then compare what each person noticed.',
+        'zh-Hant': '揀一小段文字一齊讀，再比較每個人留意到嘅重點。',
+        'zh-Hans': '选一小段文字一起读，再比较每个人注意到的重点。',
+      },
+      requiredVerbs: {ActivityVerb.read},
+    ),
+
   };
 }
