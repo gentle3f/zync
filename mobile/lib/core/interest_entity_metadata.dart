@@ -64,7 +64,7 @@ class ActivityProfile {
   final bool equipmentLikely;
   final LocationDependency locationDependency;
   final Set<String> crossoverTags;
-  final List<String> templateIds;
+  final Set<String> templateIds;
 }
 
 class CardProfile {
