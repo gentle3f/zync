@@ -487,3 +487,62 @@ Quest Claim additionally requires:
 - `CARDVERSE_QUEST_CLAIM_ENABLED=true`
 
 It remains off until a trusted real-world proof issuer and rate-limit/security review are complete.
+
+
+## 20. Anonymous 1:1 relay completion tickets
+
+Milestone 5 now has a privacy-preserving trusted issuer for the existing encrypted 1:1 relay.
+
+The relay still does **not** know either participant's Cardverse account, local profile ID, peer name, interests, social handles or decrypted profile payload.
+
+When `ZYNC_CARDVERSE_PROOF_SECRET` is configured, a successful encrypted relay uses a V2 completion state:
+
+```text
+scanner submits opaque encrypted response
+→ relay returns a private scanner proof capability
+→ host polls and decrypts response locally
+→ host confirms successful consume
+→ relay marks the anonymous session completed
+→ host receives one signed completion ticket
+→ scanner capability may fetch the other signed completion ticket
+```
+
+The two tickets are distinct, deterministic on retries, and contain only:
+
+- unique opaque issuer-ticket ID;
+- event type = one-to-one Zync;
+- source = one-to-one;
+- participant count = 2;
+- server completion time;
+- expiry.
+
+They do **not** contain either account ID or a linkable relay session ID.
+
+Tickets default to a 30-day redemption window and may be shortened with `CARDVERSE_PROOF_TICKET_DAYS` (maximum 90 days).
+
+### Redemption
+
+Authenticated redemption is:
+
+- `POST /api/v1/cardverse/proofs/redeem`
+
+and additionally requires:
+
+- `CARDVERSE_PROOF_REDEEM_ENABLED=true`.
+
+The request may supply only:
+
+- signed ticket;
+- local client event ID used to correlate the already-existing local Quest event;
+- timezone offset used to compute the server Quest cycle.
+
+The account comes only from the authenticated Cardverse session.
+
+The client cannot supply repeat-person status or interest categories. Relay-issued 1:1 proof therefore stores:
+
+- `repeat_person = NULL`;
+- no interest categories.
+
+This is deliberate. An anonymous relay completion ticket can currently satisfy action-count rules such as `daily_make_a_zync` and `weekly_real_world_three`, but it **cannot** satisfy `weekly_meet_two_new_people` or `weekly_three_interest_worlds` merely from client assertions.
+
+The database enforces global uniqueness of `issuer_ticket_id`, so one anonymous completion ticket cannot be redeemed into two accounts.

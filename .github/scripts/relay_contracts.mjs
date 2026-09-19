@@ -2,9 +2,11 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
+process.env.ZYNC_CARDVERSE_PROOF_SECRET =
+  'unit-test-cardverse-proof-secret-1234567890';
+
 const source = await readFile('api/v1/relay.js', 'utf8');
-const encoded = Buffer.from(source).toString('base64');
-const { default: relay } = await import(`data:text/javascript;base64,${encoded}`);
+const { default: relay } = await import('../../api/v1/relay.js');
 
 function makeResponse() {
   const state = { status: 200, body: undefined, headers: {} };
@@ -80,13 +82,48 @@ function fakeRedis(command) {
       if (entry.value.startsWith('P|')) {
         const auth = entry.value.slice(2);
         if (auth.length !== 64) return 'invalid';
-        entry.value = `R|${auth}|${argv[0]}`;
+        entry.value = argv[1]
+          ? `R2|${auth}|${argv[1]}|${argv[0]}`
+          : `R|${auth}|${argv[0]}`;
         return 'accepted';
+      }
+      if (entry.value.startsWith('R2|')) {
+        const parts = entry.value.split('|');
+        if (parts.length !== 4) return 'invalid';
+        if (parts[3] === argv[0] && parts[2] === argv[1]) return 'same';
+        return 'duplicate';
       }
       if (entry.value.startsWith('R|')) {
         if (entry.value.length < 68 || entry.value[66] !== '|') return 'invalid';
         if (entry.value.slice(67) === argv[0]) return 'same';
         return 'duplicate';
+      }
+      if (entry.value.startsWith('C2|')) return 'completed';
+      return 'invalid';
+    }
+
+    if (script.includes("return 'completed:'..ARGV[2]")) {
+      const key = keys[0];
+      const entry = alive(key);
+      if (!entry) return 'missing';
+      if (entry.value.startsWith('C2|')) {
+        const parts = entry.value.split('|');
+        if (parts.length !== 4) return 'invalid';
+        if (parts[1] !== argv[0]) return 'forbidden';
+        return 'completed:' + parts[3];
+      }
+      if (entry.value.startsWith('R2|')) {
+        const parts = entry.value.split('|');
+        if (parts.length !== 4) return 'invalid';
+        if (parts[1] !== argv[0]) return 'forbidden';
+        entry.value = `C2|${parts[1]}|${parts[2]}|${argv[1]}`;
+        return 'completed:' + argv[1];
+      }
+      if (entry.value.startsWith('R|')) {
+        const auth = entry.value.slice(2, 66);
+        if (auth !== argv[0]) return 'forbidden';
+        store.delete(key);
+        return 'deleted';
       }
       return 'invalid';
     }
@@ -98,6 +135,9 @@ function fakeRedis(command) {
       let auth = null;
       if (entry.value.startsWith('P|')) auth = entry.value.slice(2);
       if (entry.value.startsWith('R|')) auth = entry.value.slice(2, 66);
+      if (entry.value.startsWith('R2|') || entry.value.startsWith('C2|')) {
+        auth = entry.value.split('|')[1];
+      }
       if (!auth || auth.length !== 64) {
         store.delete(key);
         return 'invalid';
@@ -222,6 +262,12 @@ test('scanner can write without the host capability and only one encrypted respo
   let r = await invoke({ action: 'respond', ...peerBase, payload });
   assert.equal(r.status, 200);
   assert.equal(r.body.status, 'received');
+  assert.match(r.body.proofCapability, /^[A-Za-z0-9_-]{43}$/);
+  const proofCapability = r.body.proofCapability;
+
+  r = await invoke({ action: 'proof', ...peerBase, proofCapability });
+  assert.equal(r.status, 200);
+  assert.equal(r.body.status, 'waiting');
 
   r = await invoke({ action: 'respond', ...peerBase, payload });
   assert.equal(r.status, 200);
@@ -242,7 +288,7 @@ test('wrong host capability cannot poll or consume the scanner response', async 
   assert.deepEqual(r.body, { error: 'relay_host_not_authorized' });
 });
 
-test('authorized host polling is non-destructive until consume', async () => {
+test('authorized host polling is non-destructive until consume and both sides get anonymous proof tickets', async () => {
   let r = await invoke({ action: 'take', ...hostBase });
   assert.equal(r.status, 200);
   assert.equal(r.body.status, 'ready');
@@ -252,11 +298,34 @@ test('authorized host polling is non-destructive until consume', async () => {
   assert.equal(r.status, 200);
   assert.equal(r.body.payload, 'AbCdEf0123_-');
 
+  const priorRespond = await invoke({
+    action: 'respond',
+    ...peerBase,
+    payload: 'AbCdEf0123_-',
+  });
+  const proofCapability = priorRespond.body.proofCapability;
+
   r = await invoke({ action: 'consume', ...hostBase });
   assert.equal(r.status, 200);
-  r = await invoke({ action: 'take', ...hostBase });
-  assert.equal(r.status, 410);
-  assert.deepEqual(r.body, { error: 'relay_session_expired' });
+  assert.match(r.body.proofTicket, /^ZP1\./);
+
+  const retry = await invoke({ action: 'consume', ...hostBase });
+  assert.equal(retry.status, 200);
+  assert.equal(retry.body.proofTicket, r.body.proofTicket);
+
+  const scannerProof = await invoke({
+    action: 'proof',
+    ...peerBase,
+    proofCapability,
+  });
+  assert.equal(scannerProof.status, 200);
+  assert.equal(scannerProof.body.status, 'ready');
+  assert.match(scannerProof.body.proofTicket, /^ZP1\./);
+  assert.notEqual(scannerProof.body.proofTicket, r.body.proofTicket);
+
+  const takenAfterCompletion = await invoke({ action: 'take', ...hostBase });
+  assert.equal(takenAfterCompletion.status, 200);
+  assert.equal(takenAfterCompletion.body.status, 'completed');
 });
 
 test('malformed session, missing host auth and plaintext-like payload shapes are rejected', async () => {

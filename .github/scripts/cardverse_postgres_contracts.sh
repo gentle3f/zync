@@ -110,3 +110,32 @@ expect_sql_failure \
   "INSERT INTO cardverse_pack_rolls (pack_id, account_id, idempotency_key, client_reveal_version, policy_version) VALUES ('$PACK', '$ACCOUNT', 'pack-open-attempt-0002', 1, 1)"
 
 echo "✓ PostgreSQL Cardverse migrations and hard constraints passed"
+
+
+# The relay proof migration makes repeat-person unknown nullable and issuer tickets globally unique.
+repeat_nullable="$(psql_zync -Atc "SELECT is_nullable FROM information_schema.columns WHERE table_name='cardverse_reward_proofs' AND column_name='repeat_person'")"
+test "$repeat_nullable" = "YES"
+
+psql_zync -c "INSERT INTO cardverse_reward_proofs (
+  account_id, client_event_id, event_type, source, occurred_at,
+  participant_count, repeat_person, timezone_offset_minutes,
+  daily_cycle_start, weekly_cycle_start, verifier, issuer_ticket_id
+) VALUES (
+  '$ACCOUNT', 'relay-proof-event-1', 'one_to_one_zync', 'one_to_one',
+  '2026-09-20T02:00:00Z', 2, NULL, 480,
+  '2026-09-19T16:00:00Z', '2026-09-13T16:00:00Z',
+  'relay_completion_ticket_v1', 'issuer-ticket-proof-1'
+)"
+
+expect_sql_failure \
+  "relay proof issuer ticket cannot be replayed" \
+  "INSERT INTO cardverse_reward_proofs (
+     account_id, client_event_id, event_type, source, occurred_at,
+     participant_count, repeat_person, timezone_offset_minutes,
+     daily_cycle_start, weekly_cycle_start, verifier, issuer_ticket_id
+   ) VALUES (
+     '$ACCOUNT', 'relay-proof-event-2', 'one_to_one_zync', 'one_to_one',
+     '2026-09-20T02:01:00Z', 2, NULL, 480,
+     '2026-09-19T16:00:00Z', '2026-09-13T16:00:00Z',
+     'relay_completion_ticket_v1', 'issuer-ticket-proof-1'
+   )"

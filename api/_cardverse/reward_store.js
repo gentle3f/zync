@@ -131,8 +131,11 @@ export function normalizeTrustedRewardProof(input = {}) {
   const participantCount = Number(input.participantCount);
   const timezoneOffsetMinutes = Number(input.timezoneOffsetMinutes);
   const verifier = cleanText(input.verifier, 80);
+  const issuerTicketId = cleanText(input.issuerTicketId ?? '', 128) || null;
   const mode = cleanText(input.mode ?? '', 32);
-  const repeatPerson = input.repeatPerson === true;
+  const repeatPerson = input.repeatPerson == null
+    ? null
+    : input.repeatPerson === true;
   const categories = [...new Set(
     (Array.isArray(input.interestCategories) ? input.interestCategories : [])
       .filter((item) => typeof item === 'string')
@@ -166,6 +169,7 @@ export function normalizeTrustedRewardProof(input = {}) {
     interestCategories: categories,
     timezoneOffsetMinutes,
     verifier,
+    issuerTicketId,
     ...cycles,
   };
 }
@@ -178,8 +182,8 @@ export async function recordTrustedRewardProof(db, rawInput) {
     'INSERT INTO cardverse_reward_proofs (' +
       'account_id, client_event_id, event_type, source, occurred_at, participant_count, ' +
       'repeat_person, mode, interest_categories, timezone_offset_minutes, ' +
-      'daily_cycle_start, weekly_cycle_start, verifier' +
-    ') VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::text[], $10, $11, $12, $13) ' +
+      'daily_cycle_start, weekly_cycle_start, verifier, issuer_ticket_id' +
+    ') VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::text[], $10, $11, $12, $13, $14) ' +
     'ON CONFLICT (account_id, client_event_id) DO NOTHING ' +
     'RETURNING proof_id, verified_at',
     [
@@ -196,6 +200,7 @@ export async function recordTrustedRewardProof(db, rawInput) {
       input.dailyCycleStart,
       input.weeklyCycleStart,
       input.verifier,
+      input.issuerTicketId,
     ],
   );
   if (rows.length !== 1) throw domainError('cardverse_proof_already_recorded');

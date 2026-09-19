@@ -132,3 +132,28 @@ const endpoint = await import('../../api/v1/cardverse/quests/claim.js');
 assert.equal(typeof endpoint.default, 'function');
 
 console.log('✓ Cardverse trusted Quest proof/reward contracts passed');
+
+
+assert.throws(
+  () => evaluateQuestProofs(
+    'weekly_meet_two_new_people',
+    '2026-09-13T16:00:00.000Z',
+    [
+      {
+        event_type: 'one_to_one_zync',
+        repeat_person: null,
+        interest_categories: [],
+        weekly_cycle_start: '2026-09-13T16:00:00.000Z',
+      },
+      {
+        event_type: 'one_to_one_zync',
+        repeat_person: null,
+        interest_categories: [],
+        weekly_cycle_start: '2026-09-13T16:00:00.000Z',
+      },
+    ],
+  ),
+  /cardverse_quest_proof_insufficient/,
+);
+
+console.log('✓ Unclassified relay proofs cannot satisfy new-person Quest');
