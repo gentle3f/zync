@@ -15,13 +15,13 @@ void main() {
   });
 
   test('generic taxonomy defaults scale beyond hand-written metadata', () {
-    final strategy = InterestCatalog.byId('gaming.strategy');
+    final strategy = InterestCatalog.byId('gaming.rpg');
     final shoegaze = InterestCatalog.byId('music.style.shoegaze');
 
     expect(strategy, isNotNull);
     expect(shoegaze, isNotNull);
     expect(
-      InterestEntityMetadataRegistry.byInterestId('gaming.strategy'),
+      InterestEntityMetadataRegistry.byInterestId('gaming.rpg'),
       isNull,
       reason: 'test must exercise taxonomy default rather than explicit override',
     );
