@@ -186,3 +186,15 @@ jobs:
           path: build_app/build/app/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14
+
+
+  cardverse-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Execute Cardverse PostgreSQL migrations and constraints
+        run: .github/scripts/cardverse_postgres_contracts.sh
