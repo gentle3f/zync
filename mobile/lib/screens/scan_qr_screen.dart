@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../core/achievement_service.dart';
 import '../core/analytics_service.dart';
+import '../core/cardverse_proof_capture.dart';
 import '../core/group_relay_service.dart';
 import '../core/group_zync_protocol.dart';
 import '../core/local_store.dart';
@@ -45,6 +46,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
   void initState() {
     super.initState();
     _relay = widget.relayClient ?? HttpRelayClient();
+    unawaited(CardverseRelayProofCapture.resumePending(_relay));
   }
 
   @override
@@ -162,14 +164,30 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         _pendingEncryptedResponse = encrypted;
       }
 
-      await _relay.respond(sessionId: handshake.sessionId, payload: encrypted);
+      final relayResponse = await _relay.respond(
+        sessionId: handshake.sessionId,
+        payload: encrypted,
+      );
+      final progressEventId =
+          'relay:' + handshake.sessionId + ':scanner';
       await LocalStore.recordZync(
         peerId: peer.localId,
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
         peerInterests: peer.interests,
         peerSocialLinks: peer.socialLinks,
+        progressEventId: progressEventId,
       );
+      if (relayResponse.proofCapability != null) {
+        unawaited(
+          CardverseRelayProofCapture.captureScanner(
+            relay: _relay,
+            sessionId: handshake.sessionId,
+            proofCapability: relayResponse.proofCapability,
+            clientEventId: progressEventId,
+          ),
+        );
+      }
       final newAchievementIds = AchievementService.newlyUnlocked(
         before: historyBefore,
         after: await LocalStore.loadHistory(),

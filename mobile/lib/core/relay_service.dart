@@ -213,15 +213,46 @@ class RelayTakeResult {
   bool get isReady => payload != null;
 }
 
+class RelayRespondResult {
+  const RelayRespondResult({this.proofCapability});
+  final String? proofCapability;
+}
+
+class RelayConsumeResult {
+  const RelayConsumeResult({this.proofTicket});
+  final String? proofTicket;
+}
+
+class RelayProofResult {
+  const RelayProofResult.waiting() : proofTicket = null;
+  const RelayProofResult.ready(this.proofTicket);
+
+  final String? proofTicket;
+  bool get isReady => proofTicket != null;
+}
+
 abstract class RelayClient {
   Future<void> createSession({
     required String sessionId,
     required String hostToken,
     required DateTime expiresAt,
   });
-  Future<void> respond({required String sessionId, required String payload});
-  Future<RelayTakeResult> take({required String sessionId, required String hostToken});
-  Future<void> consume({required String sessionId, required String hostToken});
+  Future<RelayRespondResult> respond({
+    required String sessionId,
+    required String payload,
+  });
+  Future<RelayTakeResult> take({
+    required String sessionId,
+    required String hostToken,
+  });
+  Future<RelayProofResult> proof({
+    required String sessionId,
+    required String proofCapability,
+  });
+  Future<RelayConsumeResult> consume({
+    required String sessionId,
+    required String hostToken,
+  });
   Future<void> cancel({required String sessionId, required String hostToken});
 }
 
@@ -283,7 +314,10 @@ class HttpRelayClient implements RelayClient {
   }
 
   @override
-  Future<void> respond({required String sessionId, required String payload}) async {
+  Future<RelayRespondResult> respond({
+    required String sessionId,
+    required String payload,
+  }) async {
     final result = await _post({
       'action': 'respond',
       'protocolVersion': zyncRelayProtocolVersion,
@@ -291,6 +325,109 @@ class HttpRelayClient implements RelayClient {
       'payload': payload,
     });
     if (result.status != 200) throw _mapFailure(result.status);
+    final capability =
+        (result.body['proofCapability'] as String?)?.trim();
+    if (capability != null &&
+        capability.isNotEmpty &&
+        !RegExp(r'^[A-Za-z0-9_-]{43}
+
+  @override
+  Future<RelayTakeResult> take({required String sessionId, required String hostToken}) async {
+    final result = await _post({
+      'action': 'take',
+      'protocolVersion': zyncRelayProtocolVersion,
+      'sessionId': sessionId,
+      'hostToken': hostToken,
+    });
+    if (result.status != 200) throw _mapFailure(result.status);
+    if (result.body['status'] == 'waiting') return const RelayTakeResult.waiting();
+    final payload = (result.body['payload'] as String?)?.trim();
+    if (result.body['status'] != 'ready' || payload == null || payload.isEmpty) {
+      throw const RelayException(RelayFailureKind.invalid);
+    }
+    return RelayTakeResult.ready(payload);
+  }
+
+  @override
+  Future<RelayProofResult> proof({
+    required String sessionId,
+    required String proofCapability,
+  }) async {
+    final result = await _post({
+      'action': 'proof',
+      'protocolVersion': zyncRelayProtocolVersion,
+      'sessionId': sessionId,
+      'proofCapability': proofCapability,
+    });
+    if (result.status != 200) throw _mapFailure(result.status);
+    if (result.body['status'] == 'waiting') {
+      return const RelayProofResult.waiting();
+    }
+    final ticket = (result.body['proofTicket'] as String?)?.trim();
+    if (result.body['status'] != 'ready' ||
+        ticket == null ||
+        !ticket.startsWith('ZP1.')) {
+      throw const RelayException(RelayFailureKind.invalid);
+    }
+    return RelayProofResult.ready(ticket);
+  }
+
+  Future<Map<String, dynamic>> _hostAction(
+    String action,
+    String sessionId,
+    String hostToken,
+  ) async {
+    final result = await _post({
+      'action': action,
+      'protocolVersion': zyncRelayProtocolVersion,
+      'sessionId': sessionId,
+      'hostToken': hostToken,
+    });
+    if (result.status != 200) throw _mapFailure(result.status);
+    return result.body;
+  }
+
+  @override
+  Future<RelayConsumeResult> consume({
+    required String sessionId,
+    required String hostToken,
+  }) async {
+    try {
+      final body = await _hostAction('consume', sessionId, hostToken);
+      final ticket = (body['proofTicket'] as String?)?.trim();
+      if (ticket != null &&
+          ticket.isNotEmpty &&
+          !ticket.startsWith('ZP1.')) {
+        throw const RelayException(RelayFailureKind.invalid);
+      }
+      return RelayConsumeResult(
+        proofTicket: ticket == null || ticket.isEmpty ? null : ticket,
+      );
+    } catch (_) {
+      // Best effort after authenticated decrypt. TTL remains the hard cleanup guarantee.
+      return const RelayConsumeResult();
+    }
+  }
+
+  @override
+  Future<void> cancel({
+    required String sessionId,
+    required String hostToken,
+  }) async {
+    try {
+      await _hostAction('cancel', sessionId, hostToken);
+    } catch (_) {
+      // Best effort only. Server-side TTL is the hard cleanup guarantee.
+    }
+  }
+}
+).hasMatch(capability)) {
+      throw const RelayException(RelayFailureKind.invalid);
+    }
+    return RelayRespondResult(
+      proofCapability:
+          capability == null || capability.isEmpty ? null : capability,
+    );
   }
 
   @override

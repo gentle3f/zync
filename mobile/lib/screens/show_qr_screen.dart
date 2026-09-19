@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/achievement_service.dart';
 import '../core/analytics_service.dart';
+import '../core/cardverse_proof_capture.dart';
 import '../core/local_store.dart';
 import '../core/matching_service.dart';
 import '../core/models.dart';
@@ -46,6 +47,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
   void initState() {
     super.initState();
     _relay = widget.relayClient ?? HttpRelayClient();
+    unawaited(CardverseRelayProofCapture.resumePending(_relay));
     WidgetsBinding.instance.addObserver(this);
     unawaited(_startSession());
   }
@@ -185,18 +187,28 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
       final previousIds = previous?.previousSharedIds.toSet() ?? <String>{};
       final currentIds = match.shared.map((item) => item.id).toSet();
       final newCount = currentIds.difference(previousIds).length;
+      final progressEventId =
+          'relay:' + bootstrap.sessionId + ':host';
       await LocalStore.recordZync(
         peerId: peer.localId,
         peerNickname: peer.nickname,
         sharedIds: currentIds.toList(),
         peerInterests: peer.interests,
         peerSocialLinks: peer.socialLinks,
+        progressEventId: progressEventId,
       );
       final newAchievementIds = AchievementService.newlyUnlocked(
         before: historyBefore,
         after: await LocalStore.loadHistory(),
       ).toList(growable: false);
-      await _relay.consume(sessionId: bootstrap.sessionId, hostToken: bootstrap.hostToken);
+      final consumeResult = await _relay.consume(
+        sessionId: bootstrap.sessionId,
+        hostToken: bootstrap.hostToken,
+      );
+      await CardverseRelayProofCapture.saveHostTicket(
+        proofTicket: consumeResult.proofTicket,
+        clientEventId: progressEventId,
+      );
 
       final analytics = <Future<void>>[
         ZyncAnalytics.instance.track(

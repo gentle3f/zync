@@ -66,10 +66,15 @@ class LocalStore {
     required List<String> sharedIds,
     List<SelectedInterest> peerInterests = const [],
     List<SocialLink> peerSocialLinks = const [],
+    String? progressEventId,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final history = (await loadHistory()).toList();
     final now = DateTime.now().toUtc();
+    final eventId = (progressEventId ?? _uuid.v4()).trim();
+    if (eventId.isEmpty || eventId.length > 160) {
+      throw const FormatException('Invalid Zync progress event ID');
+    }
     final index = history.indexWhere((entry) => entry.peerId == peerId);
 
     late final ZyncHistoryEntry updated;
@@ -125,7 +130,7 @@ class LocalStore {
     await _appendProgressEvent(
       prefs,
       ZyncProgressEvent(
-        id: _uuid.v4(),
+        id: eventId,
         type: ZyncProgressEventType.oneToOneZync,
         source: ZyncProgressSource.oneToOne,
         occurredAt: now,

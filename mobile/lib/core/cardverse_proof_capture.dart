@@ -1,0 +1,98 @@
+import 'dart:async';
+
+import 'cardverse_proof_cache.dart';
+import 'relay_service.dart';
+
+class CardverseRelayProofCapture {
+  const CardverseRelayProofCapture._();
+
+  static Future<void> saveHostTicket({
+    required String? proofTicket,
+    required String clientEventId,
+    DateTime? capturedAt,
+  }) async {
+    final ticket = proofTicket?.trim() ?? '';
+    if (ticket.isEmpty) return;
+    await CardverseProofCache.saveTicket(
+      PendingCardverseProofTicket(
+        ticket: ticket,
+        clientEventId: clientEventId,
+        capturedAt: (capturedAt ?? DateTime.now()).toUtc(),
+      ),
+    );
+  }
+
+  static Future<void> captureScanner({
+    required RelayClient relay,
+    required String sessionId,
+    required String? proofCapability,
+    required String clientEventId,
+    List<Duration> retryDelays = const [
+      Duration.zero,
+      Duration(milliseconds: 650),
+      Duration(milliseconds: 1200),
+      Duration(milliseconds: 2200),
+    ],
+  }) async {
+    final capability = proofCapability?.trim() ?? '';
+    if (capability.isEmpty) return;
+
+    final capturedAt = DateTime.now().toUtc();
+    for (final delay in retryDelays) {
+      if (delay > Duration.zero) await Future<void>.delayed(delay);
+      try {
+        final result = await relay.proof(
+          sessionId: sessionId,
+          proofCapability: capability,
+        );
+        if (result.isReady && result.proofTicket != null) {
+          await CardverseProofCache.saveTicket(
+            PendingCardverseProofTicket(
+              ticket: result.proofTicket!,
+              clientEventId: clientEventId,
+              capturedAt: DateTime.now().toUtc(),
+            ),
+          );
+          await CardverseProofCache.removeCapability(
+            sessionId: sessionId,
+            clientEventId: clientEventId,
+          );
+          return;
+        }
+      } on RelayException catch (error) {
+        if (error.kind == RelayFailureKind.expired ||
+            error.kind == RelayFailureKind.invalid) {
+          await CardverseProofCache.removeCapability(
+            sessionId: sessionId,
+            clientEventId: clientEventId,
+          );
+          return;
+        }
+      }
+    }
+
+    await CardverseProofCache.saveCapability(
+      PendingRelayProofCapability(
+        sessionId: sessionId,
+        proofCapability: capability,
+        clientEventId: clientEventId,
+        capturedAt: capturedAt,
+      ),
+    );
+  }
+
+  static Future<void> resumePending(RelayClient relay) async {
+    final pending = await CardverseProofCache.loadCapabilities();
+    for (final item in pending) {
+      unawaited(
+        captureScanner(
+          relay: relay,
+          sessionId: item.sessionId,
+          proofCapability: item.proofCapability,
+          clientEventId: item.clientEventId,
+          retryDelays: const [Duration.zero],
+        ),
+      );
+    }
+  }
+}
