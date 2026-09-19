@@ -24,10 +24,12 @@ export default async function handler(req, res) {
   }
 
   try {
+    await enforceCardverseIpRateLimit(req, 'auth_challenge_ip');
     const db = await getCardverseDatabase();
     const challenge = await createAuthChallenge(db, req.body?.provider);
     return res.status(200).json(challenge);
   } catch (error) {
+    applyCardverseAbuseHeaders(res, error);
     const status = statusFor(error);
     if (status >= 500) console.error('Cardverse auth challenge failed', error?.code || error?.message);
     return res.status(status).json({ error: error?.code || 'cardverse_auth_failed' });
