@@ -158,6 +158,30 @@ class GroupZyncSession {
     return _copy(phase: GroupRoomPhase.zyncNowOptional);
   }
 
+  GroupZyncSession startZyncNowConsensus(String mechanicId) {
+    if (phase != GroupRoomPhase.zyncNowOptional) {
+      throw StateError('Zync Now consensus is not available yet');
+    }
+    if (mechanicId.trim().isEmpty) {
+      throw ArgumentError.value(mechanicId, 'mechanicId');
+    }
+    return _copy(
+      phase: GroupRoomPhase.zyncNowInputOpen,
+      roundNumber: roundNumber + 1,
+      activeMechanicId: mechanicId,
+    );
+  }
+
+  GroupZyncSession lockZyncNowInput() => _transition(
+        GroupRoomPhase.zyncNowInputOpen,
+        GroupRoomPhase.zyncNowInputLocked,
+      );
+
+  GroupZyncSession completeZyncNowConsensus() => _transition(
+        GroupRoomPhase.zyncNowInputLocked,
+        GroupRoomPhase.zyncNowResult,
+      );
+
   GroupZyncSession end() {
     if (phase == GroupRoomPhase.ended) return this;
     return _copy(phase: GroupRoomPhase.ended);
@@ -171,6 +195,7 @@ class GroupZyncSession {
     int requiredSelections = 0,
     List<GroupBoundedOption> options = const [],
     String followUp = '',
+    String? resultOptionId,
     int? hiddenSubsetSize,
     String? revealInterestId,
     List<String> revealParticipantIds = const [],
@@ -188,6 +213,7 @@ class GroupZyncSession {
         requiredSelections: requiredSelections,
         options: options,
         followUp: followUp,
+        resultOptionId: resultOptionId,
         hiddenSubsetSize: hiddenSubsetSize,
         revealInterestId: revealInterestId,
         revealParticipantIds: revealParticipantIds,
