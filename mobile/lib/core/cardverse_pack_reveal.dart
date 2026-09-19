@@ -114,6 +114,48 @@ class CardversePackRevealPlan {
   }
 }
 
+class CardversePackRevealCheckpoint {
+  const CardversePackRevealCheckpoint({
+    required this.serverRollId,
+    required this.revealedCount,
+  });
+
+  final String serverRollId;
+  final int revealedCount;
+
+  Map<String, dynamic> toJson() => {
+        'serverRollId': serverRollId,
+        'revealedCount': revealedCount,
+      };
+
+  factory CardversePackRevealCheckpoint.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    final rollId = (json['serverRollId'] as String?)?.trim() ?? '';
+    final count = (json['revealedCount'] as num?)?.toInt() ?? -1;
+    if (rollId.isEmpty || count < 0) {
+      throw const FormatException(
+        'Invalid Cardverse reveal checkpoint',
+      );
+    }
+    return CardversePackRevealCheckpoint(
+      serverRollId: rollId,
+      revealedCount: count,
+    );
+  }
+
+  CardversePackRevealCursor resume(
+    CardversePackRevealPlan plan,
+  ) {
+    if (plan.serverRollId != serverRollId) {
+      throw StateError(
+        'Reveal checkpoint belongs to a different server roll',
+      );
+    }
+    return plan.cursor(revealedCount: revealedCount);
+  }
+}
+
 class CardversePackRevealCursor {
   CardversePackRevealCursor._({
     required this.plan,
