@@ -126,6 +126,21 @@ void main() {
     await guest1.submitSelection(guesses);
     await guest2.submitSelection(guesses);
 
+    await expectLater(
+      host.lockInput(),
+      throwsStateError,
+      reason: 'Host must submit a private guess too',
+    );
+
+    final hostGuesses =
+        round.input.options.take(2).map((item) => item.id).toList();
+    host.submitHostSelection(hostGuesses);
+
+    final collection = await host.collectRoundInputs();
+    expect(collection.complete, isTrue);
+    expect(collection.inputs, hasLength(3));
+    expect(collection.missingParticipantIds, isEmpty);
+
     await host.lockInput();
     final inputs = await host.takeGuestInputs();
     expect(inputs, hasLength(2));
@@ -215,11 +230,68 @@ void main() {
       payload: forgedPayload,
     );
 
-    await host.lockInput();
-    await expectLater(
-      host.takeGuestInputs(),
-      throwsA(isA<FormatException>()),
+    final round = host.activeRound!;
+    host.submitHostSelection(
+      round.input.options
+          .take(round.input.requiredSelections)
+          .map((item) => item.id)
+          .toList(),
     );
+
+    await expectLater(
+      host.lockInput(),
+      throwsA(isA<FormatException>()),
+      reason: 'Semantic forgery must fail before input is locked',
+    );
+  });
+
+  test('host cannot lock while any ready participant has not answered',
+      () async {
+    final relay = _MemoryGroupRelay();
+    final host = await GroupHostCoordinator.create(
+      relay: relay,
+      hostProfile: hostProfile,
+      maxParticipants: 4,
+    );
+    final guest1 = await GroupParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guest1Profile,
+    );
+    await GroupParticipantCoordinator.join(
+      relay: relay,
+      room: host.room.qr,
+      profile: guest2Profile,
+    );
+
+    await host.refreshLobby();
+    final round = await host.prepareNextRound(seed: 'wait-for-everyone');
+    final state = await guest1.poll();
+    expect(state, isNotNull);
+
+    host.submitHostSelection(
+      round.input.options
+          .take(round.input.requiredSelections)
+          .map((item) => item.id)
+          .toList(),
+    );
+    await guest1.submitSelection(
+      state!.options
+          .take(state.requiredSelections)
+          .map((item) => item.id)
+          .toList(),
+    );
+
+    final collection = await host.collectRoundInputs();
+    expect(collection.complete, isFalse);
+    expect(collection.missingParticipantIds, hasLength(1));
+
+    await expectLater(
+      host.lockInput(),
+      throwsStateError,
+    );
+
+    expect(host.session.phase, GroupRoomPhase.inputOpen);
   });
 
   test('late Group Zync participant cannot join after host locks room',
