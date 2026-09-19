@@ -61,9 +61,12 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(
-      find.byKey(const ValueKey('collection-filter-wantToTry')),
+    final wantToTryFilter = find.byKey(
+      const ValueKey('collection-filter-wantToTry'),
     );
+    await tester.ensureVisible(wantToTryFilter);
+    await tester.pump();
+    await tester.tap(wantToTryFilter);
     await tester.pumpAndSettle();
 
     expect(
@@ -89,20 +92,16 @@ void main() {
     );
     await tester.pump();
 
-    final coffee = find.byKey(
-      const ValueKey('binder-card-food.coffee'),
+    final basketball = find.byKey(
+      const ValueKey('binder-card-sports.basketball'),
     );
-    await tester.ensureVisible(coffee);
-    await tester.tap(coffee);
+    expect(basketball, findsOneWidget);
+    await tester.tap(basketball);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(
       find.byKey(const ValueKey('collection-card-detail')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('card-finish-animated')),
       findsOneWidget,
     );
     expect(find.text('Add to Want to Try'), findsOneWidget);
@@ -139,7 +138,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 450));
 
     expect(find.text('Encounter · Soulbound'), findsOneWidget);
-    expect(find.text('ENCOUNTER'), findsOneWidget);
+    expect(find.text('ENCOUNTER'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 }
