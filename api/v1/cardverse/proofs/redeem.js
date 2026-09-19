@@ -24,7 +24,9 @@ const BAD_REQUEST = new Set([
 
 function statusFor(error) {
   if (error?.code === 'cardverse_database_not_configured' ||
-      error?.code === 'cardverse_proof_secret_not_configured') return 503;
+      error?.code === 'cardverse_proof_secret_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_not_configured' ||
+      error?.code === 'cardverse_abuse_guard_unavailable') return 503;
   if (error?.code === 'cardverse_rate_limited') return 429;
   if (error?.code === 'cardverse_session_missing' ||
       error?.code === 'cardverse_session_invalid') return 401;
@@ -43,6 +45,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await enforceCardverseIpRateLimit(req, 'proof_redeem_ip');
     const token = bearerTokenFromAuthorization(req.headers?.authorization);
     const db = await getCardverseDatabase();
     const session = await resolveAccountSession(db, token);
@@ -54,6 +57,7 @@ export default async function handler(req, res) {
     );
     return res.status(200).json(receipt);
   } catch (error) {
+    applyCardverseAbuseHeaders(res, error);
     const status = statusFor(error);
     if (status >= 500) {
       console.error('Cardverse proof redemption failed', error?.code || error?.message);
