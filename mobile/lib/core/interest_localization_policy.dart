@@ -12,6 +12,22 @@ import 'models.dart';
 class InterestLocalizationPolicy {
   const InterestLocalizationPolicy._();
 
+  /// Deep family clusters still being migrated. These are explicit debt, not
+  /// a claim that English-only generic labels are acceptable. Remove a cluster
+  /// from this set as soon as its zh-Hant/zh-Hans batch lands; CI will then
+  /// enforce the translations permanently.
+  static const Set<String> migrationBacklogClusters = {
+    'movies/subgenres',
+    'gaming/subgenres',
+    'tabletop/categories_mechanics',
+    'music/styles',
+    'books/subgenres',
+    'food/cuisines',
+    'food/dishes',
+    'food/drinks',
+    'travel/styles',
+  };
+
   static const Set<String> _properNameClusters = {
     'game_titles',
     'gaming/franchises',
@@ -66,8 +82,12 @@ class InterestLocalizationPolicy {
   static bool requiresChinese(InterestDefinition item) {
     if (_properNameIds.contains(item.id)) return false;
     if (_properNameClusters.contains(item.cluster)) return false;
+    if (migrationBacklogClusters.contains(item.cluster)) return false;
     return true;
   }
+
+  static bool isMigrationBacklog(InterestDefinition item) =>
+      migrationBacklogClusters.contains(item.cluster);
 
   static bool hasRequiredChinese(InterestDefinition item) {
     if (!requiresChinese(item)) return true;
