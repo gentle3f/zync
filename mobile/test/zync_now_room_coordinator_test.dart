@@ -5,6 +5,7 @@ import 'package:zync/core/interest_entity_metadata.dart';
 import 'package:zync/core/models.dart';
 import 'package:zync/core/zync_now_consensus.dart';
 import 'package:zync/core/zync_now_constraints_transport.dart';
+import 'package:zync/core/zync_now_engine.dart';
 import 'package:zync/core/zync_now_room_coordinator.dart';
 
 const hostProfile = LocalProfile(
