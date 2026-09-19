@@ -347,9 +347,17 @@ It should not make creepy psychological claims or infer intimate traits that the
 
 ---
 
-## 8. Zync Now — solving “What should we do / eat / where should we go?”
+## 8. Zync Now — solving “What should we do together?”
 
-A major future product mode should turn Zync’s interest graph into **shared decision support**.
+A major future product mode should turn Zync’s interest graph into **shared activity decision support**.
+
+### Phase boundary
+
+**Zync Now Phase 1 should suggest what people can do together, not where to go.**
+
+Phase 1 does not assume a venue database, live local-business data, restaurant inventory, booking supply or brand integrations. It should therefore generate **activity ideas**, not specific restaurants, shops, venues or destinations.
+
+Location-, venue-, restaurant- and brand-aware recommendations belong to later phases only when Zync has trustworthy supply data and/or partner integrations.
 
 Working name:
 
@@ -357,59 +365,58 @@ Working name:
 
 Zync Now should help one person, a pair or a group turn vague intent into a few concrete possibilities.
 
-### 8.1 Eat Together
+### 8.1 Phase 1 activity modes
 
-Inputs may include:
+Zync Now Phase 1 should help a pair or group choose **what kind of thing to do together**.
 
-- cuisines people like;
-- cuisines people want to try;
-- dietary constraints;
-- approximate budget;
+Useful modes include:
+
+- **Something we both already like** — choose from shared interests.
+- **One knows, one discovers** — one person already likes or knows the activity while the other does not.
+- **New to everyone** — choose something nobody in the group has tried or selected before.
+- **Meet in the middle** — combine different interests into one shared activity.
+- **Surprise us** — Zync chooses from a feasible set after simple constraints are applied.
+
+### 8.2 Minimal situational constraints
+
+Zync already knows interests. It should only ask for the missing context needed to make a useful suggestion.
+
+Examples:
+
 - time available;
-- desired vibe;
-- optional location context.
+- rough budget level;
+- active vs relaxed;
+- indoor vs outdoor;
+- how adventurous / unfamiliar the suggestion should be.
 
-The product can privately collect preferences first so one person does not dominate.
+The flow should stay lightweight and normally reach useful suggestions within seconds rather than becoming another profile form.
 
-Then it can reveal:
+### 8.3 Activity generation
 
-> **3 options everyone has a reason to accept**
+The output should describe **what to do**, not a specific place.
 
-The important output is not merely a restaurant ranking. It should explain the connection:
+Examples:
 
-> “You both like Japanese food, one of you wants to try yakitori, and the group selected casual / under 90 minutes.”
+- play badminton together;
+- try making sushi together;
+- watch a classic film neither person has seen;
+- do a street-photography challenge;
+- one person teaches the other a hobby they already know;
+- each person chooses one interest and Zync combines them into a two-hour challenge;
+- try a hobby both people have marked Want to Try.
 
-### 8.2 Do Something
+The engine may use:
 
-Inputs may include:
-
-- indoor / outdoor;
-- active / relaxed;
-- time;
-- budget;
-- group size;
-- categories already in Interest DNA;
-- things people marked Want to Try.
-
-Example output:
-
-> Bouldering + coffee
->
-> One person already likes climbing, another marked it Want to Try, and both like coffee. Try an indoor climbing session followed by a nearby café.
-
-### 8.3 Go Somewhere
-
-The same model can help with:
-
-- a free afternoon;
-- a weekend;
-- travel planning;
-- “something new near us”;
-- group itineraries.
+- exact shared interests;
+- one-person interests;
+- Want-to-Try;
+- category relationships;
+- crossover relationships;
+- prior activities already tried together.
 
 ### 8.4 Creativity as the differentiator
 
-Zync should not only search existing options. It can combine interests into experiences nobody explicitly asked for.
+Zync should not only choose existing shared interests. It can combine them into experiences nobody explicitly asked for.
 
 Example:
 
@@ -421,28 +428,78 @@ Person B:
 - Cycling
 - Photography
 
-Zync can build:
+Zync may suggest:
 
-> Cycle through an old neighbourhood → photo challenge → coffee → cult movie.
+> Create a photo challenge during a bike ride, then end by watching a film together.
 
 This is one of the most promising long-term mechanics because it turns interests into **co-created experiences**, not just recommendations.
 
-### 8.5 Decision mechanics can be playful
+### 8.5 Intelligent randomness
 
-Examples:
+A random-generation mode can add curiosity, but it should be constrained randomness rather than arbitrary roulette.
 
-- blind vote;
-- eliminate one;
-- rank top three;
-- “everyone secretly picks”;
-- compromise challenge;
-- mystery option;
-- “one familiar + one new”;
-- build a Sunday from three cards.
+The user can choose:
 
-The goal is to reduce decision friction while making the decision itself enjoyable.
+- something familiar;
+- one knows / one does not;
+- new to everyone;
+- crossover;
+- surprise us.
 
----
+Zync first filters to plausible activities, then randomises among good candidates.
+
+### 8.6 Consensus, not endless choice
+
+Zync should not output a large catalogue.
+
+A useful first-phase pattern is usually three strong choices:
+
+- **Safe Pick** — based on things the group already likes;
+- **Discovery Pick** — based on one person’s knowledge or Want-to-Try;
+- **Wildcard** — something new or a crossover.
+
+The group can then:
+
+- privately vote;
+- eliminate one option each;
+- rank the three;
+- ask Zync to decide a tie.
+
+The objective is to reduce **time to consensus**, not increase browsing.
+
+### 8.7 Action and memory
+
+After a suggestion is chosen, Zync may later ask a very small outcome question:
+
+> **Did you actually do it?**
+
+If yes, the activity can become a meaningful memory such as **Tried Together**, contribute to quests / achievements, and improve future suggestions.
+
+This creates the loop:
+
+```text
+Interest
+→ Zync Now suggestion
+→ real activity
+→ memory / progress
+→ richer future Zync
+```
+
+### 8.8 Later phases: places, restaurants and brands
+
+Specific venue, restaurant, destination and brand recommendations are intentionally **not Phase 1 Zync Now**.
+
+They may be added later when Zync has:
+
+- trustworthy place / venue data;
+- live availability or opening information where needed;
+- commercial or booking integrations;
+- appropriate location permissions;
+- clear organic-vs-sponsored ranking rules.
+
+The later commercial opportunity remains substantial, but Phase 1 should first prove that Zync can answer the simpler and more important question:
+
+> **“What should we do together?”**
 
 ## 9. Interest Graph becomes the strategic asset
 
