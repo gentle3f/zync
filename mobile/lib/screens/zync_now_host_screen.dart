@@ -10,6 +10,7 @@ import '../core/models.dart';
 import '../core/zync_now_consensus.dart';
 import '../core/zync_now_constraints_transport.dart';
 import '../core/zync_now_engine.dart';
+import '../core/zync_now_memory.dart';
 import '../core/zync_now_room_coordinator.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_now_constraints_form.dart';
@@ -39,6 +40,8 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
   bool _showHostConstraints = false;
   bool _hostBallotSubmitted = false;
   bool _activityRecorded = false;
+  bool _hidePendingFollowUp = false;
+  ZyncNowActivityMemory? _pendingActivity;
 
   int _contextCount = 0;
   int _ballotCount = 0;
@@ -75,9 +78,18 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         hostProfile: widget.profile,
         maxParticipants: 8,
       );
+      final memories = await LocalStore.loadZyncNowActivities();
+      ZyncNowActivityMemory? pending;
+      for (final memory in memories) {
+        if (memory.status == ZyncNowActivityStatus.chosen) {
+          pending = memory;
+          break;
+        }
+      }
       if (!mounted) return;
       setState(() {
         _coordinator = coordinator;
+        _pendingActivity = pending;
         _creating = false;
         _error = null;
       });
@@ -135,6 +147,29 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
       }
     } finally {
       _polling = false;
+    }
+  }
+
+  Future<void> _recordPendingOutcome(
+    ZyncNowActivityStatus status,
+  ) async {
+    final memory = _pendingActivity;
+    if (memory == null || status == ZyncNowActivityStatus.chosen) return;
+    setState(() => _busy = true);
+    try {
+      await LocalStore.recordZyncNowOutcome(
+        memoryId: memory.id,
+        status: status,
+      );
+      if (!mounted) return;
+      setState(() {
+        _pendingActivity = null;
+        _hidePendingFollowUp = false;
+      });
+    } catch (_) {
+      _fail();
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -220,7 +255,9 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         final candidate = coordinator.finalists.firstWhere(
           (item) => item.id == result.chosenCandidateId,
         );
-        await LocalStore.recordZyncNowChoice(candidate: candidate);
+        final memory =
+            await LocalStore.recordZyncNowChoice(candidate: candidate);
+        _pendingActivity = memory;
         _activityRecorded = true;
       }
 
@@ -326,7 +363,10 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
                 : 'Everyone joins, privately sets time, budget and preferences, then Zync finds options the whole group can accept.',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: 18),
+          if (_pendingActivity != null && !_hidePendingFollowUp) ...[
+            _pendingFollowUp(),
+            const SizedBox(height: 18),
+          ],
           ZyncSurface(
             borderColor: ZyncPalette.mint,
             backgroundColor: const Color(0xFFF1FBF7),
@@ -642,6 +682,77 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
           label: Text(_isZh ? '就呢個' : 'Let’s do it'),
         ),
       ],
+    );
+  }
+
+  Widget _pendingFollowUp() {
+    final memory = _pendingActivity!;
+    final candidate = memory.toCandidate();
+
+    return ZyncSurface(
+      backgroundColor: const Color(0xFFFFF7F2),
+      borderColor: ZyncPalette.peach,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const ZyncIconTile(
+                icon: Icons.history_rounded,
+                backgroundColor: ZyncPalette.peach,
+                foregroundColor: ZyncPalette.orangeDeep,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _isZh ? '上次嗰個，真係做咗未？' : 'Did you do your last Zync?',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            candidate.titleFor(_locale),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 7),
+          Text(
+            candidate.instructionFor(_locale),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.icon(
+                onPressed: _busy
+                    ? null
+                    : () => _recordPendingOutcome(
+                          ZyncNowActivityStatus.completed,
+                        ),
+                icon: const Icon(Icons.check_circle_outline_rounded),
+                label: Text(_isZh ? '做咗' : 'Yes, we did it'),
+              ),
+              OutlinedButton(
+                onPressed: _busy
+                    ? null
+                    : () => setState(() => _hidePendingFollowUp = true),
+                child: Text(_isZh ? '未做住' : 'Not yet'),
+              ),
+              TextButton(
+                onPressed: _busy
+                    ? null
+                    : () => _recordPendingOutcome(
+                          ZyncNowActivityStatus.skipped,
+                        ),
+                child: Text(_isZh ? '最後冇做' : 'We skipped it'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
