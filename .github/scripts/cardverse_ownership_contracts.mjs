@@ -118,6 +118,31 @@ assert.deepEqual(
 }
 
 {
+  const tx = {
+    async query(text) {
+      if (text.includes('pg_advisory_xact_lock')) return [];
+      if (text.includes('FROM zync_identity_links l')) {
+        return [{
+          id: ACCOUNT,
+          status: 'active',
+          created_at: '2026-09-20T00:00:00.000Z',
+          unlinked_at: '2026-09-20T01:00:00.000Z',
+        }];
+      }
+      throw new Error('unexpected query: ' + text);
+    },
+  };
+  const db = { query: tx.query, transaction: (fn) => fn(tx) };
+  await assert.rejects(
+    () => ensureAccountForIdentity(db, {
+      provider: 'google',
+      providerSubject: 'unlinked-google-user',
+    }),
+    /cardverse_identity_unlinked/,
+  );
+}
+
+{
   let insertedAccount = false;
   const tx = {
     async query(text) {
@@ -168,6 +193,7 @@ assert.deepEqual(
     accountId: ACCOUNT,
     provider: 'apple',
     linked: true,
+    restored: false,
   });
 }
 
