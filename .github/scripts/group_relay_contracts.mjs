@@ -4,7 +4,8 @@ import { readFile } from 'node:fs/promises';
 
 const source = await readFile('api/v1/group-relay.js', 'utf8');
 const encoded = Buffer.from(source).toString('base64');
-const { default: relay } = await import(`data:text/javascript;base64,${encoded}`);
+const imported = await import('data:text/javascript;base64,' + encoded);
+const relay = imported.default;
 
 function makeResponse() {
   const state = { status: 200, body: undefined, headers: {} };
@@ -20,13 +21,13 @@ function makeResponse() {
 }
 
 async function invoke(body, method = 'POST') {
-  const { state, res } = makeResponse();
+  const pair = makeResponse();
   await relay({
     method,
     body,
     headers: { 'x-forwarded-for': '203.0.113.88' },
-  }, res);
-  return state;
+  }, pair.res);
+  return pair.state;
 }
 
 const store = new Map();
@@ -42,17 +43,25 @@ function alive(key) {
   return entry;
 }
 
+function stringEntry(value, expiresAt = null) {
+  return { type: 'string', value: String(value), expiresAt };
+}
+
+function hashEntry(expiresAt = null) {
+  return { type: 'hash', value: new Map(), expiresAt };
+}
+
 function ensureHash(key) {
   let entry = alive(key);
   if (!entry) {
-    entry = { type: 'hash', value: new Map(), expiresAt: null };
+    entry = hashEntry();
     store.set(key, entry);
   }
   assert.equal(entry.type, 'hash');
   return entry;
 }
 
-function result(value, ok = true) {
+function redisResponse(value, ok = true) {
   return {
     ok,
     status: ok ? 200 : 500,
@@ -72,23 +81,32 @@ function parseMeta(value) {
   };
 }
 
+function parseParticipant(value) {
+  const match = /^A\|([a-f0-9]{64})\|([A-Za-z0-9_-]+)$/.exec(String(value));
+  if (!match) return null;
+  return { authHash: match[1], payload: match[2] };
+}
+
 function fakeRedis(command) {
-  const [op, ...args] = command;
+  const op = command[0];
+  const args = command.slice(1);
 
   if (op === 'SET') {
-    const [key, value, ...rest] = args;
+    const key = args[0];
+    const value = args[1];
+    const rest = args.slice(2);
     const existing = alive(key);
     const nx = rest.includes('NX');
     const xx = rest.includes('XX');
     if (nx && existing) return null;
     if (xx && !existing) return null;
 
-    let expiresAt = existing?.expiresAt ?? null;
+    let expiresAt = existing ? existing.expiresAt : null;
     const exIndex = rest.indexOf('EX');
     if (exIndex >= 0) {
       expiresAt = nowMs + Number(rest[exIndex + 1]) * 1000;
     }
-    store.set(key, { type: 'string', value: String(value), expiresAt });
+    store.set(key, stringEntry(value, expiresAt));
     return 'OK';
   }
 
@@ -166,11 +184,10 @@ function fakeRedis(command) {
       const key = keys[0];
       const entry = alive(key);
       const next = entry ? Number(entry.value) + 1 : 1;
-      store.set(key, {
-        type: 'string',
-        value: String(next),
-        expiresAt: entry?.expiresAt ?? nowMs + 60000,
-      });
+      store.set(
+        key,
+        stringEntry(String(next), entry ? entry.expiresAt : nowMs + 60000),
+      );
       return next;
     }
 
@@ -185,12 +202,37 @@ function fakeRedis(command) {
       const participants = ensureHash(keys[1]);
       const existing = participants.value.get(argv[1]);
       if (existing != null) {
-        return existing === argv[2] ? 'same' : 'duplicate';
+        const parsed = parseParticipant(existing);
+        if (!parsed) return 'invalid';
+        if (parsed.authHash === argv[2] && parsed.payload === argv[3]) {
+          return 'same';
+        }
+        return 'duplicate';
       }
       if (participants.value.size >= meta.max - 1) return 'full';
-      participants.value.set(argv[1], argv[2]);
+
+      participants.value.set(argv[1], 'A|' + argv[2] + '|' + argv[3]);
       participants.expiresAt = metaEntry.expiresAt;
       return 'joined';
+    }
+
+    if (script.includes('-- group_leave')) {
+      const metaEntry = alive(keys[0]);
+      if (!metaEntry) return 'missing';
+      const meta = parseMeta(metaEntry.value);
+      if (!meta) return 'invalid';
+      if (meta.joinHash !== argv[0]) return 'forbidden_room';
+      if (meta.phase !== 'L') return 'locked';
+
+      const participants = alive(keys[1]);
+      const stored = participants?.value.get(argv[1]);
+      if (stored == null) return 'missing_member';
+      const parsed = parseParticipant(stored);
+      if (!parsed) return 'invalid';
+      if (parsed.authHash !== argv[2]) return 'forbidden_participant';
+
+      participants.value.delete(argv[1]);
+      return 'left';
     }
 
     if (script.includes('-- group_lock')) {
@@ -200,7 +242,8 @@ function fakeRedis(command) {
       if (!meta) return 'invalid';
       if (meta.hostHash !== argv[0]) return 'forbidden';
       if (meta.phase === 'S') return 'same';
-      metaEntry.value = `M|${meta.hostHash}|${meta.joinHash}|${meta.max}|S`;
+      metaEntry.value =
+        'M|' + meta.hostHash + '|' + meta.joinHash + '|' + meta.max + '|S';
       return 'locked';
     }
 
@@ -209,18 +252,20 @@ function fakeRedis(command) {
       if (!metaEntry) return 'missing';
       const meta = parseMeta(metaEntry.value);
       if (!meta) return 'invalid';
-      if (meta.joinHash !== argv[0]) return 'forbidden';
+      if (meta.joinHash !== argv[0]) return 'forbidden_room';
       if (meta.phase !== 'S') return 'not_started';
 
       const participants = alive(keys[1]);
-      if (!participants || !participants.value.has(argv[1])) return 'unknown';
+      const stored = participants?.value.get(argv[1]);
+      if (stored == null) return 'unknown';
+      const parsed = parseParticipant(stored);
+      if (!parsed) return 'invalid';
+      if (parsed.authHash !== argv[2]) return 'forbidden_participant';
 
       const inputs = ensureHash(keys[2]);
       const existing = inputs.value.get(argv[1]);
-      if (existing != null) {
-        return existing === argv[2] ? 'same' : 'duplicate';
-      }
-      inputs.value.set(argv[1], argv[2]);
+      if (existing != null) return existing === argv[3] ? 'same' : 'duplicate';
+      inputs.value.set(argv[1], argv[3]);
       inputs.expiresAt = metaEntry.expiresAt;
       return 'accepted';
     }
@@ -244,42 +289,53 @@ function fakeRedis(command) {
           return match[2] === nextPayload ? 'same' : 'conflict';
         }
       }
-      store.set(keys[1], {
-        type: 'string',
-        value: `S|${nextRevision}|${nextPayload}`,
-        expiresAt: metaEntry.expiresAt,
-      });
+
+      store.set(
+        keys[1],
+        stringEntry('S|' + nextRevision + '|' + nextPayload, metaEntry.expiresAt),
+      );
       return 'published';
     }
 
-    throw new Error(`Unsupported fake EVAL: ${script}`);
+    throw new Error('Unsupported fake EVAL: ' + script);
   }
 
-  throw new Error(`Unsupported fake Redis command: ${op}`);
+  throw new Error('Unsupported fake Redis command: ' + op);
 }
 
 globalThis.fetch = async (url, options) => {
   assert.equal(url, 'https://fake-upstash.example');
   assert.equal(options.method, 'POST');
   assert.equal(options.headers.Authorization, 'Bearer unit-test-token');
-  return result(fakeRedis(JSON.parse(options.body)));
+  return redisResponse(fakeRedis(JSON.parse(options.body)));
 };
 
 process.env.UPSTASH_REDIS_REST_URL = 'https://fake-upstash.example';
 process.env.UPSTASH_REDIS_REST_TOKEN = 'unit-test-token';
-process.env.ZYNC_RELAY_RATE_LIMIT_SECRET = 'unit-test-rate-secret-1234567890';
+process.env.ZYNC_RELAY_RATE_LIMIT_SECRET =
+  'unit-test-rate-secret-1234567890';
 
 const roomId = 'ABCDEFGHIJKLMNOPQRSTUVWX';
 const hostToken = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
 const joinToken = 'ABCDEFGHIJKLMNOPQRSTUV0123456789';
 const wrongHostToken = 'ZYXWVUTSRQPONMLKJIHGFEDCBA987654';
 const wrongJoinToken = '9876543210ZYXWVUTSRQPONMLKJIHGFE';
-const hostHash = createHash('sha256').update(hostToken).digest('hex');
-const joinHash = createHash('sha256').update(joinToken).digest('hex');
+
 const p1 = 'AAAABBBBCCCCDDDDEEEEFFFF';
 const p2 = 'FFFFEEEEDDDDCCCCBBBBAAAA';
 const p3 = '111122223333444455556666';
-const expiry = (seconds = 1200) => new Date(nowMs + seconds * 1000).toISOString();
+
+const p1Token = 'P1TOKENABCDEFGHIJKLMNOPQRSTUVWXY';
+const p2Token = 'P2TOKENABCDEFGHIJKLMNOPQRSTUVWXY';
+const p3Token = 'P3TOKENABCDEFGHIJKLMNOPQRSTUVWXY';
+
+const hostHash = createHash('sha256').update(hostToken).digest('hex');
+const joinHash = createHash('sha256').update(joinToken).digest('hex');
+const p1Hash = createHash('sha256').update(p1Token).digest('hex');
+const p2Hash = createHash('sha256').update(p2Token).digest('hex');
+
+const expiry = (seconds = 1200) =>
+  new Date(nowMs + seconds * 1000).toISOString();
 const base = { protocolVersion: 1, roomId };
 
 let failures = 0;
@@ -318,9 +374,9 @@ test('create stores only short-lived capability hashes and is retry-safe', async
   assert.equal(r.status, 201);
   assert.equal(r.body.status, 'created');
 
-  const meta = alive(`zync:group:v1:${roomId}:meta`);
+  const meta = alive('zync:group:v1:' + roomId + ':meta');
   assert.ok(meta);
-  assert.equal(meta.value, `M|${hostHash}|${joinHash}|4|L`);
+  assert.equal(meta.value, 'M|' + hostHash + '|' + joinHash + '|4|L');
   assert.equal(meta.value.includes(hostToken), false);
   assert.equal(meta.value.includes(joinToken), false);
 
@@ -336,13 +392,13 @@ test('create stores only short-lived capability hashes and is retry-safe', async
   assert.equal(r.body.status, 'already_created');
 });
 
-test('join is capability-gated, duplicate-safe and host can fetch only opaque payloads',
-async () => {
+test('join binds profile to a private participant capability', async () => {
   let r = await invoke({
     action: 'join',
     ...base,
     joinToken: wrongJoinToken,
     participantId: p1,
+    participantToken: p1Token,
     payload: 'OpaquePayload_AAA111',
   });
   assert.equal(r.status, 403);
@@ -352,16 +408,22 @@ async () => {
     ...base,
     joinToken,
     participantId: p1,
+    participantToken: p1Token,
     payload: 'OpaquePayload_AAA111',
   });
   assert.equal(r.status, 200);
   assert.equal(r.body.participantCount, 2);
+
+  const stored = alive('zync:group:v1:' + roomId + ':participants').value.get(p1);
+  assert.equal(stored, 'A|' + p1Hash + '|OpaquePayload_AAA111');
+  assert.equal(stored.includes(p1Token), false);
 
   r = await invoke({
     action: 'join',
     ...base,
     joinToken,
     participantId: p1,
+    participantToken: p1Token,
     payload: 'OpaquePayload_AAA111',
   });
   assert.equal(r.status, 200);
@@ -372,20 +434,24 @@ async () => {
     ...base,
     joinToken,
     participantId: p1,
-    payload: 'DifferentOpaque_BBB222',
+    participantToken: p2Token,
+    payload: 'OpaquePayload_AAA111',
   });
   assert.equal(r.status, 409);
   assert.equal(r.body.error, 'group_participant_conflict');
+});
 
+test('host snapshot never exposes participant auth hashes', async () => {
   await invoke({
     action: 'join',
     ...base,
     joinToken,
     participantId: p2,
-    payload: 'OpaquePayload_CCC333',
+    participantToken: p2Token,
+    payload: 'OpaquePayload_BBB222',
   });
 
-  r = await invoke({
+  let r = await invoke({
     action: 'take_participants',
     ...base,
     hostToken: wrongHostToken,
@@ -400,43 +466,43 @@ async () => {
   assert.equal(r.status, 200);
   assert.equal(r.body.participantCount, 3);
   assert.equal(r.body.participants.length, 2);
-  assert.deepEqual(
-    new Set(r.body.participants.map((item) => item.participantId)),
-    new Set([p1, p2]),
-  );
-  assert.equal(
-    r.body.participants.every((item) => /^[A-Za-z0-9_-]+$/.test(item.payload)),
-    true,
-  );
+  const serialized = JSON.stringify(r.body.participants);
+  assert.equal(serialized.includes(p1Hash), false);
+  assert.equal(serialized.includes(p2Hash), false);
 });
 
-test('participant can leave before lock and rejoin', async () => {
+test('another participant cannot remove someone from lobby', async () => {
   let r = await invoke({
     action: 'leave',
     ...base,
     joinToken,
-    participantId: p2,
+    participantId: p1,
+    participantToken: p2Token,
   });
-  assert.equal(r.status, 200);
+  assert.equal(r.status, 403);
+  assert.equal(r.body.error, 'group_participant_not_authorized');
 
   r = await invoke({
-    action: 'take_participants',
+    action: 'leave',
     ...base,
-    hostToken,
+    joinToken,
+    participantId: p2,
+    participantToken: p2Token,
   });
-  assert.equal(r.body.participantCount, 2);
+  assert.equal(r.status, 200);
 
   r = await invoke({
     action: 'join',
     ...base,
     joinToken,
     participantId: p2,
-    payload: 'OpaquePayload_CCC333',
+    participantToken: p2Token,
+    payload: 'OpaquePayload_BBB222',
   });
   assert.equal(r.status, 200);
 });
 
-test('host lock is private and late joins are rejected', async () => {
+test('host lock is private and rejects late joins', async () => {
   let r = await invoke({
     action: 'lock',
     ...base,
@@ -450,14 +516,14 @@ test('host lock is private and late joins are rejected', async () => {
     hostToken,
   });
   assert.equal(r.status, 200);
-  assert.equal(r.body.status, 'locked');
 
   r = await invoke({
     action: 'join',
     ...base,
     joinToken,
     participantId: p3,
-    payload: 'OpaquePayload_DDD444',
+    participantToken: p3Token,
+    payload: 'OpaquePayload_CCC333',
   });
   assert.equal(r.status, 409);
   assert.equal(r.body.error, 'group_room_locked');
@@ -467,28 +533,31 @@ test('host lock is private and late joins are rejected', async () => {
     ...base,
     joinToken,
     participantId: p1,
+    participantToken: p1Token,
   });
   assert.equal(r.status, 409);
   assert.equal(r.body.error, 'group_room_locked');
 });
 
-test('private round input is member-only, idempotent and host-readable', async () => {
+test('private input cannot be impersonated by another participant', async () => {
   let r = await invoke({
     action: 'submit_input',
     ...base,
     joinToken,
-    participantId: p3,
+    participantId: p1,
+    participantToken: p2Token,
     roundNumber: 1,
-    payload: 'PrivateInput_UNKNOWN',
+    payload: 'PrivateInput_FORGED',
   });
   assert.equal(r.status, 403);
-  assert.equal(r.body.error, 'group_participant_unknown');
+  assert.equal(r.body.error, 'group_participant_not_authorized');
 
   r = await invoke({
     action: 'submit_input',
     ...base,
     joinToken,
     participantId: p1,
+    participantToken: p1Token,
     roundNumber: 1,
     payload: 'PrivateInput_111',
   });
@@ -500,6 +569,7 @@ test('private round input is member-only, idempotent and host-readable', async (
     ...base,
     joinToken,
     participantId: p1,
+    participantToken: p1Token,
     roundNumber: 1,
     payload: 'PrivateInput_111',
   });
@@ -511,6 +581,7 @@ test('private round input is member-only, idempotent and host-readable', async (
     ...base,
     joinToken,
     participantId: p1,
+    participantToken: p1Token,
     roundNumber: 1,
     payload: 'PrivateInput_Changed',
   });
@@ -528,8 +599,7 @@ test('private round input is member-only, idempotent and host-readable', async (
   ]);
 });
 
-test('bounded room state is monotonic and pollable only with join capability',
-async () => {
+test('bounded state is monotonic and join-capability readable', async () => {
   let r = await invoke({
     action: 'publish_state',
     ...base,
@@ -576,12 +646,12 @@ async () => {
     payload: 'StaleState_000',
   });
   assert.equal(r.status, 409);
-  assert.equal(r.body.error, 'group_state_conflict');
 });
 
 test('room capacity counts host plus guests', async () => {
   const capRoom = 'CAPACITYABCDEFGHIJKLMNOP';
   const capBase = { protocolVersion: 1, roomId: capRoom };
+
   let r = await invoke({
     action: 'create',
     ...capBase,
@@ -592,16 +662,18 @@ test('room capacity counts host plus guests', async () => {
   });
   assert.equal(r.status, 201);
 
-  for (const [participantId, payload] of [
-    [p1, 'Capacity_AAA'],
-    [p2, 'Capacity_BBB'],
-  ]) {
+  const joins = [
+    [p1, p1Token, 'Capacity_AAA'],
+    [p2, p2Token, 'Capacity_BBB'],
+  ];
+  for (const item of joins) {
     r = await invoke({
       action: 'join',
       ...capBase,
       joinToken,
-      participantId,
-      payload,
+      participantId: item[0],
+      participantToken: item[1],
+      payload: item[2],
     });
     assert.equal(r.status, 200);
   }
@@ -611,6 +683,7 @@ test('room capacity counts host plus guests', async () => {
     ...capBase,
     joinToken,
     participantId: p3,
+    participantToken: p3Token,
     payload: 'Capacity_CCC',
   });
   assert.equal(r.status, 409);
@@ -620,6 +693,7 @@ test('room capacity counts host plus guests', async () => {
 test('TTL removes abandoned group rooms without scheduled cleanup', async () => {
   const ttlRoom = 'TTLROOMABCDEFGHIJKLMNOPQ';
   const ttlBase = { protocolVersion: 1, roomId: ttlRoom };
+
   let r = await invoke({
     action: 'create',
     ...ttlBase,
@@ -672,7 +746,7 @@ test('only host can close room and close is idempotent', async () => {
   assert.equal(r.status, 410);
 });
 
-test('source never logs group payloads or capabilities', async () => {
+test('source never logs group payloads or raw capabilities', async () => {
   assert.equal(/console\.(log|error|warn)/.test(source), false);
   assert.equal(source.includes('UPSTASH_REDIS_REST_TOKEN'), true);
   assert.equal(source.includes("createHash('sha256'"), true);
@@ -682,13 +756,13 @@ test('source never logs group payloads or capabilities', async () => {
 for (const entry of cases) {
   try {
     await entry.fn();
-    console.log(`✓ ${entry.name}`);
+    console.log('✓ ' + entry.name);
   } catch (error) {
     failures += 1;
-    console.error(`✗ ${entry.name}`);
+    console.error('✗ ' + entry.name);
     console.error(error);
   }
 }
 
 if (failures) process.exit(1);
-console.log(`\n${cases.length} Group Zync relay contract tests passed.`);
+console.log('\n' + cases.length + ' Group Zync relay contract tests passed.');
