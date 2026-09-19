@@ -5,6 +5,7 @@ import 'zync_now_consensus.dart';
 import 'zync_now_consensus_transport.dart';
 import 'zync_now_constraints_transport.dart';
 import 'zync_now_engine.dart';
+import 'zync_now_relaxation.dart';
 
 enum ZyncNowRoomStage {
   lobby,
@@ -83,6 +84,9 @@ class ZyncNowRoomHostCoordinator {
   ZyncNowConsensusResult? get result => _result;
   List<ZyncNowCandidate> get finalists => _finalists;
   bool get needsRelaxation => _needsRelaxation;
+
+  List<ZyncNowRelaxationKind> get availableRelaxations =>
+      ZyncNowRelaxationPlanner.available(_contexts.values);
 
   List<GroupParticipantProfile> get profiles => List.unmodifiable([
         hostParticipant,
@@ -220,6 +224,50 @@ class ZyncNowRoomHostCoordinator {
     }
 
     _contexts = collection.contexts;
+    return _prepareFromCurrentContexts(
+      priorActivityKeys: priorActivityKeys,
+      seed: seed,
+    );
+  }
+
+  Future<List<ZyncNowCandidate>> retryWithRelaxation(
+    ZyncNowRelaxationKind kind, {
+    Set<String> priorActivityKeys = const {},
+    String seed = '',
+  }) async {
+    if (_stage != ZyncNowRoomStage.result || !_needsRelaxation) {
+      throw StateError('Zync Now relaxation is not available');
+    }
+    if (!availableRelaxations.contains(kind)) {
+      throw ArgumentError.value(
+        kind,
+        'kind',
+        'This soft preference cannot be relaxed further',
+      );
+    }
+
+    final previousKeys = _finalists.map((item) => item.repeatKey).toSet();
+    _contexts = ZyncNowRelaxationPlanner.apply(_contexts, kind);
+    _hostBallot = null;
+    _result = null;
+
+    return _prepareFromCurrentContexts(
+      priorActivityKeys: {
+        ...priorActivityKeys,
+        ...previousKeys,
+      },
+      seed: '$seed|relax.${kind.name}',
+    );
+  }
+
+  Future<List<ZyncNowCandidate>> _prepareFromCurrentContexts({
+    required Set<String> priorActivityKeys,
+    required String seed,
+  }) async {
+    if (_contexts.isEmpty) {
+      throw StateError('Zync Now private constraints are unavailable');
+    }
+
     final participants = [
       for (final profile in profiles)
         ZyncNowParticipant(
@@ -279,7 +327,7 @@ class ZyncNowRoomHostCoordinator {
     }
 
     _needsRelaxation = false;
-    _roundNumber = 2;
+    _roundNumber += 1;
     _consensusRound = ZyncNowConsensusTransportRound(
       roundNumber: _roundNumber,
       method: ZyncNowConsensusMethod.quickVote,
