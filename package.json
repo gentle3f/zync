@@ -3,6 +3,7 @@
     "node": "22.x"
   },
   "dependencies": {
-    "postgres": "^3.4.9"
+    "postgres": "^3.4.9",
+    "jose": "^6.2.12"
   }
 }

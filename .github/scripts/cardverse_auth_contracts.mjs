@@ -1,0 +1,168 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import {
+  verifyProviderIdToken,
+} from '../../api/_cardverse/provider_auth.js';
+import {
+  bearerTokenFromAuthorization,
+  consumeAuthChallenge,
+  createAccountSession,
+  createAuthChallenge,
+  resolveAccountSession,
+} from '../../api/_cardverse/session_store.js';
+
+const migration = await readFile(
+  new URL('../../db/migrations/0003_cardverse_auth_sessions.sql', import.meta.url),
+  'utf8',
+);
+const pkg = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
+
+assert.match(migration, /CREATE TABLE IF NOT EXISTS cardverse_auth_challenges/);
+assert.match(migration, /nonce_hash text NOT NULL UNIQUE/);
+assert.match(migration, /CREATE TABLE IF NOT EXISTS zync_account_sessions/);
+assert.match(migration, /token_hash text NOT NULL UNIQUE/);
+assert.equal(pkg.dependencies?.jose, '^6.2.12');
+
+const CHALLENGE = '11111111-1111-4111-8111-111111111111';
+const ACCOUNT = '22222222-2222-4222-8222-222222222222';
+const SESSION = '33333333-3333-4333-8333-333333333333';
+
+{
+  let inserted = null;
+  const db = {
+    async query(text, params) {
+      assert.match(text, /INSERT INTO cardverse_auth_challenges/);
+      inserted = params;
+      return [{ challenge_id: CHALLENGE, expires_at: '2026-09-20T02:10:00.000Z' }];
+    },
+  };
+  const challenge = await createAuthChallenge(db, 'google', { ttlMinutes: 10 });
+  assert.equal(challenge.challengeId, CHALLENGE);
+  assert.equal(challenge.provider, 'google');
+  assert.match(challenge.nonce, /^[A-Za-z0-9_-]{43}$/);
+  assert.equal(inserted[0], 'google');
+  assert.equal(inserted[1], createHash('sha256').update(challenge.nonce).digest('hex'));
+  assert.equal(inserted[2], 10);
+}
+
+{
+  let paramsSeen = null;
+  const db = {
+    async query(text, params) {
+      assert.match(text, /UPDATE cardverse_auth_challenges SET consumed_at/);
+      paramsSeen = params;
+      return [{ challenge_id: CHALLENGE }];
+    },
+  };
+  const result = await consumeAuthChallenge(db, {
+    challengeId: CHALLENGE,
+    provider: 'apple',
+    nonce: 'nonce-from-verified-token',
+  });
+  assert.equal(result.consumed, true);
+  assert.equal(
+    paramsSeen[2],
+    createHash('sha256').update('nonce-from-verified-token').digest('hex'),
+  );
+}
+
+{
+  let verifierArgs = null;
+  const identity = await verifyProviderIdToken(
+    'google',
+    'header.payload.signature',
+    {
+      audiences: ['zync-client.apps.googleusercontent.com'],
+      async verifyJwt(args) {
+        verifierArgs = args;
+        return {
+          payload: {
+            sub: 'google-subject-123',
+            nonce: 'nonce-123',
+            email: 'person@example.com',
+            email_verified: true,
+          },
+        };
+      },
+    },
+  );
+  assert.equal(identity.providerSubject, 'google-subject-123');
+  assert.equal(identity.providerEmail, 'person@example.com');
+  assert.equal(identity.emailVerified, true);
+  assert.equal(identity.nonce, 'nonce-123');
+  assert.deepEqual(verifierArgs.issuers, ['https://accounts.google.com', 'accounts.google.com']);
+  assert.deepEqual(verifierArgs.algorithms, ['RS256']);
+}
+
+{
+  const identity = await verifyProviderIdToken(
+    'apple',
+    'header.payload.signature',
+    {
+      audiences: ['com.example.zync'],
+      async verifyJwt(args) {
+        assert.deepEqual(args.issuers, ['https://appleid.apple.com']);
+        return {
+          payload: {
+            sub: 'apple-subject-123',
+            nonce: 'nonce-apple',
+            email: 'relay@privaterelay.appleid.com',
+            email_verified: 'true',
+          },
+        };
+      },
+    },
+  );
+  assert.equal(identity.provider, 'apple');
+  assert.equal(identity.emailVerified, true);
+}
+
+{
+  let tokenHash = null;
+  const db = {
+    async query(text, params) {
+      assert.match(text, /INSERT INTO zync_account_sessions/);
+      tokenHash = params[1];
+      return [{ session_id: SESSION, expires_at: '2026-10-20T02:00:00.000Z' }];
+    },
+  };
+  const session = await createAccountSession(db, ACCOUNT, { ttlDays: 30 });
+  assert.equal(session.sessionId, SESSION);
+  assert.match(session.token, /^[A-Za-z0-9_-]{43}$/);
+  assert.equal(tokenHash, createHash('sha256').update(session.token).digest('hex'));
+  assert.equal(bearerTokenFromAuthorization('Bearer ' + session.token), session.token);
+}
+
+{
+  const rawToken = 'A'.repeat(43);
+  const expectedHash = createHash('sha256').update(rawToken).digest('hex');
+  let call = 0;
+  const db = {
+    async query(text, params) {
+      call += 1;
+      if (call === 1) {
+        assert.match(text, /JOIN zync_accounts/);
+        assert.equal(params[0], expectedHash);
+        return [{
+          session_id: SESSION,
+          account_id: ACCOUNT,
+          expires_at: '2026-10-20T02:00:00.000Z',
+          status: 'active',
+        }];
+      }
+      assert.match(text, /UPDATE zync_account_sessions SET last_seen_at/);
+      return [];
+    },
+  };
+  const session = await resolveAccountSession(db, rawToken);
+  assert.equal(session.accountId, ACCOUNT);
+  assert.equal(call, 2);
+}
+
+assert.throws(
+  () => bearerTokenFromAuthorization('Bearer too-short'),
+  /cardverse_session_missing/,
+);
+
+console.log('✓ Cardverse auth/session contracts passed');

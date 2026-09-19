@@ -17,8 +17,10 @@ expect_sql_failure() {
   echo "✓ expected failure: $label"
 }
 
-psql_zync -f db/migrations/0001_cardverse_ownership.sql
-psql_zync -f db/migrations/0002_cardverse_pack_rolls.sql
+for migration in db/migrations/*.sql; do
+  echo "Applying $migration"
+  psql_zync -f "$migration"
+done
 
 for table in \
   zync_accounts \
@@ -29,7 +31,9 @@ for table in \
   cardverse_idempotency_records \
   cardverse_inventory_ledger \
   cardverse_pack_rolls \
-  cardverse_pack_roll_items
+  cardverse_pack_roll_items \
+  cardverse_auth_challenges \
+  zync_account_sessions
 do
   value="$(psql_zync -Atc "SELECT to_regclass('public.${table}') IS NOT NULL")"
   test "$value" = "t"

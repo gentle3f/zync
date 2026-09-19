@@ -327,3 +327,51 @@ A retry with the same idempotency key returns the persisted receipt without invo
 The database also enforces one roll per pack with a unique `pack_id` constraint.
 
 The actual production odds/catalog policy is intentionally **not** frozen by this slice. That policy must be explicit, versioned, auditable and server-owned before a public pack-open endpoint is enabled.
+
+
+## 17. Authenticated account/session foundation
+
+Milestone 5 now includes the server identity boundary needed before any public ownership mutation is enabled.
+
+New migration:
+
+- `db/migrations/0003_cardverse_auth_sessions.sql`
+
+New server modules:
+
+- `api/_cardverse/session_store.js`
+- `api/_cardverse/provider_auth.js`
+
+New authenticated API foundation:
+
+- `POST /api/v1/cardverse/auth/challenge`
+- `POST /api/v1/cardverse/auth/provider`
+- `POST /api/v1/cardverse/auth/logout`
+- `GET /api/v1/cardverse/inventory`
+
+The authentication flow is:
+
+```text
+request single-use provider challenge
+→ app sends nonce to Google / Apple
+→ app receives provider ID token
+→ server verifies signature + issuer + audience + expiry
+→ server verifies and consumes the single-use nonce challenge
+→ server resolves provider subject to internal Zync account UUID
+→ server creates an opaque Cardverse session
+→ only SHA-256(session token) is stored
+```
+
+Provider email is optional metadata only. The provider `sub` claim is the identity link.
+
+No public ownership endpoint accepts a client-selected account ID.
+
+Runtime configuration required before provider login can work:
+
+- `ZYNC_GOOGLE_CLIENT_IDS` — comma-separated accepted Google OAuth client IDs;
+- `ZYNC_APPLE_CLIENT_IDS` — comma-separated accepted Apple App/Services IDs;
+- `DATABASE_URL`.
+
+The default server session lifetime is 30 days and may be reduced with `CARDVERSE_SESSION_TTL_DAYS`. Auth nonce challenges default to 10 minutes.
+
+This slice does not add a mobile login button yet. Mobile provider credentials and secure token storage must be configured and tested before the first real collection login UX is enabled.
