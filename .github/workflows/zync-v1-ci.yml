@@ -82,6 +82,7 @@ jobs:
           node --check api/v1/group-relay.js
           node --check api/v1/interest-popularity.js
           node --check api/_cardverse/db.js
+          node --check api/_cardverse/abuse_guard.js
           node --check api/_cardverse/ownership_store.js
           node --check api/_cardverse/pack_store.js
           node --check api/_cardverse/session_store.js
@@ -110,6 +111,7 @@ jobs:
           node --check .github/scripts/cardverse_ownership_contracts.mjs
           node --check .github/scripts/cardverse_pack_open_contracts.mjs
           node --check .github/scripts/cardverse_auth_contracts.mjs
+          node --check .github/scripts/cardverse_abuse_guard_contracts.mjs
           node --check .github/scripts/cardverse_pack_policy_contracts.mjs
           node --check .github/scripts/cardverse_reward_contracts.mjs
           node --check .github/scripts/cardverse_proof_ticket_contracts.mjs
@@ -125,6 +127,9 @@ jobs:
 
       - name: Test Cardverse auth/session contracts
         run: node .github/scripts/cardverse_auth_contracts.mjs
+
+      - name: Test Cardverse distributed abuse/rate-limit contracts
+        run: node .github/scripts/cardverse_abuse_guard_contracts.mjs
 
       - name: Test Cardverse server catalog and pack policy contracts
         run: node .github/scripts/cardverse_pack_policy_contracts.mjs
