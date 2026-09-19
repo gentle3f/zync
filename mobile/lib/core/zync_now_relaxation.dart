@@ -1,3 +1,4 @@
+import 'interest_entity_metadata.dart';
 import 'zync_now_constraints_transport.dart';
 import 'zync_now_engine.dart';
 
