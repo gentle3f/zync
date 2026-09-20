@@ -122,27 +122,55 @@ const SESSION = '33333333-3333-4333-8333-333333333333';
 {
   let tokenHash = null;
   let cleanupSeen = false;
-  const db = {
+  let accountLockSeen = false;
+  let transactionCount = 0;
+  const tx = {
     async query(text, params) {
+      if (text.includes("status = 'active' FOR UPDATE")) {
+        accountLockSeen = true;
+        assert.equal(params[0], ACCOUNT);
+        return [{ id: ACCOUNT }];
+      }
       if (text.includes('INSERT INTO zync_account_sessions')) {
         tokenHash = params[1];
         return [{ session_id: SESSION, expires_at: '2026-10-20T02:00:00.000Z' }];
       }
       assert.match(text, /UPDATE zync_account_sessions/);
-      assert.match(text, /LIMIT \$2/);
+      assert.match(text, /LIMIT \\$2/);
       assert.equal(params[0], ACCOUNT);
       assert.equal(params[1], 8);
       cleanupSeen = true;
       return [];
     },
   };
+  const db = {
+    async transaction(callback) {
+      transactionCount += 1;
+      return callback(tx);
+    },
+  };
   const session = await createAccountSession(db, ACCOUNT, { ttlDays: 30 });
   assert.equal(session.sessionId, SESSION);
   assert.match(session.token, /^[A-Za-z0-9_-]{43}$/);
   assert.equal(tokenHash, createHash('sha256').update(session.token).digest('hex'));
+  assert.equal(accountLockSeen, true);
   assert.equal(cleanupSeen, true);
+  assert.equal(transactionCount, 1);
   assert.equal(bearerTokenFromAuthorization('Bearer ' + session.token), session.token);
 }
+
+await assert.rejects(
+  () => createAccountSession({ query: async () => [] }, ACCOUNT),
+  /cardverse_transaction_required/,
+);
+
+await assert.rejects(
+  () => createAccountSession(
+    { transaction: (callback) => callback({ query: async () => [] }) },
+    ACCOUNT,
+  ),
+  /cardverse_account_not_active/,
+);
 
 {
   const rawToken = 'A'.repeat(43);
