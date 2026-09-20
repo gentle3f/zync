@@ -27,3 +27,4 @@ if (exitCode !== 0) {
 }
 
 console.log('[cardverse-live-readiness] READY');
+// env-refresh probe 2026-09-20
