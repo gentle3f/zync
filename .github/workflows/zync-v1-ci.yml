@@ -127,6 +127,7 @@ jobs:
           node --check .github/scripts/cardverse_pack_policy_contracts.mjs
           node --check .github/scripts/cardverse_reward_contracts.mjs
           node --check .github/scripts/cardverse_proof_ticket_contracts.mjs
+          node --check .github/scripts/cardverse_router_contracts.mjs
 
       - name: Test V1 serverless contracts
         run: node .github/scripts/serverless_contracts.mjs
@@ -157,6 +158,9 @@ jobs:
 
       - name: Test Cardverse anonymous proof-ticket contracts
         run: node .github/scripts/cardverse_proof_ticket_contracts.mjs
+
+      - name: Test Cardverse router and Vercel function-budget contracts
+        run: node .github/scripts/cardverse_router_contracts.mjs
 
       - name: Test encrypted relay contracts
         run: node .github/scripts/relay_contracts.mjs
