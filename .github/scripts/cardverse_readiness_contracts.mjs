@@ -55,10 +55,23 @@ const baseOptions = {
   assert.equal(report.status, 'ready');
   assert.equal(report.ready, true);
   assert.equal(report.checks.database.reachable, true);
+  assert.equal(report.checks.database.schemaReady, true);
   assert.equal(report.checks.abuseGuard.reachable, true);
   assert.equal(report.checks.providers.google, true);
   assert.equal(report.checks.providers.apple, false);
   assert.equal(report.gates.api, false);
+}
+
+{
+  const report = await buildCardverseReadiness({
+    ...baseOptions,
+    async checkDatabase() {
+      return { reachable: true, schemaReady: false };
+    },
+  });
+  assert.equal(report.ready, false);
+  assert.equal(report.checks.database.reachable, true);
+  assert.equal(report.checks.database.schemaReady, false);
 }
 
 {
