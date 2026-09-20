@@ -371,31 +371,178 @@ class LocalizedDomainText {
         'es':'$current / $target','fr':'$current / $target','pt':'$current / $target',
       });
 
+  static String achievementFamilyTitle(String family, String locale) {
+    final values = switch (family) {
+      'connection' => {
+          'en':'People & Connections',
+          'zh-Hant':'人與連結',
+          'zh-Hans':'人与连接',
+        },
+      'discovery' => {
+          'en':'Interest Discovery',
+          'zh-Hant':'興趣探索',
+          'zh-Hans':'兴趣探索',
+        },
+      'crew' => {
+          'en':'Your Crews',
+          'zh-Hant':'你遇見嘅同好',
+          'zh-Hans':'你遇见的同好',
+        },
+      'realWorld' => {
+          'en':'Do It for Real',
+          'zh-Hant':'真係一齊做',
+          'zh-Hans':'真的一起做',
+        },
+      _ => {'en': family},
+    };
+    return _pick(locale, values);
+  }
+
   static String achievementTitle(String id, String locale) {
     final values = switch (id) {
       'first_zync' => {
-          'en':'First Contact','zh-Hant':'第一次相遇','zh-Hans':'第一次相遇','ja':'最初の出会い','ko':'첫 만남',
-          'es':'Primer contacto','fr':'Premier contact','pt':'Primeiro contato',
+          'en':'First Contact','zh-Hant':'第一次相遇','zh-Hans':'第一次相遇',
         },
       'people_five' => {
-          'en':'High Five','zh-Hant':'High Five','zh-Hans':'High Five','ja':'ハイファイブ','ko':'하이파이브',
-          'es':'Choca esos cinco','fr':'High Five','pt':'High Five',
+          'en':'High Five','zh-Hant':'High Five','zh-Hans':'High Five',
         },
-      'basketball_starting_five' => {
-          'en':'Starting Five','zh-Hant':'正選五人','zh-Hans':'首发五人','ja':'スターティング5','ko':'스타팅 파이브',
-          'es':'Quinteto titular','fr':'Cinq majeur','pt':'Cinco inicial',
+      'people_ten' => {
+          'en':'Open Circle','zh-Hant':'十人圈','zh-Hans':'十人圈',
         },
-      'sports_five' => {
-          'en':'Multi-Sport Rookie','zh-Hant':'多項運動新秀','zh-Hans':'多项运动新秀','ja':'マルチスポーツ新人','ko':'멀티스포츠 루키',
-          'es':'Novato multideporte','fr':'Rookie multisport','pt':'Novato multiesporte',
+      'people_twentyfive' => {
+          'en':'Constellation','zh-Hant':'人際星圖','zh-Hans':'人际星图',
         },
-      'sports_ten' => {
-          'en':'Ten-Sport Explorer','zh-Hant':'十項運動探索者','zh-Hans':'十项运动探索者','ja':'10スポーツ探検家','ko':'10종목 탐험가',
-          'es':'Explorador de 10 deportes','fr':'Explorateur de 10 sports','pt':'Explorador de 10 esportes',
+      'zync_sessions_ten' => {
+          'en':'Ten Conversations','zh-Hant':'十次連結','zh-Hans':'十次连接',
+        },
+      'zync_sessions_twentyfive' => {
+          'en':'Keep Connecting','zh-Hant':'一路有話題','zh-Hans':'一路有话题',
+        },
+      'familiar_face_three' => {
+          'en':'Not Just Hello','zh-Hant':'不止打招呼','zh-Hans':'不止打招呼',
+        },
+      'familiar_circle_three' => {
+          'en':'Familiar Faces','zh-Hant':'熟面孔','zh-Hans':'熟面孔',
+        },
+      'deep_circle_three' => {
+          'en':'Inner Orbit','zh-Hant':'熟人軌道','zh-Hans':'熟人轨道',
+        },
+      'conversation_modes_three' => {
+          'en':'Conversation Sampler','zh-Hant':'三種打開方式','zh-Hans':'三种打开方式',
+        },
+      'conversation_modes_six' => {
+          'en':'Full Spectrum','zh-Hant':'全頻對話','zh-Hans':'全频对话',
+        },
+      'curiosity_10' => {
+          'en':'Curiosity Shelf','zh-Hant':'好奇小架','zh-Hans':'好奇小架',
         },
       'curiosity_25' => {
-          'en':'Curiosity Cabinet','zh-Hant':'好奇收藏櫃','zh-Hans':'好奇收藏柜','ja':'好奇心コレクション','ko':'호기심 컬렉션',
-          'es':'Gabinete de curiosidades','fr':'Cabinet de curiosités','pt':'Gabinete de curiosidades',
+          'en':'Curiosity Cabinet','zh-Hant':'好奇收藏櫃','zh-Hans':'好奇收藏柜',
+        },
+      'curiosity_50' => {
+          'en':'Curiosity Library','zh-Hant':'好奇圖書館','zh-Hans':'好奇图书馆',
+        },
+      'curiosity_100' => {
+          'en':'Human Encyclopedia','zh-Hant':'人類百科','zh-Hans':'人类百科',
+        },
+      'categories_three' => {
+          'en':'Three Worlds','zh-Hant':'三個世界','zh-Hans':'三个世界',
+        },
+      'categories_five' => {
+          'en':'Five Worlds','zh-Hant':'五個世界','zh-Hans':'五个世界',
+        },
+      'categories_eight' => {
+          'en':'World Hopper','zh-Hant':'世界跳躍者','zh-Hans':'世界跳跃者',
+        },
+      'categories_twelve' => {
+          'en':'Wide Horizon','zh-Hant':'廣闊視野','zh-Hans':'广阔视野',
+        },
+      'basketball_starting_five' => {
+          'en':'Starting Five','zh-Hant':'正選五人','zh-Hans':'首发五人',
+        },
+      'basketball_full_roster' => {
+          'en':'Full Roster','zh-Hant':'完整球隊名單','zh-Hans':'完整球队名单',
+        },
+      'football_starting_eleven' => {
+          'en':'Starting XI','zh-Hant':'正選十一人','zh-Hans':'首发十一人',
+        },
+      'badminton_doubles_four' => {
+          'en':'Doubles Court','zh-Hant':'雙打成局','zh-Hans':'双打成局',
+        },
+      'coffee_table_five' => {
+          'en':'Coffee Table','zh-Hant':'咖啡五人桌','zh-Hans':'咖啡五人桌',
+        },
+      'gaming_party_four' => {
+          'en':'Full Party','zh-Hant':'四人滿隊','zh-Hans':'四人满队',
+        },
+      'book_club_five' => {
+          'en':'Book Club','zh-Hant':'讀書會','zh-Hans':'读书会',
+        },
+      'ai_roundtable_three' => {
+          'en':'AI Roundtable','zh-Hant':'AI 圓桌','zh-Hans':'AI 圆桌',
+        },
+      'photo_walk_three' => {
+          'en':'Photo Walk','zh-Hant':'攝影散步隊','zh-Hans':'摄影散步队',
+        },
+      'japan_crew_three' => {
+          'en':'Japan Crew','zh-Hant':'日本同好三人組','zh-Hans':'日本同好三人组',
+        },
+      'music_crew_five' => {
+          'en':'Festival Crew','zh-Hant':'音樂祭五人組','zh-Hans':'音乐节五人组',
+        },
+      'sports_five' => {
+          'en':'Multi-Sport Rookie','zh-Hant':'多項運動新秀','zh-Hans':'多项运动新秀',
+        },
+      'sports_ten' => {
+          'en':'Ten-Sport Explorer','zh-Hant':'十項運動探索者','zh-Hans':'十项运动探索者',
+        },
+      'racket_four' => {
+          'en':'Racket Rack','zh-Hant':'球拍架','zh-Hans':'球拍架',
+        },
+      'active_mix' => {
+          'en':'Active Weekend','zh-Hant':'動感週末','zh-Hans':'动感周末',
+        },
+      'culture_mix' => {
+          'en':'Culture Mixer','zh-Hant':'文化混合器','zh-Hans':'文化混合器',
+        },
+      'maker_mix' => {
+          'en':'Maker Mindset','zh-Hant':'創作腦','zh-Hans':'创作脑',
+        },
+      'taste_trip' => {
+          'en':'Taste Trip','zh-Hant':'味覺旅行','zh-Hans':'味觉旅行',
+        },
+      'mind_body_mix' => {
+          'en':'Mind & Body','zh-Hant':'身心雙修','zh-Hans':'身心双修',
+        },
+      'tried_together_first' => {
+          'en':'From Talk to Action','zh-Hant':'由傾到做','zh-Hans':'从聊到做',
+        },
+      'tried_together_three' => {
+          'en':'Three for Real','zh-Hant':'真做三次','zh-Hans':'真做三次',
+        },
+      'tried_together_ten' => {
+          'en':'Actually Doing It','zh-Hant':'真係有做','zh-Hans':'真的有做',
+        },
+      'group_activity_first' => {
+          'en':'Better Together','zh-Hant':'一齊先好玩','zh-Hans':'一起才好玩',
+        },
+      'group_activity_three' => {
+          'en':'Group Momentum','zh-Hant':'群體動起來','zh-Hans':'群体动起来',
+        },
+      'activity_categories_three' => {
+          'en':'Try Three Worlds','zh-Hant':'玩過三個世界','zh-Hans':'玩过三个世界',
+        },
+      'activity_categories_five' => {
+          'en':'Five Ways Out','zh-Hant':'五種新玩法','zh-Hans':'五种新玩法',
+        },
+      'activity_modes_three' => {
+          'en':'Mix It Up','zh-Hant':'三種玩法','zh-Hans':'三种玩法',
+        },
+      'real_world_actions_ten' => {
+          'en':'Real-World Ten','zh-Hant':'現實十連','zh-Hans':'现实十连',
+        },
+      'real_world_actions_twentyfive' => {
+          'en':'Life, Not Feed','zh-Hant':'生活唔係 Feed','zh-Hans':'生活不是 Feed',
         },
       _ => {'en': id},
     };
@@ -405,42 +552,148 @@ class LocalizedDomainText {
   static String achievementDescription(String id, String locale) {
     final values = switch (id) {
       'first_zync' => {
-          'en':'Zync with your first person.','zh-Hant':'完成你第一次真人 Zync。','zh-Hans':'完成你第一次真人 Zync。',
-          'ja':'最初の相手とZyncする。','ko':'첫 사람과 Zync 하세요.','es':'Haz Zync con tu primera persona.',
-          'fr':'Faites votre premier Zync.','pt':'Faça seu primeiro Zync.',
+          'en':'Complete your first face-to-face Zync.','zh-Hant':'完成你第一次真人 Zync。','zh-Hans':'完成你第一次真人 Zync。',
         },
       'people_five' => {
           'en':'Meet 5 different people through Zync.','zh-Hant':'透過 Zync 遇到 5 個唔同嘅人。','zh-Hans':'通过 Zync 遇到 5 个不同的人。',
-          'ja':'5人の異なる人とZyncする。','ko':'서로 다른 5명과 Zync 하세요.','es':'Conoce a 5 personas distintas con Zync.',
-          'fr':'Rencontrez 5 personnes différentes avec Zync.','pt':'Conheça 5 pessoas diferentes com Zync.',
         },
-      'basketball_starting_five' => {
-          'en':'Meet 5 different people who are into basketball.','zh-Hant':'遇到 5 個都鍾意籃球嘅唔同人物。','zh-Hans':'遇到 5 个都喜欢篮球的不同的人。',
-          'ja':'バスケットボール好きの5人と出会う。','ko':'농구를 좋아하는 서로 다른 5명을 만나세요.',
-          'es':'Conoce a 5 personas distintas a las que les gusta el baloncesto.',
-          'fr':'Rencontrez 5 personnes différentes qui aiment le basket.',
-          'pt':'Conheça 5 pessoas diferentes que gostam de basquete.',
+      'people_ten' => {
+          'en':'Meet 10 different people through Zync.','zh-Hant':'透過 Zync 遇到 10 個唔同嘅人。','zh-Hans':'通过 Zync 遇到 10 个不同的人。',
         },
-      'sports_five' => {
-          'en':'Discover 5 different sports through people you meet.','zh-Hant':'從你遇到嘅人身上發現 5 種唔同運動。','zh-Hans':'从你遇到的人身上发现 5 种不同运动。',
-          'ja':'出会った人から5種類のスポーツを発見する。','ko':'만난 사람들을 통해 5가지 스포츠를 발견하세요.',
-          'es':'Descubre 5 deportes distintos a través de la gente que conoces.',
-          'fr':'Découvrez 5 sports différents grâce aux personnes rencontrées.',
-          'pt':'Descubra 5 esportes diferentes através das pessoas que conhece.',
+      'people_twentyfive' => {
+          'en':'Build a constellation of 25 real-world connections.','zh-Hant':'累積 25 個真實世界入面嘅 Zync 連結。','zh-Hans':'累积 25 个现实世界里的 Zync 连接。',
         },
-      'sports_ten' => {
-          'en':'Discover 10 different sports through people you meet.','zh-Hant':'從你遇到嘅人身上發現 10 種唔同運動。','zh-Hans':'从你遇到的人身上发现 10 种不同运动。',
-          'ja':'出会った人から10種類のスポーツを発見する。','ko':'만난 사람들을 통해 10가지 스포츠를 발견하세요.',
-          'es':'Descubre 10 deportes distintos a través de la gente que conoces.',
-          'fr':'Découvrez 10 sports différents grâce aux personnes rencontrées.',
-          'pt':'Descubra 10 esportes diferentes através das pessoas que conhece.',
+      'zync_sessions_ten' => {
+          'en':'Complete 10 face-to-face Zync sessions, repeats included.','zh-Hant':'完成 10 次真人 Zync；同一個人再 Zync 都算。','zh-Hans':'完成 10 次真人 Zync；和同一个人再次 Zync 也算。',
+        },
+      'zync_sessions_twentyfive' => {
+          'en':'Complete 25 face-to-face Zync sessions.','zh-Hant':'完成 25 次真人 Zync。','zh-Hans':'完成 25 次真人 Zync。',
+        },
+      'familiar_face_three' => {
+          'en':'Zync with the same person 3 times.','zh-Hant':'同同一個人完成 3 次 Zync。','zh-Hans':'和同一个人完成 3 次 Zync。',
+        },
+      'familiar_circle_three' => {
+          'en':'Zync again with 3 different people.','zh-Hant':'同 3 個唔同嘅人各自再 Zync 至少一次。','zh-Hans':'和 3 个不同的人各自再次 Zync 至少一次。',
+        },
+      'deep_circle_three' => {
+          'en':'Have 3 people you have Zynced with at least 3 times each.','zh-Hant':'有 3 個人，你同佢哋每個都 Zync 過至少 3 次。','zh-Hans':'有 3 个人，你和他们每个人都 Zync 过至少 3 次。',
+        },
+      'conversation_modes_three' => {
+          'en':'Use 3 different conversation styles across real Zyncs.','zh-Hant':'喺真人 Zync 入面玩過 3 種唔同對話方式。','zh-Hans':'在真人 Zync 里玩过 3 种不同对话方式。',
+        },
+      'conversation_modes_six' => {
+          'en':'Use all 6 conversation styles across real Zyncs.','zh-Hant':'喺真人 Zync 入面玩齊 6 種對話方式。','zh-Hans':'在真人 Zync 里玩齐 6 种对话方式。',
+        },
+      'curiosity_10' => {
+          'en':'Discover 10 different interests through people you meet.','zh-Hant':'從真人相遇中發現 10 個唔同興趣。','zh-Hans':'从真人相遇中发现 10 个不同兴趣。',
         },
       'curiosity_25' => {
           'en':'Discover 25 different interests through people you meet.','zh-Hant':'從真人相遇中發現 25 個唔同興趣。','zh-Hans':'从真人相遇中发现 25 个不同兴趣。',
-          'ja':'出会いを通して25種類の興味を発見する。','ko':'사람들을 만나며 25가지 관심사를 발견하세요.',
-          'es':'Descubre 25 intereses distintos a través de la gente que conoces.',
-          'fr':'Découvrez 25 centres d’intérêt différents grâce aux rencontres.',
-          'pt':'Descubra 25 interesses diferentes através das pessoas que conhece.',
+        },
+      'curiosity_50' => {
+          'en':'Discover 50 different interests through people you meet.','zh-Hant':'從真人相遇中發現 50 個唔同興趣。','zh-Hans':'从真人相遇中发现 50 个不同兴趣。',
+        },
+      'curiosity_100' => {
+          'en':'Discover 100 different interests through real people.','zh-Hant':'從真人相遇中發現 100 個唔同興趣。','zh-Hans':'从真人相遇中发现 100 个不同兴趣。',
+        },
+      'categories_three' => {
+          'en':'Discover interests across 3 different worlds.','zh-Hant':'從真人相遇中接觸 3 個唔同興趣類別。','zh-Hans':'从真人相遇中接触 3 个不同兴趣类别。',
+        },
+      'categories_five' => {
+          'en':'Discover interests across 5 different worlds.','zh-Hant':'從真人相遇中接觸 5 個唔同興趣類別。','zh-Hans':'从真人相遇中接触 5 个不同兴趣类别。',
+        },
+      'categories_eight' => {
+          'en':'Discover interests across 8 different worlds.','zh-Hant':'從真人相遇中接觸 8 個唔同興趣類別。','zh-Hans':'从真人相遇中接触 8 个不同兴趣类别。',
+        },
+      'categories_twelve' => {
+          'en':'Discover interests across 12 different worlds.','zh-Hant':'從真人相遇中接觸 12 個唔同興趣類別。','zh-Hans':'从真人相遇中接触 12 个不同兴趣类别。',
+        },
+      'basketball_starting_five' => {
+          'en':'Meet 5 different people who are into basketball.','zh-Hant':'遇到 5 個都鍾意籃球嘅唔同人物。','zh-Hans':'遇到 5 个都喜欢篮球的不同的人。',
+        },
+      'basketball_full_roster' => {
+          'en':'Meet 12 different basketball people — a full roster.','zh-Hant':'遇到 12 個唔同嘅籃球同好，湊成完整名單。','zh-Hans':'遇到 12 个不同的篮球同好，凑成完整名单。',
+        },
+      'football_starting_eleven' => {
+          'en':'Meet 11 different people who are into football.','zh-Hant':'遇到 11 個唔同嘅足球同好，砌出正選十一人。','zh-Hans':'遇到 11 个不同的足球同好，组成首发十一人。',
+        },
+      'badminton_doubles_four' => {
+          'en':'Meet 4 different badminton people — enough for doubles.','zh-Hant':'遇到 4 個唔同嘅羽毛球同好，啱啱好可以雙打。','zh-Hans':'遇到 4 个不同的羽毛球同好，刚好可以双打。',
+        },
+      'coffee_table_five' => {
+          'en':'Meet 5 different people who are into coffee.','zh-Hant':'遇到 5 個唔同嘅咖啡同好。','zh-Hans':'遇到 5 个不同的咖啡同好。',
+        },
+      'gaming_party_four' => {
+          'en':'Meet 4 different people who are into video games.','zh-Hant':'遇到 4 個唔同嘅電玩同好，四人滿隊。','zh-Hans':'遇到 4 个不同的电玩同好，四人满队。',
+        },
+      'book_club_five' => {
+          'en':'Meet 5 different people who are into reading.','zh-Hant':'遇到 5 個唔同嘅閱讀同好。','zh-Hans':'遇到 5 个不同的阅读同好。',
+        },
+      'ai_roundtable_three' => {
+          'en':'Meet 3 different people who are into AI.','zh-Hant':'遇到 3 個唔同嘅 AI 同好。','zh-Hans':'遇到 3 个不同的 AI 同好。',
+        },
+      'photo_walk_three' => {
+          'en':'Meet 3 different people who are into photography.','zh-Hant':'遇到 3 個唔同嘅攝影同好。','zh-Hans':'遇到 3 个不同的摄影同好。',
+        },
+      'japan_crew_three' => {
+          'en':'Meet 3 different people who share an interest in Japan.','zh-Hant':'遇到 3 個同樣對日本有興趣嘅唔同人物。','zh-Hans':'遇到 3 个同样对日本有兴趣的不同的人。',
+        },
+      'music_crew_five' => {
+          'en':'Meet 5 different people with music somewhere in their Interest DNA.','zh-Hant':'遇到 5 個 Interest DNA 入面有音樂世界嘅唔同人物。','zh-Hans':'遇到 5 个 Interest DNA 里有音乐世界的不同的人。',
+        },
+      'sports_five' => {
+          'en':'Discover 5 different sports through people you meet.','zh-Hant':'從你遇到嘅人身上發現 5 種唔同運動。','zh-Hans':'从你遇到的人身上发现 5 种不同运动。',
+        },
+      'sports_ten' => {
+          'en':'Discover 10 different sports through people you meet.','zh-Hant':'從你遇到嘅人身上發現 10 種唔同運動。','zh-Hans':'从你遇到的人身上发现 10 种不同运动。',
+        },
+      'racket_four' => {
+          'en':'Discover 4 different racket sports.','zh-Hant':'從真人相遇中發現 4 種唔同球拍運動。','zh-Hans':'从真人相遇中发现 4 种不同球拍运动。',
+        },
+      'active_mix' => {
+          'en':'Discover at least 3 sports and 2 outdoor interests.','zh-Hant':'發現至少 3 種運動加 2 種戶外興趣。','zh-Hans':'发现至少 3 种运动加 2 种户外兴趣。',
+        },
+      'culture_mix' => {
+          'en':'Discover 2 music, 2 entertainment and 1 arts interest.','zh-Hant':'發現 2 個音樂、2 個娛樂同 1 個藝術興趣。','zh-Hans':'发现 2 个音乐、2 个娱乐和 1 个艺术兴趣。',
+        },
+      'maker_mix' => {
+          'en':'Discover 2 technology, 1 arts and 1 crafts interest.','zh-Hant':'發現 2 個科技、1 個藝術同 1 個手作興趣。','zh-Hans':'发现 2 个科技、1 个艺术和 1 个手作兴趣。',
+        },
+      'taste_trip' => {
+          'en':'Discover 3 food interests and 2 travel interests.','zh-Hant':'發現 3 個飲食興趣加 2 個旅行興趣。','zh-Hans':'发现 3 个饮食兴趣加 2 个旅行兴趣。',
+        },
+      'mind_body_mix' => {
+          'en':'Discover 2 wellness interests and 2 sports.','zh-Hant':'發現 2 個身心健康興趣加 2 種運動。','zh-Hans':'发现 2 个身心健康兴趣加 2 种运动。',
+        },
+      'tried_together_first' => {
+          'en':'Actually complete your first Zync Now activity together.','zh-Hant':'第一次真係完成一個 Zync Now 揀出嚟嘅活動。','zh-Hans':'第一次真正完成一个 Zync Now 选出来的活动。',
+        },
+      'tried_together_three' => {
+          'en':'Complete 3 Zync Now activities in real life.','zh-Hant':'真實完成 3 個 Zync Now 活動。','zh-Hans':'真实完成 3 个 Zync Now 活动。',
+        },
+      'tried_together_ten' => {
+          'en':'Complete 10 Zync Now activities in real life.','zh-Hant':'真實完成 10 個 Zync Now 活動。','zh-Hans':'真实完成 10 个 Zync Now 活动。',
+        },
+      'group_activity_first' => {
+          'en':'Complete a Zync Now activity with 3 or more people.','zh-Hant':'同 3 個或以上嘅人真實完成一次 Zync Now 活動。','zh-Hans':'和 3 个或以上的人真实完成一次 Zync Now 活动。',
+        },
+      'group_activity_three' => {
+          'en':'Complete 3 group Zync Now activities with 3+ people.','zh-Hant':'完成 3 次三人或以上嘅 Zync Now 群體活動。','zh-Hans':'完成 3 次三人或以上的 Zync Now 群体活动。',
+        },
+      'activity_categories_three' => {
+          'en':'Complete activities spanning 3 different interest worlds.','zh-Hant':'真實做過橫跨 3 個唔同興趣類別嘅活動。','zh-Hans':'真实做过横跨 3 个不同兴趣类别的活动。',
+        },
+      'activity_categories_five' => {
+          'en':'Complete activities spanning 5 different interest worlds.','zh-Hant':'真實做過橫跨 5 個唔同興趣類別嘅活動。','zh-Hans':'真实做过横跨 5 个不同兴趣类别的活动。',
+        },
+      'activity_modes_three' => {
+          'en':'Complete Zync Now activities in 3 different activity modes.','zh-Hant':'真實完成過 3 種唔同模式嘅 Zync Now 活動。','zh-Hans':'真实完成过 3 种不同模式的 Zync Now 活动。',
+        },
+      'real_world_actions_ten' => {
+          'en':'Complete 10 real-world Zync actions.','zh-Hant':'累積 10 次真人 Zync 或 Tried Together 行動。','zh-Hans':'累积 10 次真人 Zync 或 Tried Together 行动。',
+        },
+      'real_world_actions_twentyfive' => {
+          'en':'Complete 25 real-world Zync actions.','zh-Hant':'累積 25 次真人 Zync 或 Tried Together 行動。','zh-Hans':'累积 25 次真人 Zync 或 Tried Together 行动。',
         },
       _ => {'en': id},
     };
