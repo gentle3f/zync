@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../core/achievement_service.dart';
 import '../core/card_visual_recipe.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_inventory.dart';
 import '../core/cardverse_models.dart';
 import '../core/cardverse_session_store.dart';
 import '../core/interest_catalog.dart';
+import '../core/local_store.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_card_preview.dart';
+import 'achievement_screen.dart';
 import 'cardverse_account_lab_screen.dart';
 import 'cardverse_pack_opening_lab_screen.dart';
 import 'quest_board_screen.dart';
@@ -25,6 +28,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
 
   CardverseSessionCredential? _session;
   CardverseInventorySnapshot? _inventory;
+  AchievementSnapshot? _achievement;
   bool _loading = true;
   String _error = '';
   String? _openingPackId;
@@ -55,12 +59,19 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       });
     }
 
+    final history = await LocalStore.loadHistory();
+    final events = await LocalStore.loadProgressEvents();
+    final achievement = AchievementService.evaluate(
+      history,
+      events: events,
+    );
     final session = await _sessions.load();
     if (session == null) {
       if (!mounted) return;
       setState(() {
         _session = null;
         _inventory = null;
+        _achievement = achievement;
         _loading = false;
       });
       return;
@@ -72,6 +83,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       setState(() {
         _session = session;
         _inventory = inventory;
+        _achievement = achievement;
         _loading = false;
       });
     } on CardverseCloudException catch (error) {
@@ -81,6 +93,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         setState(() {
           _session = null;
           _inventory = null;
+          _achievement = achievement;
           _loading = false;
         });
         return;
@@ -89,6 +102,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       setState(() {
         _session = session;
         _inventory = null;
+        _achievement = achievement;
         _loading = false;
         _error = _isZh
             ? '暫時連接唔到你嘅 Cardverse 收藏。'
@@ -197,6 +211,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         children: [
           _hero(),
           const SizedBox(height: 18),
+          _progressHub(),
+          const SizedBox(height: 18),
           ZyncSurface(
             borderColor: const Color(0xFFE0D9FF),
             backgroundColor: const Color(0xFFF7F5FF),
@@ -269,6 +285,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _hero(),
         const SizedBox(height: 18),
         _stats(inventory),
+        const SizedBox(height: 16),
+        _progressHub(),
         const SizedBox(height: 22),
         _sectionTitle(
           _isZh ? '未開卡包' : 'Unopened packs',
@@ -338,6 +356,107 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                     ),
                   ],
                 ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _progressHub() {
+    final achievement = _achievement;
+    final trophyValue = achievement == null
+        ? '—'
+        : '${achievement.unlockedCount} / ${achievement.progress.length}';
+
+    return ZyncSurface(
+      shadow: false,
+      borderColor: const Color(0xFFE0D9FF),
+      backgroundColor: const Color(0xFFF8F7FF),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _isZh ? '你嘅進度世界' : 'Your progress world',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 5),
+          Text(
+            _isZh
+                ? '成就、探索任務同 Cardverse 唔應該係三個孤島；佢哋都係你真實世界 Zync 累積出嚟嘅進度。'
+                : 'Trophies, Curiosity quests and Cardverse are parts of the same real-world Zync progression.',
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: ZyncPalette.inkSoft),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _progressTile(
+                  icon: Icons.emoji_events_outlined,
+                  value: trophyValue,
+                  label: _isZh ? '已解鎖成就' : 'trophies unlocked',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const AchievementScreen(),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _progressTile(
+                  icon: Icons.explore_outlined,
+                  value: _isZh ? '任務' : 'Quests',
+                  label: _isZh ? '探索任務板' : 'Curiosity Board',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const QuestBoardScreen(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _progressTile({
+    required IconData icon,
+    required String value,
+    required String label,
+    required VoidCallback onTap,
+  }) =>
+      InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: Ink(
+          padding: const EdgeInsets.all(13),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.88),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE7E2F2)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: ZyncPalette.plum, size: 22),
+              const SizedBox(height: 9),
+              Text(
+                value,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                maxLines: 2,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: ZyncPalette.inkSoft),
               ),
             ],
           ),
