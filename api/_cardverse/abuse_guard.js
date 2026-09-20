@@ -30,7 +30,8 @@ function firstEnv(...names) {
 }
 
 export function cardverseAbuseGuardConfigured() {
-  const url = firstEnv('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL').replace(/\\/$/, '');
+  const rawUrl = firstEnv('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL');
+  const url = rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl;
   const token = firstEnv('UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN');
   const secret = String(process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET || '').trim();
   return url.startsWith('https://') && Boolean(token) && secret.length >= 24;
