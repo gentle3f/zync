@@ -76,7 +76,15 @@ async function defaultDatabaseCheck() {
          WHERE table_schema = 'public'
            AND table_name = 'zync_identity_links'
            AND column_name = 'unlinked_at'
-      )
+      ) AND
+      EXISTS (
+        SELECT 1
+          FROM pg_trigger
+         WHERE tgname = 'cardverse_inventory_ledger_immutable'
+           AND tgrelid = to_regclass('public.cardverse_inventory_ledger')
+           AND NOT tgisinternal
+      ) AND
+      to_regclass('public.cardverse_reward_proofs_issuer_ticket_uidx') IS NOT NULL
     ) AS schema_ready
   `);
   return {
