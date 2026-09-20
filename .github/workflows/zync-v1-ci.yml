@@ -183,6 +183,9 @@ jobs:
       - name: Test release-signing configurator
         run: python3 mobile/tool/configure_android_signing.py --self-test
 
+      - name: Test Android Google identity bridge configurator
+        run: python3 mobile/tool/apply_android_google_identity.py --self-test
+
       - name: Test Play internal-release publishing guards
         run: python3 .github/scripts/play_internal_release.py --self-test
 
@@ -196,6 +199,7 @@ jobs:
           cp mobile/pubspec.yaml build_app/pubspec.yaml
           cp mobile/l10n.yaml build_app/l10n.yaml
           python3 mobile/tool/apply_android_branding.py build_app
+          python3 mobile/tool/apply_android_google_identity.py build_app
 
       - name: Verify signing patch matches generated Flutter template
         run: python3 mobile/tool/configure_android_signing.py --check-template build_app
@@ -213,6 +217,8 @@ jobs:
           test -f build_app/android/app/src/main/res/drawable/zync_splash_mark.xml
           grep -R -E 'compileSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
           grep -R -E 'targetSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
+          grep -R 'com.google.android.libraries.identity.googleid:googleid:1.2.1' build_app/android/app/build.gradle* >/dev/null
+          grep -R 'setNonce(nonce)' build_app/android/app/src/main/kotlin >/dev/null
 
       - name: Install Flutter dependencies
         working-directory: build_app
