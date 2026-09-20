@@ -23,12 +23,15 @@ Required server secrets:
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
 - `ZYNC_CARDVERSE_RATE_LIMIT_SECRET` — independent high-entropy secret, minimum 24 characters
+- `ZYNC_CARDVERSE_READINESS_SECRET` — independent operator-only readiness secret, minimum 32 characters
 - `ZYNC_GOOGLE_CLIENT_IDS` before Google login is enabled
 - `ZYNC_APPLE_CLIENT_IDS` before Apple login is enabled
 - `ZYNC_CARDVERSE_PROOF_SECRET` before relay proof issuance/redemption is enabled
 - approved `CARDVERSE_PACK_POLICY_V1` before pack opening is enabled
 
 Never place database credentials, Redis credentials, HMAC secrets, provider private configuration or pack policy authority in Flutter.
+
+The readiness route is separately hidden unless `CARDVERSE_READINESS_ENABLED=true`; it does not require `CARDVERSE_API_ENABLED=true`, so staging prerequisites can be checked before opening the Cardverse API.
 
 ## 2. Migration order
 
@@ -92,7 +95,28 @@ Account lifecycle routes stay hidden unless:
 - `CARDVERSE_API_ENABLED=true`
 - `CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED=true`
 
-## 5. Provider configuration smoke
+## 5. Operator readiness probe
+
+Before enabling the global Cardverse API in staging:
+
+1. set `CARDVERSE_READINESS_ENABLED=true`;
+2. configure a distinct `ZYNC_CARDVERSE_READINESS_SECRET`;
+3. call `GET /api/v1/cardverse/readiness` with `Authorization: Bearer <operator-secret>`;
+4. require HTTP 200 and `ready: true` before proceeding;
+5. wrong/missing readiness credentials must return 404;
+6. turn the readiness gate back off after the staging smoke if it is not operationally needed.
+
+The probe exposes only boolean health/configuration state. It never returns database URLs, Redis tokens, provider client IDs, proof secrets or pack-policy contents.
+
+Base readiness requires:
+
+- PostgreSQL configured and reachable;
+- distributed Redis abuse guard configured and reachable;
+- at least one Google/Apple provider audience configured.
+
+If a feature gate is already enabled, the probe additionally requires its critical dependency, for example a valid pack policy for Pack Open and a proof secret for Proof Redeem.
+
+## 6. Provider configuration smoke
 
 Do not enable global Cardverse API until at least one real provider configuration is complete.
 
@@ -107,23 +131,24 @@ For each enabled provider:
 7. confirm an unlinked identity cannot silently create a fresh owner;
 8. confirm no provider ID token appears in logs.
 
-## 6. Controlled enablement order
+## 7. Controlled enablement order
 
 Keep Production and Play closed while performing this sequence.
 
 1. migrations complete;
 2. Redis abuse guard configured and healthy;
 3. provider audiences configured;
-4. set `CARDVERSE_API_ENABLED=true` only in staging;
-5. verify challenge/provider/inventory/logout;
-6. optionally enable `CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED=true` in staging and test link/unlink/logout-all/delete using test accounts;
-7. configure proof secret, then optionally enable `CARDVERSE_PROOF_REDEEM_ENABLED=true`;
-8. only after trusted proof smoke, optionally enable `CARDVERSE_QUEST_CLAIM_ENABLED=true`;
-9. only after explicit odds/policy approval, optionally enable `CARDVERSE_PACK_OPEN_ENABLED=true`.
+4. operator readiness probe returns HTTP 200 with `ready: true` while the Cardverse API is still closed;
+5. set `CARDVERSE_API_ENABLED=true` only in staging;
+6. verify challenge/provider/inventory/logout;
+7. optionally enable `CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED=true` in staging and test link/unlink/logout-all/delete using test accounts;
+8. configure proof secret, then optionally enable `CARDVERSE_PROOF_REDEEM_ENABLED=true`;
+9. only after trusted proof smoke, optionally enable `CARDVERSE_QUEST_CLAIM_ENABLED=true`;
+10. only after explicit odds/policy approval, optionally enable `CARDVERSE_PACK_OPEN_ENABLED=true`.
 
 Never enable Quest Claim or Pack Open merely because the global API gate is enabled.
 
-## 7. Failure / rollback posture
+## 8. Failure / rollback posture
 
 The first rollback action is runtime disablement, not destructive database reversal.
 
@@ -137,7 +162,7 @@ A Redis outage must block protected Cardverse mutations/auth attempts rather tha
 
 A PostgreSQL outage must not cause client-side minting, ownership transfer or pack RNG.
 
-## 8. Observability rules
+## 9. Observability rules
 
 Monitor aggregate:
 
@@ -160,7 +185,7 @@ Do not log:
 - raw QR payloads;
 - question transcripts.
 
-## 9. Release gate
+## 10. Release gate
 
 Completing this runbook does not itself open Cardverse.
 
