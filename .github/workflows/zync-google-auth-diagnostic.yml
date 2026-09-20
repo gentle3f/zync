@@ -109,7 +109,7 @@ jobs:
           apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
           test -n "$apksigner_path"
           "$apksigner_path" verify --print-certs "$apk" | tee signer.txt
-          sha1="$("$apksigner_path" verify --print-certs "$apk" | awk -F': ' '/Signer #1 certificate SHA-1 digest:/ {print $2; exit}')"
+          sha1="$("$apksigner_path" verify --print-certs "$apk" | awk -F': ' '/certificate SHA-1 digest:/ {print $2; exit}')"
           compact="$(printf '%s' "$sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
           test "${#compact}" -eq 40
           formatted="$(printf '%s' "$compact" | sed 's/../&:/g; s/:$//')"
