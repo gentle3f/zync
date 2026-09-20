@@ -140,10 +140,10 @@ export async function createAccountSession(db, accountIdValue, options = {}) {
              WHERE account_id = $1
                AND revoked_at IS NULL
                AND expires_at > now()
-             ORDER BY created_at DESC, session_id DESC
+             ORDER BY (session_id = $3) DESC, created_at DESC, session_id DESC
              LIMIT $2
           )`,
-      [accountId, maxActiveSessions],
+      [accountId, maxActiveSessions, row.session_id],
     );
 
     return {
