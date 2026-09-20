@@ -1,0 +1,61 @@
+export const CARDVERSE_PACK_CATALOG_VERSION = 1;
+export const CARDVERSE_ART_SYSTEM_VERSION = 1;
+
+export const CARDVERSE_PACK_CATALOG_V1 = Object.freeze([
+  'sports.badminton',
+  'sports.basketball',
+  'outdoors.bouldering',
+  'food.coffee',
+  'food.cooking',
+  'wellness.yoga',
+  'photography.general',
+  'media.movies',
+  'music.pop',
+  'gaming.video',
+  'books.reading',
+  'crafts.diy',
+  'sports.tennis',
+  'sports.running',
+  'sports.hiking',
+  'collecting.lego',
+  'motorsport.formula1',
+  'sports.table_tennis',
+  'sports.pickleball',
+  'outdoors.swimming',
+  'photography.street',
+  'travel.general',
+  'travel.japan',
+  'travel.roadtrip',
+  'travel.food_travel',
+  'technology.ai',
+  'technology.programming',
+  'technology.robotics',
+  'technology.mechanical_keyboards',
+  'outdoors.camping',
+  'outdoors.surfing',
+  'outdoors.stargazing',
+  'outdoors.birdwatching',
+  'wellness.pilates',
+  'wellness.meditation',
+  'sports.gym',
+  'arts.drawing',
+  'arts.watercolor',
+  'arts.ceramics',
+  'food.japanese',
+  'food.dim_sum',
+  'food.sushi',
+  'music.rock',
+  'music.piano',
+  'music.concerts',
+  'gaming.board',
+  'gaming.strategy',
+  'learning.languages',
+  'history.general',
+  'crafts.knitting',
+]);
+
+const CATALOG_SET = new Set(CARDVERSE_PACK_CATALOG_V1);
+
+export function isCardversePackCatalogInterest(interestId) {
+  return typeof interestId === 'string' && CATALOG_SET.has(interestId.trim());
+}
