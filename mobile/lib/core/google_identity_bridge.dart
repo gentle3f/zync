@@ -57,6 +57,7 @@ class NativeGoogleIdentityProvider implements GoogleIdentityProvider {
       String detail = '';
       if (details is Map) {
         const allowed = {
+          'attempt',
           'exceptionType',
           'exceptionClass',
           'causeClass',

@@ -50,6 +50,8 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -106,15 +108,47 @@ class MainActivity : FlutterActivity() {
             return
         }
 
-        val option = GetSignInWithGoogleOption.Builder(serverClientId)
+        val explicitOption = GetSignInWithGoogleOption.Builder(serverClientId)
             .setNonce(nonce)
             .build()
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(option)
+        val explicitRequest = GetCredentialRequest.Builder()
+            .addCredentialOption(explicitOption)
             .build()
 
         googleAuthInFlight = true
         val activityContext = MutableContextWrapper(this)
+        requestGoogleCredential(
+            activityContext = activityContext,
+            request = explicitRequest,
+            result = result,
+            attempt = "explicit_siwg",
+            onNoCredential = {
+                val broadOption = GetGoogleIdOption.Builder()
+                    .setServerClientId(serverClientId)
+                    .setFilterByAuthorizedAccounts(false)
+                    .setNonce(nonce)
+                    .build()
+                val broadRequest = GetCredentialRequest.Builder()
+                    .addCredentialOption(broadOption)
+                    .build()
+                requestGoogleCredential(
+                    activityContext = activityContext,
+                    request = broadRequest,
+                    result = result,
+                    attempt = "google_id_unfiltered",
+                    onNoCredential = null,
+                )
+            },
+        )
+    }
+
+    private fun requestGoogleCredential(
+        activityContext: MutableContextWrapper,
+        request: GetCredentialRequest,
+        result: MethodChannel.Result,
+        attempt: String,
+        onNoCredential: (() -> Unit)?,
+    ) {
         credentialManager.getCredentialAsync(
             activityContext,
             request,
@@ -129,6 +163,7 @@ class MainActivity : FlutterActivity() {
                             "google_sign_in_unexpected_credential",
                             "Google sign-in returned an unexpected credential.",
                             mapOf(
+                                "attempt" to attempt,
                                 "credentialClass" to credential::class.java.simpleName,
                             ),
                         )
@@ -146,6 +181,7 @@ class MainActivity : FlutterActivity() {
                             "google_sign_in_unexpected_credential",
                             "Google sign-in returned an unexpected credential.",
                             mapOf(
+                                "attempt" to attempt,
                                 "credentialType" to credential.type,
                                 "credentialSubtype" to subtype,
                             ),
@@ -162,6 +198,7 @@ class MainActivity : FlutterActivity() {
                             "google_sign_in_token_invalid",
                             "Google sign-in returned an invalid ID token.",
                             mapOf(
+                                "attempt" to attempt,
                                 "credentialType" to credential.type,
                                 "credentialSubtype" to subtype,
                                 "exceptionClass" to error::class.java.simpleName,
@@ -172,6 +209,7 @@ class MainActivity : FlutterActivity() {
                             "google_sign_in_token_parse_failed",
                             "Google sign-in token parsing failed.",
                             mapOf(
+                                "attempt" to attempt,
                                 "credentialType" to credential.type,
                                 "credentialSubtype" to subtype,
                                 "exceptionClass" to error::class.java.simpleName,
@@ -181,8 +219,14 @@ class MainActivity : FlutterActivity() {
                 }
 
                 override fun onError(error: GetCredentialException) {
+                    if (error is NoCredentialException && onNoCredential != null) {
+                        onNoCredential()
+                        return
+                    }
+
                     googleAuthInFlight = false
                     val safeDetail = mapOf(
+                        "attempt" to attempt,
                         "exceptionType" to error.type,
                         "exceptionClass" to error::class.java.simpleName,
                         "causeClass" to (error.cause?.javaClass?.simpleName ?: ""),
@@ -275,7 +319,10 @@ def self_test() -> None:
     source = main_activity_source("com.gmail.gentle3f.myproject")
     assert source.startswith("package com.gmail.gentle3f.myproject")
     assert 'GetSignInWithGoogleOption.Builder(serverClientId)' in source
-    assert '.setNonce(nonce)' in source
+    assert 'GetGoogleIdOption.Builder()' in source
+    assert '.setFilterByAuthorizedAccounts(false)' in source
+    assert source.count('.setNonce(nonce)') == 2
+    assert 'is NoCredentialException && onNoCredential != null' in source
     assert 'MutableContextWrapper(this)' in source
     assert '"causeClass" to' in source
     assert 'GoogleIdTokenCredential.createFrom' in source
