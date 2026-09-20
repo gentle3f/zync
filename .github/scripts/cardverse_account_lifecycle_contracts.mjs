@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import {
   deleteAccount,
   unlinkIdentityFromAccount,
-} from '../../api/_cardverse/account_lifecycle.js';
+} from '../../server/cardverse/account_lifecycle.js';
 
 const ACCOUNT = '11111111-1111-4111-8111-111111111111';
 const GOOGLE_LINK = '22222222-2222-4222-8222-222222222222';
@@ -127,10 +127,10 @@ assert.match(migration, /Soft unlink tombstone/);
 }
 
 for (const route of [
-  '../../api/v1/cardverse/auth/link.js',
-  '../../api/v1/cardverse/auth/unlink.js',
-  '../../api/v1/cardverse/auth/logout-all.js',
-  '../../api/v1/cardverse/account/delete.js',
+  '../../server/cardverse/routes/auth/link.js',
+  '../../server/cardverse/routes/auth/unlink.js',
+  '../../server/cardverse/routes/auth/logout-all.js',
+  '../../server/cardverse/routes/account/delete.js',
 ]) {
   const loaded = await import(route);
   assert.equal(typeof loaded.default, 'function');

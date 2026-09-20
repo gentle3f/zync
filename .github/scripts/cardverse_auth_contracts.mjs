@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import {
   verifyProviderIdToken,
-} from '../../api/_cardverse/provider_auth.js';
+} from '../../server/cardverse/provider_auth.js';
 import {
   bearerTokenFromAuthorization,
   consumeAuthChallenge,
@@ -11,7 +11,7 @@ import {
   createAuthChallenge,
   resolveAccountSession,
   revokeAllAccountSessions,
-} from '../../api/_cardverse/session_store.js';
+} from '../../server/cardverse/session_store.js';
 
 const migration = await readFile(
   new URL('../../db/migrations/0003_cardverse_auth_sessions.sql', import.meta.url),
@@ -221,14 +221,14 @@ console.log('✓ Cardverse auth/session contracts passed');
 
 
 for (const modulePath of [
-  '../../api/v1/cardverse/auth/challenge.js',
-  '../../api/v1/cardverse/auth/provider.js',
-  '../../api/v1/cardverse/auth/logout.js',
-  '../../api/v1/cardverse/auth/logout-all.js',
-  '../../api/v1/cardverse/auth/link.js',
-  '../../api/v1/cardverse/auth/unlink.js',
-  '../../api/v1/cardverse/account/delete.js',
-  '../../api/v1/cardverse/inventory.js',
+  '../../server/cardverse/routes/auth/challenge.js',
+  '../../server/cardverse/routes/auth/provider.js',
+  '../../server/cardverse/routes/auth/logout.js',
+  '../../server/cardverse/routes/auth/logout-all.js',
+  '../../server/cardverse/routes/auth/link.js',
+  '../../server/cardverse/routes/auth/unlink.js',
+  '../../server/cardverse/routes/account/delete.js',
+  '../../server/cardverse/routes/inventory.js',
 ]) {
   const loaded = await import(modulePath);
   assert.equal(typeof loaded.default, 'function');
@@ -238,7 +238,7 @@ console.log('✓ Cardverse auth endpoint module resolution passed');
 
 
 {
-  const gate = await import('../../api/_cardverse/runtime_gate.js');
+  const gate = await import('../../server/cardverse/runtime_gate.js');
   const beforeApi = process.env.CARDVERSE_API_ENABLED;
   const beforePack = process.env.CARDVERSE_PACK_OPEN_ENABLED;
   const beforeLifecycle = process.env.CARDVERSE_ACCOUNT_LIFECYCLE_ENABLED;

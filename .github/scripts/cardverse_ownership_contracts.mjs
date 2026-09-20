@@ -7,7 +7,7 @@ import {
   listOwnershipSnapshot,
   normalizeIdentityInput,
   normalizePackIssueInput,
-} from '../../api/_cardverse/ownership_store.js';
+} from '../../server/cardverse/ownership_store.js';
 
 const migration = await readFile(
   new URL('../../db/migrations/0001_cardverse_ownership.sql', import.meta.url),

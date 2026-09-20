@@ -1,4 +1,4 @@
-import { buildCardverseReadiness } from '../../api/_cardverse/readiness.js';
+import { buildCardverseReadiness } from '../../server/cardverse/readiness.js';
 
 const report = await buildCardverseReadiness();
 

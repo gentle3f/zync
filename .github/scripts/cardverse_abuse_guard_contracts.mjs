@@ -8,7 +8,7 @@ import {
   cardverseRateKey,
   enforceCardverseAccountRateLimit,
   enforceCardverseIpRateLimit,
-} from '../../api/_cardverse/abuse_guard.js';
+} from '../../server/cardverse/abuse_guard.js';
 
 const SECRET = 'rate-limit-secret-'.repeat(2);
 const CONFIG = {
@@ -167,15 +167,15 @@ const CONFIG = {
 }
 
 const endpointExpectations = new Map([
-  ['../../api/v1/cardverse/auth/challenge.js', ['auth_challenge_ip']],
-  ['../../api/v1/cardverse/auth/provider.js', ['auth_provider_ip']],
-  ['../../api/v1/cardverse/proofs/redeem.js', ['proof_redeem_ip', 'proof_redeem_account']],
-  ['../../api/v1/cardverse/quests/claim.js', ['quest_claim_ip', 'quest_claim_account']],
-  ['../../api/v1/cardverse/packs/open.js', ['pack_open_ip', 'pack_open_account']],
-  ['../../api/v1/cardverse/auth/link.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
-  ['../../api/v1/cardverse/auth/unlink.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
-  ['../../api/v1/cardverse/auth/logout-all.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
-  ['../../api/v1/cardverse/account/delete.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../server/cardverse/routes/auth/challenge.js', ['auth_challenge_ip']],
+  ['../../server/cardverse/routes/auth/provider.js', ['auth_provider_ip']],
+  ['../../server/cardverse/routes/proofs/redeem.js', ['proof_redeem_ip', 'proof_redeem_account']],
+  ['../../server/cardverse/routes/quests/claim.js', ['quest_claim_ip', 'quest_claim_account']],
+  ['../../server/cardverse/routes/packs/open.js', ['pack_open_ip', 'pack_open_account']],
+  ['../../server/cardverse/routes/auth/link.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../server/cardverse/routes/auth/unlink.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../server/cardverse/routes/auth/logout-all.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
+  ['../../server/cardverse/routes/account/delete.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
 ]);
 
 for (const [modulePath, profiles] of endpointExpectations) {

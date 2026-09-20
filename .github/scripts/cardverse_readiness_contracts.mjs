@@ -4,7 +4,7 @@ import {
   authorizeCardverseReadiness,
   buildCardverseReadiness,
   cardverseReadinessEnabled,
-} from '../../api/_cardverse/readiness.js';
+} from '../../server/cardverse/readiness.js';
 
 const oldEnabled = process.env.CARDVERSE_READINESS_ENABLED;
 const oldSecret = process.env.ZYNC_CARDVERSE_READINESS_SECRET;
@@ -114,14 +114,14 @@ const baseOptions = {
 }
 
 const readinessSource = await readFile(
-  new URL('../../api/_cardverse/readiness.js', import.meta.url),
+  new URL('../../server/cardverse/readiness.js', import.meta.url),
   'utf8',
 );
 assert.match(readinessSource, /cardverse_inventory_ledger_immutable/);
 assert.match(readinessSource, /cardverse_reward_proofs_issuer_ticket_uidx/);
 
 const routeSource = await readFile(
-  new URL('../../api/v1/cardverse/readiness.js', import.meta.url),
+  new URL('../../server/cardverse/routes/readiness.js', import.meta.url),
   'utf8',
 );
 assert.match(routeSource, /authorizeCardverseReadiness/);
@@ -129,7 +129,7 @@ assert.match(routeSource, /report\.ready \? 200 : 503/);
 assert.equal(routeSource.includes('DATABASE_URL'), false);
 assert.equal(routeSource.includes('ZYNC_GOOGLE_CLIENT_IDS'), false);
 
-const route = await import('../../api/v1/cardverse/readiness.js');
+const route = await import('../../server/cardverse/routes/readiness.js');
 assert.equal(typeof route.default, 'function');
 
 console.log('✓ Cardverse operator readiness contracts passed');

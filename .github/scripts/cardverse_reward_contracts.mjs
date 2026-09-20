@@ -7,7 +7,7 @@ import {
   normalizeQuestClaim,
   normalizeTrustedRewardProof,
   questDefinition,
-} from '../../api/_cardverse/reward_store.js';
+} from '../../server/cardverse/reward_store.js';
 
 const migration = await readFile(
   new URL('../../db/migrations/0004_cardverse_reward_proofs.sql', import.meta.url),
@@ -128,7 +128,7 @@ assert.throws(
   /cardverse_quest_proof_cycle_mismatch/,
 );
 
-const endpoint = await import('../../api/v1/cardverse/quests/claim.js');
+const endpoint = await import('../../server/cardverse/routes/quests/claim.js');
 assert.equal(typeof endpoint.default, 'function');
 
 console.log('✓ Cardverse trusted Quest proof/reward contracts passed');

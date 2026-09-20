@@ -4,12 +4,12 @@ import { readFile } from 'node:fs/promises';
 import {
   CARDVERSE_PACK_CATALOG_V1,
   CARDVERSE_PACK_CATALOG_VERSION,
-} from '../../api/_cardverse/catalog_v1.js';
+} from '../../server/cardverse/catalog_v1.js';
 import {
   createCardversePackRoller,
   loadConfiguredCardversePackPolicyV1,
   parseCardversePackPolicyV1,
-} from '../../api/_cardverse/pack_policy_v1.js';
+} from '../../server/cardverse/pack_policy_v1.js';
 
 const recipeSource = await readFile(
   new URL('../../mobile/lib/core/card_visual_recipe.dart', import.meta.url),
@@ -155,7 +155,7 @@ assert.throws(
   }
 }
 
-const endpoint = await import('../../api/v1/cardverse/packs/open.js');
+const endpoint = await import('../../server/cardverse/routes/packs/open.js');
 assert.equal(typeof endpoint.default, 'function');
 
 console.log('✓ Cardverse server catalog/policy contracts passed');

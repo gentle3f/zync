@@ -4,11 +4,11 @@ import {
   createRelayResponderCapability,
   relayResponderCapabilityHash,
   verifyRelayCompletionTicket,
-} from '../../api/_cardverse/proof_ticket.js';
+} from '../../server/cardverse/proof_ticket.js';
 import {
   normalizeRelayProofRedemption,
   redeemRelayCompletionTicket,
-} from '../../api/_cardverse/proof_ticket_redemption.js';
+} from '../../server/cardverse/proof_ticket_redemption.js';
 
 process.env.ZYNC_CARDVERSE_PROOF_SECRET =
   'unit-test-cardverse-proof-secret-1234567890';
@@ -214,7 +214,7 @@ assert.throws(
   );
 }
 
-const endpoint = await import('../../api/v1/cardverse/proofs/redeem.js');
+const endpoint = await import('../../server/cardverse/routes/proofs/redeem.js');
 assert.equal(typeof endpoint.default, 'function');
 
 console.log('✓ Cardverse anonymous relay proof-ticket contracts passed');

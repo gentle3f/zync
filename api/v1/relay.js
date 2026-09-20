@@ -5,7 +5,7 @@ import {
   createRelayResponderCapability,
   relayProofTicketsEnabled,
   relayResponderCapabilityHash,
-} from '../_cardverse/proof_ticket.js';
+} from '../../server/cardverse/proof_ticket.js';
 
 const PROTOCOL_VERSION = 2;
 const MAX_SESSION_SECONDS = 300;

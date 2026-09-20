@@ -5,7 +5,7 @@ import {
   normalizePackOpenRequest,
   normalizeServerRollPlan,
   openPack,
-} from '../../api/_cardverse/pack_store.js';
+} from '../../server/cardverse/pack_store.js';
 
 const migration1 = await readFile(
   new URL('../../db/migrations/0001_cardverse_ownership.sql', import.meta.url),
