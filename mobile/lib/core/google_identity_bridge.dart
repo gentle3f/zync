@@ -1,9 +1,13 @@
 import 'package:flutter/services.dart';
 
 class GoogleIdentityException implements Exception {
-  const GoogleIdentityException(this.code);
+  const GoogleIdentityException(
+    this.code, {
+    this.detail = '',
+  });
 
   final String code;
+  final String detail;
 }
 
 abstract interface class GoogleIdentityProvider {
@@ -49,8 +53,29 @@ class NativeGoogleIdentityProvider implements GoogleIdentityProvider {
       }
       return token;
     } on PlatformException catch (error) {
+      final details = error.details;
+      String detail = '';
+      if (details is Map) {
+        const allowed = {
+          'exceptionType',
+          'exceptionClass',
+          'credentialType',
+          'credentialSubtype',
+          'credentialClass',
+        };
+        final parts = <String>[];
+        for (final entry in details.entries) {
+          final key = entry.key?.toString() ?? '';
+          final value = entry.value?.toString() ?? '';
+          if (allowed.contains(key) && value.isNotEmpty) {
+            parts.add('$key=$value');
+          }
+        }
+        detail = parts.join(', ');
+      }
       throw GoogleIdentityException(
         error.code.trim().isEmpty ? 'google_sign_in_failed' : error.code.trim(),
+        detail: detail,
       );
     }
   }
