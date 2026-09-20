@@ -11,10 +11,12 @@ class CardversePackOpeningLabScreen extends StatefulWidget {
     super.key,
     this.receipt,
     this.initialRevealedCount = 0,
+    this.labMode = true,
   });
 
   final CardversePackOpenReceipt? receipt;
   final int initialRevealedCount;
+  final bool labMode;
 
   static CardversePackOpenReceipt proofReceipt() =>
       CardversePackOpenReceipt.serverValidated(
@@ -138,7 +140,9 @@ class _CardversePackOpeningLabScreenState
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        'Cardverse Pack Lab',
+                        widget.labMode
+                            ? 'Cardverse Pack Lab'
+                            : (_isZh ? '打開卡包' : 'Open Pack'),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
@@ -277,9 +281,13 @@ class _CardversePackOpeningLabScreenState
           ),
           const SizedBox(height: 12),
           Text(
-            _isZh
-                ? 'Lab只驗開包UX。5張結果已存在receipt，動畫唔會改卡、finish或者次序。'
-                : 'This lab validates reveal UX only. All 5 cards already exist in the receipt; animation cannot change the cards, finishes or order.',
+            widget.labMode
+                ? (_isZh
+                    ? 'Lab只驗開包UX。5張結果已存在receipt，動畫唔會改卡、finish或者次序。'
+                    : 'This lab validates reveal UX only. All 5 cards already exist in the receipt; animation cannot change the cards, finishes or order.')
+                : (_isZh
+                    ? '結果已經由 Cardverse server 鎖定。逐張揭曉只係動畫，唔會重新抽卡。'
+                    : 'Your result is already locked by the Cardverse server. Revealing cards never rerolls the pack.'),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: ZyncPalette.inkSoft,
