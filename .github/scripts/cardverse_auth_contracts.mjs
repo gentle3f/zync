@@ -137,8 +137,10 @@ const SESSION = '33333333-3333-4333-8333-333333333333';
       }
       assert.match(text, /UPDATE zync_account_sessions/);
       assert.match(text, /LIMIT \$2/);
+      assert.equal(text.includes('ORDER BY (session_id = $3) DESC'), true);
       assert.equal(params[0], ACCOUNT);
       assert.equal(params[1], 8);
+      assert.equal(params[2], SESSION);
       cleanupSeen = true;
       return [];
     },
