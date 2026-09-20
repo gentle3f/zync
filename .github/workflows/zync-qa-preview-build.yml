@@ -34,6 +34,14 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Require Google Web client ID for Cardverse QA
+        shell: bash
+        run: |
+          if [ -z "$QA_GOOGLE_SERVER_CLIENT_ID" ]; then
+            echo "Set GitHub Actions repository variable ZYNC_GOOGLE_SERVER_CLIENT_ID to the same Google Web OAuth Client ID used by Vercel Preview."
+            exit 1
+          fi
+
       - name: Generate Android QA wrapper
         shell: bash
         run: |
@@ -133,13 +141,6 @@ jobs:
           test -s "$apk"
           cp "$apk" Zync-QA-preview.apk
           sha256sum Zync-QA-preview.apk | tee Zync-QA-preview.sha256.txt
-          apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)"
-          test -x "$apksigner"
-          cert_output="$("$apksigner" verify --print-certs "$apk" 2>&1)"
-          printf '%s\n' "$cert_output"
-          signing_sha1_raw="$(printf '%s\n' "$cert_output" | sed -nE 's/.*SHA-1 digest:[[:space:]]*([0-9A-Fa-f:]+).*/\1/p' | head -n1 | tr -d ':[:space:]')"
-          test -n "$signing_sha1_raw"
-          signing_sha1="$(printf '%s' "$signing_sha1_raw" | tr '[:lower:]' '[:upper:]' | sed 's/../&:/g;s/:$//')"
           {
             echo "package=com.gmail.gentle3f.myproject.qa"
             echo "label=Zync QA"
@@ -149,7 +150,6 @@ jobs:
             echo "interest_learning=true"
             echo "qa_debug=true"
             echo "google_server_client_id_configured=$([ -n "$QA_GOOGLE_SERVER_CLIENT_ID" ] && echo true || echo false)"
-            echo "signing_sha1=$signing_sha1"
             echo "source_sha=$GITHUB_SHA"
           } > Zync-QA-preview-build.txt
 
