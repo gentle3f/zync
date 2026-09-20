@@ -42,7 +42,6 @@ def patch_gradle_text(text: str, flavor: str) -> str:
 def main_activity_source(package_name: str) -> str:
     template = """package __PACKAGE__
 
-import android.content.MutableContextWrapper
 import androidx.credentials.CredentialManager
 import androidx.credentials.CredentialManagerCallback
 import androidx.credentials.CustomCredential
@@ -115,7 +114,7 @@ class MainActivity : FlutterActivity() {
 
         googleAuthInFlight = true
         credentialManager.getCredentialAsync(
-            MutableContextWrapper(this),
+            this,
             request,
             null,
             mainExecutor,
@@ -123,14 +122,31 @@ class MainActivity : FlutterActivity() {
                 override fun onResult(response: GetCredentialResponse) {
                     googleAuthInFlight = false
                     val credential = response.credential
-                    if (
-                        credential !is CustomCredential ||
-                        credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                    ) {
+                    if (credential !is CustomCredential) {
                         result.error(
                             "google_sign_in_unexpected_credential",
                             "Google sign-in returned an unexpected credential.",
-                            null,
+                            mapOf(
+                                "credentialClass" to credential::class.java.simpleName,
+                            ),
+                        )
+                        return
+                    }
+
+                    val subtype = credential.data.getString(
+                        GoogleIdTokenCredential.BUNDLE_KEY_GOOGLE_ID_TOKEN_SUBTYPE,
+                    )
+                    val knownType =
+                        credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL ||
+                        credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_SIWG_CREDENTIAL
+                    if (!knownType) {
+                        result.error(
+                            "google_sign_in_unexpected_credential",
+                            "Google sign-in returned an unexpected credential.",
+                            mapOf(
+                                "credentialType" to credential.type,
+                                "credentialSubtype" to subtype,
+                            ),
                         )
                         return
                     }
@@ -139,11 +155,25 @@ class MainActivity : FlutterActivity() {
                         val googleCredential =
                             GoogleIdTokenCredential.createFrom(credential.data)
                         result.success(googleCredential.idToken)
-                    } catch (_: GoogleIdTokenParsingException) {
+                    } catch (error: GoogleIdTokenParsingException) {
                         result.error(
                             "google_sign_in_token_invalid",
                             "Google sign-in returned an invalid ID token.",
-                            null,
+                            mapOf(
+                                "credentialType" to credential.type,
+                                "credentialSubtype" to subtype,
+                                "exceptionClass" to error::class.java.simpleName,
+                            ),
+                        )
+                    } catch (error: Exception) {
+                        result.error(
+                            "google_sign_in_token_parse_failed",
+                            "Google sign-in token parsing failed.",
+                            mapOf(
+                                "credentialType" to credential.type,
+                                "credentialSubtype" to subtype,
+                                "exceptionClass" to error::class.java.simpleName,
+                            ),
                         )
                     }
                 }
@@ -160,7 +190,10 @@ class MainActivity : FlutterActivity() {
                         result.error(
                             "google_sign_in_failed",
                             "Google sign-in failed.",
-                            null,
+                            mapOf(
+                                "exceptionType" to error.type,
+                                "exceptionClass" to error::class.java.simpleName,
+                            ),
                         )
                     }
                 }
