@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
   applyCardverseAbuseHeaders,
+  cardverseAbuseGuardConfigured,
+  checkCardverseAbuseGuard,
   cardverseClientAddress,
   cardverseRateKey,
   enforceCardverseAccountRateLimit,
@@ -9,6 +11,51 @@ import {
 } from '../../api/_cardverse/abuse_guard.js';
 
 const SECRET = 'rate-limit-secret-'.repeat(2);
+
+{
+  const oldUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const oldToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const oldSecret = process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET;
+  try {
+    delete process.env.UPSTASH_REDIS_REST_URL;
+    delete process.env.UPSTASH_REDIS_REST_TOKEN;
+    delete process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET;
+    assert.equal(cardverseAbuseGuardConfigured(), false);
+
+    process.env.UPSTASH_REDIS_REST_URL = 'https://example.upstash.test/';
+    process.env.UPSTASH_REDIS_REST_TOKEN = 'redis-token';
+    process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET = SECRET;
+    assert.equal(cardverseAbuseGuardConfigured(), true);
+  } finally {
+    if (oldUrl == null) delete process.env.UPSTASH_REDIS_REST_URL;
+    else process.env.UPSTASH_REDIS_REST_URL = oldUrl;
+    if (oldToken == null) delete process.env.UPSTASH_REDIS_REST_TOKEN;
+    else process.env.UPSTASH_REDIS_REST_TOKEN = oldToken;
+    if (oldSecret == null) delete process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET;
+    else process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET = oldSecret;
+  }
+}
+
+{
+  let commandSeen = null;
+  const result = await checkCardverseAbuseGuard({
+    config: CONFIG,
+    async redisCommand(_config, command) {
+      commandSeen = command;
+      return 'PONG';
+    },
+  });
+  assert.equal(result.reachable, true);
+  assert.deepEqual(commandSeen, ['PING']);
+
+  await assert.rejects(
+    () => checkCardverseAbuseGuard({
+      config: CONFIG,
+      async redisCommand() { return 'NOPE'; },
+    }),
+    (error) => error.code === 'cardverse_abuse_guard_unavailable',
+  );
+}
 const CONFIG = {
   url: 'https://example.upstash.test',
   token: 'test-token',
