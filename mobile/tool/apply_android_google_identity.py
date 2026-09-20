@@ -40,7 +40,7 @@ def patch_gradle_text(text: str, flavor: str) -> str:
 
 
 def main_activity_source(package_name: str) -> str:
-    return f"""package {package_name}
+    template = """package __PACKAGE__
 
 import android.content.MutableContextWrapper
 import androidx.credentials.CredentialManager
@@ -58,37 +58,37 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity() {{
-    companion object {{
+class MainActivity : FlutterActivity() {
+    companion object {
         private const val CHANNEL = "zync/google_identity"
         private const val AUTHENTICATE = "authenticateGoogle"
-    }}
+    }
 
-    private val credentialManager by lazy {{ CredentialManager.create(this) }}
+    private val credentialManager by lazy { CredentialManager.create(this) }
     private var googleAuthInFlight = false
 
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {{
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL,
-        ).setMethodCallHandler {{ call, result ->
-            when (call.method) {{
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
                 AUTHENTICATE -> authenticateGoogle(call, result)
                 else -> result.notImplemented()
-            }}
-        }}
-    }}
+            }
+        }
+    }
 
-    private fun authenticateGoogle(call: MethodCall, result: MethodChannel.Result) {{
-        if (googleAuthInFlight) {{
+    private fun authenticateGoogle(call: MethodCall, result: MethodChannel.Result) {
+        if (googleAuthInFlight) {
             result.error(
                 "google_sign_in_in_flight",
                 "A Google sign-in request is already active.",
                 null,
             )
             return
-        }}
+        }
 
         val serverClientId = call.argument<String>("serverClientId")?.trim().orEmpty()
         val nonce = call.argument<String>("nonce")?.trim().orEmpty()
@@ -97,14 +97,14 @@ class MainActivity : FlutterActivity() {{
             !serverClientId.endsWith(".apps.googleusercontent.com") ||
             nonce.isEmpty() ||
             nonce.length > 512
-        ) {{
+        ) {
             result.error(
                 "google_sign_in_configuration_invalid",
                 "Google sign-in configuration is invalid.",
                 null,
             )
             return
-        }}
+        }
 
         val option = GetSignInWithGoogleOption.Builder(serverClientId)
             .setNonce(nonce)
@@ -119,56 +119,57 @@ class MainActivity : FlutterActivity() {{
             request,
             null,
             mainExecutor,
-            object : CredentialManagerCallback<GetCredentialResponse, GetCredentialException> {{
-                override fun onResult(response: GetCredentialResponse) {{
+            object : CredentialManagerCallback<GetCredentialResponse, GetCredentialException> {
+                override fun onResult(response: GetCredentialResponse) {
                     googleAuthInFlight = false
                     val credential = response.credential
                     if (
                         credential !is CustomCredential ||
                         credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                    ) {{
+                    ) {
                         result.error(
                             "google_sign_in_unexpected_credential",
                             "Google sign-in returned an unexpected credential.",
                             null,
                         )
                         return
-                    }}
+                    }
 
-                    try {{
+                    try {
                         val googleCredential =
                             GoogleIdTokenCredential.createFrom(credential.data)
                         result.success(googleCredential.idToken)
-                    }} catch (_: GoogleIdTokenParsingException) {{
+                    } catch (_: GoogleIdTokenParsingException) {
                         result.error(
                             "google_sign_in_token_invalid",
                             "Google sign-in returned an invalid ID token.",
                             null,
                         )
-                    }}
-                }}
+                    }
+                }
 
-                override fun onError(error: GetCredentialException) {{
+                override fun onError(error: GetCredentialException) {
                     googleAuthInFlight = false
-                    if (error is GetCredentialCancellationException) {{
+                    if (error is GetCredentialCancellationException) {
                         result.error(
                             "google_sign_in_cancelled",
                             "Google sign-in was cancelled.",
                             null,
                         )
-                    }} else {{
+                    } else {
                         result.error(
                             "google_sign_in_failed",
                             "Google sign-in failed.",
                             null,
                         )
-                    }}
-                }}
+                    }
+                }
             },
         )
-    }}
-}}
+    }
+}
 """
+    return template.replace("__PACKAGE__", package_name)
 
 
 def find_gradle(android_dir: Path) -> tuple[Path, str]:
