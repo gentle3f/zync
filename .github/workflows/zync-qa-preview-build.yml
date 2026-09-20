@@ -135,7 +135,9 @@ jobs:
           sha256sum Zync-QA-preview.apk | tee Zync-QA-preview.sha256.txt
           apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)"
           test -x "$apksigner"
-          signing_sha1_raw="$("$apksigner" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-1 digest: //p' | head -n1 | tr -d ':')"
+          cert_output="$("$apksigner" verify --print-certs "$apk" 2>&1)"
+          printf '%s\n' "$cert_output"
+          signing_sha1_raw="$(printf '%s\n' "$cert_output" | sed -nE 's/.*SHA-1 digest:[[:space:]]*([0-9A-Fa-f:]+).*/\1/p' | head -n1 | tr -d ':[:space:]')"
           test -n "$signing_sha1_raw"
           signing_sha1="$(printf '%s' "$signing_sha1_raw" | tr '[:lower:]' '[:upper:]' | sed 's/../&:/g;s/:$//')"
           {
