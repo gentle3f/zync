@@ -59,6 +59,7 @@ class NativeGoogleIdentityProvider implements GoogleIdentityProvider {
         const allowed = {
           'exceptionType',
           'exceptionClass',
+          'causeClass',
           'credentialType',
           'credentialSubtype',
           'credentialClass',

@@ -23,6 +23,10 @@ jobs:
       QA_API_BASE: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app
       QA_PRIVACY_URL: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app/privacy
       QA_GOOGLE_SERVER_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_SERVER_CLIENT_ID }}
+      QA_KEYSTORE_B64: ${{ secrets.ZYNC_ANDROID_KEYSTORE_BASE64 }}
+      QA_STORE_PASSWORD: ${{ secrets.ZYNC_ANDROID_STORE_PASSWORD }}
+      QA_KEY_ALIAS: ${{ secrets.ZYNC_ANDROID_KEY_ALIAS }}
+      QA_KEY_PASSWORD: ${{ secrets.ZYNC_ANDROID_KEY_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -39,6 +43,21 @@ jobs:
         run: |
           if [ -z "$QA_GOOGLE_SERVER_CLIENT_ID" ]; then
             echo "Set GitHub Actions repository variable ZYNC_GOOGLE_SERVER_CLIENT_ID to the same Google Web OAuth Client ID used by Vercel Preview."
+            exit 1
+          fi
+
+      - name: Require stable QA signing key
+        shell: bash
+        run: |
+          missing=0
+          for name in QA_KEYSTORE_B64 QA_STORE_PASSWORD QA_KEY_ALIAS QA_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub secret for $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "A stable QA signing certificate is required for Google Android OAuth package/SHA-1 registration."
             exit 1
           fi
 
@@ -91,11 +110,31 @@ jobs:
           PY
           python3 mobile/tool/apply_android_google_identity.py build_app
 
+      - name: Install stable QA signing key
+        shell: bash
+        run: |
+          keystore_path="$GITHUB_WORKSPACE/build_app/android/app/zync-qa-keystore.jks"
+          printf '%s' "$QA_KEYSTORE_B64" | base64 --decode > "$keystore_path"
+          chmod 600 "$keystore_path"
+          {
+            printf 'storePassword=%s\n' "$QA_STORE_PASSWORD"
+            printf 'keyPassword=%s\n' "$QA_KEY_PASSWORD"
+            printf 'keyAlias=%s\n' "$QA_KEY_ALIAS"
+            printf 'storeFile=%s\n' "$keystore_path"
+          } > build_app/android/key.properties
+          chmod 600 build_app/android/key.properties
+          python3 mobile/tool/configure_android_signing.py build_app
+
       - name: Verify QA identity
         shell: bash
         run: |
           grep -R "com.gmail.gentle3f.myproject.qa" build_app/android/app/build.gradle* >/dev/null
           grep -q 'android:label="Zync QA"' build_app/android/app/src/main/AndroidManifest.xml
+          grep -R "zyncRelease" build_app/android/app/build.gradle* >/dev/null
+          if grep -R 'signingConfig = signingConfigs.getByName("debug")' build_app/android/app/build.gradle* >/dev/null; then
+            echo "QA release build still references ephemeral debug signing"
+            exit 1
+          fi
           if grep -R 'applicationId.*com.gmail.gentle3f.myproject"' build_app/android/app/build.gradle* >/dev/null; then
             echo "Production applicationId still present as active QA applicationId"
             exit 1
@@ -139,6 +178,14 @@ jobs:
         run: |
           apk="build_app/build/app/outputs/flutter-apk/app-release.apk"
           test -s "$apk"
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          test -n "$sdk_root"
+          apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -n "$apksigner_path"
+          raw_sha1="$("$apksigner_path" verify --print-certs "$apk" | awk -F': ' '/Signer #1 certificate SHA-1 digest:/ {print $2; exit}')"
+          compact_sha1="$(printf '%s' "$raw_sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
+          test "${#compact_sha1}" -eq 40
+          qa_sha1="$(printf '%s' "$compact_sha1" | sed 's/../&:/g; s/:$//')"
           cp "$apk" Zync-QA-preview.apk
           sha256sum Zync-QA-preview.apk | tee Zync-QA-preview.sha256.txt
           {
@@ -150,6 +197,9 @@ jobs:
             echo "interest_learning=true"
             echo "qa_debug=true"
             echo "google_server_client_id_configured=$([ -n "$QA_GOOGLE_SERVER_CLIENT_ID" ] && echo true || echo false)"
+            echo "android_oauth_package=com.gmail.gentle3f.myproject.qa"
+            echo "android_oauth_sha1=$qa_sha1"
+            echo "signing=stable-zync-upload-key"
             echo "source_sha=$GITHUB_SHA"
           } > Zync-QA-preview-build.txt
 

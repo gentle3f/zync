@@ -42,6 +42,7 @@ def patch_gradle_text(text: str, flavor: str) -> str:
 def main_activity_source(package_name: str) -> str:
     template = """package __PACKAGE__
 
+import android.content.MutableContextWrapper
 import androidx.credentials.CredentialManager
 import androidx.credentials.CredentialManagerCallback
 import androidx.credentials.CustomCredential
@@ -113,8 +114,9 @@ class MainActivity : FlutterActivity() {
             .build()
 
         googleAuthInFlight = true
+        val activityContext = MutableContextWrapper(this)
         credentialManager.getCredentialAsync(
-            this,
+            activityContext,
             request,
             null,
             mainExecutor,
@@ -180,20 +182,22 @@ class MainActivity : FlutterActivity() {
 
                 override fun onError(error: GetCredentialException) {
                     googleAuthInFlight = false
+                    val safeDetail = mapOf(
+                        "exceptionType" to error.type,
+                        "exceptionClass" to error::class.java.simpleName,
+                        "causeClass" to (error.cause?.javaClass?.simpleName ?: ""),
+                    )
                     if (error is GetCredentialCancellationException) {
                         result.error(
                             "google_sign_in_cancelled",
                             "Google sign-in was cancelled.",
-                            null,
+                            safeDetail,
                         )
                     } else {
                         result.error(
                             "google_sign_in_failed",
                             "Google sign-in failed.",
-                            mapOf(
-                                "exceptionType" to error.type,
-                                "exceptionClass" to error::class.java.simpleName,
-                            ),
+                            safeDetail,
                         )
                     }
                 }
@@ -272,6 +276,8 @@ def self_test() -> None:
     assert source.startswith("package com.gmail.gentle3f.myproject")
     assert 'GetSignInWithGoogleOption.Builder(serverClientId)' in source
     assert '.setNonce(nonce)' in source
+    assert 'MutableContextWrapper(this)' in source
+    assert '"causeClass" to' in source
     assert 'GoogleIdTokenCredential.createFrom' in source
     assert CHANNEL_LITERAL in source
     assert 'Log.' not in source
