@@ -1,0 +1,137 @@
+name: Zync Google Auth Diagnostic APK
+
+on:
+  push:
+    branches:
+      - zync-v1-rebuild-20260917
+    paths:
+      - '.github/workflows/zync-google-auth-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  google-auth-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      QA_API_BASE: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app
+      QA_PRIVACY_URL: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app/privacy
+      QA_GOOGLE_SERVER_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_SERVER_CLIENT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Require Google Web client ID
+        shell: bash
+        run: |
+          test -n "$QA_GOOGLE_SERVER_CLIENT_ID"
+
+      - name: Generate one-off Android diagnostic wrapper
+        shell: bash
+        run: |
+          rm -rf build_app
+          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
+          rm -rf build_app/lib build_app/test
+          cp -R mobile/lib build_app/lib
+          cp -R mobile/test build_app/test
+          cp mobile/pubspec.yaml build_app/pubspec.yaml
+          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 mobile/tool/apply_android_branding.py build_app
+
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path("build_app")
+          manifest = root / "android/app/src/main/AndroidManifest.xml"
+          text = manifest.read_text(encoding="utf-8")
+          text = text.replace('android:label="Zync"', 'android:label="Zync QA Auth Diag"', 1)
+          manifest.write_text(text, encoding="utf-8")
+
+          for path in [root / "android/app/build.gradle.kts", root / "android/app/build.gradle"]:
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding="utf-8")
+              original = text
+              text = text.replace(
+                  'applicationId = "com.gmail.gentle3f.myproject"',
+                  'applicationId = "com.gmail.gentle3f.myproject.qa"',
+              )
+              text = text.replace(
+                  'applicationId "com.gmail.gentle3f.myproject"',
+                  'applicationId "com.gmail.gentle3f.myproject.qa"',
+              )
+              if text == original:
+                  raise SystemExit(f"Could not patch QA applicationId in {path}")
+              path.write_text(text, encoding="utf-8")
+              break
+          else:
+              raise SystemExit("Android app Gradle file not found")
+          PY
+
+          python3 mobile/tool/apply_android_google_identity.py build_app
+
+      - name: Install Flutter dependencies
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: build_app
+        run: flutter gen-l10n
+
+      - name: Analyze
+        working-directory: build_app
+        run: flutter analyze
+
+      - name: Build one-off diagnostic APK
+        working-directory: build_app
+        run: >-
+          flutter build apk --release
+          "--dart-define=ZYNC_API_BASE=${QA_API_BASE}"
+          "--dart-define=ZYNC_PRIVACY_URL=${QA_PRIVACY_URL}"
+          "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
+          "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
+          "--dart-define=ZYNC_GOOGLE_SERVER_CLIENT_ID=${QA_GOOGLE_SERVER_CLIENT_ID}"
+          "--dart-define=ZYNC_QA_DEBUG=true"
+
+      - name: Record exact diagnostic signer
+        shell: bash
+        run: |
+          apk="build_app/build/app/outputs/flutter-apk/app-release.apk"
+          test -s "$apk"
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -n "$apksigner_path"
+          "$apksigner_path" verify --print-certs "$apk" | tee signer.txt
+          sha1="$("$apksigner_path" verify --print-certs "$apk" | awk -F': ' '/Signer #1 certificate SHA-1 digest:/ {print $2; exit}')"
+          compact="$(printf '%s' "$sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
+          test "${#compact}" -eq 40
+          formatted="$(printf '%s' "$compact" | sed 's/../&:/g; s/:$//')"
+          cp "$apk" Zync-QA-Google-Fallback-Diagnostic.apk
+          sha256sum Zync-QA-Google-Fallback-Diagnostic.apk | tee Zync-QA-Google-Fallback-Diagnostic.sha256.txt
+          {
+            echo "package=com.gmail.gentle3f.myproject.qa"
+            echo "label=Zync QA Auth Diag"
+            echo "android_oauth_sha1=$formatted"
+            echo "flow=explicit_siwg_then_google_id_unfiltered"
+            echo "source_sha=$GITHUB_SHA"
+          } > Zync-QA-Google-Fallback-Diagnostic-build.txt
+          cat Zync-QA-Google-Fallback-Diagnostic-build.txt
+
+      - name: Upload diagnostic APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-google-auth-fallback-diagnostic
+          path: |
+            Zync-QA-Google-Fallback-Diagnostic.apk
+            Zync-QA-Google-Fallback-Diagnostic.sha256.txt
+            Zync-QA-Google-Fallback-Diagnostic-build.txt
+            signer.txt
+          if-no-files-found: error
+          retention-days: 3
