@@ -91,7 +91,13 @@ class _CardverseAccountLabScreenState
       setState(() => _status = _messageForCode(error.code));
     } on GoogleIdentityException catch (error) {
       if (!mounted) return;
-      setState(() => _status = _messageForCode(error.code));
+      setState(() {
+        final base = _messageForCode(error.code);
+        final detail = error.detail.trim();
+        _status = detail.isEmpty
+            ? '$base [${error.code}]'
+            : '$base [${error.code}; $detail]';
+      });
     } on CardverseCloudException catch (error) {
       if (!mounted) return;
       setState(() => _status = _messageForCloud(error));
