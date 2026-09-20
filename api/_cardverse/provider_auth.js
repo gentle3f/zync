@@ -38,6 +38,16 @@ function providerConfig(value) {
   return { provider, ...config };
 }
 
+export function configuredCardverseProviderAudiences() {
+  const google = parseAudiences(process.env.ZYNC_GOOGLE_CLIENT_IDS);
+  const apple = parseAudiences(process.env.ZYNC_APPLE_CLIENT_IDS);
+  return Object.freeze({
+    google: google.length > 0,
+    apple: apple.length > 0,
+    any: google.length > 0 || apple.length > 0,
+  });
+}
+
 function parseAudiences(value) {
   return String(value || '')
     .split(',')
