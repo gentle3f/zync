@@ -81,6 +81,10 @@ assert.throws(
   const tx = {
     async query(text, params) {
       call += 1;
+      if (text.includes("status = 'active' FOR UPDATE")) {
+        assert.equal(params[0], ACCOUNT);
+        return [{ id: ACCOUNT }];
+      }
       if (text.includes('pg_advisory_xact_lock')) return [];
       if (text.includes('WHERE issuer_ticket_id = $1 FOR UPDATE')) return [];
       if (text.includes('INSERT INTO cardverse_reward_proofs')) {
@@ -113,12 +117,16 @@ assert.throws(
   );
   assert.equal(result.proofId, PROOF_ID);
   assert.equal(result.idempotentReplay, false);
-  assert.equal(call, 3);
+  assert.equal(call, 4);
 }
 
 {
   const tx = {
-    async query(text) {
+    async query(text, params) {
+      if (text.includes("status = 'active' FOR UPDATE")) {
+        assert.equal(params[0], ACCOUNT);
+        return [{ id: ACCOUNT }];
+      }
       if (text.includes('pg_advisory_xact_lock')) return [];
       if (text.includes('WHERE issuer_ticket_id = $1 FOR UPDATE')) {
         return [{
@@ -150,7 +158,11 @@ assert.throws(
 
 {
   const tx = {
-    async query(text) {
+    async query(text, params) {
+      if (text.includes("status = 'active' FOR UPDATE")) {
+        assert.equal(params[0], ACCOUNT);
+        return [{ id: ACCOUNT }];
+      }
       if (text.includes('pg_advisory_xact_lock')) return [];
       if (text.includes('WHERE issuer_ticket_id = $1 FOR UPDATE')) {
         return [{
@@ -175,6 +187,30 @@ assert.throws(
       { nowMs: COMPLETED + 1000 },
     ),
     /cardverse_proof_ticket_already_redeemed/,
+  );
+}
+
+{
+  const db = {
+    transaction: (callback) => callback({
+      async query(text) {
+        if (text.includes("status = 'active' FOR UPDATE")) return [];
+        throw new Error('unexpected query after inactive account');
+      },
+    }),
+  };
+  await assert.rejects(
+    () => redeemRelayCompletionTicket(
+      db,
+      ACCOUNT,
+      {
+        ticket: hostTicket,
+        clientEventId: 'relay-event-host-1',
+        timezoneOffsetMinutes: 480,
+      },
+      { nowMs: COMPLETED + 1000 },
+    ),
+    /cardverse_account_not_active/,
   );
 }
 
