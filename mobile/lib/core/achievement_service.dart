@@ -97,6 +97,13 @@ class AchievementService {
       if (sessions >= 3) closeConnections += 1;
       maxPeerSessions = math.max(maxPeerSessions, sessions);
 
+      conversationModes.addAll(
+        entry.seenConversationModes
+            .map((item) => item.trim().toLowerCase())
+            .where((item) => item.isNotEmpty),
+      );
+      // Backward compatibility for history written before seenConversationModes
+      // existed: recent prompt memory can seed the cumulative view.
       for (final memory in entry.recentQuestions) {
         final mode = memory.mode.trim().toLowerCase();
         if (mode.isNotEmpty) conversationModes.add(mode);

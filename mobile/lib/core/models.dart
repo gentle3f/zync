@@ -463,6 +463,7 @@ class ZyncHistoryEntry {
     this.seenInterestIds = const [],
     this.peerSocialLinks = const [],
     this.recentQuestions = const [],
+    this.seenConversationModes = const [],
   });
 
   final String peerId;
@@ -488,6 +489,11 @@ class ZyncHistoryEntry {
   /// Local-only memory of prompts actually shown during past Zync sessions.
   final List<ZyncQuestionMemory> recentQuestions;
 
+  /// Cumulative conversation styles ever used with this peer. Unlike
+  /// [recentQuestions], this is not a rolling window, so earned trophies never
+  /// regress when old prompt memories are trimmed.
+  final List<String> seenConversationModes;
+
   Map<String, dynamic> toJson() => {
         'peerId': peerId,
         'peerNickname': peerNickname,
@@ -499,6 +505,7 @@ class ZyncHistoryEntry {
         'seenInterestIds': seenInterestIds,
         'peerSocialLinks': peerSocialLinks.map((item) => item.toJson()).toList(),
         'recentQuestions': recentQuestions.map((item) => item.toJson()).toList(),
+        'seenConversationModes': seenConversationModes,
       };
 
   factory ZyncHistoryEntry.fromJson(Map<String, dynamic> json) => ZyncHistoryEntry(
@@ -525,6 +532,13 @@ class ZyncHistoryEntry {
             .map((item) => ZyncQuestionMemory.fromJson(Map<String, dynamic>.from(item)))
             .where((item) => item.question.trim().isNotEmpty)
             .toList(),
+        seenConversationModes:
+            ((json['seenConversationModes'] as List?) ?? const [])
+                .whereType<String>()
+                .map((item) => item.trim().toLowerCase())
+                .where((item) => item.isNotEmpty)
+                .toSet()
+                .toList(growable: false),
       );
 }
 

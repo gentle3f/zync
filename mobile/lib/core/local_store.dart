@@ -102,6 +102,7 @@ class LocalStore {
             ? previous.peerSocialLinks
             : List<SocialLink>.from(peerSocialLinks),
         recentQuestions: previous.recentQuestions,
+        seenConversationModes: previous.seenConversationModes,
       );
       history[index] = updated;
     } else {
@@ -173,6 +174,11 @@ class LocalStore {
       seenInterestIds: previous.seenInterestIds,
       peerSocialLinks: previous.peerSocialLinks,
       recentQuestions: questions,
+      seenConversationModes: <String>{
+        ...previous.seenConversationModes,
+        if (memory.mode.trim().isNotEmpty)
+          memory.mode.trim().toLowerCase(),
+      }.toList(growable: false),
     );
     await prefs.setString(
       _historyKey,
