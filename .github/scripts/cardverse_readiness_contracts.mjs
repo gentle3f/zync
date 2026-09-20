@@ -113,6 +113,13 @@ const baseOptions = {
   assert.equal(report.ready, false);
 }
 
+const readinessSource = await readFile(
+  new URL('../../api/_cardverse/readiness.js', import.meta.url),
+  'utf8',
+);
+assert.match(readinessSource, /cardverse_inventory_ledger_immutable/);
+assert.match(readinessSource, /cardverse_reward_proofs_issuer_ticket_uidx/);
+
 const routeSource = await readFile(
   new URL('../../api/v1/cardverse/readiness.js', import.meta.url),
   'utf8',
