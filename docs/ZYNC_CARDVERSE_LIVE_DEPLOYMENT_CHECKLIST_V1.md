@@ -110,7 +110,7 @@ The probe exposes only boolean health/configuration state. It never returns data
 
 Base readiness requires:
 
-- PostgreSQL configured and reachable;
+- PostgreSQL configured and reachable, with the required Cardverse tables/lifecycle columns present after migrations;
 - distributed Redis abuse guard configured and reachable;
 - at least one Google/Apple provider audience configured.
 
