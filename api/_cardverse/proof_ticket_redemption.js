@@ -57,6 +57,14 @@ export async function redeemRelayCompletionTicket(
   const proof = verifyRelayCompletionTicket(input.ticket, options);
 
   return db.transaction(async (tx) => {
+    // Re-check and lock account state inside the durable mutation transaction.
+    // Route-level session resolution alone cannot close a concurrent delete race.
+    const accounts = await tx.query(
+      "SELECT id FROM zync_accounts WHERE id = $1 AND status = 'active' FOR UPDATE",
+      [accountId],
+    );
+    if (accounts.length !== 1) throw domainError('cardverse_account_not_active');
+
     await tx.query(
       'SELECT pg_advisory_xact_lock(hashtextextended($1, 0))',
       [proof.issuerTicketId],
