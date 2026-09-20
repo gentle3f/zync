@@ -686,7 +686,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
               children: [
                 GestureDetector(
                   key: ValueKey(
-                    'zync-world-card-${item.variant.variantKey}',
+                    'zync-world-card-${item.variant.value}',
                   ),
                   onTap: () => _openCardDetail(
                     item: item,
