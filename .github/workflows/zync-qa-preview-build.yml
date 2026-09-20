@@ -6,9 +6,11 @@ on:
       - zync-v1-rebuild-20260917
     paths:
       - '.github/workflows/zync-qa-preview-build.yml'
+      - 'mobile/**'
   pull_request:
     paths:
       - '.github/workflows/zync-qa-preview-build.yml'
+      - 'mobile/**'
 
 permissions:
   contents: read
@@ -18,8 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      QA_API_BASE: https://zync-9d2g9vk18-gens-projects-4f99f8b9.vercel.app
-      QA_PRIVACY_URL: https://zync-9d2g9vk18-gens-projects-4f99f8b9.vercel.app/privacy
+      QA_API_BASE: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app
+      QA_PRIVACY_URL: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app/privacy
+      QA_GOOGLE_SERVER_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_SERVER_CLIENT_ID }}
 
     steps:
       - name: Checkout
@@ -78,6 +81,7 @@ jobs:
           if not found:
               raise SystemExit("Android app Gradle file not found")
           PY
+          python3 mobile/tool/apply_android_google_identity.py build_app
 
       - name: Verify QA identity
         shell: bash
@@ -108,6 +112,7 @@ jobs:
           "--dart-define=ZYNC_PRIVACY_URL=https://example.com/zync-privacy-policy"
           "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
           "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
+          "--dart-define=ZYNC_GOOGLE_SERVER_CLIENT_ID=${QA_GOOGLE_SERVER_CLIENT_ID}"
           "--dart-define=ZYNC_QA_DEBUG=true"
 
       - name: Build QA release APK
@@ -118,6 +123,7 @@ jobs:
           "--dart-define=ZYNC_PRIVACY_URL=${QA_PRIVACY_URL}"
           "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
           "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
+          "--dart-define=ZYNC_GOOGLE_SERVER_CLIENT_ID=${QA_GOOGLE_SERVER_CLIENT_ID}"
           "--dart-define=ZYNC_QA_DEBUG=true"
 
       - name: Verify and describe APK
@@ -127,6 +133,11 @@ jobs:
           test -s "$apk"
           cp "$apk" Zync-QA-preview.apk
           sha256sum Zync-QA-preview.apk | tee Zync-QA-preview.sha256.txt
+          apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)"
+          test -x "$apksigner"
+          signing_sha1_raw="$("$apksigner" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-1 digest: //p' | head -n1 | tr -d ':')"
+          test -n "$signing_sha1_raw"
+          signing_sha1="$(printf '%s' "$signing_sha1_raw" | tr '[:lower:]' '[:upper:]' | sed 's/../&:/g;s/:$//')"
           {
             echo "package=com.gmail.gentle3f.myproject.qa"
             echo "label=Zync QA"
@@ -135,6 +146,8 @@ jobs:
             echo "analytics=false"
             echo "interest_learning=true"
             echo "qa_debug=true"
+            echo "google_server_client_id_configured=$([ -n "$QA_GOOGLE_SERVER_CLIENT_ID" ] && echo true || echo false)"
+            echo "signing_sha1=$signing_sha1"
             echo "source_sha=$GITHUB_SHA"
           } > Zync-QA-preview-build.txt
 
