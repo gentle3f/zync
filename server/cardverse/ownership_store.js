@@ -402,12 +402,30 @@ export async function listOwnershipSnapshot(db, accountIdValue) {
     [accountId],
   );
 
+  const drawTokenRows = await db.query(
+    `SELECT quantity, locked_quantity, version, updated_at
+       FROM cardverse_draw_token_balances
+      WHERE account_id = $1
+      LIMIT 1`,
+    [accountId],
+  );
+
+  const claimedRows = await db.query(
+    `SELECT eligibility_key
+       FROM cardverse_reward_grants
+      WHERE account_id = $1
+      ORDER BY issued_at, grant_id`,
+    [accountId],
+  );
+
   const cursorRows = await db.query(
     `SELECT COALESCE(MAX(sequence), 0) AS ledger_cursor
        FROM cardverse_inventory_ledger
       WHERE account_id = $1`,
     [accountId],
   );
+
+  const drawTokens = drawTokenRows[0];
 
   return {
     account: {
@@ -416,6 +434,13 @@ export async function listOwnershipSnapshot(db, accountIdValue) {
       createdAt: asIso(accounts[0].created_at),
     },
     ledgerCursor: Number(cursorRows[0]?.ledger_cursor ?? 0),
+    drawTokens: {
+      quantity: Number(drawTokens?.quantity ?? 0),
+      lockedQuantity: Number(drawTokens?.locked_quantity ?? 0),
+      version: Number(drawTokens?.version ?? 0),
+      updatedAt: asIso(drawTokens?.updated_at),
+    },
+    claimedEligibilityKeys: claimedRows.map((row) => row.eligibility_key),
     balances: balances.map((row) => ({
       variantKey: row.variant_key,
       quantity: Number(row.quantity),

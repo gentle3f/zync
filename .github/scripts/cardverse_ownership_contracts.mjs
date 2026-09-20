@@ -312,6 +312,8 @@ assert.deepEqual(
       metadata: {},
     }],
     [{ pack_id: PACK, grant_id: GRANT, pack_type: 'standard', status: 'unopened', version: 1, issued_at: '2026-09-20T00:01:00.000Z' }],
+    [{ quantity: 3, locked_quantity: 1, version: 2, updated_at: '2026-09-20T00:03:00.000Z' }],
+    [{ eligibility_key: 'weekly_real_world_three:2026-09-15T00:00:00.000Z' }],
     [{ ledger_cursor: 7 }],
   ];
   const db = {
@@ -322,6 +324,12 @@ assert.deepEqual(
   const snapshot = await listOwnershipSnapshot(db, ACCOUNT);
   assert.equal(snapshot.account.id, ACCOUNT);
   assert.equal(snapshot.ledgerCursor, 7);
+  assert.equal(snapshot.drawTokens.quantity, 3);
+  assert.equal(snapshot.drawTokens.lockedQuantity, 1);
+  assert.deepEqual(
+    snapshot.claimedEligibilityKeys,
+    ['weekly_real_world_three:2026-09-15T00:00:00.000Z'],
+  );
   assert.equal(snapshot.balances[0].quantity, 2);
   assert.equal(snapshot.balances[0].lockedQuantity, 1);
   assert.equal(snapshot.uniqueInstances[0].finishId, 'secret');

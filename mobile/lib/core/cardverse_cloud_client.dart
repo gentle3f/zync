@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'cardverse_inventory.dart';
+import 'cardverse_models.dart';
+import 'cardverse_reward_grant.dart';
 import 'cardverse_session_store.dart';
 
 enum CardverseCloudFailure {
@@ -216,6 +219,125 @@ class CardverseCloudClient {
         path: '/api/v1/cardverse/inventory',
         bearerToken: sessionToken,
       );
+
+  Future<CardverseInventorySnapshot> fetchInventorySnapshot(
+    String sessionToken,
+  ) async =>
+      CardverseInventorySnapshot.fromJson(
+        await fetchInventory(sessionToken),
+      );
+
+  Future<CardverseRewardGrantReceipt> claimQuestReward({
+    required String sessionToken,
+    required CardverseQuestRewardClaimRequest request,
+  }) async {
+    final body = await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/quests/claim',
+      bearerToken: sessionToken,
+      body: request.toJson(),
+    );
+
+    final kind = switch ((body['kind'] as String?)?.trim()) {
+      'drawToken' => CardverseRewardGrantKind.drawToken,
+      'standardPack' => CardverseRewardGrantKind.standardPack,
+      'discoveryPack' => CardverseRewardGrantKind.discoveryPack,
+      _ => null,
+    };
+    final issuedAt = DateTime.tryParse(
+      (body['issuedAt'] as String?) ?? '',
+    )?.toUtc();
+    final packs = ((body['unopenedPackIds'] as List?) ?? const [])
+        .whereType<String>()
+        .toList(growable: false);
+
+    if (body['serverAuthoritative'] != true ||
+        kind == null ||
+        issuedAt == null) {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+
+    try {
+      return CardverseRewardGrantReceipt.serverValidated(
+        grantId: (body['grantId'] as String?) ?? '',
+        eligibilityKey: (body['eligibilityKey'] as String?) ?? '',
+        questId: (body['questId'] as String?) ?? '',
+        idempotencyKey: (body['idempotencyKey'] as String?) ?? '',
+        kind: kind,
+        amount: (body['amount'] as num?)?.toInt() ?? 0,
+        issuedAt: issuedAt,
+        serverSequence: (body['serverSequence'] as num?)?.toInt() ?? 0,
+        unopenedPackIds: packs,
+      );
+    } on FormatException {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+  }
+
+  Future<CardversePackOpenReceipt> openPack({
+    required String sessionToken,
+    required CardversePackOpenRequest request,
+  }) async {
+    final body = await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/packs/open',
+      bearerToken: sessionToken,
+      body: request.toJson(),
+    );
+    final rolledAt = DateTime.tryParse(
+      (body['rolledAt'] as String?) ?? '',
+    )?.toUtc();
+    final rawItems = body['items'];
+    if (body['serverAuthoritative'] != true ||
+        rolledAt == null ||
+        rawItems is! List ||
+        rawItems.isEmpty) {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+
+    try {
+      final items = <CardversePackResultItem>[];
+      for (final raw in rawItems) {
+        if (raw is! Map) {
+          throw const FormatException('Invalid pack item');
+        }
+        final variant = raw['variant'];
+        if (variant is! Map) {
+          throw const FormatException('Invalid pack variant');
+        }
+        items.add(
+          CardversePackResultItem(
+            variant: CardVariantKey(
+              interestId:
+                  (variant['interestId'] as String?)?.trim() ?? '',
+              finishId: (variant['finishId'] as String?)?.trim() ?? '',
+              editionId:
+                  (variant['editionId'] as String?)?.trim() ?? '',
+            ),
+            quantity: (raw['quantity'] as num?)?.toInt() ?? 0,
+            instanceId: (raw['instanceId'] as String?)?.trim(),
+          ),
+        );
+      }
+      return CardversePackOpenReceipt.serverValidated(
+        packId: (body['packId'] as String?) ?? '',
+        serverRollId: (body['serverRollId'] as String?) ?? '',
+        idempotencyKey: (body['idempotencyKey'] as String?) ?? '',
+        rolledAt: rolledAt,
+        items: items,
+      );
+    } on FormatException {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+  }
 
   Future<Map<String, dynamic>> redeemProof({
     required String sessionToken,
