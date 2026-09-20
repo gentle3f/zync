@@ -11,9 +11,19 @@ const safeReport = {
 
 console.log('[cardverse-live-readiness] ' + JSON.stringify(safeReport));
 
-if (!report.ready) {
-  console.error('[cardverse-live-readiness] NOT_READY');
-  process.exit(2);
+let exitCode = 0;
+if (!report.checks.database.configured) exitCode += 1;
+if (!report.checks.database.reachable) exitCode += 2;
+if (!report.checks.database.schemaReady) exitCode += 4;
+if (!report.checks.abuseGuard.configured) exitCode += 8;
+if (!report.checks.abuseGuard.reachable) exitCode += 16;
+if (!report.checks.providers.any) exitCode += 32;
+
+if (!report.ready && exitCode === 0) exitCode = 64;
+
+if (exitCode !== 0) {
+  console.error('[cardverse-live-readiness] NOT_READY_CODE=' + exitCode);
+  process.exit(exitCode);
 }
 
 console.log('[cardverse-live-readiness] READY');
