@@ -2,15 +2,15 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260920_GOOGLE_LOGIN_DEVICE_SMOKE_READY.md`
+`AI_STATE/HANDOFF_20260920_GOOGLE_CHOOSER_CANCELLED_LOCALIZED.md`
 
 Previous authoritative continuation checkpoint:
 
+`AI_STATE/HANDOFF_20260920_GOOGLE_LOGIN_DEVICE_SMOKE_READY.md`
+
+Earlier Cardverse staging checkpoint:
+
 `AI_STATE/HANDOFF_20260920_CARDVERSE_STAGING_READINESS_CERTIFIED.md`
-
-Earlier staging/schema checkpoint:
-
-`AI_STATE/HANDOFF_20260920_NEON_STAGING_SCHEMA_CERTIFIED.md`
 
 Canonical product/business sources:
 
@@ -30,18 +30,18 @@ Read the authoritative continuation checkpoint **in full** before doing any work
 
 Current certified facts:
 
-- Vercel Cardverse function consolidation is live and fits Hobby: 10 total JS functions.
-- Stable Preview branch alias is live with `CARDVERSE_API_ENABLED=true`.
-- GET challenge route returns 405/POST and inventory returns 401/session-missing, proving the Cardverse gate/router/session enforcement are active.
-- GitHub `ZYNC_GOOGLE_SERVER_CLIENT_ID` is configured.
-- Zync V1 CI #1028 — SUCCESS.
-- Zync QA Preview APK #309 — SUCCESS.
-- QA APK includes nonce-bound Android Credential Manager Google sign-in and the QA-only Cardverse account smoke screen.
-- Preview branch auto-deploy is re-closed in source after smoke setup.
+- First real-device Google login smoke reaches the native account chooser.
+- Selecting an account returns to Zync without a Cardverse session; one captured UI result is `google_sign_in_cancelled`.
+- Latest Vercel runtime logs show POST `/api/v1/cardverse/auth/challenge` -> 200 for the device attempts and **no** subsequent POST `/api/v1/cardverse/auth/provider`.
+- Staging Neon still has 0 `zync_accounts` and 0 `zync_account_sessions`.
+- Therefore the failure is localized after Cardverse challenge creation and before Google ID-token handoff/provider exchange.
+- Current Kotlin bridge uses `MutableContextWrapper(this)` in `CredentialManager.getCredentialAsync`; verify this against current official docs before changing it.
+- Vercel Cardverse consolidation remains certified at 10 functions total.
+- Preview `CARDVERSE_API_ENABLED=true` is active for controlled smoke; other Cardverse feature gates remain closed.
 - Production remains CLOSED.
 - Google Play remains CLOSED.
 - Draft PR #1 remains DO NOT MERGE.
 
 Current active task:
 
-> **Install the certified QA APK and run the first real-device Google → Cardverse account/session smoke. Diagnose any failure at the exact stage without weakening nonce, issuer, audience, session, database, or abuse-guard checks. If login succeeds, verify staging account/session creation and then advance to controlled proof-redemption smoke.**
+> **Continue directly from the localized Android/Google credential failure: verify current official Credential Manager Sign in with Google requirements, instrument sanitized QA-only native error detail, fix the Activity/context or OAuth configuration mismatch if confirmed, build a new QA APK, and repeat device smoke without weakening nonce/JWT/session security.**
