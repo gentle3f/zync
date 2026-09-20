@@ -30,6 +30,7 @@ function statusFor(error) {
   if (error?.code === 'cardverse_rate_limited') return 429;
   if (error?.code === 'cardverse_session_missing' ||
       error?.code === 'cardverse_session_invalid') return 401;
+  if (error?.code === 'cardverse_account_not_active') return 403;
   if (BAD_REQUEST.has(error?.code)) return 400;
   if (error?.code === 'cardverse_proof_ticket_already_redeemed') return 409;
   return 500;
