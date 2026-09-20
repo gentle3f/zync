@@ -48,8 +48,41 @@ export function authorizeCardverseReadiness(authorization) {
 
 async function defaultDatabaseCheck() {
   const db = await getCardverseDatabase();
-  const rows = await db.query('SELECT 1 AS ok');
-  return Number(rows[0]?.ok) === 1;
+  const rows = await db.query(`
+    SELECT (
+      to_regclass('public.zync_accounts') IS NOT NULL AND
+      to_regclass('public.zync_identity_links') IS NOT NULL AND
+      to_regclass('public.cardverse_pack_entitlements') IS NOT NULL AND
+      to_regclass('public.cardverse_stack_balances') IS NOT NULL AND
+      to_regclass('public.cardverse_unique_instances') IS NOT NULL AND
+      to_regclass('public.cardverse_idempotency_records') IS NOT NULL AND
+      to_regclass('public.cardverse_inventory_ledger') IS NOT NULL AND
+      to_regclass('public.cardverse_pack_rolls') IS NOT NULL AND
+      to_regclass('public.cardverse_pack_roll_items') IS NOT NULL AND
+      to_regclass('public.cardverse_auth_challenges') IS NOT NULL AND
+      to_regclass('public.zync_account_sessions') IS NOT NULL AND
+      to_regclass('public.cardverse_draw_token_balances') IS NOT NULL AND
+      to_regclass('public.cardverse_reward_proofs') IS NOT NULL AND
+      to_regclass('public.cardverse_reward_grants') IS NOT NULL AND
+      to_regclass('public.cardverse_reward_grant_proofs') IS NOT NULL AND
+      EXISTS (
+        SELECT 1 FROM information_schema.columns
+         WHERE table_schema = 'public'
+           AND table_name = 'zync_accounts'
+           AND column_name = 'deleted_at'
+      ) AND
+      EXISTS (
+        SELECT 1 FROM information_schema.columns
+         WHERE table_schema = 'public'
+           AND table_name = 'zync_identity_links'
+           AND column_name = 'unlinked_at'
+      )
+    ) AS schema_ready
+  `);
+  return {
+    reachable: true,
+    schemaReady: rows[0]?.schema_ready === true,
+  };
 }
 
 async function defaultAbuseCheck() {
@@ -82,11 +115,20 @@ export async function buildCardverseReadiness(options = {}) {
   const gates = options.gates ?? defaultGates();
 
   let databaseReachable = false;
+  let databaseSchemaReady = false;
   if (databaseConfigured) {
     try {
-      databaseReachable = await (options.checkDatabase ?? defaultDatabaseCheck)();
+      const databaseResult = await (options.checkDatabase ?? defaultDatabaseCheck)();
+      if (databaseResult === true) {
+        databaseReachable = true;
+        databaseSchemaReady = true;
+      } else {
+        databaseReachable = databaseResult?.reachable === true;
+        databaseSchemaReady = databaseResult?.schemaReady === true;
+      }
     } catch (_) {
       databaseReachable = false;
+      databaseSchemaReady = false;
     }
   }
 
@@ -111,6 +153,7 @@ export async function buildCardverseReadiness(options = {}) {
   const baseReady =
     databaseConfigured &&
     databaseReachable &&
+    databaseSchemaReady &&
     abuseConfigured &&
     abuseReachable &&
     providers?.any === true;
@@ -128,6 +171,7 @@ export async function buildCardverseReadiness(options = {}) {
       database: Object.freeze({
         configured: databaseConfigured,
         reachable: databaseReachable,
+        schemaReady: databaseSchemaReady,
       }),
       abuseGuard: Object.freeze({
         configured: abuseConfigured,
