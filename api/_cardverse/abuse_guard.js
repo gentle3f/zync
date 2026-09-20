@@ -29,11 +29,18 @@ function firstEnv(...names) {
   return '';
 }
 
+export function cardverseAbuseGuardConfigured() {
+  const url = firstEnv('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL').replace(/\\/$/, '');
+  const token = firstEnv('UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN');
+  const secret = String(process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET || '').trim();
+  return url.startsWith('https://') && Boolean(token) && secret.length >= 24;
+}
+
 function configFromEnv() {
   const url = firstEnv('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL').replace(/\/$/, '');
   const token = firstEnv('UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN');
   const secret = String(process.env.ZYNC_CARDVERSE_RATE_LIMIT_SECRET || '').trim();
-  if (!url.startsWith('https://') || !token || secret.length < 24) {
+  if (!cardverseAbuseGuardConfigured()) {
     throw domainError('cardverse_abuse_guard_not_configured');
   }
   return { url, token, secret };
@@ -150,4 +157,18 @@ export function applyCardverseAbuseHeaders(res, error) {
   if (error?.code === 'cardverse_rate_limited') {
     res.setHeader('Retry-After', String(error.retryAfterSeconds || WINDOW_SECONDS));
   }
+}
+
+export async function checkCardverseAbuseGuard(options = {}) {
+  const config = options.config || configFromEnv();
+  const call = options.redisCommand || redisCommand;
+  let result;
+  try {
+    result = await call(config, ['PING']);
+  } catch (error) {
+    if (error?.code === 'cardverse_abuse_guard_unavailable') throw error;
+    throw domainError('cardverse_abuse_guard_unavailable');
+  }
+  if (result !== 'PONG') throw domainError('cardverse_abuse_guard_unavailable');
+  return { reachable: true };
 }
