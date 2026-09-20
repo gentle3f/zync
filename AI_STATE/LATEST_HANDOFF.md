@@ -2,11 +2,11 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260920_GOOGLE_CHOOSER_CANCELLED_LOCALIZED.md`
+`AI_STATE/HANDOFF_20260920_GOOGLE_OAUTH_SIGNING_ROOT_CAUSE.md`
 
 Previous authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260920_GOOGLE_LOGIN_DEVICE_SMOKE_READY.md`
+`AI_STATE/HANDOFF_20260920_GOOGLE_CHOOSER_CANCELLED_LOCALIZED.md`
 
 Earlier Cardverse staging checkpoint:
 
@@ -30,18 +30,16 @@ Read the authoritative continuation checkpoint **in full** before doing any work
 
 Current certified facts:
 
-- First real-device Google login smoke reaches the native account chooser.
-- Selecting an account returns to Zync without a Cardverse session; one captured UI result is `google_sign_in_cancelled`.
-- Latest Vercel runtime logs show POST `/api/v1/cardverse/auth/challenge` -> 200 for the device attempts and **no** subsequent POST `/api/v1/cardverse/auth/provider`.
-- Staging Neon still has 0 `zync_accounts` and 0 `zync_account_sessions`.
-- Therefore the failure is localized after Cardverse challenge creation and before Google ID-token handoff/provider exchange.
-- Current Kotlin bridge uses `MutableContextWrapper(this)` in `CredentialManager.getCredentialAsync`; verify this against current official docs before changing it.
-- Vercel Cardverse consolidation remains certified at 10 functions total.
-- Preview `CARDVERSE_API_ENABLED=true` is active for controlled smoke; other Cardverse feature gates remain closed.
+- Official current Google guidance confirms Android Sign in with Google needs both Android OAuth (package + SHA-1) and Web OAuth clients.
+- The exact real-device APK `ed744e...` is signed by Android Debug SHA-1 `02:13:4C:52:5D:99:82:79:DD:D1:22:E4:27:52:00:05:FF:CC:83:97`.
+- Multiple historical QA APKs have different Android Debug SHA-1 fingerprints, proving the old QA pipeline used ephemeral signing.
+- Commit `292c6bf7079b73e31aabb38f86b6054874fc4c79` adds official-context alignment, sanitized native diagnostics, and fail-closed stable QA signing.
+- The new QA build correctly failed because no stable Android signing secrets are currently configured.
+- The fastest confirmation is to register Android OAuth for `com.gmail.gentle3f.myproject.qa` + the exact installed APK SHA-1 and retry that exact APK.
 - Production remains CLOSED.
 - Google Play remains CLOSED.
 - Draft PR #1 remains DO NOT MERGE.
 
 Current active task:
 
-> **Continue directly from the localized Android/Google credential failure: verify current official Credential Manager Sign in with Google requirements, instrument sanitized QA-only native error detail, fix the Activity/context or OAuth configuration mismatch if confirmed, build a new QA APK, and repeat device smoke without weakening nonce/JWT/session security.**
+> **Register the one-off Android OAuth client for the exact installed QA APK (package `com.gmail.gentle3f.myproject.qa`, SHA-1 `02:13:4C:52:5D:99:82:79:DD:D1:22:E4:27:52:00:05:FF:CC:83:97`), retry Google sign-in on that exact APK, and use the appearance of `/api/v1/cardverse/auth/provider` as the stage gate. After confirmation, finalize a stable QA signing key + permanent Android OAuth client without opening Production or Play.**
