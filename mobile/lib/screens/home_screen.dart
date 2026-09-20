@@ -6,6 +6,7 @@ import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 import 'achievement_screen.dart';
+import 'cardverse_account_lab_screen.dart';
 import 'group_zync_host_lobby_screen.dart';
 import 'history_screen.dart';
 import 'interest_dna_screen.dart';
@@ -17,6 +18,7 @@ import 'social_links_screen.dart';
 import 'zync_now_host_screen.dart';
 
 const _privacyUrl = String.fromEnvironment('ZYNC_PRIVACY_URL');
+const _qaDebug = bool.fromEnvironment('ZYNC_QA_DEBUG');
 
 Uri? _configuredPrivacyUri() {
   final uri = Uri.tryParse(_privacyUrl.trim());
@@ -208,6 +210,29 @@ class HomeScreen extends StatelessWidget {
       );
 
   List<_MenuSpec> _menuSpecs(BuildContext context, AppLocalizations l10n, Uri? privacyUri) => [
+        if (_qaDebug)
+          _MenuSpec(
+            icon: Icons.cloud_outlined,
+            iconBackground: const Color(0xFFE8F0FF),
+            iconForeground: const Color(0xFF315F9E),
+            title: Localizations.localeOf(context)
+                    .toLanguageTag()
+                    .toLowerCase()
+                    .startsWith('zh')
+                ? 'Cardverse 帳戶 QA'
+                : 'Cardverse Account QA',
+            subtitle: Localizations.localeOf(context)
+                    .toLanguageTag()
+                    .toLowerCase()
+                    .startsWith('zh')
+                ? 'Google 登入＋雲端 session 測試'
+                : 'Google sign-in + cloud session smoke',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const CardverseAccountLabScreen(),
+              ),
+            ),
+          ),
         _MenuSpec(
           icon: Icons.bolt_rounded,
           iconBackground: ZyncPalette.mint,
