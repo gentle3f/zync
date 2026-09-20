@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../core/cardverse_cloud_client.dart';
+import '../core/cardverse_proof_sync.dart';
+import '../core/cardverse_reward_grant.dart';
+import '../core/cardverse_session_store.dart';
 import '../core/local_store.dart';
 import '../core/quest_engine.dart';
 import '../ui/zync_design.dart';
+import 'cardverse_account_lab_screen.dart';
 
 class QuestBoardScreen extends StatefulWidget {
   const QuestBoardScreen({super.key});
@@ -12,8 +17,14 @@ class QuestBoardScreen extends StatefulWidget {
 }
 
 class _QuestBoardScreenState extends State<QuestBoardScreen> {
+  late final CardverseCloudClient _cloud;
+  late final CardverseSessionStore _sessions;
+
   bool _loading = true;
+  bool _signedIn = false;
   ZyncQuestBoardSnapshot? _snapshot;
+  Set<String> _claimedEligibilityKeys = const {};
+  String? _claimingKey;
   String? _error;
 
   String get _locale => Localizations.localeOf(context).toLanguageTag();
@@ -22,10 +33,25 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
   @override
   void initState() {
     super.initState();
+    _cloud = CardverseCloudClient();
+    _sessions = CardverseSessionStore();
     _load();
   }
 
+  @override
+  void dispose() {
+    _cloud.close();
+    super.dispose();
+  }
+
   Future<void> _load() async {
+    if (mounted) {
+      setState(() {
+        _loading = true;
+        _error = null;
+      });
+    }
+
     try {
       final events = await LocalStore.loadProgressEvents();
       final now = DateTime.now();
@@ -34,9 +60,39 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
         now: now,
         timezoneOffset: now.timeZoneOffset,
       );
+
+      var signedIn = false;
+      var claimed = <String>{};
+      final session = await _sessions.load();
+      if (session != null) {
+        signedIn = true;
+        try {
+          final sync = CardverseProofSync(
+            cloud: _cloud,
+            sessions: _sessions,
+          );
+          final syncResult = await sync.syncPending();
+          if (syncResult.sessionCleared) {
+            signedIn = false;
+          } else {
+            final inventory =
+                await _cloud.fetchInventorySnapshot(session.token);
+            claimed = inventory.claimedEligibilityKeys.toSet();
+          }
+        } on CardverseCloudException catch (error) {
+          if (error.failure == CardverseCloudFailure.unauthorized) {
+            await _sessions.clear();
+            signedIn = false;
+          }
+          // Quest progress remains useful even if cloud state is unavailable.
+        }
+      }
+
       if (!mounted) return;
       setState(() {
         _snapshot = snapshot;
+        _signedIn = signedIn;
+        _claimedEligibilityKeys = Set.unmodifiable(claimed);
         _loading = false;
         _error = null;
       });
@@ -44,8 +100,92 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = _isZh ? '暫時讀唔到任務進度。' : 'Could not load quest progress.';
+        _error = _isZh
+            ? '暫時讀唔到任務進度。'
+            : 'Could not load quest progress.';
       });
+    }
+  }
+
+  Future<void> _claim(ZyncQuestProgress progress) async {
+    final eligibility = progress.eligibility;
+    if (eligibility == null || _claimingKey != null) return;
+
+    if (!_signedIn) {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (_) => const CardverseAccountLabScreen(),
+        ),
+      );
+      await _load();
+      return;
+    }
+
+    final session = await _sessions.load();
+    if (session == null) {
+      await _load();
+      return;
+    }
+
+    setState(() => _claimingKey = eligibility.key);
+    try {
+      final request = CardverseQuestRewardClaimRequest.fromEligibility(
+        eligibility: eligibility,
+        idempotencyKey:
+            'quest:${eligibility.questId}:${eligibility.cycleStart.millisecondsSinceEpoch}',
+      );
+      final receipt = await _cloud.claimQuestReward(
+        sessionToken: session.token,
+        request: request,
+      );
+      if (!receipt.matchesEligibility(eligibility)) {
+        throw const CardverseCloudException(
+          failure: CardverseCloudFailure.invalidResponse,
+        );
+      }
+      if (!mounted) return;
+
+      final rewardText = switch (receipt.kind) {
+        CardverseRewardGrantKind.drawToken =>
+          _isZh ? '${receipt.amount} Draw Token 已到帳' : '${receipt.amount} Draw Token added',
+        CardverseRewardGrantKind.standardPack =>
+          _isZh ? '標準卡包已加入 My Zync World' : 'Standard Pack added to My Zync World',
+        CardverseRewardGrantKind.discoveryPack =>
+          _isZh ? '探索卡包已加入 My Zync World' : 'Discovery Pack added to My Zync World',
+      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(rewardText)),
+      );
+      await _load();
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.failure) {
+        CardverseCloudFailure.disabled =>
+          _isZh
+              ? '呢個 QA 環境仲未開啟雲端任務獎勵。'
+              : 'Cloud quest rewards are not enabled in this QA environment yet.',
+        CardverseCloudFailure.unauthorized =>
+          _isZh
+              ? 'Cardverse 登入已過期，請重新登入。'
+              : 'Your Cardverse session expired. Please sign in again.',
+        CardverseCloudFailure.conflict =>
+          _isZh
+              ? '呢個任務獎勵已經領取。'
+              : 'This quest reward was already claimed.',
+        _ =>
+          _isZh
+              ? '今次領取未完成，請稍後再試。'
+              : 'The reward claim did not complete. Please try again.',
+      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      if (error.failure == CardverseCloudFailure.unauthorized) {
+        await _sessions.clear();
+      }
+      await _load();
+    } finally {
+      if (mounted) setState(() => _claimingKey = null);
     }
   }
 
@@ -208,9 +348,13 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    _isZh
-                        ? '獎勵目前只計「有資格」。等 Cardverse 雲端收藏及帳戶啟用後，server 會重新驗證先真正發 Draw Token／Pack；手機本機唔可以自己鑄卡。'
-                        : 'Rewards currently track eligibility only. When Cardverse cloud accounts are enabled, the server will revalidate before issuing Draw Tokens or Packs; the phone cannot mint inventory itself.',
+                    _signedIn
+                        ? (_isZh
+                            ? '完成任務後可以向 Cardverse server 領取獎勵。Server 會重新驗證先發 Draw Token／Pack；手機本機永遠唔可以自己鑄卡。'
+                            : 'Completed quests can now be claimed from the Cardverse server. The server revalidates before issuing Draw Tokens or Packs; the phone can never mint inventory itself.')
+                        : (_isZh
+                            ? '任務進度已經準備好。連接 Cardverse 帳戶之後，完成嘅任務先可以向 server 領取真正獎勵。'
+                            : 'Your quest progress is ready. Connect Cardverse to claim real server-issued rewards for completed quests.'),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
@@ -324,7 +468,51 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
               _rewardChip(progress),
             ],
           ),
+          if (complete && progress.eligibility != null) ...[
+            const SizedBox(height: 12),
+            _claimAction(progress),
+          ],
         ],
+      ),
+    );
+  }
+
+  Widget _claimAction(ZyncQuestProgress progress) {
+    final eligibility = progress.eligibility!;
+    final claimed = _claimedEligibilityKeys.contains(eligibility.key);
+    final busy = _claimingKey == eligibility.key;
+
+    if (claimed) {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: null,
+          icon: const Icon(Icons.cloud_done_outlined),
+          label: Text(_isZh ? '已領取' : 'Claimed'),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton.icon(
+        key: ValueKey('quest-claim-${progress.definition.id}'),
+        onPressed: busy ? null : () => _claim(progress),
+        icon: busy
+            ? const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(
+                _signedIn
+                    ? Icons.card_giftcard_rounded
+                    : Icons.login_rounded,
+              ),
+        label: Text(
+          _signedIn
+              ? (_isZh ? '領取獎勵' : 'Claim reward')
+              : (_isZh ? '登入後領取' : 'Sign in to claim'),
+        ),
       ),
     );
   }
