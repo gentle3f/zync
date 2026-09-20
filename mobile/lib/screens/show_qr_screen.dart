@@ -181,6 +181,7 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
         sessionSeed: bootstrap.sessionId,
       );
       final historyBefore = await LocalStore.loadHistory();
+      final progressBefore = await LocalStore.loadProgressEvents();
       final previous = historyBefore
           .where((entry) => entry.peerId == peer.localId)
           .firstOrNull;
@@ -200,6 +201,8 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
       final newAchievementIds = AchievementService.newlyUnlocked(
         before: historyBefore,
         after: await LocalStore.loadHistory(),
+        beforeEvents: progressBefore,
+        afterEvents: await LocalStore.loadProgressEvents(),
       ).toList(growable: false);
       final consumeResult = await _relay.consume(
         sessionId: bootstrap.sessionId,

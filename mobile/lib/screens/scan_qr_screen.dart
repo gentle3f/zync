@@ -145,6 +145,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
         sessionSeed: handshake.sessionId,
       );
       final historyBefore = await LocalStore.loadHistory();
+      final progressBefore = await LocalStore.loadProgressEvents();
       final previous = historyBefore
           .where((entry) => entry.peerId == peer.localId)
           .firstOrNull;
@@ -191,6 +192,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       final newAchievementIds = AchievementService.newlyUnlocked(
         before: historyBefore,
         after: await LocalStore.loadHistory(),
+        beforeEvents: progressBefore,
+        afterEvents: await LocalStore.loadProgressEvents(),
       ).toList(growable: false);
       _pendingHandshakeRaw = null;
       _pendingEncryptedResponse = null;
@@ -277,6 +280,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       }
       final match = MatchingService.compare(widget.profile.interests, peer.interests);
       final historyBefore = await LocalStore.loadHistory();
+      final progressBefore = await LocalStore.loadProgressEvents();
       final previous = historyBefore
           .where((entry) => entry.peerId == peer.localId)
           .firstOrNull;
@@ -293,6 +297,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       final newAchievementIds = AchievementService.newlyUnlocked(
         before: historyBefore,
         after: await LocalStore.loadHistory(),
+        beforeEvents: progressBefore,
+        afterEvents: await LocalStore.loadProgressEvents(),
       ).toList(growable: false);
 
       final analytics = <Future<void>>[
