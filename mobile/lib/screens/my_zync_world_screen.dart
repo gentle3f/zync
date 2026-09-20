@@ -9,6 +9,7 @@ import '../core/cardverse_models.dart';
 import '../core/cardverse_session_store.dart';
 import '../core/interest_catalog.dart';
 import '../core/local_store.dart';
+import '../core/models.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_card_preview.dart';
 import 'achievement_screen.dart';
