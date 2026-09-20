@@ -7,6 +7,54 @@
   },
   "rewrites": [
     {
+      "source": "/api/v1/cardverse/account/delete",
+      "destination": "/api/v1/cardverse-router?cardverse_route=account/delete"
+    },
+    {
+      "source": "/api/v1/cardverse/auth/challenge",
+      "destination": "/api/v1/cardverse-router?cardverse_route=auth/challenge"
+    },
+    {
+      "source": "/api/v1/cardverse/auth/link",
+      "destination": "/api/v1/cardverse-router?cardverse_route=auth/link"
+    },
+    {
+      "source": "/api/v1/cardverse/auth/logout-all",
+      "destination": "/api/v1/cardverse-router?cardverse_route=auth/logout-all"
+    },
+    {
+      "source": "/api/v1/cardverse/auth/logout",
+      "destination": "/api/v1/cardverse-router?cardverse_route=auth/logout"
+    },
+    {
+      "source": "/api/v1/cardverse/auth/provider",
+      "destination": "/api/v1/cardverse-router?cardverse_route=auth/provider"
+    },
+    {
+      "source": "/api/v1/cardverse/auth/unlink",
+      "destination": "/api/v1/cardverse-router?cardverse_route=auth/unlink"
+    },
+    {
+      "source": "/api/v1/cardverse/inventory",
+      "destination": "/api/v1/cardverse-router?cardverse_route=inventory"
+    },
+    {
+      "source": "/api/v1/cardverse/packs/open",
+      "destination": "/api/v1/cardverse-router?cardverse_route=packs/open"
+    },
+    {
+      "source": "/api/v1/cardverse/proofs/redeem",
+      "destination": "/api/v1/cardverse-router?cardverse_route=proofs/redeem"
+    },
+    {
+      "source": "/api/v1/cardverse/quests/claim",
+      "destination": "/api/v1/cardverse-router?cardverse_route=quests/claim"
+    },
+    {
+      "source": "/api/v1/cardverse/readiness",
+      "destination": "/api/v1/cardverse-router?cardverse_route=readiness"
+    },
+    {
       "source": "/privacy",
       "destination": "/privacy.html"
     },

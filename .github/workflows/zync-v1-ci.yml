@@ -7,6 +7,7 @@ on:
     paths:
       - 'mobile/**'
       - 'api/**'
+      - 'server/**'
       - 'db/**'
       - 'docs/ZYNC_CARDVERSE_*.md'
       - 'package.json'
@@ -24,6 +25,7 @@ on:
     paths:
       - 'mobile/**'
       - 'api/**'
+      - 'server/**'
       - 'db/**'
       - 'docs/ZYNC_CARDVERSE_*.md'
       - 'package.json'
@@ -81,32 +83,33 @@ jobs:
           node --check api/v1/relay.js
           node --check api/v1/group-relay.js
           node --check api/v1/interest-popularity.js
-          node --check api/_cardverse/db.js
-          node --check api/_cardverse/abuse_guard.js
-          node --check api/_cardverse/account_lifecycle.js
-          node --check api/_cardverse/readiness.js
-          node --check api/_cardverse/ownership_store.js
-          node --check api/_cardverse/pack_store.js
-          node --check api/_cardverse/session_store.js
-          node --check api/_cardverse/provider_auth.js
-          node --check api/_cardverse/catalog_v1.js
-          node --check api/_cardverse/pack_policy_v1.js
-          node --check api/_cardverse/runtime_gate.js
-          node --check api/_cardverse/reward_store.js
-          node --check api/_cardverse/proof_ticket.js
-          node --check api/_cardverse/proof_ticket_redemption.js
-          node --check api/v1/cardverse/auth/challenge.js
-          node --check api/v1/cardverse/auth/provider.js
-          node --check api/v1/cardverse/auth/logout.js
-          node --check api/v1/cardverse/auth/logout-all.js
-          node --check api/v1/cardverse/auth/link.js
-          node --check api/v1/cardverse/auth/unlink.js
-          node --check api/v1/cardverse/account/delete.js
-          node --check api/v1/cardverse/readiness.js
-          node --check api/v1/cardverse/inventory.js
-          node --check api/v1/cardverse/packs/open.js
-          node --check api/v1/cardverse/quests/claim.js
-          node --check api/v1/cardverse/proofs/redeem.js
+          node --check api/v1/cardverse-router.js
+          node --check server/cardverse/db.js
+          node --check server/cardverse/abuse_guard.js
+          node --check server/cardverse/account_lifecycle.js
+          node --check server/cardverse/readiness.js
+          node --check server/cardverse/ownership_store.js
+          node --check server/cardverse/pack_store.js
+          node --check server/cardverse/session_store.js
+          node --check server/cardverse/provider_auth.js
+          node --check server/cardverse/catalog_v1.js
+          node --check server/cardverse/pack_policy_v1.js
+          node --check server/cardverse/runtime_gate.js
+          node --check server/cardverse/reward_store.js
+          node --check server/cardverse/proof_ticket.js
+          node --check server/cardverse/proof_ticket_redemption.js
+          node --check server/cardverse/routes/auth/challenge.js
+          node --check server/cardverse/routes/auth/provider.js
+          node --check server/cardverse/routes/auth/logout.js
+          node --check server/cardverse/routes/auth/logout-all.js
+          node --check server/cardverse/routes/auth/link.js
+          node --check server/cardverse/routes/auth/unlink.js
+          node --check server/cardverse/routes/account/delete.js
+          node --check server/cardverse/routes/readiness.js
+          node --check server/cardverse/routes/inventory.js
+          node --check server/cardverse/routes/packs/open.js
+          node --check server/cardverse/routes/quests/claim.js
+          node --check server/cardverse/routes/proofs/redeem.js
           node --check .github/scripts/serverless_contracts.mjs
           node --check .github/scripts/relay_contracts.mjs
           node --check .github/scripts/group_relay_contracts.mjs
