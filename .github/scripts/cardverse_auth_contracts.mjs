@@ -136,7 +136,7 @@ const SESSION = '33333333-3333-4333-8333-333333333333';
         return [{ session_id: SESSION, expires_at: '2026-10-20T02:00:00.000Z' }];
       }
       assert.match(text, /UPDATE zync_account_sessions/);
-      assert.match(text, /LIMIT \\$2/);
+      assert.match(text, /LIMIT \$2/);
       assert.equal(params[0], ACCOUNT);
       assert.equal(params[1], 8);
       cleanupSeen = true;
