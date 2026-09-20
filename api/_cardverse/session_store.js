@@ -93,53 +93,66 @@ export async function consumeAuthChallenge(db, input = {}) {
 }
 
 export async function createAccountSession(db, accountIdValue, options = {}) {
-  if (!db || typeof db.query !== 'function') throw domainError('cardverse_database_invalid');
+  if (!db || typeof db.transaction !== 'function') {
+    throw domainError('cardverse_transaction_required');
+  }
   const accountId = cleanUuid(accountIdValue, 'cardverse_account_id_invalid');
   const ttlDays = positiveInteger(
     options.ttlDays ?? process.env.CARDVERSE_SESSION_TTL_DAYS,
     DEFAULT_SESSION_DAYS,
     90,
   );
-  const token = randomBytes(32).toString('base64url');
-  const tokenHash = sha256(token);
-
-  const rows = await db.query(
-    'INSERT INTO zync_account_sessions (account_id, token_hash, expires_at) ' +
-      "VALUES ($1, $2, now() + ($3::text || ' days')::interval) " +
-      'RETURNING session_id, expires_at',
-    [accountId, tokenHash, ttlDays],
-  );
-  const row = rows[0];
-  if (!row?.session_id) throw domainError('cardverse_session_create_failed');
-
   const maxActiveSessions = positiveInteger(
     options.maxActiveSessions ?? process.env.CARDVERSE_MAX_ACTIVE_SESSIONS,
     DEFAULT_MAX_ACTIVE_SESSIONS,
     32,
   );
-  await db.query(
-    `UPDATE zync_account_sessions
-        SET revoked_at = COALESCE(revoked_at, now())
-      WHERE account_id = $1
-        AND revoked_at IS NULL
-        AND session_id NOT IN (
-          SELECT session_id
-            FROM zync_account_sessions
-           WHERE account_id = $1
-             AND revoked_at IS NULL
-             AND expires_at > now()
-           ORDER BY created_at DESC, session_id DESC
-           LIMIT $2
-        )`,
-    [accountId, maxActiveSessions],
-  );
+  const token = randomBytes(32).toString('base64url');
+  const tokenHash = sha256(token);
 
-  return {
-    sessionId: row.session_id,
-    accountId,
-    token,
-    expiresAt: iso(row.expires_at),
-  };
+  return db.transaction(async (tx) => {
+    // Serialize session creation against other logins and account deletion.
+    // This makes CARDVERSE_MAX_ACTIVE_SESSIONS a hard per-account bound rather
+    // than a best-effort cleanup under concurrent provider exchanges.
+    const accounts = await tx.query(
+      "SELECT id FROM zync_accounts WHERE id = $1 AND status = 'active' FOR UPDATE",
+      [accountId],
+    );
+    if (accounts.length !== 1) throw domainError('cardverse_account_not_active');
+
+    const rows = await tx.query(
+      'INSERT INTO zync_account_sessions (account_id, token_hash, expires_at) ' +
+        "VALUES ($1, $2, now() + ($3::text || ' days')::interval) " +
+        'RETURNING session_id, expires_at',
+      [accountId, tokenHash, ttlDays],
+    );
+    const row = rows[0];
+    if (!row?.session_id) throw domainError('cardverse_session_create_failed');
+
+    await tx.query(
+      `UPDATE zync_account_sessions
+          SET revoked_at = COALESCE(revoked_at, now())
+        WHERE account_id = $1
+          AND revoked_at IS NULL
+          AND session_id NOT IN (
+            SELECT session_id
+              FROM zync_account_sessions
+             WHERE account_id = $1
+               AND revoked_at IS NULL
+               AND expires_at > now()
+             ORDER BY created_at DESC, session_id DESC
+             LIMIT $2
+          )`,
+      [accountId, maxActiveSessions],
+    );
+
+    return {
+      sessionId: row.session_id,
+      accountId,
+      token,
+      expiresAt: iso(row.expires_at),
+    };
+  });
 }
 
 export function bearerTokenFromAuthorization(value) {
