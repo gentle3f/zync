@@ -11,6 +11,11 @@ import {
 } from '../../api/_cardverse/abuse_guard.js';
 
 const SECRET = 'rate-limit-secret-'.repeat(2);
+const CONFIG = {
+  url: 'https://example.upstash.test',
+  token: 'test-token',
+  secret: SECRET,
+};
 
 {
   const oldUrl = process.env.UPSTASH_REDIS_REST_URL;
@@ -56,11 +61,6 @@ const SECRET = 'rate-limit-secret-'.repeat(2);
     (error) => error.code === 'cardverse_abuse_guard_unavailable',
   );
 }
-const CONFIG = {
-  url: 'https://example.upstash.test',
-  token: 'test-token',
-  secret: SECRET,
-};
 
 {
   const req = {
