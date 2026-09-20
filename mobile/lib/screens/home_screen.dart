@@ -224,7 +224,10 @@ class HomeScreen extends StatelessWidget {
                 : 'Live cloud collection, packs and rewards',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => const MyZyncWorldScreen(),
+                builder: (_) => MyZyncWorldScreen(
+                  profile: profile,
+                  onProfileChanged: onProfileChanged,
+                ),
               ),
             ),
           ),

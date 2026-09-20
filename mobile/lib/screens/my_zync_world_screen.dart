@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/achievement_service.dart';
+import '../core/card_interest_bridge.dart';
 import '../core/card_visual_recipe.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_inventory.dart';
@@ -16,7 +17,14 @@ import 'cardverse_pack_opening_lab_screen.dart';
 import 'quest_board_screen.dart';
 
 class MyZyncWorldScreen extends StatefulWidget {
-  const MyZyncWorldScreen({super.key});
+  const MyZyncWorldScreen({
+    super.key,
+    required this.profile,
+    required this.onProfileChanged,
+  });
+
+  final LocalProfile profile;
+  final Future<void> Function(LocalProfile profile) onProfileChanged;
 
   @override
   State<MyZyncWorldScreen> createState() => _MyZyncWorldScreenState();
@@ -25,6 +33,7 @@ class MyZyncWorldScreen extends StatefulWidget {
 class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   late final CardverseCloudClient _cloud;
   late final CardverseSessionStore _sessions;
+  late LocalProfile _profile;
 
   CardverseSessionCredential? _session;
   CardverseInventorySnapshot? _inventory;
@@ -42,6 +51,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     super.initState();
     _cloud = CardverseCloudClient();
     _sessions = CardverseSessionStore();
+    _profile = widget.profile;
     _load();
   }
 
@@ -674,14 +684,26 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
             return Stack(
               fit: StackFit.expand,
               children: [
-                ZyncCardPreview(
-                  recipe: recipe,
-                  title: interest?.labelFor(_locale) ??
-                      item.variant.interestId,
-                  subtitle: _finishLabel(finish),
-                  finish: finish,
-                  editionLabel: _edition(item.variant.editionId),
-                  cardNumberLabel: '×${item.quantity}',
+                GestureDetector(
+                  key: ValueKey(
+                    'zync-world-card-${item.variant.variantKey}',
+                  ),
+                  onTap: () => _openCardDetail(
+                    item: item,
+                    recipe: recipe,
+                    title: interest?.labelFor(_locale) ??
+                        item.variant.interestId,
+                    finish: finish,
+                  ),
+                  child: ZyncCardPreview(
+                    recipe: recipe,
+                    title: interest?.labelFor(_locale) ??
+                        item.variant.interestId,
+                    subtitle: _finishLabel(finish),
+                    finish: finish,
+                    editionLabel: _edition(item.variant.editionId),
+                    cardNumberLabel: '×${item.quantity}',
+                  ),
                 ),
                 if (item.quantity > 1)
                   Positioned(
@@ -709,6 +731,185 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
           },
         );
       },
+    );
+  }
+
+  Future<void> _openCardDetail({
+    required CardverseInventoryCard item,
+    required CardVisualRecipe recipe,
+    required String title,
+    required CardFinishTier finish,
+  }) async {
+    final interestId = item.variant.interestId;
+    final current = _profile.interests
+        .where((entry) => entry.id == interestId)
+        .firstOrNull;
+    var wantToTry =
+        current?.strength == InterestStrength.wantToTry;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          final currentStrength = _profile.interests
+              .where((entry) => entry.id == interestId)
+              .firstOrNull
+              ?.strength;
+          final stronger = currentStrength == InterestStrength.like ||
+              currentStrength == InterestStrength.love;
+
+          return DraggableScrollableSheet(
+            initialChildSize: 0.9,
+            minChildSize: 0.62,
+            maxChildSize: 0.96,
+            builder: (context, controller) => Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFFDFCFB),
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              child: ListView(
+                controller: controller,
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFD7D2DE),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 340),
+                      child: ZyncCardPreview(
+                        recipe: recipe,
+                        title: title,
+                        subtitle: _finishLabel(finish),
+                        finish: finish,
+                        editionLabel: _edition(item.variant.editionId),
+                        cardNumberLabel: '×${item.quantity}',
+                        animateFinish: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  ZyncSurface(
+                    shadow: false,
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        Chip(
+                          avatar: const Icon(
+                            Icons.inventory_2_outlined,
+                            size: 16,
+                          ),
+                          label: Text(
+                            _isZh
+                                ? '擁有 ×${item.quantity}'
+                                : 'Owned ×${item.quantity}',
+                          ),
+                        ),
+                        Chip(
+                          avatar: const Icon(
+                            Icons.auto_awesome_outlined,
+                            size: 16,
+                          ),
+                          label: Text(_finishLabel(finish)),
+                        ),
+                        Chip(
+                          avatar: const Icon(
+                            Icons.layers_outlined,
+                            size: 16,
+                          ),
+                          label: Text(
+                            _edition(item.variant.editionId),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  if (stronger)
+                    OutlinedButton.icon(
+                      onPressed: null,
+                      icon: Icon(
+                        currentStrength == InterestStrength.love
+                            ? Icons.favorite_rounded
+                            : Icons.thumb_up_alt_rounded,
+                      ),
+                      label: Text(
+                        _isZh
+                            ? (currentStrength == InterestStrength.love
+                                ? '已經係 Interest DNA · Love'
+                                : '已經係 Interest DNA · Like')
+                            : (currentStrength == InterestStrength.love
+                                ? 'Already in Interest DNA · Love'
+                                : 'Already in Interest DNA · Like'),
+                      ),
+                    )
+                  else
+                    FilledButton.icon(
+                      key: const ValueKey(
+                        'zync-world-want-to-try-toggle',
+                      ),
+                      onPressed: () async {
+                        final nextInterests = wantToTry
+                            ? CardInterestIntentBridge.removeWantToTry(
+                                existing: _profile.interests,
+                                interestId: interestId,
+                              )
+                            : CardInterestIntentBridge.upsertWantToTry(
+                                existing: _profile.interests,
+                                interestId: interestId,
+                              );
+                        final nextProfile = _profile.copyWith(
+                          interests: nextInterests,
+                        );
+                        await widget.onProfileChanged(nextProfile);
+                        if (!mounted) return;
+                        setState(() => _profile = nextProfile);
+                        setSheetState(() => wantToTry = !wantToTry);
+                      },
+                      icon: Icon(
+                        wantToTry
+                            ? Icons.check_circle_outline_rounded
+                            : Icons.auto_awesome_rounded,
+                      ),
+                      label: Text(
+                        wantToTry
+                            ? (_isZh
+                                ? '已加入 Want to Try'
+                                : 'In Want to Try')
+                            : (_isZh
+                                ? '加入 Want to Try'
+                                : 'Add to Want to Try'),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _isZh
+                        ? '卡牌同 Interest DNA 用同一個 canonical 興趣。加入 Want to Try 唔會覆蓋你原本嘅 Like／Love。'
+                        : 'Cards and Interest DNA share the same canonical interest. Want to Try never downgrades an existing Like or Love.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: ZyncPalette.inkSoft),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
