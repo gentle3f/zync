@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/group_relay_service.dart';
@@ -120,6 +121,7 @@ class _GroupZyncHostLobbyScreenState
         seed: '${coordinator.room.roomId}:1',
       );
       if (!mounted) return;
+      HapticFeedback.mediumImpact();
       _timer?.cancel();
       _handedOff = true;
       await Navigator.of(context).pushReplacement(
@@ -221,16 +223,25 @@ class _GroupZyncHostLobbyScreenState
       key: const ValueKey('group-host-lobby'),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
       children: [
-        Text(
-          LocalizedDomainText.groupZyncSubtitle(_locale),
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 18),
-        ZyncSurface(
-          borderColor: ZyncPalette.peach,
-          backgroundColor: const Color(0xFFFFF7F2),
+        ZyncHeroPanel(
+          startColor: const Color(0xFFF2EEFF),
+          endColor: const Color(0xFFFFF1E8),
+          accentColor: ZyncPalette.plum,
           child: Column(
             children: [
+              const ZyncIconTile(
+                icon: Icons.groups_2_rounded,
+                size: 54,
+                backgroundColor: Colors.white,
+                foregroundColor: ZyncPalette.plum,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                LocalizedDomainText.groupZyncSubtitle(_locale),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -239,11 +250,11 @@ class _GroupZyncHostLobbyScreenState
                 ),
                 child: QrImageView(
                   data: coordinator.room.qr.encode(),
-                  size: 220,
+                  size: 210,
                   backgroundColor: Colors.white,
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               Text(
                 LocalizedDomainText.groupHostHint(_locale),
                 textAlign: TextAlign.center,
