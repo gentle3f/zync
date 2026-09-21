@@ -120,72 +120,87 @@ class HomeScreen extends StatelessWidget {
       );
   }
 
-  Widget _hero(BuildContext context, AppLocalizations l10n, {required bool compact}) => ZyncSurface(
-        padding: EdgeInsets.zero,
-        borderColor: ZyncPalette.peach,
-        backgroundColor: const Color(0xFFFFF3EB),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
-            children: [
-              const Positioned.fill(child: IgnorePointer(child: ConnectionBackdrop())),
-              Padding(
-                padding: EdgeInsets.all(compact ? 17 : 22),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ZyncIconTile(
-                          icon: Icons.auto_awesome_rounded,
-                          size: compact ? 46 : 52,
-                          backgroundColor: Colors.white,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(l10n.zyncWithSomeone, style: Theme.of(context).textTheme.titleLarge),
-                              const SizedBox(height: 3),
-                              Text(l10n.tagline, style: Theme.of(context).textTheme.bodyMedium),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: compact ? 14 : 22),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _PrimaryAction(
-                            icon: Icons.qr_code_2_rounded,
-                            label: l10n.showMyQr,
-                            compact: compact,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => ShowQrScreen(profile: profile)),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _SecondaryAction(
-                            icon: Icons.qr_code_scanner_rounded,
-                            label: l10n.scanSomeone,
-                            compact: compact,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => ScanQrScreen(profile: profile)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+  Widget _hero(
+    BuildContext context,
+    AppLocalizations l10n, {
+    required String greeting,
+    required bool compact,
+  }) =>
+      ZyncHeroPanel(
+        padding: EdgeInsets.all(compact ? 17 : 23),
+        startColor: const Color(0xFFFFF0E6),
+        endColor: const Color(0xFFF1EEFF),
+        accentColor: ZyncPalette.orange,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    greeting,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: compact
+                        ? Theme.of(context).textTheme.headlineSmall
+                        : Theme.of(context).textTheme.headlineMedium,
+                  ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 10),
+                ZyncStatusPill(
+                  icon: Icons.favorite_rounded,
+                  label: l10n.interestsCount(profile.interests.length),
+                  foregroundColor: ZyncPalette.orangeDeep,
+                  backgroundColor: Colors.white.withValues(alpha: 0.78),
+                ),
+              ],
+            ),
+            SizedBox(height: compact ? 7 : 10),
+            Text(
+              l10n.zyncWithSomeone,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              l10n.tagline,
+              maxLines: compact ? 2 : 3,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            SizedBox(height: compact ? 14 : 20),
+            Row(
+              children: [
+                Expanded(
+                  child: _PrimaryAction(
+                    icon: Icons.qr_code_2_rounded,
+                    label: l10n.showMyQr,
+                    compact: compact,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ShowQrScreen(profile: profile),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _SecondaryAction(
+                    icon: Icons.qr_code_scanner_rounded,
+                    label: l10n.scanSomeone,
+                    compact: compact,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ScanQrScreen(profile: profile),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       );
 
@@ -195,6 +210,7 @@ class HomeScreen extends StatelessWidget {
           iconBackground: const Color(0xFFE9E5FF),
           iconForeground: ZyncPalette.plum,
           title: 'My Zync World',
+          featured: true,
           subtitle: Localizations.localeOf(context)
                   .toLanguageTag()
                   .toLowerCase()
@@ -293,14 +309,12 @@ class HomeScreen extends StatelessWidget {
       children: [
         _header(context, l10n),
         const SizedBox(height: 14),
-        Text(greeting, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.headlineLarge),
-        const SizedBox(height: 4),
-        Text(
-          l10n.interestsCount(profile.interests.length),
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
+        _hero(
+          context,
+          l10n,
+          greeting: greeting,
+          compact: true,
         ),
-        const SizedBox(height: 14),
-        _hero(context, l10n, compact: true),
         const SizedBox(height: 14),
         Expanded(
           child: _menuGrid(specs),
@@ -338,15 +352,13 @@ class HomeScreen extends StatelessWidget {
     final specs = _menuSpecs(context, l10n, privacyUri);
     return [
       _header(context, l10n),
-      const SizedBox(height: 30),
-      Text(greeting, style: Theme.of(context).textTheme.headlineLarge),
-      const SizedBox(height: 8),
-      Text(
-        l10n.interestsCount(profile.interests.length),
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
+      const SizedBox(height: 22),
+      _hero(
+        context,
+        l10n,
+        greeting: greeting,
+        compact: false,
       ),
-      const SizedBox(height: 24),
-      _hero(context, l10n, compact: false),
       const SizedBox(height: 24),
       for (var i = 0; i < specs.length; i++) ...[
         _MenuTile.fromSpec(specs[i]),
@@ -364,6 +376,7 @@ class _MenuSpec {
     required this.title,
     required this.onTap,
     this.subtitle,
+    this.featured = false,
   });
 
   final IconData icon;
@@ -372,6 +385,7 @@ class _MenuSpec {
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
+  final bool featured;
 }
 
 class _PrimaryAction extends StatelessWidget {
@@ -381,6 +395,7 @@ class _PrimaryAction extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final bool compact;
+  final bool featured;
 
   @override
   Widget build(BuildContext context) => FilledButton.icon(
@@ -424,6 +439,7 @@ class _MenuTile extends StatelessWidget {
     required this.onTap,
     this.subtitle,
     this.compact = false,
+    this.featured = false,
   });
 
   factory _MenuTile.fromSpec(_MenuSpec spec, {bool compact = false}) => _MenuTile(
@@ -434,6 +450,7 @@ class _MenuTile extends StatelessWidget {
         subtitle: spec.subtitle,
         onTap: spec.onTap,
         compact: compact,
+        featured: spec.featured,
       );
 
   final IconData icon;
@@ -453,9 +470,32 @@ class _MenuTile extends StatelessWidget {
           child: Ink(
             padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 16, vertical: compact ? 5 : 15),
             decoration: BoxDecoration(
-              color: ZyncPalette.surface,
+              color: featured ? null : ZyncPalette.surface,
+              gradient: featured
+                  ? const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFF4F0FF),
+                        Color(0xFFFFF3EB),
+                      ],
+                    )
+                  : null,
               borderRadius: BorderRadius.circular(compact ? 18 : 22),
-              border: Border.all(color: ZyncPalette.line),
+              border: Border.all(
+                color: featured
+                    ? ZyncPalette.plum.withValues(alpha: 0.22)
+                    : ZyncPalette.line,
+              ),
+              boxShadow: featured
+                  ? [
+                      BoxShadow(
+                        color: ZyncPalette.plum.withValues(alpha: 0.08),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                  : null,
             ),
             child: compact
                 ? Column(
@@ -463,7 +503,7 @@ class _MenuTile extends StatelessWidget {
                     children: [
                       ZyncIconTile(
                         icon: icon,
-                        size: 30,
+                        size: featured ? 34 : 30,
                         backgroundColor: iconBackground,
                         foregroundColor: iconForeground,
                       ),
