@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_proof_sync.dart';
@@ -155,6 +156,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
         CardverseRewardGrantKind.discoveryPack =>
           _isZh ? '探索卡包已加入 My Zync World' : 'Discovery Pack added to My Zync World',
       };
+      HapticFeedback.mediumImpact();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(rewardText)),
       );
@@ -283,37 +285,78 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 14, 20, 30),
         children: [
-          ZyncSurface(
-            backgroundColor: const Color(0xFFFFF7F2),
-            borderColor: ZyncPalette.peach,
-            child: Row(
+          ZyncHeroPanel(
+            startColor: const Color(0xFFFFF2E8),
+            endColor: const Color(0xFFF2EEFF),
+            accentColor: ZyncPalette.orange,
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ZyncIconTile(
-                  icon: Icons.explore_outlined,
-                  backgroundColor: ZyncPalette.peach,
-                  foregroundColor: ZyncPalette.orangeDeep,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ZyncIconTile(
+                      icon: Icons.explore_outlined,
+                      size: 52,
+                      backgroundColor: Colors.white,
+                      foregroundColor: ZyncPalette.orangeDeep,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _isZh
+                                ? '真實世界任務'
+                                : 'Real-world quests',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _isZh
+                                ? '唔需要掛機或者刷畫面。你真係去 Zync、見人、同人一齊做嘢，進度先會郁。'
+                                : 'No idle grind. Progress moves when you actually Zync, meet people and do things together.',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _isZh
-                            ? '任務只獎勵真實互動'
-                            : 'Quests reward real-world action',
-                        style: Theme.of(context).textTheme.titleMedium,
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ZyncMetricPill(
+                        icon: Icons.wb_sunny_outlined,
+                        value:
+                            '${daily.where((item) => item.complete).length} / ${daily.length}',
+                        label: _isZh ? '今日' : 'today',
+                        accentColor: const Color(0xFF9A6500),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _isZh
-                            ? '唔需要撳五個 screen、睇廣告或者掛機。每日、每週同永久任務都係靠真人 Zync 同真係一齊做嘢推進。'
-                            : 'No tap-grind, ad watching or idle farming. Daily, weekly and lifetime tasks progress through real Zyncs and things you actually do together.',
-                        style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ZyncMetricPill(
+                        icon: Icons.calendar_view_week_outlined,
+                        value:
+                            '${weekly.where((item) => item.complete).length} / ${weekly.length}',
+                        label: _isZh ? '今週' : 'week',
+                        accentColor: ZyncPalette.plum,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ZyncMetricPill(
+                        icon: Icons.all_inclusive_rounded,
+                        value:
+                            '${lifetime.where((item) => item.complete).length} / ${lifetime.length}',
+                        label: _isZh ? '永久' : 'lifetime',
+                        accentColor: const Color(0xFF176B57),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -391,31 +434,10 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
     required String title,
     required String subtitle,
   }) =>
-      Row(
-        children: [
-          ZyncIconTile(
-            icon: icon,
-            size: 40,
-            backgroundColor: const Color(0xFFE9E5FF),
-            foregroundColor: ZyncPalette.plum,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-        ],
+      ZyncSectionHeading(
+        icon: icon,
+        title: title,
+        subtitle: subtitle,
       );
 
   Widget _questCard(ZyncQuestProgress progress) {
