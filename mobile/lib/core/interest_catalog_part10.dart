@@ -558,7 +558,7 @@ Thai Milk Tea|泰式奶茶|泰式奶茶
 Chai|印度香料茶|印度香料茶
 Yerba Mate|馬黛茶|马黛茶
 Hot Chocolate|熱朱古力|热巧克力
-Fresh Juice|鮮榨果汁|鲜榨果汁
+Fresh Juice|鮮榨果汁|juicing;juice making|鲜榨果汁
 Smoothies|果昔|果昔
 Kombucha|康普茶|康普茶
 Mocktails|無酒精雞尾酒|无酒精鸡尾酒
