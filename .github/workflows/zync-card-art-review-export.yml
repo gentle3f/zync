@@ -1,0 +1,31 @@
+name: Temporary Card Art Review Export
+
+on:
+  push:
+    branches:
+      - tmp-card-art-review-export-20260921
+    paths:
+      - '.github/workflows/zync-card-art-review-export.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload card art pilot
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-card-art-pilot-v1-review
+          path: |
+            tools/card_art/output/pilot_v1/contact-sheet.jpg
+            tools/card_art/output/pilot_v1/images/
+            tools/card_art/output/pilot_v1/manifest.json
+            tools/card_art/report/PILOT_V1_REPORT.md
+          if-no-files-found: error
+          retention-days: 1
