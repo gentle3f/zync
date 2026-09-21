@@ -1,3 +1,4 @@
+import 'interest_card_policy_resolver.dart';
 import 'interest_entity_metadata.dart';
 import 'interest_localization_policy.dart';
 import 'models.dart';
@@ -19,9 +20,12 @@ class InterestActivityResolver {
         InterestEntityMetadataRegistry.byInterestId(item.id)?.activity;
     if (explicit != null) return explicit;
 
-    // Current localisation policy is also the curated generic-vs-proper-name
-    // boundary. Replace this coupling with full entity-kind metadata once the
-    // generalized entity registry is populated.
+    // Rights-aware partner/title classifications must never fall through to a
+    // generic activity merely because their localization metadata is complete.
+    if (InterestCardPolicyResolver.resolve(item).ipSensitive) return null;
+
+    // Localization remains a secondary proper-name boundary for legacy items
+    // that have not yet received a full entity/card classification.
     if (!InterestLocalizationPolicy.requiresChinese(item)) return null;
 
     final cluster = item.cluster;
