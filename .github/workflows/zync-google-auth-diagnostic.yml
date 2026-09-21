@@ -1,4 +1,4 @@
-name: Zync Google Auth Diagnostic APK
+name: Zync Reward Loop Diagnostic APK
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           root = Path("build_app")
           manifest = root / "android/app/src/main/AndroidManifest.xml"
           text = manifest.read_text(encoding="utf-8")
-          text = text.replace('android:label="Zync"', 'android:label="Zync QA Auth Diag"', 1)
+          text = text.replace('android:label="Zync"', 'android:label="Zync QA Reward Loop"', 1)
           manifest.write_text(text, encoding="utf-8")
 
           for path in [root / "android/app/build.gradle.kts", root / "android/app/build.gradle"]:
@@ -113,25 +113,25 @@ jobs:
           compact="$(printf '%s' "$sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
           test "${#compact}" -eq 40
           formatted="$(printf '%s' "$compact" | sed 's/../&:/g; s/:$//')"
-          cp "$apk" Zync-QA-Google-Fallback-Diagnostic.apk
-          sha256sum Zync-QA-Google-Fallback-Diagnostic.apk | tee Zync-QA-Google-Fallback-Diagnostic.sha256.txt
+          cp "$apk" Zync-QA-Reward-Loop-Diagnostic.apk
+          sha256sum Zync-QA-Reward-Loop-Diagnostic.apk | tee Zync-QA-Reward-Loop-Diagnostic.sha256.txt
           {
             echo "package=com.gmail.gentle3f.myproject.qa"
-            echo "label=Zync QA Auth Diag"
+            echo "label=Zync QA Reward Loop"
             echo "android_oauth_sha1=$formatted"
-            echo "flow=explicit_siwg_then_google_id_unfiltered"
+            echo "flow=google_auth_plus_cardverse_reward_loop"
             echo "source_sha=$GITHUB_SHA"
-          } > Zync-QA-Google-Fallback-Diagnostic-build.txt
-          cat Zync-QA-Google-Fallback-Diagnostic-build.txt
+          } > Zync-QA-Reward-Loop-Diagnostic-build.txt
+          cat Zync-QA-Reward-Loop-Diagnostic-build.txt
 
       - name: Upload diagnostic APK
         uses: actions/upload-artifact@v4
         with:
-          name: zync-google-auth-fallback-diagnostic
+          name: zync-reward-loop-diagnostic
           path: |
-            Zync-QA-Google-Fallback-Diagnostic.apk
-            Zync-QA-Google-Fallback-Diagnostic.sha256.txt
-            Zync-QA-Google-Fallback-Diagnostic-build.txt
+            Zync-QA-Reward-Loop-Diagnostic.apk
+            Zync-QA-Reward-Loop-Diagnostic.sha256.txt
+            Zync-QA-Reward-Loop-Diagnostic-build.txt
             signer.txt
           if-no-files-found: error
           retention-days: 3
