@@ -57,7 +57,6 @@ learning.jigsaw_puzzles|learning|knowledge|1510|Jigsaw Puzzles|拼圖|拼图|jig
 learning.logic_puzzles|learning|knowledge|1511|Logic Puzzles|邏輯謎題|逻辑谜题|logic games;logic puzzle
 learning.puzzle_hunts|learning|knowledge|1512|Puzzle Hunts|謎題尋寶|谜题寻宝|puzzle hunt
 gaming.escape_room_design|gaming|gaming_general|1513|Escape Room Design|密室設計|密室设计|designing escape rooms
-gaming.game_modding|gaming|gaming_general|1514|Game Modding|遊戲模組製作|游戏模组制作|mods;modding games
 gaming.game_streaming|gaming|gaming_general|1515|Game Streaming|遊戲直播|游戏直播|streaming games;game streamer
 gaming.lan_parties|gaming|gaming_general|1516|LAN Parties|LAN 遊戲聚會|LAN 游戏聚会|lan party;local multiplayer parties
 transport.urban_mobility|transport|cars|1530|Urban Mobility|城市出行|城市出行|city mobility;micromobility
@@ -72,14 +71,12 @@ arts.character_design|arts|visual_art|1553|Character Design|角色設計|角色�
 arts.webcomics|arts|media_creation|1554|Webcomics|網絡漫畫創作|网络漫画创作|web comics;webcomic creation
 arts.zine_making|arts|media_creation|1555|Zine Making|Zine 小誌製作|独立小志制作|zines;indie magazine making
 arts.sticker_making|arts|media_creation|1556|Sticker Making|貼紙設計製作|贴纸设计制作|sticker design;making stickers
-arts.photography_editing|arts|photography|1557|Photography Editing|攝影後期|摄影后期|photo editing;photo post processing
-arts.photo_retouching|arts|photography|1558|Photo Retouching|修圖|修图|retouching photos
+arts.photo_retouching|arts|photography|1558|Photo Retouching|相片精修|照片精修|retouching photos;photo retouching
 arts.sound_design|arts|media_creation|1559|Sound Design|聲音設計|声音设计|sound designer
 arts.audio_editing|arts|media_creation|1560|Audio Editing|音訊剪輯|音频剪辑|sound editing;audio editor
 arts.voiceover|arts|media_creation|1561|Voiceover|旁白錄音|旁白录音|voice over;narration recording
 arts.online_video_creation|arts|media_creation|1562|Online Video Creation|網上影片創作|在线视频创作|youtube creation;online videos creator
 arts.short_form_video|arts|media_creation|1563|Short-form Video|短影片創作|短视频创作|short form video;reels creation;vertical video
-lifestyle.neighborhood_events|lifestyle|social|1580|Neighborhood Events|社區活動|社区活动|neighbourhood events;local events
 lifestyle.local_community|lifestyle|social|1581|Local Community|本地社群|本地社群|neighborhood community;local groups
 lifestyle.community_organizing|lifestyle|social|1582|Community Organizing|社區組織|社区组织|community building;organising community
 learning.mentoring|learning|knowledge|1583|Mentoring|導師交流|导师交流|mentorship;being a mentor
