@@ -80,7 +80,7 @@ collecting.postcards|collecting|collecting|752|Postcards|明信片收藏|明信�
 fashion.streetwear|fashion|fashion|760|Streetwear|街頭服飾|街头服饰|街頭服飾;街头穿搭
 fashion.menswear|fashion|fashion|761|Menswear|男裝|男装|男裝;男装
 fashion.womenswear|fashion|fashion|762|Womenswear|女裝|女装|女裝;女装
-fashion.vintage_fashion|fashion|fashion|763|Vintage Fashion|復古時裝|复古时尚|復古服裝;复古穿搭
+fashion.vintage_fashion|fashion|fashion|763|Vintage Fashion|復古時裝|复古时尚|復古服裝;复古穿搭;vintage clothing
 fashion.luxury_fashion|fashion|fashion|764|Luxury Fashion|奢華時裝|奢侈时尚|奢侈品時裝;奢侈时尚
 fashion.sneakers|fashion|fashion|765|Sneakers|波鞋|球鞋|波鞋;球鞋
 fashion.jewelry|fashion|fashion|766|Jewelry|首飾|首饰|首飾;首饰
@@ -112,7 +112,7 @@ pets.fish|pets|pets|808|Fishkeeping|養魚|养鱼|養魚;养鱼
 pets.reptiles|pets|pets|809|Reptiles|爬蟲類寵物|爬宠|爬蟲類;爬宠
 pets.rabbits|pets|pets|810|Rabbits|兔仔|兔子|兔
 pets.hamsters|pets|pets|811|Hamsters|倉鼠|仓鼠|倉鼠;仓鼠
-pets.pet_training|pets|pets|812|Pet Training|寵物訓練|宠物训练|寵物訓練;宠物训练
+pets.pet_training|pets|pets|812|Pet Training|寵物訓練|宠物训练|寵物訓練;宠物训练;dog training;cat training
 pets.animal_rescue|pets|pets|813|Animal Rescue|動物救援|动物救助|動物救援;动物救助
 business.startups|business|business|820|Startups|初創企業|初创企业|初創;创业公司
 business.marketing|business|business|821|Marketing|市場推廣|市场营销|市場推廣;市场营销
