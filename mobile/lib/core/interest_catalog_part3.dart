@@ -1,7 +1,7 @@
 import 'interest_catalog_parser.dart';
 import 'models.dart';
 
-final List<InterestDefinition> kInterestCatalogPart3 = parseInterestCatalogRows(r'''media.anime|entertainment|anime_manga|10|Anime|動畫|动漫|日本動畫;日本动漫
+final List<InterestDefinition> kInterestCatalogPart3 = parseInterestCatalogRows(r'''media.anime|entertainment|anime_manga|10|Anime|日本動漫|日本动漫|anime;日漫
 media.manga|entertainment|anime_manga|11|Manga|漫畫|漫画|
 anime.jojo|entertainment|anime_manga|100|JoJo's Bizarre Adventure|JoJo的奇妙冒險|JoJo的奇妙冒险|jojo;ジョジョ
 media.movies|entertainment|screen|12|Movies|電影|电影|film;cinema;戲劇電影
@@ -9,7 +9,7 @@ media.tv|entertainment|screen|13|TV Series|電視劇|电视剧|tv shows;series
 music.pop|music|music_genres|16|Pop Music|流行音樂|流行音乐|pop
 music.rock|music|music_genres|17|Rock Music|搖滾樂|摇滚乐|rock
 music.classical|music|music_genres|18|Classical Music|古典音樂|古典音乐|classical
-music.hip_hop|music|music_genres|330|Hip-Hop / Rap|嘻哈／饒舌|嘻哈／说唱|rap;嘻哈
+music.hip_hop|music|music_genres|330|Hip-Hop / Rap|嘻哈／饒舌|嘻哈／说唱|hip-hop;rap;嘻哈
 music.r_and_b|music|music_genres|331|R&B|R&B 節奏藍調|R&B 节奏布鲁斯|
 music.jazz|music|music_genres|332|Jazz|爵士樂|爵士乐|爵士
 music.blues|music|music_genres|333|Blues|藍調|布鲁斯|
