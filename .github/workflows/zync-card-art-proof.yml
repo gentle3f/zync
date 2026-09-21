@@ -1,0 +1,48 @@
+name: Zync Card Art Proof
+
+on:
+  push:
+    branches:
+      - zync-v1-rebuild-20260917
+    paths:
+      - '.github/workflows/zync-card-art-proof.yml'
+      - 'mobile/lib/core/card_visual_recipe.dart'
+      - 'mobile/lib/widgets/zync_card_preview.dart'
+      - 'mobile/test/card_art_engine_golden_test.dart'
+
+permissions:
+  contents: read
+
+jobs:
+  render-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: mobile
+        run: flutter gen-l10n
+
+      - name: Render flagship proof sheet
+        working-directory: mobile
+        run: flutter test --update-goldens test/card_art_engine_golden_test.dart
+
+      - name: Upload flagship proof sheet
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-card-art-engine-v1-flagships
+          path: mobile/test/goldens/card_art_engine_v1_flagships.png
+          if-no-files-found: error
+          retention-days: 7
