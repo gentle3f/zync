@@ -5,7 +5,7 @@ final List<InterestDefinition> kInterestCatalogPart5 = parseInterestCatalogRows(
 technology.gadgets|technology|gadgets|26|Technology & Gadgets|科技與電子產品|科技与电子产品|gadgets;tech
 photography.general|arts|photography|27|Photography|攝影|摄影|photo;拍照
 photography.street|arts|photography|28|Street Photography|街頭攝影|街头摄影|street photo
-arts.drawing|arts|visual_art|29|Drawing|繪畫|绘画|sketching;畫畫;画画
+arts.drawing|arts|visual_art|29|Drawing|素描／繪圖|素描／绘图|sketching;素描;繪圖;绘图
 arts.portrait_photography|arts|photography|550|Portrait Photography|人像攝影|人像摄影|人像攝影;人像摄影
 arts.landscape_photography|arts|photography|551|Landscape Photography|風景攝影|风景摄影|風景攝影;风景摄影
 arts.travel_photography|arts|photography|552|Travel Photography|旅行攝影|旅行摄影|旅行攝影;旅行摄影
