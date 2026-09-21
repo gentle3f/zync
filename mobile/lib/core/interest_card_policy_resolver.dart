@@ -79,6 +79,15 @@ class InterestCardPolicyResolver {
     'gaming.carcassonne',
     'gaming.gloomhaven',
     'entertainment.youtube',
+    'anime.jojo',
+    'wellness.crossfit',
+    'technology.chatgpt',
+    'technology.android',
+    'technology.apple',
+    'motorsport.motogp',
+    'motorsport.formula_e',
+    'motorsport.wec',
+    'motorsport.le_mans',
   };
 
   static InterestCardPolicyDecision resolve(InterestDefinition item) {
@@ -127,6 +136,9 @@ class InterestCardPolicyResolver {
   static String _reasonFor(InterestDefinition item) {
     if (item.cluster == 'cars/brands') return 'car_brand_partner_only';
     if (item.cluster == 'platforms/brands') return 'platform_brand_partner_only';
+    if (item.category == 'technology') return 'named_technology_brand_or_product';
+    if (item.category == 'motorsport') return 'named_motorsport_series_or_event';
+    if (item.id == 'wellness.crossfit') return 'named_fitness_brand';
     if (item.category == 'music') return 'named_music_artist_or_rightsholder';
     if (item.category == 'gaming') return 'named_game_or_tabletop_ip';
     if (item.category == 'entertainment') return 'named_screen_or_franchise_ip';
@@ -137,6 +149,9 @@ class InterestCardPolicyResolver {
   static String _partnerTypeFor(InterestDefinition item) {
     if (item.cluster == 'cars/brands') return 'automotive_brand';
     if (item.cluster == 'platforms/brands') return 'platform_brand';
+    if (item.category == 'technology') return 'technology_brand_rightsholder';
+    if (item.category == 'motorsport') return 'motorsport_series_rightsholder';
+    if (item.id == 'wellness.crossfit') return 'fitness_brand_rightsholder';
     if (item.category == 'music') return 'artist_label_rightsholder';
     if (item.category == 'gaming') return 'game_publisher_rightsholder';
     if (item.category == 'entertainment') return 'studio_network_rightsholder';
@@ -147,6 +162,10 @@ class InterestCardPolicyResolver {
   static String _proxyFamilyFor(InterestDefinition item) {
     if (item.cluster == 'cars/brands') return 'cars';
     if (item.cluster == 'platforms/brands') return 'online_video';
+    if (item.id == 'technology.chatgpt') return 'artificial_intelligence';
+    if (const {'technology.android', 'technology.apple'}.contains(item.id)) return 'technology_gadgets';
+    if (item.category == 'motorsport') return 'motorsport';
+    if (item.id == 'wellness.crossfit') return 'fitness';
     if (item.category == 'music') return 'music';
     if (item.category == 'gaming') return item.cluster.startsWith('tabletop/') ? 'tabletop_gaming' : 'video_gaming';
     if (item.category == 'entertainment') {
