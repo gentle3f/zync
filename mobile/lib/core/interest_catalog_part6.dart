@@ -48,10 +48,10 @@ transport.electric_cars|transport|cars|708|Electric Cars|電動車|电动车|電
 transport.car_modification|transport|cars|709|Car Modification|改裝車|汽车改装|改車;改装车
 transport.car_detailing|transport|cars|710|Car Detailing|汽車美容|汽车美容|汽車美容;汽车美容
 transport.off_roading|transport|cars|711|Off-roading|越野駕駛|越野驾驶|越野車;越野车
-transport.motorcycles|transport|cars|712|Motorcycles|電單車|摩托车|電單車;摩托车
+transport.motorcycles|transport|cars|712|Motorcycles|電單車|摩托车|電單車;摩托车;motorcycling
 transport.scooters|transport|cars|713|Scooters|綿羊仔／小型電單車|踏板摩托车|綿羊仔;踏板摩托
-transport.aviation|transport|cars|714|Aviation|航空|航空|航空
-transport.planespotting|transport|cars|715|Planespotting|觀機|观机|睇飛機;观机
+transport.aviation|transport|cars|714|Aviation|航空|航空|航空;flying
+transport.planespotting|transport|cars|715|Planespotting|觀機|观机|睇飛機;观机;plane spotting;aircraft spotting
 transport.public_transport|transport|cars|716|Public Transport|公共交通|公共交通|公共交通
 transport.metros|transport|cars|717|Metro Systems|地鐵系統|地铁系统|地鐵;地铁
 transport.buses|transport|cars|718|Buses|巴士|公交车|巴士;公交
@@ -77,19 +77,19 @@ collecting.perfume|collecting|collecting|749|Perfume Collecting|香水收藏|香
 collecting.fountain_pens|collecting|collecting|750|Fountain Pens|鋼筆收藏|钢笔收藏|鋼筆;钢笔
 collecting.stationery|collecting|collecting|751|Stationery|文具收藏|文具收藏|文具
 collecting.postcards|collecting|collecting|752|Postcards|明信片收藏|明信片收藏|明信片
-fashion.streetwear|fashion|fashion|760|Streetwear|街頭服飾|街头服饰|街頭服飾;街头穿搭
+fashion.streetwear|fashion|fashion|760|Streetwear|街頭服飾|街头服饰|街頭服飾;街头穿搭;street style
 fashion.menswear|fashion|fashion|761|Menswear|男裝|男装|男裝;男装
 fashion.womenswear|fashion|fashion|762|Womenswear|女裝|女装|女裝;女装
 fashion.vintage_fashion|fashion|fashion|763|Vintage Fashion|復古時裝|复古时尚|復古服裝;复古穿搭;vintage clothing
 fashion.luxury_fashion|fashion|fashion|764|Luxury Fashion|奢華時裝|奢侈时尚|奢侈品時裝;奢侈时尚
-fashion.sneakers|fashion|fashion|765|Sneakers|波鞋|球鞋|波鞋;球鞋
+fashion.sneakers|fashion|fashion|765|Sneakers|波鞋|球鞋|波鞋;球鞋;sneaker culture
 fashion.jewelry|fashion|fashion|766|Jewelry|首飾|首饰|首飾;首饰
 fashion.handbags|fashion|fashion|767|Handbags|手袋|手袋|手袋;包包
 fashion.makeup|fashion|fashion|768|Makeup|化妝|化妆|化妝;化妆
 fashion.skincare|fashion|fashion|769|Skincare|護膚|护肤|護膚;护肤
 fashion.haircare|fashion|fashion|770|Haircare|護髮|护发|護髮;护发
 fashion.nail_art|fashion|fashion|771|Nail Art|美甲|美甲|美甲
-lifestyle.interior_design|lifestyle|home|775|Interior Design|室內設計|室内设计|室內設計;室内设计
+lifestyle.interior_design|lifestyle|home|775|Interior Design|室內設計|室内设计|室內設計;室内设计;interior styling
 lifestyle.home_decor|lifestyle|home|776|Home Decor|家居佈置|家居布置|家居佈置;家居布置
 lifestyle.houseplants|lifestyle|home|777|Houseplants|室內植物|室内植物|室內植物;室内植物
 lifestyle.gardening|lifestyle|home|778|Gardening|園藝|园艺|園藝;园艺
@@ -98,7 +98,7 @@ lifestyle.minimalism|lifestyle|home|780|Minimalism|極簡生活|极简生活|極
 lifestyle.organization|lifestyle|home|781|Home Organization|家居收納|家居收纳|收納;收纳
 lifestyle.nightlife|lifestyle|social|790|Nightlife|夜生活|夜生活|夜生活;clubbing;club nights
 lifestyle.bars|lifestyle|social|791|Bars|酒吧|酒吧|酒吧
-lifestyle.pub_quizzes|lifestyle|social|792|Pub Quizzes|酒吧問答夜|酒吧问答|quiz night
+lifestyle.pub_quizzes|lifestyle|social|792|Pub Quizzes|酒吧問答夜|酒吧问答|quiz night;trivia nights;trivia night
 lifestyle.escape_rooms|lifestyle|social|793|Escape Rooms|密室逃脫|密室逃脱|密室逃脫;密室逃脱
 lifestyle.theme_parks|lifestyle|social|794|Theme Parks|主題樂園|主题乐园|主題樂園;主题乐园
 lifestyle.museums|lifestyle|social|795|Museums|博物館|博物馆|博物館;博物馆
