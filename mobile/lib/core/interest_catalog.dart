@@ -9,6 +9,7 @@ import 'interest_catalog_part8.dart';
 import 'interest_catalog_part9.dart';
 import 'interest_catalog_part10.dart';
 import 'interest_catalog_part11.dart';
+import 'interest_catalog_part12.dart';
 import 'interest_popularity_service.dart';
 import 'interest_relevance.dart';
 import 'models.dart';
@@ -28,6 +29,7 @@ class InterestCatalog {
     ...kInterestCatalogPart9,
     ...kInterestCatalogPart10,
     ...kInterestCatalogPart11,
+    ...kInterestCatalogPart12,
   ]);
 
   static final Map<String, InterestDefinition> _byId = {
