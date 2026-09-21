@@ -91,12 +91,12 @@ outdoors.scuba_diving|outdoors|water|177|Scuba Diving|水肺潛水|水肺潜水|
 outdoors.freediving|outdoors|water|178|Freediving|自由潛水|自由潜水|自由潛水;自由潜水
 outdoors.snorkeling|outdoors|water|179|Snorkeling|浮潛|浮潜|浮潛;浮潜
 outdoors.kayaking|outdoors|water|180|Kayaking|獨木舟|皮划艇|獨木舟;皮划艇
-outdoors.canoeing|outdoors|water|181|Canoeing|划艇|划艇|
+outdoors.canoeing|outdoors|water|181|Canoeing|獨木舟|皮划艇|划艇
 outdoors.sailing|outdoors|water|182|Sailing|帆船|帆船|帆船
 outdoors.stand_up_paddleboarding|outdoors|water|183|Stand-up Paddleboarding|直立板|桨板|sup
 outdoors.windsurfing|outdoors|water|184|Windsurfing|滑浪風帆|帆板|
 outdoors.kitesurfing|outdoors|water|185|Kitesurfing|風箏滑浪|风筝冲浪|
-outdoors.rowing|outdoors|water|186|Rowing|賽艇|赛艇|划艇
+outdoors.rowing|outdoors|water|186|Rowing|賽艇|赛艇|
 outdoors.dragon_boat|outdoors|water|187|Dragon Boat|龍舟|龙舟|龍舟;龙舟
 outdoors.wakeboarding|outdoors|water|188|Wakeboarding|花式滑水|尾波滑水|
 outdoors.water_skiing|outdoors|water|189|Water Skiing|滑水|滑水|
