@@ -10,6 +10,10 @@ const PROFILE_LIMITS = Object.freeze({
   quest_claim_account: { fallback: 30, env: 'CARDVERSE_RL_QUEST_CLAIM_ACCOUNT_PER_MINUTE', max: 180 },
   pack_open_ip: { fallback: 120, env: 'CARDVERSE_RL_PACK_OPEN_IP_PER_MINUTE', max: 600 },
   pack_open_account: { fallback: 30, env: 'CARDVERSE_RL_PACK_OPEN_ACCOUNT_PER_MINUTE', max: 180 },
+  draw_redeem_ip: { fallback: 120, env: 'CARDVERSE_RL_DRAW_REDEEM_IP_PER_MINUTE', max: 600 },
+  draw_redeem_account: { fallback: 60, env: 'CARDVERSE_RL_DRAW_REDEEM_ACCOUNT_PER_MINUTE', max: 300 },
+  daily_login_ip: { fallback: 120, env: 'CARDVERSE_RL_DAILY_LOGIN_IP_PER_MINUTE', max: 600 },
+  daily_login_account: { fallback: 10, env: 'CARDVERSE_RL_DAILY_LOGIN_ACCOUNT_PER_MINUTE', max: 60 },
   account_lifecycle_ip: { fallback: 30, env: 'CARDVERSE_RL_ACCOUNT_LIFECYCLE_IP_PER_MINUTE', max: 120 },
   account_lifecycle_account: { fallback: 10, env: 'CARDVERSE_RL_ACCOUNT_LIFECYCLE_ACCOUNT_PER_MINUTE', max: 60 },
 });

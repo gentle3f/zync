@@ -124,6 +124,38 @@ const CONFIG = {
 }
 
 {
+  let drawKeySeen = '';
+  const drawResult = await enforceCardverseAccountRateLimit(
+    '33333333-3333-4333-8333-333333333333',
+    'draw_redeem_account',
+    {
+      config: CONFIG,
+      async redisCommand(_config, command) {
+        drawKeySeen = command[3];
+        return [1, 60];
+      },
+    },
+  );
+  assert.equal(drawResult.limit, 60);
+  assert.match(drawKeySeen, /^zync:cardverse:rl:draw_redeem_account:/);
+
+  let dailyKeySeen = '';
+  const dailyResult = await enforceCardverseIpRateLimit(
+    { headers: { 'x-forwarded-for': '203.0.113.11' } },
+    'daily_login_ip',
+    {
+      config: CONFIG,
+      async redisCommand(_config, command) {
+        dailyKeySeen = command[3];
+        return [1, 60];
+      },
+    },
+  );
+  assert.equal(dailyResult.limit, 120);
+  assert.match(dailyKeySeen, /^zync:cardverse:rl:daily_login_ip:/);
+}
+
+{
   await assert.rejects(
     () => enforceCardverseIpRateLimit(
       { headers: { 'x-forwarded-for': '203.0.113.9' } },
@@ -172,6 +204,8 @@ const endpointExpectations = new Map([
   ['../../server/cardverse/routes/proofs/redeem.js', ['proof_redeem_ip', 'proof_redeem_account']],
   ['../../server/cardverse/routes/quests/claim.js', ['quest_claim_ip', 'quest_claim_account']],
   ['../../server/cardverse/routes/packs/open.js', ['pack_open_ip', 'pack_open_account']],
+  ['../../server/cardverse/routes/draws/redeem.js', ['draw_redeem_ip', 'draw_redeem_account']],
+  ['../../server/cardverse/routes/rewards/daily-login.js', ['daily_login_ip', 'daily_login_account']],
   ['../../server/cardverse/routes/auth/link.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
   ['../../server/cardverse/routes/auth/unlink.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
   ['../../server/cardverse/routes/auth/logout-all.js', ['account_lifecycle_ip', 'account_lifecycle_account']],
