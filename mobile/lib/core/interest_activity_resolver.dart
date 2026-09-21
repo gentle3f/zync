@@ -60,6 +60,9 @@ class InterestActivityResolver {
     }
 
     if (item.category == 'food') {
+      if (const {'food.cafe_hopping', 'food.brunch'}.contains(item.id)) {
+        return _socialExploration;
+      }
       if (cluster == 'cooking' ||
           cluster == 'cuisines' ||
           cluster == 'food_types' ||
