@@ -86,7 +86,7 @@ lifestyle.open_mic_nights|lifestyle|social|1204|Open Mic Nights|開放咪之夜|
 lifestyle.poetry_slams|lifestyle|social|1205|Poetry Slams|詩歌擂台|诗歌朗诵赛|poetry slam;spoken word night
 lifestyle.improv_comedy|lifestyle|social|1206|Improv Comedy|即興喜劇|即兴喜剧|improv;improvisational comedy
 entertainment.theatre_going|entertainment|screen|1207|Theatre Going|睇舞台劇|看舞台剧|live theatre;theater going;stage plays
-business.coworking|business|business|1208|Coworking|共享工作|联合办公|co-working;coworking spaces
+business.coworking|business|business|1208|Coworking|共享工作|联合办公|co-working;coworking spaces;coworking events
 lifestyle.digital_nomad_meetups|lifestyle|social|1209|Digital Nomad Meetups|數碼遊牧聚會|数字游民聚会|digital nomad meetup;nomad meetups
 lifestyle.expat_meetups|lifestyle|social|1210|Expat Meetups|海外生活者聚會|外籍人士聚会|expat meetup;expat community
 lifestyle.international_meetups|lifestyle|social|1211|International Meetups|國際交流聚會|国际交流聚会|international meetup;international social
