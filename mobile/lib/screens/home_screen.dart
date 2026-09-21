@@ -77,10 +77,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  bool _useCompactHeader(BuildContext context) =>
-      MediaQuery.sizeOf(context).width < 360 ||
-      MediaQuery.textScalerOf(context).scale(1) > 1.15;
-
   Widget _header(BuildContext context, AppLocalizations l10n) {
     return Row(
         children: [
