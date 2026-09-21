@@ -22,7 +22,7 @@ lifestyle.night_markets|lifestyle|shopping|851|Night Markets|夜市|夜市|night
 lifestyle.farmers_markets|lifestyle|shopping|852|Farmers' Markets|農夫市集|农夫市集|farmers market;farmer market
 lifestyle.city_walks|lifestyle|social|853|City Walks|城市漫步|城市漫步|city walk;urban walks;街區散步;街区散步
 lifestyle.dinner_parties|lifestyle|social|855|Dinner Parties|晚餐聚會|晚餐聚会|dinner party;home dinner
-lifestyle.local_events|lifestyle|social|856|Local Events|本地活動|本地活动|community events;local happenings
+lifestyle.local_events|lifestyle|social|856|Local Events|本地活動|本地活动|community events;local happenings;neighborhood events;neighbourhood events
 learning.personal_development|learning|knowledge|857|Personal Development|個人成長|个人成长|personal growth;self development
 learning.debating|learning|knowledge|858|Debating|辯論|辩论|debate;debates
 technology.pc_building|technology|hardware|859|PC Building|砌電腦|组装电脑|build a pc;computer building;砌機;装机
