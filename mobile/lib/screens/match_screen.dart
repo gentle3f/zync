@@ -594,43 +594,86 @@ class _MatchScreenState extends State<MatchScreen> {
 
   Widget _hiddenScreen(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final reduceMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+
+    final hero = ZyncHeroPanel(
+      startColor: const Color(0xFFFFF1E8),
+      endColor: const Color(0xFFF2EEFF),
+      accentColor: ZyncPalette.orange,
+      child: Column(
+        children: [
+          const ZyncIconTile(
+            icon: Icons.visibility_off_outlined,
+            size: 70,
+            backgroundColor: Colors.white,
+            foregroundColor: ZyncPalette.orangeDeep,
+          ),
+          const SizedBox(height: 18),
+          Text(
+            l10n.hiddenConnections(_connections.length),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 7),
+          Text(
+            _peerName,
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: ZyncPalette.inkSoft),
+          ),
+          const SizedBox(height: 16),
+          ZyncStatusPill(
+            icon: Icons.auto_awesome_rounded,
+            label: Localizations.localeOf(context)
+                    .toLanguageTag()
+                    .toLowerCase()
+                    .startsWith('zh')
+                ? '逐個揭曉，唔一次過劇透'
+                : 'Reveal them one by one',
+            foregroundColor: ZyncPalette.plum,
+            backgroundColor: Colors.white.withValues(alpha: 0.72),
+          ),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              key: const ValueKey('zync-reveal-first'),
+              onPressed: _revealFirst,
+              icon: const Icon(Icons.auto_awesome_rounded),
+              label: Text(l10n.revealConnection),
+              style: FilledButton.styleFrom(
+                backgroundColor: ZyncPalette.ink,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     return _shell(
       context,
       Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 40),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const ZyncIconTile(
-                icon: Icons.visibility_off_outlined,
-                size: 72,
-                backgroundColor: Color(0xFFFFEEE5),
-                foregroundColor: ZyncPalette.orangeDeep,
-              ),
-              const SizedBox(height: 22),
-              Text(
-                l10n.hiddenConnections(_connections.length),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 9),
-              Text(
-                _peerName,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft),
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  key: const ValueKey('zync-reveal-first'),
-                  onPressed: _revealFirst,
-                  icon: const Icon(Icons.auto_awesome_rounded),
-                  label: Text(l10n.revealConnection),
+          child: reduceMotion
+              ? hero
+              : TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.96, end: 1),
+                  duration: const Duration(milliseconds: 420),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) => Transform.scale(
+                    scale: value,
+                    child: Opacity(
+                      opacity: ((value - 0.96) / 0.04).clamp(0, 1),
+                      child: child,
+                    ),
+                  ),
+                  child: hero,
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -659,25 +702,25 @@ class _MatchScreenState extends State<MatchScreen> {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  l10n.connectionProgress(_revealedIndex + 1, _connections.length),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(color: ZyncPalette.inkSoft),
+                child: ZyncStatusPill(
+                  icon: Icons.visibility_rounded,
+                  label: l10n.connectionProgress(
+                    _revealedIndex + 1,
+                    _connections.length,
+                  ),
+                  foregroundColor: ZyncPalette.plum,
+                  backgroundColor: const Color(0xFFF1EEFF),
                 ),
               ),
-              if (connection.isNew)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: ZyncPalette.mint,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    l10n.newConnection,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: const Color(0xFF176B57),
-                        ),
-                  ),
+              if (connection.isNew) ...[
+                const SizedBox(width: 8),
+                ZyncStatusPill(
+                  icon: Icons.auto_awesome_rounded,
+                  label: l10n.newConnection,
+                  foregroundColor: const Color(0xFF176B57),
+                  backgroundColor: ZyncPalette.mint,
                 ),
+              ],
             ],
           ),
           const SizedBox(height: 8),
@@ -705,10 +748,12 @@ class _MatchScreenState extends State<MatchScreen> {
           const SizedBox(height: 14),
           KeyedSubtree(
             key: ValueKey('zync-connection-${connection.id}'),
-            child: ZyncSurface(
-              borderColor: ZyncPalette.peach,
-              backgroundColor: const Color(0xFFFFF7F2),
+            child: ZyncHeroPanel(
+              startColor: const Color(0xFFFFF3EB),
+              endColor: const Color(0xFFFFE9D8),
+              accentColor: ZyncPalette.orange,
               padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
+              radius: 24,
               child: Column(
               children: [
                 const ZyncIconTile(
