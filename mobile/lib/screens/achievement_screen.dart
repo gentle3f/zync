@@ -61,53 +61,99 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 32),
                   children: [
-                    ZyncSurface(
-                      borderColor: const Color(0xFFE5DFFF),
-                      backgroundColor: const Color(0xFFF8F5FF),
-                      child: Row(
+                    ZyncHeroPanel(
+                      startColor: const Color(0xFFFFF4DB),
+                      endColor: const Color(0xFFF1EEFF),
+                      accentColor: const Color(0xFFB27A00),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const ZyncIconTile(
-                            icon: Icons.emoji_events_rounded,
-                            size: 58,
-                            backgroundColor: Color(0xFFFFE9B7),
-                            foregroundColor: Color(0xFF8B5A00),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  LocalizedDomainText.achievementsTitle(locale),
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge,
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  LocalizedDomainText.achievementsIntro(locale),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        color: ZyncPalette.inkSoft,
-                                        height: 1.35,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const ZyncIconTile(
+                                icon: Icons.emoji_events_rounded,
+                                size: 58,
+                                backgroundColor: Colors.white,
+                                foregroundColor: Color(0xFF8B5A00),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      LocalizedDomainText.achievementsTitle(
+                                        locale,
                                       ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      LocalizedDomainText.achievementsIntro(
+                                        locale,
+                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: ZyncPalette.inkSoft,
+                                            height: 1.35,
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  LocalizedDomainText.achievementUnlockedMeta(
-                                    achievement.unlockedCount,
-                                    achievement.progress.length,
-                                    locale,
-                                  ),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(color: ZyncPalette.plum),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ZyncMetricPill(
+                                  icon: Icons.workspace_premium_rounded,
+                                  value:
+                                      '${achievement.unlockedCount} / ${achievement.progress.length}',
+                                  label: locale
+                                          .toLowerCase()
+                                          .startsWith('zh')
+                                      ? '已解鎖'
+                                      : 'unlocked',
+                                  accentColor: const Color(0xFF8B5A00),
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: ZyncMetricPill(
+                                  icon: Icons.explore_outlined,
+                                  value:
+                                      '${achievement.discoveredInterests.length}',
+                                  label: locale
+                                          .toLowerCase()
+                                          .startsWith('zh')
+                                      ? '發現興趣'
+                                      : 'interests',
+                                  accentColor: ZyncPalette.plum,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: ZyncMetricPill(
+                                  icon: Icons.bolt_rounded,
+                                  value:
+                                      '${achievement.triedTogetherCount}',
+                                  label: locale
+                                          .toLowerCase()
+                                          .startsWith('zh')
+                                      ? '真做過'
+                                      : 'did together',
+                                  accentColor: ZyncPalette.orangeDeep,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -242,32 +288,24 @@ class _FamilyHeader extends StatelessWidget {
       AchievementFamily.realWorld => Icons.bolt_rounded,
     };
 
-    return Row(
-      children: [
-        ZyncIconTile(
-          icon: icon,
-          size: 40,
-          backgroundColor: const Color(0xFFE9E5FF),
-          foregroundColor: ZyncPalette.plum,
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            LocalizedDomainText.achievementFamilyTitle(
-              family.name,
-              locale,
-            ),
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Text(
-          '$unlocked / ${items.length}',
-          style: Theme.of(context)
-              .textTheme
-              .labelLarge
-              ?.copyWith(color: ZyncPalette.inkSoft),
-        ),
-      ],
+    return ZyncSectionHeading(
+      icon: icon,
+      title: LocalizedDomainText.achievementFamilyTitle(
+        family.name,
+        locale,
+      ),
+      trailing: ZyncStatusPill(
+        icon: unlocked == items.length
+            ? Icons.check_circle_rounded
+            : Icons.lock_open_rounded,
+        label: '$unlocked / ${items.length}',
+        foregroundColor: unlocked == items.length
+            ? const Color(0xFF176B57)
+            : ZyncPalette.plum,
+        backgroundColor: unlocked == items.length
+            ? const Color(0xFFDDF5EC)
+            : const Color(0xFFF1EEFF),
+      ),
     );
   }
 }
@@ -290,9 +328,16 @@ class _AchievementCard extends StatelessWidget {
         AchievementService.isSecretAchievement(item.id) && !unlocked;
     return ZyncSurface(
       shadow: false,
-      borderColor: unlocked ? const Color(0xFFFFD98A) : ZyncPalette.line,
-      backgroundColor:
-          unlocked ? const Color(0xFFFFF8E8) : ZyncPalette.surface,
+      borderColor: unlocked
+          ? const Color(0xFFFFD98A)
+          : secretLocked
+              ? const Color(0xFFDCD4FF)
+              : ZyncPalette.line,
+      backgroundColor: unlocked
+          ? const Color(0xFFFFF8E8)
+          : secretLocked
+              ? const Color(0xFFF7F5FF)
+              : ZyncPalette.surface,
       padding: const EdgeInsets.all(15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,10 +347,14 @@ class _AchievementCard extends StatelessWidget {
             size: 48,
             backgroundColor: unlocked
                 ? const Color(0xFFFFE9B7)
-                : const Color(0xFFF0F0F4),
+                : secretLocked
+                    ? const Color(0xFFE9E5FF)
+                    : const Color(0xFFF0F0F4),
             foregroundColor: unlocked
                 ? const Color(0xFF8B5A00)
-                : ZyncPalette.inkSoft,
+                : secretLocked
+                    ? ZyncPalette.plum
+                    : ZyncPalette.inkSoft,
           ),
           const SizedBox(width: 13),
           Expanded(
