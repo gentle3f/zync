@@ -38,6 +38,7 @@ void main() {
 
     expect(first.visualSeed, second.visualSeed);
     expect(first.categoryKit, second.categoryKit);
+    expect(first.artArchetype, second.artArchetype);
     expect(first.visualFamily, second.visualFamily);
     expect(first.sceneGrammar, second.sceneGrammar);
     expect(first.paletteSlot, second.paletteSlot);
@@ -94,6 +95,34 @@ void main() {
     expect(
       CardVisualRecipeResolver.resolve('not.a.real.interest'),
       isNull,
+    );
+  });
+
+  test('flagship scalable CORE recipes cover five distinct benchmark hobbies', () {
+    final recipes = CardVisualRecipeResolver.flagshipPrototypeBatch();
+
+    expect(recipes, hasLength(5));
+    expect(
+      recipes.map((item) => item.interestId).toList(),
+      CardVisualRecipeResolver.flagshipPrototypeInterestIds,
+    );
+    expect(
+      recipes.map((item) => item.artArchetype).toSet(),
+      {
+        'travel_vista',
+        'solo_action',
+        'drink_ritual',
+        'tech_workspace',
+        'group_play',
+      },
+    );
+    expect(
+      recipes.every(
+        (item) => CardVisualRecipeResolver.artArchetypes.contains(
+          item.artArchetype,
+        ),
+      ),
+      isTrue,
     );
   });
 

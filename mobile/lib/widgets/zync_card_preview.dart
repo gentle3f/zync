@@ -430,7 +430,14 @@ class _CardScenePainter extends CustomPainter {
     final seed = int.tryParse(recipe.visualSeed, radix: 16) ?? 1;
     _drawPattern(canvas, size, seed);
 
-    switch (recipe.categoryKit) {
+    final usedCoreArchetype = _drawCoreArchetypeScene(
+      canvas,
+      size,
+      seed,
+    );
+
+    if (!usedCoreArchetype) {
+      switch (recipe.categoryKit) {
       case 'sports':
         _drawSports(canvas, size, seed);
       case 'outdoors':
@@ -463,9 +470,431 @@ class _CardScenePainter extends CustomPainter {
         _drawCollecting(canvas, size, seed);
       default:
         _drawAbstract(canvas, size, seed);
+      }
     }
 
-    _drawSceneGrammarAccent(canvas, size, seed);
+    if (!usedCoreArchetype) {
+      _drawSceneGrammarAccent(canvas, size, seed);
+    }
+  }
+
+  bool _drawCoreArchetypeScene(
+    Canvas canvas,
+    Size size,
+    int seed,
+  ) {
+    switch (recipe.artArchetype) {
+      case 'travel_vista':
+        if (recipe.sceneGrammar == 'travel_road_ribbon') {
+          _drawTravelVistaCore(canvas, size, seed);
+          return true;
+        }
+      case 'solo_action':
+        if (recipe.sceneGrammar == 'court_arc') {
+          _drawSoloActionCore(canvas, size, seed);
+          return true;
+        }
+      case 'drink_ritual':
+        _drawDrinkRitualCore(canvas, size, seed);
+        return true;
+      case 'tech_workspace':
+        if (recipe.visualFamily == 'technology_ai' ||
+            recipe.visualFamily == 'technology_code') {
+          _drawTechWorkspaceCore(canvas, size, seed);
+          return true;
+        }
+      case 'group_play':
+        if (recipe.visualFamily == 'gaming_tabletop' ||
+            recipe.visualFamily == 'gaming_strategy') {
+          _drawGroupPlayCore(canvas, size, seed);
+          return true;
+        }
+    }
+    return false;
+  }
+
+  void _drawTravelVistaCore(Canvas canvas, Size size, int seed) {
+    final sun = Paint()..color = Colors.white.withValues(alpha: 0.88);
+    canvas.drawCircle(
+      Offset(size.width * 0.76, size.height * 0.20),
+      size.width * 0.075,
+      sun,
+    );
+
+    final far = Path()
+      ..moveTo(0, size.height * 0.49)
+      ..lineTo(size.width * 0.18, size.height * 0.33)
+      ..lineTo(size.width * 0.35, size.height * 0.46)
+      ..lineTo(size.width * 0.55, size.height * 0.27)
+      ..lineTo(size.width * 0.76, size.height * 0.44)
+      ..lineTo(size.width, size.height * 0.31)
+      ..lineTo(size.width, size.height * 0.64)
+      ..lineTo(0, size.height * 0.64)
+      ..close();
+    canvas.drawPath(
+      far,
+      Paint()..color = palette.accent.withValues(alpha: 0.34),
+    );
+
+    final near = Path()
+      ..moveTo(0, size.height * 0.58)
+      ..lineTo(size.width * 0.20, size.height * 0.45)
+      ..lineTo(size.width * 0.40, size.height * 0.57)
+      ..lineTo(size.width * 0.62, size.height * 0.39)
+      ..lineTo(size.width * 0.80, size.height * 0.52)
+      ..lineTo(size.width, size.height * 0.43)
+      ..lineTo(size.width, size.height * 0.70)
+      ..lineTo(0, size.height * 0.70)
+      ..close();
+    canvas.drawPath(
+      near,
+      Paint()..color = palette.ink.withValues(alpha: 0.26),
+    );
+
+    final road = Path()
+      ..moveTo(size.width * 0.08, size.height * 0.68)
+      ..cubicTo(
+        size.width * 0.30,
+        size.height * 0.56,
+        size.width * 0.48,
+        size.height * 0.61,
+        size.width * 0.60,
+        size.height * 0.48,
+      )
+      ..cubicTo(
+        size.width * 0.68,
+        size.height * 0.40,
+        size.width * 0.62,
+        size.height * 0.34,
+        size.width * 0.72,
+        size.height * 0.29,
+      );
+    canvas.drawPath(
+      road,
+      Paint()
+        ..color = palette.ink.withValues(alpha: 0.64)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = size.width * 0.16
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawPath(
+      road,
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.72)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = size.width * 0.014
+        ..strokeCap = StrokeCap.round,
+    );
+
+    final carCenter = Offset(size.width * 0.34, size.height * 0.56);
+    final carBody = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: carCenter,
+        width: size.width * 0.27,
+        height: size.height * 0.075,
+      ),
+      Radius.circular(size.width * 0.035),
+    );
+    canvas.drawRRect(
+      carBody,
+      Paint()..color = palette.accent.withValues(alpha: 0.95),
+    );
+    final roof = Path()
+      ..moveTo(size.width * 0.27, size.height * 0.535)
+      ..lineTo(size.width * 0.32, size.height * 0.49)
+      ..lineTo(size.width * 0.42, size.height * 0.49)
+      ..lineTo(size.width * 0.47, size.height * 0.535)
+      ..close();
+    canvas.drawPath(
+      roof,
+      Paint()..color = Colors.white.withValues(alpha: 0.50),
+    );
+    final tyre = Paint()..color = palette.ink.withValues(alpha: 0.92);
+    canvas.drawCircle(
+      Offset(size.width * 0.28, size.height * 0.60),
+      size.width * 0.035,
+      tyre,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.43, size.height * 0.60),
+      size.width * 0.035,
+      tyre,
+    );
+  }
+
+  void _drawSoloActionCore(Canvas canvas, Size size, int seed) {
+    final court = Paint()
+      ..color = Colors.white.withValues(alpha: 0.46)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.012;
+    canvas.drawLine(
+      Offset(size.width * 0.08, size.height * 0.62),
+      Offset(size.width * 0.92, size.height * 0.62),
+      court,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.12, size.height * 0.54),
+      Offset(size.width * 0.88, size.height * 0.54),
+      court,
+    );
+
+    final body = Paint()
+      ..color = palette.ink.withValues(alpha: 0.72)
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = size.width * 0.055;
+    final head = Offset(size.width * 0.43, size.height * 0.29);
+    canvas.drawCircle(head, size.width * 0.055, body);
+    canvas.drawLine(
+      Offset(size.width * 0.43, size.height * 0.35),
+      Offset(size.width * 0.46, size.height * 0.50),
+      body,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.45, size.height * 0.40),
+      Offset(size.width * 0.60, size.height * 0.31),
+      body,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.45, size.height * 0.40),
+      Offset(size.width * 0.33, size.height * 0.47),
+      body,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.46, size.height * 0.50),
+      Offset(size.width * 0.58, size.height * 0.61),
+      body,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.46, size.height * 0.50),
+      Offset(size.width * 0.35, size.height * 0.62),
+      body,
+    );
+
+    final racket = Paint()
+      ..color = Colors.white.withValues(alpha: 0.92)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.018;
+    canvas.drawLine(
+      Offset(size.width * 0.59, size.height * 0.32),
+      Offset(size.width * 0.70, size.height * 0.22),
+      racket,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.75, size.height * 0.18),
+        width: size.width * 0.17,
+        height: size.width * 0.22,
+      ),
+      racket,
+    );
+
+    final shuttle = Paint()..color = palette.accent.withValues(alpha: 0.96);
+    canvas.drawCircle(
+      Offset(size.width * 0.78, size.height * 0.39),
+      size.width * 0.022,
+      shuttle,
+    );
+    final feathers = Path()
+      ..moveTo(size.width * 0.79, size.height * 0.37)
+      ..lineTo(size.width * 0.85, size.height * 0.32)
+      ..lineTo(size.width * 0.83, size.height * 0.41)
+      ..close();
+    canvas.drawPath(feathers, shuttle);
+  }
+
+  void _drawDrinkRitualCore(Canvas canvas, Size size, int seed) {
+    for (var i = 0; i < 7; i++) {
+      final x = size.width * (0.12 + ((seed + i * 17) % 76) / 100);
+      final y = size.height * (0.10 + ((seed + i * 29) % 36) / 100);
+      canvas.drawCircle(
+        Offset(x, y),
+        size.width * (0.025 + (i % 3) * 0.018),
+        Paint()..color = Colors.white.withValues(alpha: 0.07 + i * 0.008),
+      );
+    }
+
+    final saucer = Paint()..color = Colors.white.withValues(alpha: 0.45);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.50, size.height * 0.55),
+        width: size.width * 0.56,
+        height: size.height * 0.10,
+      ),
+      saucer,
+    );
+    final cup = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.47, size.height * 0.44),
+        width: size.width * 0.42,
+        height: size.height * 0.20,
+      ),
+      Radius.circular(size.width * 0.075),
+    );
+    canvas.drawRRect(
+      cup,
+      Paint()..color = Colors.white.withValues(alpha: 0.82),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.47, size.height * 0.355),
+        width: size.width * 0.34,
+        height: size.height * 0.06,
+      ),
+      Paint()..color = palette.ink.withValues(alpha: 0.68),
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.70, size.height * 0.44),
+      size.width * 0.09,
+      Paint()
+        ..color = Colors.transparent
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = size.width * 0.035,
+    );
+
+    final steam = Paint()
+      ..color = Colors.white.withValues(alpha: 0.74)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.018
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 3; i++) {
+      final x = size.width * (0.38 + i * 0.09);
+      final path = Path()
+        ..moveTo(x, size.height * 0.32)
+        ..cubicTo(
+          x - size.width * 0.03,
+          size.height * 0.27,
+          x + size.width * 0.04,
+          size.height * 0.23,
+          x,
+          size.height * 0.18,
+        );
+      canvas.drawPath(path, steam);
+    }
+  }
+
+  void _drawTechWorkspaceCore(Canvas canvas, Size size, int seed) {
+    final monitor = Paint()..color = palette.ink.withValues(alpha: 0.56);
+    final screen = Paint()..color = Colors.white.withValues(alpha: 0.18);
+    for (var i = 0; i < 3; i++) {
+      final rect = Rect.fromLTWH(
+        size.width * (0.10 + i * 0.27),
+        size.height * (0.18 + (i % 2) * 0.06),
+        size.width * 0.23,
+        size.height * 0.20,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, Radius.circular(size.width * 0.025)),
+        monitor,
+      );
+      canvas.drawRect(rect.deflate(size.width * 0.018), screen);
+    }
+
+    final code = Paint()
+      ..color = palette.accent.withValues(alpha: 0.82)
+      ..strokeWidth = size.width * 0.012
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 6; i++) {
+      final y = size.height * (0.22 + i * 0.035);
+      canvas.drawLine(
+        Offset(size.width * 0.15, y),
+        Offset(size.width * (0.24 + (i % 3) * 0.03), y),
+        code,
+      );
+    }
+
+    final person = Paint()..color = palette.ink.withValues(alpha: 0.80);
+    canvas.drawCircle(
+      Offset(size.width * 0.52, size.height * 0.49),
+      size.width * 0.075,
+      person,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.52, size.height * 0.61),
+        width: size.width * 0.30,
+        height: size.height * 0.22,
+      ),
+      person,
+    );
+
+    final nodePaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.75)
+      ..strokeWidth = size.width * 0.010;
+    final nodeCenter = Offset(size.width * 0.78, size.height * 0.23);
+    final nodes = [
+      nodeCenter,
+      Offset(size.width * 0.69, size.height * 0.18),
+      Offset(size.width * 0.86, size.height * 0.17),
+      Offset(size.width * 0.88, size.height * 0.29),
+      Offset(size.width * 0.70, size.height * 0.31),
+    ];
+    for (var i = 1; i < nodes.length; i++) {
+      canvas.drawLine(nodeCenter, nodes[i], nodePaint);
+    }
+    for (final node in nodes) {
+      canvas.drawCircle(node, size.width * 0.018, nodePaint);
+    }
+  }
+
+  void _drawGroupPlayCore(Canvas canvas, Size size, int seed) {
+    final table = Paint()..color = palette.ink.withValues(alpha: 0.42);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.50, size.height * 0.45),
+        width: size.width * 0.72,
+        height: size.height * 0.34,
+      ),
+      table,
+    );
+
+    final boardRect = Rect.fromCenter(
+      center: Offset(size.width * 0.50, size.height * 0.45),
+      width: size.width * 0.34,
+      height: size.width * 0.34,
+    );
+    canvas.drawRect(
+      boardRect,
+      Paint()..color = Colors.white.withValues(alpha: 0.54),
+    );
+    final grid = Paint()
+      ..color = palette.ink.withValues(alpha: 0.28)
+      ..strokeWidth = size.width * 0.008;
+    for (var i = 1; i < 3; i++) {
+      final dx = boardRect.left + boardRect.width * i / 3;
+      final dy = boardRect.top + boardRect.height * i / 3;
+      canvas.drawLine(
+        Offset(dx, boardRect.top),
+        Offset(dx, boardRect.bottom),
+        grid,
+      );
+      canvas.drawLine(
+        Offset(boardRect.left, dy),
+        Offset(boardRect.right, dy),
+        grid,
+      );
+    }
+
+    final people = [
+      Offset(size.width * 0.22, size.height * 0.29),
+      Offset(size.width * 0.78, size.height * 0.29),
+      Offset(size.width * 0.20, size.height * 0.60),
+      Offset(size.width * 0.80, size.height * 0.60),
+    ];
+    for (var i = 0; i < people.length; i++) {
+      canvas.drawCircle(
+        people[i],
+        size.width * 0.055,
+        Paint()..color = Colors.white.withValues(alpha: 0.82),
+      );
+      canvas.drawCircle(
+        Offset(
+          size.width * (0.40 + (i % 2) * 0.20),
+          size.height * (0.39 + (i ~/ 2) * 0.13),
+        ),
+        size.width * 0.022,
+        Paint()..color = palette.accent.withValues(alpha: 0.92),
+      );
+    }
   }
 
   void _drawPattern(Canvas canvas, Size size, int seed) {

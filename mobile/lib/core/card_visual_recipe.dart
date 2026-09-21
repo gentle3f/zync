@@ -19,6 +19,7 @@ class CardVisualRecipe {
     required this.artSystemVersion,
     required this.visualSeed,
     required this.categoryKit,
+    required this.artArchetype,
     required this.visualFamily,
     required this.iconKey,
     required this.sceneGrammar,
@@ -30,6 +31,7 @@ class CardVisualRecipe {
   final int artSystemVersion;
   final String visualSeed;
   final String categoryKit;
+  final String artArchetype;
   final String visualFamily;
   final String iconKey;
   final String sceneGrammar;
@@ -120,6 +122,97 @@ class CardVisualRecipeResolver {
     ),
   };
 
+  static const artArchetypes = <String>{
+    'solo_action',
+    'vertical_adventure',
+    'group_play',
+    'food_hero',
+    'drink_ritual',
+    'travel_vista',
+    'urban_discovery',
+    'performance',
+    'creative_studio',
+    'lens_perspective',
+    'tech_workspace',
+    'collection_object_hero',
+    'calm_wellness',
+    'nature_immersion',
+    'story_culture',
+  };
+
+  static const archetypeByInterest = <String, String>{
+    'sports.badminton': 'solo_action',
+    'outdoors.bouldering': 'vertical_adventure',
+    'food.sushi': 'food_hero',
+    'travel.japan': 'travel_vista',
+    'music.piano': 'performance',
+    'travel.roadtrip': 'travel_vista',
+    'food.coffee': 'drink_ritual',
+    'technology.ai': 'tech_workspace',
+    'photography.general': 'lens_perspective',
+    'gaming.board': 'group_play',
+  };
+
+  static const archetypeByFamily = <String, String>{
+    'sports_racket': 'solo_action',
+    'sports_team_ball': 'group_play',
+    'sports_running': 'solo_action',
+    'outdoors_trail': 'nature_immersion',
+    'outdoors_climbing': 'vertical_adventure',
+    'outdoors_water': 'nature_immersion',
+    'food_drink': 'drink_ritual',
+    'food_cooking': 'food_hero',
+    'arts_photography': 'lens_perspective',
+    'entertainment_cinema': 'story_culture',
+    'music_genre': 'performance',
+    'gaming_general': 'story_culture',
+    'learning_books': 'story_culture',
+    'crafts_diy': 'creative_studio',
+    'wellness_mind_body': 'calm_wellness',
+    'motorsport_racing': 'solo_action',
+    'collecting_building': 'collection_object_hero',
+    'outdoors_camp': 'nature_immersion',
+    'nature_night_sky': 'nature_immersion',
+    'nature_wildlife': 'lens_perspective',
+    'travel_route': 'urban_discovery',
+    'travel_destination': 'travel_vista',
+    'travel_roadtrip': 'travel_vista',
+    'travel_food': 'urban_discovery',
+    'technology_ai': 'tech_workspace',
+    'technology_code': 'tech_workspace',
+    'technology_robotics': 'tech_workspace',
+    'technology_hardware': 'collection_object_hero',
+    'wellness_fitness': 'solo_action',
+    'arts_visual': 'creative_studio',
+    'arts_ceramics': 'creative_studio',
+    'food_cuisine': 'food_hero',
+    'music_instrument': 'performance',
+    'music_live': 'performance',
+    'gaming_tabletop': 'group_play',
+    'gaming_strategy': 'group_play',
+    'learning_languages': 'story_culture',
+    'learning_history': 'story_culture',
+    'crafts_textile': 'creative_studio',
+  };
+
+  static const archetypeByCategory = <String, String>{
+    'sports': 'solo_action',
+    'outdoors': 'nature_immersion',
+    'food': 'food_hero',
+    'travel': 'travel_vista',
+    'entertainment': 'story_culture',
+    'music': 'performance',
+    'gaming': 'group_play',
+    'learning': 'story_culture',
+    'arts': 'creative_studio',
+    'crafts': 'creative_studio',
+    'technology': 'tech_workspace',
+    'wellness': 'calm_wellness',
+    'nature': 'nature_immersion',
+    'motorsport': 'solo_action',
+    'collecting': 'collection_object_hero',
+  };
+
   static const sceneGrammarByFamily = <String, String>{
     'sports_racket': 'court_arc',
     'sports_team_ball': 'team_ball_trajectory',
@@ -175,6 +268,14 @@ class CardVisualRecipeResolver {
     'gaming.video',
     'books.reading',
     'crafts.diy',
+  ];
+
+  static const flagshipPrototypeInterestIds = <String>[
+    'travel.roadtrip',
+    'sports.badminton',
+    'food.coffee',
+    'technology.ai',
+    'gaming.board',
   ];
 
   static const expandedProofInterestIds = <String>[
@@ -242,12 +343,18 @@ class CardVisualRecipeResolver {
     final sceneGrammar =
         sceneGrammarByFamily[card.visualFamily] ??
         kit.defaultSceneGrammar;
+    final artArchetype =
+        archetypeByInterest[interestId] ??
+        archetypeByFamily[card.visualFamily] ??
+        archetypeByCategory[kit.id] ??
+        'story_culture';
 
     return CardVisualRecipe(
       interestId: interestId,
       artSystemVersion: artSystemVersion,
       visualSeed: seed,
       categoryKit: kit.id,
+      artArchetype: artArchetype,
       visualFamily: card.visualFamily,
       iconKey: card.iconKey,
       sceneGrammar: sceneGrammar,
@@ -258,6 +365,9 @@ class CardVisualRecipeResolver {
 
   static List<CardVisualRecipe> proofBatch() =>
       _resolveBatch(proofInterestIds, label: 'visual');
+
+  static List<CardVisualRecipe> flagshipPrototypeBatch() =>
+      _resolveBatch(flagshipPrototypeInterestIds, label: 'flagship');
 
   static List<CardVisualRecipe> expandedProofBatch() =>
       _resolveBatch(expandedProofInterestIds, label: 'expanded');

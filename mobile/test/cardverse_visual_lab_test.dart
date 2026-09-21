@@ -20,6 +20,14 @@ void main() {
 
     expect(find.text('Cardverse Visual Lab'), findsOneWidget);
     expect(
+      find.byKey(const ValueKey('card-art-engine-flagship-strip')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('flagship-card-travel.roadtrip')),
+      findsOneWidget,
+    );
+    expect(
       find.byKey(
         const ValueKey('card-lab-item-sports.badminton'),
       ),

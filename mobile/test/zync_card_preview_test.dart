@@ -20,6 +20,33 @@ void main() {
     'crafts.diy': 'DIY & Crafts',
   };
 
+  testWidgets('five scalable CORE flagship recipes render without image assets',
+      (tester) async {
+    for (final recipe in CardVisualRecipeResolver.flagshipPrototypeBatch()) {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 250,
+                height: 350,
+                child: ZyncCardPreview(
+                  recipe: recipe,
+                  title: recipe.interestId,
+                  subtitle: recipe.artArchetype,
+                  cardNumberLabel: 'CORE',
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.text(recipe.interestId), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    }
+  });
+
   testWidgets('all twelve proof recipes render at collectible card size',
       (tester) async {
     for (final recipe in CardVisualRecipeResolver.proofBatch()) {

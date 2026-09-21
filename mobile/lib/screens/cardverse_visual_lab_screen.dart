@@ -12,6 +12,7 @@ class CardverseVisualLabScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toLanguageTag();
+    final flagships = CardVisualRecipeResolver.flagshipPrototypeBatch();
     final recipes = CardVisualRecipeResolver.expandedProofBatch();
 
     return Scaffold(
@@ -62,6 +63,96 @@ class CardverseVisualLabScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(18, 2, 18, 18),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _copy(
+                          locale,
+                          en: 'Scalable CORE prototype',
+                          zhHant: '可量產 CORE 原型',
+                          zhHans: '可量产 CORE 原型',
+                        ),
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _copy(
+                          locale,
+                          en:
+                              'Five benchmark hobbies rendered by the same procedural engine — no per-card image asset.',
+                          zhHant:
+                              '5 個 benchmark 興趣全部由同一套程序化引擎 render，唔需要逐張準備圖片。',
+                          zhHans:
+                              '5 个 benchmark 兴趣全部由同一套程序化引擎渲染，不需要逐张准备图片。',
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        key: const ValueKey('card-art-engine-flagship-strip'),
+                        height: 294,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: flagships.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 12),
+                          itemBuilder: (context, index) {
+                            final recipe = flagships[index];
+                            final interest = InterestCatalog.byId(recipe.interestId)!;
+                            return SizedBox(
+                              width: 200,
+                              child: GestureDetector(
+                                key: ValueKey(
+                                  'flagship-card-${recipe.interestId}',
+                                ),
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => _CardverseCardDetailScreen(
+                                      recipe: recipe,
+                                      initialFinish: _proofFinishForIndex(index),
+                                      editionLabel: 'CORE',
+                                      title: interest.labelFor(locale),
+                                      subtitle: _flagshipSubtitle(
+                                        locale,
+                                        recipe.interestId,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                child: ZyncCardPreview(
+                                  recipe: recipe,
+                                  title: interest.labelFor(locale),
+                                  subtitle: _flagshipSubtitle(
+                                    locale,
+                                    recipe.interestId,
+                                  ),
+                                  finish: _proofFinishForIndex(index),
+                                  editionLabel: 'CORE',
+                                  cardNumberLabel:
+                                      'F${(index + 1).toString().padLeft(2, '0')}',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
+                        _copy(
+                          locale,
+                          en: '50-card system review',
+                          zhHant: '50 張系統審閱批次',
+                          zhHans: '50 张系统审阅批次',
+                        ),
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -159,6 +250,47 @@ class CardverseVisualLabScreen extends StatelessWidget {
       CardFinishTier.secret,
     ];
     return finishes[index % finishes.length];
+  }
+
+  static String _flagshipSubtitle(String locale, String interestId) {
+    final copy = switch (interestId) {
+      'travel.roadtrip' => (
+          en: 'Freedom · Road · Explore',
+          zhHant: '自由 · 公路 · 探索',
+          zhHans: '自由 · 公路 · 探索',
+        ),
+      'sports.badminton' => (
+          en: 'Speed · Rally · Connect',
+          zhHant: '速度 · 對拉 · 連繫',
+          zhHans: '速度 · 对拉 · 连接',
+        ),
+      'food.coffee' => (
+          en: 'Ritual · Warmth · Conversation',
+          zhHant: '儀式 · 溫度 · 對話',
+          zhHans: '仪式 · 温度 · 对话',
+        ),
+      'technology.ai' => (
+          en: 'Curiosity · Create · Future',
+          zhHant: '好奇 · 創造 · 未來',
+          zhHans: '好奇 · 创造 · 未来',
+        ),
+      'gaming.board' => (
+          en: 'Strategy · Laughter · Together',
+          zhHant: '策略 · 笑聲 · 同桌',
+          zhHans: '策略 · 笑声 · 同桌',
+        ),
+      _ => (
+          en: 'Discover · Do · Connect',
+          zhHant: '發現 · 行動 · 連繫',
+          zhHans: '发现 · 行动 · 连接',
+        ),
+    };
+    return _copy(
+      locale,
+      en: copy.en,
+      zhHant: copy.zhHant,
+      zhHans: copy.zhHans,
+    );
   }
 
   static String _subtitle(
@@ -392,6 +524,7 @@ class _RecipeReadout extends StatelessWidget {
             const SizedBox(height: 10),
             _row(context, 'ID', recipe.interestId),
             _row(context, 'Kit', recipe.categoryKit),
+            _row(context, 'Archetype', recipe.artArchetype),
             _row(context, 'Family', recipe.visualFamily),
             _row(context, 'Scene', recipe.sceneGrammar),
             _row(context, 'Palette', '${recipe.paletteSlot}'),
