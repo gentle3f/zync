@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/group_relay_service.dart';
@@ -277,6 +278,9 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         seed: '${coordinator.room.roomId}:consensus',
       );
 
+      if (result.hasDecision) {
+        HapticFeedback.heavyImpact();
+      }
       if (result.hasDecision && !_activityRecorded) {
         final candidate = coordinator.finalists.firstWhere(
           (item) => item.id == result.chosenCandidateId,
@@ -376,18 +380,42 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         key: const ValueKey('zync-now-host-lobby'),
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
         children: [
-          Text(
-            _isZh
-                ? '唔使再問「我哋做咩好？」'
-                : 'Stop asking “what should we do?”',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 7),
-          Text(
-            _isZh
-                ? '大家掃入嚟，各自私下揀時間、預算同偏好。Zync 再搵全組都接受到嘅選擇。'
-                : 'Everyone joins, privately sets time, budget and preferences, then Zync finds options the whole group can accept.',
-            style: Theme.of(context).textTheme.bodyLarge,
+          ZyncHeroPanel(
+            startColor: const Color(0xFFEFFAF6),
+            endColor: const Color(0xFFF2EEFF),
+            accentColor: const Color(0xFF176B57),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const ZyncIconTile(
+                  icon: Icons.bolt_rounded,
+                  size: 54,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Color(0xFF176B57),
+                ),
+                const SizedBox(width: 13),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isZh
+                            ? '唔使再問「我哋做咩好？」'
+                            : 'Stop asking “what should we do?”',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        _isZh
+                            ? '大家私下講底線，Zync 只帶出全組都接受到嘅選擇。'
+                            : 'Everyone sets private boundaries. Zync only brings back options the whole group can accept.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           if (_pendingActivity != null && !_hidePendingFollowUp) ...[
             _pendingFollowUp(),
@@ -692,12 +720,21 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: 14),
-        ZyncSurface(
-          backgroundColor: const Color(0xFFF1FBF7),
-          borderColor: ZyncPalette.mint,
+        ZyncHeroPanel(
+          startColor: const Color(0xFFEFFAF6),
+          endColor: const Color(0xFFF3F0FF),
+          accentColor: const Color(0xFF176B57),
+          radius: 24,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ZyncStatusPill(
+                icon: Icons.check_circle_rounded,
+                label: _isZh ? '全組可接受' : 'Works for the group',
+                foregroundColor: const Color(0xFF176B57),
+                backgroundColor: Colors.white.withValues(alpha: 0.78),
+              ),
+              const SizedBox(height: 14),
               Text(
                 chosen.titleFor(_locale),
                 style: Theme.of(context).textTheme.headlineSmall,
