@@ -531,6 +531,7 @@ class ZyncStatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
+        constraints: const BoxConstraints(maxWidth: 190),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
           color: backgroundColor,

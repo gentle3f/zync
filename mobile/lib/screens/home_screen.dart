@@ -150,7 +150,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: 10),
                 ZyncStatusPill(
                   icon: Icons.favorite_rounded,
-                  label: l10n.interestsCount(profile.interests.length),
+                  label: '${profile.interests.length}',
                   foregroundColor: ZyncPalette.orangeDeep,
                   backgroundColor: Colors.white.withValues(alpha: 0.78),
                 ),
