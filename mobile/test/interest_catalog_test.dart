@@ -39,6 +39,33 @@ void main() {
     expect(collisions, isEmpty, reason: collisions.take(60).join('\n'));
   });
 
+  test('same category never exposes ambiguous normalized search terms', () {
+    final seen = <String, String>{};
+    final collisions = <String>[];
+
+    for (final item in InterestCatalog.seed) {
+      final terms = <String>{
+        ...item.labels.values,
+        ...item.aliases,
+        item.id.split('.').last.replaceAll('_', ' '),
+      };
+
+      for (final raw in terms) {
+        final term = InterestCatalog.normalizeText(raw);
+        if (term.isEmpty) continue;
+        final key = '${item.category}|$term';
+        final previous = seen[key];
+        if (previous == null) {
+          seen[key] = item.id;
+        } else if (previous != item.id) {
+          collisions.add('$term: $previous <> ${item.id}');
+        }
+      }
+    }
+
+    expect(collisions, isEmpty, reason: collisions.take(80).join('\n'));
+  });
+
   test('search handles aliases, Chinese terms, prefixes, titles and niche interests locally', () {
     expect(InterestCatalog.search('F1', 'en').first.id, 'motorsport.formula1');
     expect(InterestCatalog.search('羽球', 'zh-Hant').first.id, 'sports.badminton');
