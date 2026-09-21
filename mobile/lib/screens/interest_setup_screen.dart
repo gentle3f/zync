@@ -262,8 +262,10 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
       if (seen.add(item.id)) results.add(item);
     }
 
-    final exact = query.length < 2 ? null : InterestCatalog.exact(query);
-    final showInstantAdd = query.length >= 2 && exact == null;
+    final exactMatches = query.length < 2
+        ? const <InterestDefinition>[]
+        : InterestCatalog.exactMatches(query);
+    final showInstantAdd = query.length >= 2 && exactMatches.isEmpty;
     final sectionTitle = query.isNotEmpty
         ? null
         : _selectedSubcluster != null
