@@ -46,7 +46,7 @@ music.saxophone|music|music_making|369|Saxophone|色士風|萨克斯|色士風;�
 music.djing|music|music_making|370|DJing|DJ 打碟|DJ 打碟|dj
 music.music_production|music|music_making|371|Music Production|音樂製作|音乐制作|
 music.songwriting|music|music_making|372|Songwriting|歌曲創作|歌曲创作|
-music.concerts|music|music_making|373|Concerts & Live Music|演唱會與現場音樂|演唱会与现场音乐|演唱會;演唱会
+music.concerts|music|music_making|373|Concerts & Live Music|演唱會與現場音樂|演唱会与现场音乐|演唱會;演唱会;live music;concert going
 music.vinyl|music|music_making|374|Vinyl Records|黑膠唱片|黑胶唱片|黑膠;黑胶
 entertainment.documentaries|entertainment|screen|380|Documentaries|紀錄片|纪录片|紀錄片;纪录片
 entertainment.comedy|entertainment|screen|381|Comedy|喜劇|喜剧|喜劇;喜剧
@@ -61,7 +61,7 @@ entertainment.animation|entertainment|screen|389|Animation|動畫|动画|動畫�
 entertainment.musicals|entertainment|screen|390|Musicals|音樂劇|音乐剧|音樂劇;音乐剧
 entertainment.independent_cinema|entertainment|screen|391|Independent Cinema|獨立電影|独立电影|indie film
 entertainment.film_history|entertainment|screen|392|Film History|電影史|电影史|
-entertainment.film_making|entertainment|screen|393|Filmmaking|電影製作|电影制作|電影製作;电影制作
+entertainment.film_making|entertainment|screen|393|Filmmaking|電影製作|电影制作|電影製作;电影制作;short film making;documentary filmmaking;film production
 entertainment.screenwriting|entertainment|screen|394|Screenwriting|編劇|编剧|
 entertainment.webtoons|entertainment|anime_manga|400|Webtoons|網絡漫畫|网络漫画|網漫;网漫
 entertainment.manhwa|entertainment|anime_manga|401|Manhwa|韓國漫畫|韩国漫画|韓漫;韩漫
