@@ -43,6 +43,26 @@ void main() {
     }
   });
 
+  test('mark-sensitive grey zones stay collectible only through abstract art', () {
+    for (final id in const [
+      'technology.python',
+      'technology.javascript',
+      'technology.linux',
+      'learning.book_genre.booktok',
+      'learning.book_genre.booktube',
+      'learning.book_genre.bookstagram',
+      'travel.style_deep.unesco_heritage_travel',
+    ]) {
+      final item = InterestCatalog.byId(id);
+      expect(item, isNotNull, reason: 'missing abstract-only fixture $id');
+      final policy = InterestCardPolicyResolver.resolve(item!);
+      expect(policy.artPolicy, CardArtPolicy.abstractOnly, reason: id);
+      expect(policy.baselineArtEligible, isTrue, reason: id);
+      expect(policy.ipSensitive, isTrue, reason: id);
+      expect(policy.partnerOpportunity, isFalse, reason: id);
+    }
+  });
+
   test('car brand keeps a future partner unlock instead of baseline art', () {
     final policy = InterestCardPolicyResolver.resolve(InterestCatalog.byId('transport.car_brand.porsche')!);
     expect(policy.partnerType, 'automotive_brand');
