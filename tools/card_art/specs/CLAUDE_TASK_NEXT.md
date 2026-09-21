@@ -1,3 +1,17 @@
+# HOLD — Catalog Audit Before Full Prompt Expansion
+
+Read `tools/card_art/report/INTEREST_CATALOG_RELEASE_AUDIT_V1.md` first.
+
+The canonical catalog has now been audited. The exact current count is **3,403**, not ~2,032.
+
+Do **not** expand all card-art recipes yet and do **not** generate images.
+
+The catalog needs a targeted release-readiness cleanup first (aliases, genuinely missing everyday interests, duplicate-risk concepts, and exact-term ambiguity). Wait for the catalog remediation decision before building the full card-art prompt inventory.
+
+No fal.ai calls. No API credits.
+
+---
+
 # Claude Code — Next Task After Prompt Review
 
 The V1 prompt architecture has now been reviewed and hardened.
