@@ -157,6 +157,19 @@ class ZyncTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         behavior: SnackBarBehavior.floating,
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: ZyncPalette.plum,
+          textStyle: text.labelLarge,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: ZyncPalette.orange,
+        linearTrackColor: Color(0xFFEDE8E3),
+      ),
     );
   }
 }
@@ -289,6 +302,259 @@ class _ConnectionBackdropPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class ZyncHeroPanel extends StatelessWidget {
+  const ZyncHeroPanel({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(22),
+    this.startColor = const Color(0xFFFFF4EC),
+    this.endColor = const Color(0xFFF2EEFF),
+    this.accentColor = ZyncPalette.orange,
+    this.radius = 28,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+  final Color startColor;
+  final Color endColor;
+  final Color accentColor;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [startColor, endColor],
+          ),
+          borderRadius: BorderRadius.circular(radius),
+          border: Border.all(
+            color: Color.alphaBlend(
+              accentColor.withValues(alpha: 0.18),
+              ZyncPalette.line,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: ZyncPalette.ink.withValues(alpha: 0.055),
+              blurRadius: 34,
+              offset: const Offset(0, 16),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            Positioned(
+              right: -32,
+              top: -34,
+              child: _ZyncGlowOrb(
+                size: 132,
+                color: accentColor.withValues(alpha: 0.11),
+              ),
+            ),
+            Positioned(
+              left: -18,
+              bottom: -38,
+              child: _ZyncGlowOrb(
+                size: 104,
+                color: ZyncPalette.plum.withValues(alpha: 0.08),
+              ),
+            ),
+            const Positioned.fill(
+              child: IgnorePointer(
+                child: ConnectionBackdrop(),
+              ),
+            ),
+            Padding(
+              padding: padding,
+              child: child,
+            ),
+          ],
+        ),
+      );
+}
+
+class _ZyncGlowOrb extends StatelessWidget {
+  const _ZyncGlowOrb({
+    required this.size,
+    required this.color,
+  });
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color,
+        ),
+      );
+}
+
+class ZyncSectionHeading extends StatelessWidget {
+  const ZyncSectionHeading({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    this.trailing,
+    this.accentColor = ZyncPalette.plum,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ZyncIconTile(
+            icon: icon,
+            size: 40,
+            backgroundColor: accentColor.withValues(alpha: 0.11),
+            foregroundColor: accentColor,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
+                  const SizedBox(height: 1),
+                  Text(
+                    subtitle!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: ZyncPalette.inkSoft),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: 10),
+            trailing!,
+          ],
+        ],
+      );
+}
+
+class ZyncMetricPill extends StatelessWidget {
+  const ZyncMetricPill({
+    super.key,
+    required this.icon,
+    required this.value,
+    required this.label,
+    this.accentColor = ZyncPalette.plum,
+    this.backgroundColor,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color accentColor;
+  final Color? backgroundColor;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Colors.white.withValues(alpha: 0.76),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: accentColor.withValues(alpha: 0.12),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: accentColor),
+            const SizedBox(width: 7),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(color: ZyncPalette.inkSoft),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class ZyncStatusPill extends StatelessWidget {
+  const ZyncStatusPill({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.foregroundColor = ZyncPalette.plum,
+    this.backgroundColor = const Color(0xFFF1EEFF),
+  });
+
+  final IconData icon;
+  final String label;
+  final Color foregroundColor;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 15, color: foregroundColor),
+            const SizedBox(width: 5),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w800,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 class ZyncSurface extends StatelessWidget {
