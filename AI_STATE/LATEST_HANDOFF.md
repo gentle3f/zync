@@ -2,7 +2,7 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_CARD_ART_RIGHTS_CATALOG.md`
+`AI_STATE/HANDOFF_20260922_CARD_ART_RIGHTS_CATALOG_V2.md`
 
 Branch:
 
@@ -10,4 +10,4 @@ Branch:
 
 Current active task:
 
-> **Validate the latest Social/Wellness/Lifestyle + rights-aware card-policy patch at commit 8967995, re-audit the now-3,505-interest catalog and rights classifications, then continue catalog cleanup. Do not generate images yet. Production and Play remain closed.**
+> **Continue from the completed V2 interest-rights/catalog audit: resolve the remaining grey-zone mark policy, then implement cross-category search disambiguation and re-audit Social/Wellness/Lifestyle depth. Keep image generation closed. Conserve GitHub Actions until the 2026-10-01 reset; Production and Play remain closed.**
