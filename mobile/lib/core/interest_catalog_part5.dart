@@ -14,7 +14,7 @@ arts.wildlife_photography|arts|photography|554|Wildlife Photography|野生動物
 arts.architecture_photography|arts|photography|555|Architecture Photography|建築攝影|建筑摄影|建築攝影;建筑摄影
 arts.mobile_photography|arts|photography|556|Mobile Photography|手機攝影|手机摄影|手機攝影;手机摄影
 arts.drone_photography|arts|photography|557|Drone Photography|航拍|航拍|航拍
-arts.photo_editing|arts|photography|558|Photo Editing|修圖|修图|修圖;修图
+arts.photo_editing|arts|photography|558|Photo Editing|修圖|修图|修圖;修图;photography editing;photo post processing
 arts.painting|arts|visual_art|565|Painting|繪畫|绘画|畫畫;绘画
 arts.watercolor|arts|visual_art|566|Watercolor|水彩畫|水彩画|水彩
 arts.oil_painting|arts|visual_art|567|Oil Painting|油畫|油画|油畫;油画
