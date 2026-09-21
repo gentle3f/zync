@@ -686,6 +686,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
         ),
     };
   }
+}
 
 class _QuestCopy {
   const _QuestCopy({
