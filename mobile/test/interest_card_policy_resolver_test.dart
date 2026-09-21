@@ -30,6 +30,8 @@ void main() {
       'motorsport.formula_e',
       'motorsport.wec',
       'motorsport.le_mans',
+      'travel.style_deep.disney_parks_travel',
+      'travel.style_deep.universal_studios_travel',
     ]) {
       final item = InterestCatalog.byId(id);
       expect(item, isNotNull, reason: 'missing policy fixture $id');
