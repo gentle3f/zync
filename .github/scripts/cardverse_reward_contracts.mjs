@@ -120,13 +120,13 @@ assert.equal(
   1,
 );
 
-assert.throws(
-  () => evaluateQuestProofs(
+assert.equal(
+  evaluateQuestProofs(
     'weekly_three_zyncs',
     '2026-09-13T16:00:00.000Z',
     weeklyRows,
-  ),
-  /cardverse_quest_proof_insufficient/,
+  ).current,
+  3,
 );
 
 assert.throws(
