@@ -21,7 +21,7 @@ arts.oil_painting|arts|visual_art|567|Oil Painting|油畫|油画|油畫;油画
 arts.digital_art|arts|visual_art|568|Digital Art|數碼藝術|数字艺术|數碼藝術;数字艺术
 arts.illustration|arts|visual_art|569|Illustration|插畫|插画|插畫;插画
 arts.graphic_design|arts|visual_art|570|Graphic Design|平面設計|平面设计|平面設計;平面设计
-arts.calligraphy|arts|visual_art|571|Calligraphy|書法|书法|書法;书法
+arts.calligraphy|arts|visual_art|571|Calligraphy|書法|书法|書法;书法;calligraphy practice
 arts.chinese_calligraphy|arts|visual_art|572|Chinese Calligraphy|中國書法|中国书法|中國書法;中国书法
 arts.urban_sketching|arts|visual_art|573|Urban Sketching|城市速寫|城市速写|城市速寫;城市速写
 arts.street_art|arts|visual_art|574|Street Art|街頭藝術|街头艺术|街頭藝術;街头艺术
