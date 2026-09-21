@@ -124,3 +124,53 @@ attempt
 output path
 QA result
 ```
+
+
+---
+
+# V1 Review Addendum — 2026-09-21
+
+The prompt compiler smoke test was reviewed before catalog-scale generation.
+
+## Architecture corrections now authoritative
+
+The inheritance chain is now:
+
+```
+global style + style reference
+→ archetype
+→ curated archetype visual variant
+→ category
+→ subcategory
+→ hobby recipe
+→ optional override
+→ compiled prompt
+```
+
+### Archetype visual variants
+`specs/archetype_variants_v1.json` contains curated composition/camera/lighting variants for every archetype.
+
+A hobby may explicitly select `visual_variant`. Otherwise the compiler chooses a deterministic variant from its archetype so large catalogs do not repeat one composition endlessly.
+
+### Tier and difficulty are separate
+Do not use `hard_case` as a tier.
+
+- `tier`: flagship | common | long_tail
+- `difficulty`: normal | hard_case
+
+A hobby may be both flagship and hard_case.
+
+### Reference image
+All edit-model generation should use:
+
+`references/zync-card-style-reference.png`
+
+The reference is style-only. It must not be copied for text, logo, frame, typography, exact composition, or subject.
+
+### Review requirements
+Flagship and hard-case entries require human review before broad batch generation.
+
+### Current catalog
+The current mobile interest catalog on this branch contains approximately 2032 canonical entries across `interest_catalog_part1.dart` through `interest_catalog_part10.dart`.
+
+Prompt expansion should target **all current canonical interests**, not a hard-coded number such as 3000. The architecture must remain compatible with future catalog growth beyond 3000.
