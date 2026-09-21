@@ -177,6 +177,34 @@ class ActivityTemplates {
       requiredVerbs: {ActivityVerb.read},
     ),
 
+    'activity.browse_theme_challenge': ActivityTemplate(
+      id: 'activity.browse_theme_challenge',
+      titleLabels: {
+        'en': 'Browse with a theme',
+        'zh-Hant': '定個主題一齊行',
+        'zh-Hans': '定个主题一起逛',
+      },
+      instructionLabels: {
+        'en': 'Pick one playful theme, browse together, and each choose your best find. Buying anything is optional.',
+        'zh-Hant': '先定一個有趣主題，一齊行一轉，每人揀自己最正嘅發現；唔一定要買嘢。',
+        'zh-Hans': '先定一个有趣主题，一起逛一圈，每人选自己最好的发现；不一定要买东西。',
+      },
+      requiredVerbs: {ActivityVerb.explore, ActivityVerb.challenge},
+    ),
+    'activity.simple_wellness_reset': ActivityTemplate(
+      id: 'activity.simple_wellness_reset',
+      titleLabels: {
+        'en': 'Take a simple reset together',
+        'zh-Hant': '一齊做個簡單 reset',
+        'zh-Hans': '一起做个简单 reset',
+      },
+      instructionLabels: {
+        'en': 'Choose one gentle, low-pressure reset everyone is comfortable with, such as a short stretch, breathing break, or screen-free walk.',
+        'zh-Hant': '揀一樣大家都舒服嘅輕鬆 reset，例如短時間拉筋、呼吸休息，或者放低手機行一陣。',
+        'zh-Hans': '选一个大家都舒服的轻松 reset，例如短时间拉伸、呼吸休息，或者放下手机走一会儿。',
+      },
+      requiredVerbs: {ActivityVerb.practice},
+    ),
     'activity.crossover_challenge': ActivityTemplate(
       id: 'activity.crossover_challenge',
       titleLabels: {

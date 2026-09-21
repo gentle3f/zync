@@ -43,7 +43,10 @@ class InterestActivityResolver {
       return _musicListening;
     }
 
-    if (item.category == 'entertainment') return _watchAndDiscuss;
+    if (item.category == 'entertainment') {
+      if (cluster == 'audio') return _listenAndDiscuss;
+      return _watchAndDiscuss;
+    }
 
     if (item.category == 'arts') {
       if (cluster.contains('photography')) return _photography;
@@ -66,6 +69,34 @@ class InterestActivityResolver {
         return _foodMaking;
       }
       // Deep drinks include alcohol, so they are not auto-enabled.
+      return null;
+    }
+
+    if (item.category == 'lifestyle') {
+      if (cluster == 'shopping') return _browseAndCompare;
+      if (cluster == 'social') {
+        if (const {'lifestyle.bars', 'lifestyle.nightlife'}.contains(item.id)) {
+          return null;
+        }
+        return _socialExploration;
+      }
+      return null;
+    }
+
+    if (item.category == 'wellness') {
+      if (const {
+        'wellness.meditation',
+        'wellness.mindfulness',
+        'wellness.breathwork',
+        'wellness.self_care',
+        'wellness.recovery',
+        'wellness.digital_detox',
+      }.contains(item.id)) {
+        return _wellnessReset;
+      }
+      if (const {'wellness.spa', 'wellness.sound_bath'}.contains(item.id)) {
+        return _wellnessExperience;
+      }
       return null;
     }
 
@@ -259,6 +290,82 @@ class InterestActivityResolver {
     locationDependency: LocationDependency.none,
     crossoverTags: {'reading', 'story', 'conversation'},
     templateIds: {'activity.read_and_compare'},
+  );
+
+  static const ActivityProfile _listenAndDiscuss = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.listen, ActivityVerb.discuss},
+    energy: {ActivityEnergy.chill},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor, ActivitySetting.homePossible},
+    costBands: {ActivityCostBand.free, ActivityCostBand.low},
+    durationBands: {ActivityDurationBand.under30m, ActivityDurationBand.under90m},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    peerTeachable: true,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.none,
+    crossoverTags: {'audio', 'story', 'conversation'},
+    templateIds: {'activity.listen_and_compare'},
+  );
+
+  static const ActivityProfile _browseAndCompare = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.explore, ActivityVerb.challenge, ActivityVerb.discuss},
+    energy: {ActivityEnergy.chill, ActivityEnergy.moderate},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor, ActivitySetting.either},
+    costBands: {ActivityCostBand.free, ActivityCostBand.low, ActivityCostBand.medium},
+    durationBands: {ActivityDurationBand.under30m, ActivityDurationBand.under90m, ActivityDurationBand.halfDay},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.dedicatedVenue,
+    crossoverTags: {'discovery', 'shopping', 'conversation'},
+    templateIds: {'activity.browse_theme_challenge', 'activity.shared_exploration'},
+  );
+
+  static const ActivityProfile _socialExploration = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.explore, ActivityVerb.discuss, ActivityVerb.challenge},
+    energy: {ActivityEnergy.chill, ActivityEnergy.moderate},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor, ActivitySetting.either},
+    costBands: {ActivityCostBand.free, ActivityCostBand.low, ActivityCostBand.medium},
+    durationBands: {ActivityDurationBand.under30m, ActivityDurationBand.under90m, ActivityDurationBand.halfDay},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.dedicatedVenue,
+    crossoverTags: {'social', 'discovery', 'conversation'},
+    templateIds: {'activity.shared_exploration', 'activity.shared_mini_challenge'},
+  );
+
+  static const ActivityProfile _wellnessReset = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.practice, ActivityVerb.discuss},
+    energy: {ActivityEnergy.chill},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor, ActivitySetting.homePossible, ActivitySetting.either},
+    costBands: {ActivityCostBand.free, ActivityCostBand.low},
+    durationBands: {ActivityDurationBand.under30m, ActivityDurationBand.under90m},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.none,
+    crossoverTags: {'wellness', 'reset', 'low-pressure'},
+    templateIds: {'activity.simple_wellness_reset'},
+  );
+
+  static const ActivityProfile _wellnessExperience = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.explore, ActivityVerb.practice},
+    energy: {ActivityEnergy.chill},
+    settings: {ActivitySetting.indoor},
+    costBands: {ActivityCostBand.low, ActivityCostBand.medium, ActivityCostBand.high},
+    durationBands: {ActivityDurationBand.under90m, ActivityDurationBand.halfDay},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.dedicatedVenue,
+    crossoverTags: {'wellness', 'experience', 'relaxation'},
+    templateIds: {'activity.shared_exploration'},
   );
 
   static const ActivityProfile _foodMaking = ActivityProfile(

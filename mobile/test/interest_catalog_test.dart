@@ -6,7 +6,7 @@ import 'package:zync/core/models.dart';
 void main() {
   test('bundled catalog reaches deep V1 coverage, stays unique, and preserves legacy IDs', () {
     expect(InterestCatalog.count, greaterThanOrEqualTo(2500));
-    expect(InterestCatalog.count, lessThanOrEqualTo(3600));
+    expect(InterestCatalog.count, lessThanOrEqualTo(3700));
     expect(InterestCatalog.seed.map((item) => item.id).toSet(), hasLength(InterestCatalog.count));
 
     for (final legacyId in const [
@@ -61,6 +61,21 @@ void main() {
       InterestCatalog.search('The Godfather', 'en').map((item) => item.id),
       contains('entertainment.classic_film.the_godfather'),
     );
+  });
+
+  test('release-gap interests and car-brand affinities are searchable', () {
+    for (final query in const [
+      'triathlon', 'pottery', 'model making', 'scrapbooking', 'creative writing',
+      'food photography', 'foraging', 'clubbing', 'shopping', 'thrifting',
+      'flea markets', 'debating', 'PC building', 'hair styling', 'fragrance',
+      'figurines', 'model cars', 'driving', 'stand-up comedy', 'podcasts',
+      'massage', 'nutrition', 'self care', 'healthy eating',
+    ]) {
+      expect(InterestCatalog.search(query, 'en'), isNotEmpty, reason: 'release-gap query should resolve: $query');
+    }
+    expect(InterestCatalog.search('Porsche', 'en').first.id, 'transport.car_brand.porsche');
+    expect(InterestCatalog.search('Mercedes', 'en').first.id, 'transport.car_brand.mercedes_benz');
+    expect(InterestCatalog.search('BYD', 'en').first.id, 'transport.car_brand.byd');
   });
 
   test('Hong Kong Chinese locale resolves Traditional Chinese labels', () {

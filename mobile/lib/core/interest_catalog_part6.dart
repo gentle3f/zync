@@ -69,8 +69,8 @@ collecting.coins|collecting|collecting|741|Coin Collecting|錢幣收藏|钱币�
 collecting.trading_cards|collecting|collecting|742|Trading Cards|卡牌收藏|卡牌收藏|卡牌收藏
 collecting.sneakers|collecting|collecting|743|Sneaker Collecting|波鞋收藏|球鞋收藏|波鞋收藏;球鞋收藏
 collecting.toys|collecting|collecting|744|Toy Collecting|玩具收藏|玩具收藏|玩具收藏
-collecting.action_figures|collecting|collecting|745|Action Figures|人偶收藏|手办收藏|人偶;手办
-collecting.diecast_cars|collecting|collecting|746|Die-cast Cars|合金車模|合金车模|車仔;合金车模
+collecting.action_figures|collecting|collecting|745|Action Figures|人偶收藏|手办收藏|人偶;手办;figurines;figures
+collecting.diecast_cars|collecting|collecting|746|Die-cast Cars|合金車模|合金车模|車仔;合金车模;model cars;diecast models
 collecting.antiques|collecting|collecting|747|Antiques|古董收藏|古董收藏|古董
 collecting.art_collecting|collecting|collecting|748|Art Collecting|藝術收藏|艺术收藏|藝術收藏;艺术收藏
 collecting.perfume|collecting|collecting|749|Perfume Collecting|香水收藏|香水收藏|香水
@@ -96,7 +96,7 @@ lifestyle.gardening|lifestyle|home|778|Gardening|園藝|园艺|園藝;园艺
 lifestyle.aquariums|lifestyle|home|779|Aquariums|水族|水族|水族
 lifestyle.minimalism|lifestyle|home|780|Minimalism|極簡生活|极简生活|極簡生活;极简生活
 lifestyle.organization|lifestyle|home|781|Home Organization|家居收納|家居收纳|收納;收纳
-lifestyle.nightlife|lifestyle|social|790|Nightlife|夜生活|夜生活|夜生活
+lifestyle.nightlife|lifestyle|social|790|Nightlife|夜生活|夜生活|夜生活;clubbing;club nights
 lifestyle.bars|lifestyle|social|791|Bars|酒吧|酒吧|酒吧
 lifestyle.pub_quizzes|lifestyle|social|792|Pub Quizzes|酒吧問答夜|酒吧问答|quiz night
 lifestyle.escape_rooms|lifestyle|social|793|Escape Rooms|密室逃脫|密室逃脱|密室逃脫;密室逃脱

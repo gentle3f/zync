@@ -26,7 +26,7 @@ arts.chinese_calligraphy|arts|visual_art|572|Chinese Calligraphy|中國書法|�
 arts.urban_sketching|arts|visual_art|573|Urban Sketching|城市速寫|城市速写|城市速寫;城市速写
 arts.street_art|arts|visual_art|574|Street Art|街頭藝術|街头艺术|街頭藝術;街头艺术
 arts.sculpture|arts|visual_art|575|Sculpture|雕塑|雕塑|雕塑
-arts.ceramics|arts|visual_art|576|Ceramics|陶瓷藝術|陶瓷艺术|陶瓷
+arts.ceramics|arts|visual_art|576|Ceramics|陶瓷藝術|陶瓷艺术|陶瓷;pottery;陶藝;陶艺
 arts.printmaking|arts|visual_art|577|Printmaking|版畫|版画|版畫;版画
 crafts.knitting|crafts|crafts|585|Knitting|編織|编织|編織;编织
 crafts.crochet|crafts|crafts|586|Crochet|鉤針編織|钩针编织|鉤針;钩针
@@ -38,7 +38,7 @@ crafts.jewelry_making|crafts|crafts|591|Jewelry Making|首飾製作|首饰制作
 crafts.candle_making|crafts|crafts|592|Candle Making|蠟燭製作|蜡烛制作|蠟燭製作;蜡烛制作
 crafts.soap_making|crafts|crafts|593|Soap Making|手工皂製作|手工皂制作|手工皂
 crafts.origami|crafts|crafts|594|Origami|摺紙|折纸|摺紙;折纸
-crafts.model_building|crafts|crafts|595|Model Building|模型製作|模型制作|模型製作;模型制作
+crafts.model_building|crafts|crafts|595|Model Building|模型製作|模型制作|模型製作;模型制作;model making;scale model building
 crafts.miniatures|crafts|crafts|596|Miniatures|微縮模型|微缩模型|微縮模型;微缩模型
 crafts.diy|crafts|crafts|597|DIY Projects|DIY 手作|DIY 手工|手作;手工
 technology.generative_ai|technology|ai|605|Generative AI|生成式 AI|生成式 AI|生成式AI

@@ -258,6 +258,7 @@ class InterestEntityMetadataRegistry {
     ),
     'collecting.lego': InterestEntityMetadata(
       interestId: 'collecting.lego',
+      kind: ZyncEntityKind.brandAffinity,
       activity: ActivityProfile(
         eligible: true,
         verbs: {ActivityVerb.make, ActivityVerb.challenge},
@@ -277,11 +278,12 @@ class InterestEntityMetadataRegistry {
         visualFamily: 'collecting_building',
         iconKey: 'building_bricks',
         categoryKit: 'collecting',
-        artPolicy: CardArtPolicy.abstractOnly,
+        artPolicy: CardArtPolicy.licensedOnly,
       ),
     ),
     'motorsport.formula1': InterestEntityMetadata(
       interestId: 'motorsport.formula1',
+      kind: ZyncEntityKind.brandAffinity,
       activity: ActivityProfile(
         eligible: true,
         verbs: {ActivityVerb.watch, ActivityVerb.discuss, ActivityVerb.challenge},
@@ -300,7 +302,7 @@ class InterestEntityMetadataRegistry {
         visualFamily: 'motorsport_racing',
         iconKey: 'race_car_abstract',
         categoryKit: 'motorsport',
-        artPolicy: CardArtPolicy.abstractOnly,
+        artPolicy: CardArtPolicy.licensedOnly,
       ),
     ),
     'sports.basketball': InterestEntityMetadata(

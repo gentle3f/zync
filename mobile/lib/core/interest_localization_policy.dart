@@ -36,6 +36,7 @@ class InterestLocalizationPolicy {
     'music/mandopop_artists',
     'books/evergreen_titles',
     'travel/destinations',
+    'cars/brands',
   };
 
   /// A small number of legacy mixed clusters contain named properties alongside
@@ -68,6 +69,7 @@ class InterestLocalizationPolicy {
     'gaming.ticket_to_ride',
     'gaming.carcassonne',
     'gaming.gloomhaven',
+    'entertainment.youtube',
   };
 
   static bool requiresChinese(InterestDefinition item) {

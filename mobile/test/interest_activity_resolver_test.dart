@@ -61,6 +61,27 @@ void main() {
     expect(InterestActivityResolver.resolve(shooting!), isNull);
   });
 
+  test('new social and wellness concepts can feed safe Zync Now activities', () {
+    final thrifting = InterestCatalog.byId('lifestyle.thrifting')!;
+    final cityWalks = InterestCatalog.byId('lifestyle.city_walks')!;
+    final selfCare = InterestCatalog.byId('wellness.self_care')!;
+    final podcasts = InterestCatalog.byId('entertainment.podcasts')!;
+    expect(InterestActivityResolver.resolve(thrifting)!.templateIds, contains('activity.browse_theme_challenge'));
+    expect(InterestActivityResolver.resolve(cityWalks), isNotNull);
+    expect(InterestActivityResolver.resolve(selfCare)!.templateIds, contains('activity.simple_wellness_reset'));
+    expect(InterestActivityResolver.resolve(podcasts)!.verbs, contains(ActivityVerb.listen));
+  });
+
+  test('health-adjacent wellness concepts stay matchable but are not auto-prescribed', () {
+    expect(InterestActivityResolver.resolve(InterestCatalog.byId('wellness.nutrition')!), isNull);
+    expect(InterestActivityResolver.resolve(InterestCatalog.byId('wellness.massage')!), isNull);
+  });
+
+  test('brand affinities remain matchable but do not auto-generate activities', () {
+    expect(InterestActivityResolver.resolve(InterestCatalog.byId('transport.car_brand.porsche')!), isNull);
+    expect(InterestActivityResolver.resolve(InterestCatalog.byId('entertainment.youtube')!), isNull);
+  });
+
   test('deep drink taxonomy is not automatically made an activity pool', () {
     final redWine = InterestCatalog.search('Red Wine', 'en').firstWhere(
       (item) => item.labels['en'] == 'Red Wine',
