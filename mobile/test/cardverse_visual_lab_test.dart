@@ -71,6 +71,12 @@ void main() {
       const ValueKey('card-lab-item-sports.badminton'),
     );
     expect(target, findsOneWidget);
+    await tester.scrollUntilVisible(
+      target,
+      350,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
     await tester.tap(target);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 450));
