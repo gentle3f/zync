@@ -89,6 +89,29 @@ void main() {
     expect(InterestActivityResolver.resolve(InterestCatalog.byId('entertainment.youtube')!), isNull);
   });
 
+  test('dance and performance use movement/performance semantics', () {
+    final salsa = InterestCatalog.byId('arts.salsa_dancing')!;
+    final acting = InterestCatalog.byId('arts.acting')!;
+
+    final salsaProfile = InterestActivityResolver.resolve(salsa)!;
+    final actingProfile = InterestActivityResolver.resolve(acting)!;
+
+    expect(salsaProfile.verbs, contains(ActivityVerb.practice));
+    expect(salsaProfile.crossoverTags, contains('dance'));
+    expect(actingProfile.verbs, contains(ActivityVerb.practice));
+    expect(actingProfile.crossoverTags, contains('performance'));
+  });
+
+  test('creator-like gaming concepts do not fall through to casual play semantics', () {
+    final modding = InterestCatalog.search('game modding', 'en').first;
+    final escapeDesign = InterestCatalog.byId('gaming.escape_room_design')!;
+    final streaming = InterestCatalog.byId('gaming.game_streaming')!;
+
+    expect(InterestActivityResolver.resolve(modding)!.verbs, contains(ActivityVerb.make));
+    expect(InterestActivityResolver.resolve(escapeDesign)!.verbs, contains(ActivityVerb.make));
+    expect(InterestActivityResolver.resolve(streaming), isNull);
+  });
+
   test('deep drink taxonomy is not automatically made an activity pool', () {
     final redWine = InterestCatalog.search('Red Wine', 'en').firstWhere(
       (item) => item.labels['en'] == 'Red Wine',
