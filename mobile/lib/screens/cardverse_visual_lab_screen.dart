@@ -12,7 +12,7 @@ class CardverseVisualLabScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final recipes = CardVisualRecipeResolver.proofBatch();
+    final recipes = CardVisualRecipeResolver.expandedProofBatch();
 
     return Scaffold(
       body: ConnectionBackdrop(
@@ -51,11 +51,11 @@ class CardverseVisualLabScreen extends StatelessWidget {
                             _copy(
                               locale,
                               en:
-                                  'Internal proof batch. Grid cards are static for performance; tap a card to inspect animated finishes.',
+                                  '50-card art-direction review batch. Grid cards stay static for performance; tap one to inspect finish motion and visual identity.',
                               zhHant:
-                                  '內部視覺驗證批次。Grid 卡保持靜態慳效能；撳一張先睇動態閃卡效果。',
+                                  '50 張卡美術方向審閱批次。Grid 保持靜態慳效能；撳一張可以檢查閃卡動態同視覺辨識度。',
                               zhHans:
-                                  '内部视觉验证批次。网格卡保持静态节省性能；点一张再看动态闪卡效果。',
+                                  '50 张卡美术方向审阅批次。网格保持静态节省性能；点一张可以检查闪卡动态和视觉辨识度。',
                             ),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),

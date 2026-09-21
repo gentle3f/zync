@@ -1542,6 +1542,18 @@ class _CardPalette {
         accent: Color(0xFFF5C87A),
         ink: Color(0xFF2A1833),
       ),
+      _CardPalette(
+        background: Color(0xFF173B73),
+        secondary: Color(0xFF2979A9),
+        accent: Color(0xFFFFD568),
+        ink: Color(0xFF10233E),
+      ),
+      _CardPalette(
+        background: Color(0xFF6E3F2B),
+        secondary: Color(0xFFC06A3B),
+        accent: Color(0xFFFFE19A),
+        ink: Color(0xFF3C2118),
+      ),
     ],
     'outdoors': [
       _CardPalette(
@@ -1550,6 +1562,18 @@ class _CardPalette {
         accent: Color(0xFFE2B56E),
         ink: Color(0xFF1E3024),
       ),
+      _CardPalette(
+        background: Color(0xFF244E63),
+        secondary: Color(0xFF5C8E86),
+        accent: Color(0xFFF0C879),
+        ink: Color(0xFF17313B),
+      ),
+      _CardPalette(
+        background: Color(0xFF5A4937),
+        secondary: Color(0xFF9A7A58),
+        accent: Color(0xFFEBD49E),
+        ink: Color(0xFF332A21),
+      ),
     ],
     'food': [
       _CardPalette(
@@ -1557,6 +1581,18 @@ class _CardPalette {
         secondary: Color(0xFFD88B5A),
         accent: Color(0xFFF8D7A4),
         ink: Color(0xFF44241E),
+      ),
+      _CardPalette(
+        background: Color(0xFF6B3A54),
+        secondary: Color(0xFFB96B6D),
+        accent: Color(0xFFFFD79C),
+        ink: Color(0xFF3A2030),
+      ),
+      _CardPalette(
+        background: Color(0xFF6C5428),
+        secondary: Color(0xFFC39B4B),
+        accent: Color(0xFFFFE5A6),
+        ink: Color(0xFF382E18),
       ),
     ],
     'entertainment': [
@@ -1574,6 +1610,18 @@ class _CardPalette {
         accent: Color(0xFF74D7D0),
         ink: Color(0xFF281A35),
       ),
+      _CardPalette(
+        background: Color(0xFF243E72),
+        secondary: Color(0xFF6A5DA8),
+        accent: Color(0xFFFFC96B),
+        ink: Color(0xFF172541),
+      ),
+      _CardPalette(
+        background: Color(0xFF60402A),
+        secondary: Color(0xFFB8784B),
+        accent: Color(0xFF8FE0D1),
+        ink: Color(0xFF342317),
+      ),
     ],
     'gaming': [
       _CardPalette(
@@ -1581,6 +1629,18 @@ class _CardPalette {
         secondary: Color(0xFF3B548A),
         accent: Color(0xFF70E5C0),
         ink: Color(0xFF102532),
+      ),
+      _CardPalette(
+        background: Color(0xFF382C64),
+        secondary: Color(0xFF7353A4),
+        accent: Color(0xFFFFC96B),
+        ink: Color(0xFF211A3C),
+      ),
+      _CardPalette(
+        background: Color(0xFF394D35),
+        secondary: Color(0xFF6D8C50),
+        accent: Color(0xFFE8D376),
+        ink: Color(0xFF22301F),
       ),
     ],
     'learning': [
@@ -1598,6 +1658,18 @@ class _CardPalette {
         accent: Color(0xFFF1C475),
         ink: Color(0xFF1D3037),
       ),
+      _CardPalette(
+        background: Color(0xFF65415F),
+        secondary: Color(0xFFB36E8A),
+        accent: Color(0xFFF2D18B),
+        ink: Color(0xFF352434),
+      ),
+      _CardPalette(
+        background: Color(0xFF3E587A),
+        secondary: Color(0xFF7190A8),
+        accent: Color(0xFFFFC66B),
+        ink: Color(0xFF253445),
+      ),
     ],
     'crafts': [
       _CardPalette(
@@ -1605,6 +1677,18 @@ class _CardPalette {
         secondary: Color(0xFFC47B6B),
         accent: Color(0xFFF1D17E),
         ink: Color(0xFF392B36),
+      ),
+      _CardPalette(
+        background: Color(0xFF46604F),
+        secondary: Color(0xFF87A06E),
+        accent: Color(0xFFF2C989),
+        ink: Color(0xFF29382E),
+      ),
+      _CardPalette(
+        background: Color(0xFF66503C),
+        secondary: Color(0xFFA78362),
+        accent: Color(0xFFE9D6A8),
+        ink: Color(0xFF382C22),
       ),
     ],
     'wellness': [
@@ -1614,6 +1698,18 @@ class _CardPalette {
         accent: Color(0xFFF2D7A2),
         ink: Color(0xFF243937),
       ),
+      _CardPalette(
+        background: Color(0xFF4F557B),
+        secondary: Color(0xFF8A8FBD),
+        accent: Color(0xFFF1D49A),
+        ink: Color(0xFF2A2E46),
+      ),
+      _CardPalette(
+        background: Color(0xFF6B5544),
+        secondary: Color(0xFFB0896A),
+        accent: Color(0xFFBFE0BF),
+        ink: Color(0xFF3A2F27),
+      ),
     ],
     'travel': [
       _CardPalette(
@@ -1622,6 +1718,18 @@ class _CardPalette {
         accent: Color(0xFFF3C66B),
         ink: Color(0xFF193640),
       ),
+      _CardPalette(
+        background: Color(0xFF42558A),
+        secondary: Color(0xFF7893BA),
+        accent: Color(0xFFFFD77A),
+        ink: Color(0xFF253151),
+      ),
+      _CardPalette(
+        background: Color(0xFF7A4B3F),
+        secondary: Color(0xFFC77B58),
+        accent: Color(0xFFFFD98C),
+        ink: Color(0xFF412820),
+      ),
     ],
     'technology': [
       _CardPalette(
@@ -1629,6 +1737,18 @@ class _CardPalette {
         secondary: Color(0xFF466AA1),
         accent: Color(0xFF72E0CF),
         ink: Color(0xFF14243B),
+      ),
+      _CardPalette(
+        background: Color(0xFF3D356B),
+        secondary: Color(0xFF7162A5),
+        accent: Color(0xFF74E0C8),
+        ink: Color(0xFF251F40),
+      ),
+      _CardPalette(
+        background: Color(0xFF244C4A),
+        secondary: Color(0xFF3F8174),
+        accent: Color(0xFFF0CE72),
+        ink: Color(0xFF17302E),
       ),
     ],
     'nature': [
