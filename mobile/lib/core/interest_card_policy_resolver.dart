@@ -88,6 +88,8 @@ class InterestCardPolicyResolver {
     'motorsport.formula_e',
     'motorsport.wec',
     'motorsport.le_mans',
+    'travel.style_deep.disney_parks_travel',
+    'travel.style_deep.universal_studios_travel',
   };
 
   static InterestCardPolicyDecision resolve(InterestDefinition item) {
@@ -138,6 +140,7 @@ class InterestCardPolicyResolver {
     if (item.cluster == 'platforms/brands') return 'platform_brand_partner_only';
     if (item.category == 'technology') return 'named_technology_brand_or_product';
     if (item.category == 'motorsport') return 'named_motorsport_series_or_event';
+    if (item.category == 'travel') return 'named_travel_brand_or_destination_operator';
     if (item.id == 'wellness.crossfit') return 'named_fitness_brand';
     if (item.category == 'music') return 'named_music_artist_or_rightsholder';
     if (item.category == 'gaming') return 'named_game_or_tabletop_ip';
@@ -151,6 +154,7 @@ class InterestCardPolicyResolver {
     if (item.cluster == 'platforms/brands') return 'platform_brand';
     if (item.category == 'technology') return 'technology_brand_rightsholder';
     if (item.category == 'motorsport') return 'motorsport_series_rightsholder';
+    if (item.category == 'travel') return 'travel_brand_rightsholder';
     if (item.id == 'wellness.crossfit') return 'fitness_brand_rightsholder';
     if (item.category == 'music') return 'artist_label_rightsholder';
     if (item.category == 'gaming') return 'game_publisher_rightsholder';
@@ -165,6 +169,7 @@ class InterestCardPolicyResolver {
     if (item.id == 'technology.chatgpt') return 'artificial_intelligence';
     if (const {'technology.android', 'technology.apple'}.contains(item.id)) return 'technology_gadgets';
     if (item.category == 'motorsport') return 'motorsport';
+    if (item.category == 'travel') return 'theme_park_travel';
     if (item.id == 'wellness.crossfit') return 'fitness';
     if (item.category == 'music') return 'music';
     if (item.category == 'gaming') return item.cluster.startsWith('tabletop/') ? 'tabletop_gaming' : 'video_gaming';
