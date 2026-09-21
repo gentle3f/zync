@@ -21,6 +21,15 @@ void main() {
       'entertainment.youtube',
       'entertainment.classic_film.the_godfather',
       'gaming.franchise.minecraft',
+      'anime.jojo',
+      'wellness.crossfit',
+      'technology.chatgpt',
+      'technology.android',
+      'technology.apple',
+      'motorsport.motogp',
+      'motorsport.formula_e',
+      'motorsport.wec',
+      'motorsport.le_mans',
     ]) {
       final item = InterestCatalog.byId(id);
       expect(item, isNotNull, reason: 'missing policy fixture $id');
