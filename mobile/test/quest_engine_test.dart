@@ -79,7 +79,7 @@ void main() {
     );
   });
 
-  test('weekly new-person quest ignores repeat people', () {
+  test('weekly three-Zync quest counts verified 1:1 Zyncs', () {
     final snapshot = ZyncQuestEngine.evaluate(
       events: [
         event(
@@ -103,12 +103,12 @@ void main() {
       timezoneOffset: hkt,
     );
 
-    final progress = quest(snapshot, 'weekly_meet_two_new_people');
-    expect(progress.current, 2);
+    final progress = quest(snapshot, 'weekly_three_zyncs');
+    expect(progress.current, 3);
     expect(progress.complete, isTrue);
     expect(
       progress.eligibility!.proofEventIds,
-      ['new-1', 'new-2'],
+      ['new-1', 'repeat', 'new-2'],
     );
   });
 
@@ -131,47 +131,57 @@ void main() {
       1,
     );
     expect(
-      quest(snapshot, 'weekly_real_world_three').current,
+      quest(snapshot, 'weekly_five_real_world_actions').current,
       1,
     );
   });
 
-  test('three different interest categories complete discovery quest', () {
+  test('group activity quest requires a Tried Together group of 3+', () {
     final snapshot = ZyncQuestEngine.evaluate(
       events: [
-        event(
-          id: 'sports-food',
-          type: ZyncProgressEventType.oneToOneZync,
-          at: DateTime.utc(2026, 9, 17, 10),
-          categories: const ['sports', 'food'],
-        ),
-        event(
-          id: 'food-repeat',
-          type: ZyncProgressEventType.oneToOneZync,
-          at: DateTime.utc(2026, 9, 18, 10),
-          categories: const ['food'],
-        ),
-        event(
-          id: 'music',
+        ZyncProgressEvent(
+          id: 'group',
           type: ZyncProgressEventType.triedTogetherCompleted,
-          at: DateTime.utc(2026, 9, 19, 10),
-          categories: const ['music'],
+          source: ZyncProgressSource.zyncNow,
+          occurredAt: DateTime.utc(2026, 9, 19, 10),
+          participantCount: 4,
+          interestCategories: const ['music'],
         ),
       ],
       now: DateTime.utc(2026, 9, 19, 12),
       timezoneOffset: hkt,
     );
 
-    final progress = quest(snapshot, 'weekly_three_interest_worlds');
-    expect(progress.current, 3);
+    final progress = quest(snapshot, 'weekly_group_activity');
+    expect(progress.current, 1);
     expect(progress.complete, isTrue);
-    expect(
-      progress.eligibility!.proofEventIds,
-      ['sports-food', 'music'],
-    );
+    expect(progress.eligibility!.proofEventIds, ['group']);
     expect(
       progress.eligibility!.reward.kind,
       ZyncQuestRewardKind.discoveryPack,
+    );
+  });
+
+  test('lifetime quests never reset and use epoch cycle start', () {
+    final snapshot = ZyncQuestEngine.evaluate(
+      events: [
+        for (var i = 0; i < 5; i++)
+          event(
+            id: 'old-$i',
+            type: ZyncProgressEventType.oneToOneZync,
+            at: DateTime.utc(2025, 1, i + 1),
+          ),
+      ],
+      now: DateTime.utc(2026, 9, 19, 12),
+      timezoneOffset: hkt,
+    );
+
+    final progress = quest(snapshot, 'lifetime_five_zyncs');
+    expect(progress.current, 5);
+    expect(progress.complete, isTrue);
+    expect(
+      progress.cycleStart,
+      DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
     );
   });
 
@@ -209,7 +219,7 @@ void main() {
     );
 
     expect(
-      quest(snapshot, 'weekly_real_world_three').current,
+      quest(snapshot, 'weekly_five_real_world_actions').current,
       1,
     );
   });
