@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/group_zync_coordinator.dart';
 import '../core/group_zync_protocol.dart';
@@ -111,7 +112,10 @@ class _GroupZyncHostSessionScreenState
         await _host.lockInput();
       }
       await _host.reveal();
-      if (mounted) setState(() {});
+      if (mounted) {
+        HapticFeedback.mediumImpact();
+        setState(() {});
+      }
     } catch (_) {
       _fail();
     } finally {
@@ -250,6 +254,9 @@ class _GroupZyncHostSessionScreenState
       final result = await _host.resolveZyncNowConsensus(
         seed: '${_host.room.roomId}:decision',
       );
+      if (result.hasDecision) {
+        HapticFeedback.heavyImpact();
+      }
       if (result.hasDecision && !_activityRecorded) {
         final round = _host.activeZyncNowConsensus!;
         final candidate = round.candidates.firstWhere(
@@ -410,25 +417,32 @@ class _GroupZyncHostSessionScreenState
       key: ValueKey('host-reveal-${_host.session.roundNumber}'),
       padding: const EdgeInsets.fromLTRB(22, 40, 22, 30),
       children: [
-        const Center(
-          child: ZyncIconTile(
-            icon: Icons.auto_awesome_rounded,
-            size: 76,
-            backgroundColor: ZyncPalette.peach,
-            foregroundColor: ZyncPalette.orangeDeep,
+        ZyncHeroPanel(
+          startColor: const Color(0xFFFFF2E8),
+          endColor: const Color(0xFFF2EEFF),
+          accentColor: ZyncPalette.orange,
+          child: Column(
+            children: [
+              const ZyncIconTile(
+                icon: Icons.auto_awesome_rounded,
+                size: 72,
+                backgroundColor: Colors.white,
+                foregroundColor: ZyncPalette.orangeDeep,
+              ),
+              const SizedBox(height: 18),
+              Text(
+                round.revealTitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                round.revealBody,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          round.revealTitle,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: 12),
-        Text(
-          round.revealBody,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge,
         ),
         if (reaction) ...[
           const SizedBox(height: 18),
