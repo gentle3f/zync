@@ -5,20 +5,17 @@ import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
-import 'achievement_screen.dart';
 import 'group_zync_host_lobby_screen.dart';
 import 'history_screen.dart';
 import 'interest_dna_screen.dart';
 import 'interest_setup_screen.dart';
 import 'my_zync_world_screen.dart';
-import 'quest_board_screen.dart';
 import 'scan_qr_screen.dart';
 import 'show_qr_screen.dart';
 import 'social_links_screen.dart';
 import 'zync_now_host_screen.dart';
 
 const _privacyUrl = String.fromEnvironment('ZYNC_PRIVACY_URL');
-const _qaDebug = bool.fromEnvironment('ZYNC_QA_DEBUG');
 
 Uri? _configuredPrivacyUri() {
   final uri = Uri.tryParse(_privacyUrl.trim());
@@ -92,18 +89,6 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(width: 10),
           Text('Zync', style: Theme.of(context).textTheme.titleLarge),
           const Spacer(),
-          if (!compact) ...[
-            IconButton(
-              icon: const Icon(Icons.emoji_events_outlined),
-              tooltip: LocalizedDomainText.achievementsTitle(
-                Localizations.localeOf(context).toLanguageTag(),
-              ),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const AchievementScreen()),
-              ),
-            ),
-            const SizedBox(width: 2),
-          ],
           IconButton(
             icon: const Icon(Icons.alternate_email_rounded),
             tooltip: l10n.socialLinks,
@@ -210,27 +195,26 @@ class HomeScreen extends StatelessWidget {
       );
 
   List<_MenuSpec> _menuSpecs(BuildContext context, AppLocalizations l10n, Uri? privacyUri) => [
-        if (_qaDebug)
-          _MenuSpec(
-            icon: Icons.public_rounded,
-            iconBackground: const Color(0xFFE9E5FF),
-            iconForeground: ZyncPalette.plum,
-            title: 'My Zync World',
-            subtitle: Localizations.localeOf(context)
-                    .toLanguageTag()
-                    .toLowerCase()
-                    .startsWith('zh')
-                ? '真雲端收藏、卡包同獎勵'
-                : 'Live cloud collection, packs and rewards',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => MyZyncWorldScreen(
-                  profile: profile,
-                  onProfileChanged: onProfileChanged,
-                ),
+        _MenuSpec(
+          icon: Icons.public_rounded,
+          iconBackground: const Color(0xFFE9E5FF),
+          iconForeground: ZyncPalette.plum,
+          title: 'My Zync World',
+          subtitle: Localizations.localeOf(context)
+                  .toLanguageTag()
+                  .toLowerCase()
+                  .startsWith('zh')
+              ? '收藏、每日抽卡、成就與任務'
+              : 'Collection, Daily Draw, trophies and quests',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => MyZyncWorldScreen(
+                profile: profile,
+                onProfileChanged: onProfileChanged,
               ),
             ),
           ),
+        ),
         _MenuSpec(
           icon: Icons.bolt_rounded,
           iconBackground: ZyncPalette.mint,
@@ -244,28 +228,6 @@ class HomeScreen extends StatelessWidget {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => ZyncNowHostScreen(profile: profile),
-            ),
-          ),
-        ),
-        _MenuSpec(
-          icon: Icons.explore_outlined,
-          iconBackground: const Color(0xFFFFE9B7),
-          iconForeground: const Color(0xFF8B5A00),
-          title: Localizations.localeOf(context)
-                  .toLanguageTag()
-                  .toLowerCase()
-                  .startsWith('zh')
-              ? '探索任務板'
-              : 'Curiosity Board',
-          subtitle: Localizations.localeOf(context)
-                  .toLanguageTag()
-                  .toLowerCase()
-                  .startsWith('zh')
-              ? '今日＋今週真實互動任務'
-              : 'Daily + weekly real-world quests',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const QuestBoardScreen(),
             ),
           ),
         ),
@@ -310,18 +272,6 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (_) => const HistoryScreen()),
           ),
         ),
-        if (_useCompactHeader(context))
-          _MenuSpec(
-            icon: Icons.emoji_events_outlined,
-            iconBackground: const Color(0xFFFFE9B7),
-            iconForeground: const Color(0xFF8B5A00),
-            title: LocalizedDomainText.achievementsTitle(
-              Localizations.localeOf(context).toLanguageTag(),
-            ),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AchievementScreen()),
-            ),
-          ),
         _MenuSpec(
           icon: Icons.bubble_chart_outlined,
           iconBackground: const Color(0xFFE9E5FF),

@@ -13,7 +13,7 @@ import '../core/models.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_card_preview.dart';
 import 'achievement_screen.dart';
-import 'cardverse_account_lab_screen.dart';
+import 'cardverse_account_screen.dart';
 import 'cardverse_pack_opening_lab_screen.dart';
 import 'quest_board_screen.dart';
 
@@ -127,7 +127,9 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   Future<void> _connectAccount() async {
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (_) => const CardverseAccountLabScreen(),
+        builder: (_) => const CardverseAccountScreen(
+          returnOnSignIn: true,
+        ),
       ),
     );
     await _load();
@@ -459,7 +461,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                   onPressed: _connectAccount,
                   icon: const Icon(Icons.login_rounded),
                   label: Text(
-                    _isZh ? '連接 Cardverse 帳戶' : 'Connect Cardverse account',
+                    _isZh ? '連接 Zync 帳戶' : 'Connect Zync account',
                   ),
                 ),
               ],

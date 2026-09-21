@@ -7,7 +7,7 @@ import '../core/cardverse_session_store.dart';
 import '../core/local_store.dart';
 import '../core/quest_engine.dart';
 import '../ui/zync_design.dart';
-import 'cardverse_account_lab_screen.dart';
+import 'cardverse_account_screen.dart';
 
 class QuestBoardScreen extends StatefulWidget {
   const QuestBoardScreen({super.key});
@@ -114,7 +114,9 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
     if (!_signedIn) {
       await Navigator.of(context).push<void>(
         MaterialPageRoute(
-          builder: (_) => const CardverseAccountLabScreen(),
+          builder: (_) => const CardverseAccountScreen(
+            returnOnSignIn: true,
+          ),
         ),
       );
       await _load();
