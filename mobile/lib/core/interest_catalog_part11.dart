@@ -15,14 +15,12 @@ arts.journaling|arts|writing|843|Journaling|寫手帳／日誌|写手账／日�
 arts.food_photography|arts|photography|844|Food Photography|美食攝影|美食摄影|food photos;影食物;拍美食
 outdoors.foraging|outdoors|hiking|845|Foraging|野外採集|野外采集|wild food foraging
 lifestyle.parties|lifestyle|social|846|Parties & Social Gatherings|派對與聚會|派对与聚会|parties;social gatherings;聚會;聚会
-lifestyle.cafe_hopping|lifestyle|social|847|Cafe Hopping|Cafe 巡遊|咖啡店探店|café hopping;cafe crawl;咖啡店巡遊;咖啡店巡游
 lifestyle.shopping|lifestyle|shopping|848|Shopping|行街購物|逛街购物|shopping;行街;逛街
 lifestyle.thrifting|lifestyle|shopping|849|Thrifting|二手尋寶|逛二手店|thrift shopping;second-hand shopping;二手店
 lifestyle.flea_markets|lifestyle|shopping|850|Flea Markets|跳蚤市場|跳蚤市场|flea market;二手市集
 lifestyle.night_markets|lifestyle|shopping|851|Night Markets|夜市|夜市|night market
 lifestyle.farmers_markets|lifestyle|shopping|852|Farmers' Markets|農夫市集|农夫市集|farmers market;farmer market
 lifestyle.city_walks|lifestyle|social|853|City Walks|城市漫步|城市漫步|city walk;urban walks;街區散步;街区散步
-lifestyle.brunch|lifestyle|social|854|Brunch|早午餐|早午餐|brunching
 lifestyle.dinner_parties|lifestyle|social|855|Dinner Parties|晚餐聚會|晚餐聚会|dinner party;home dinner
 lifestyle.local_events|lifestyle|social|856|Local Events|本地活動|本地活动|community events;local happenings
 learning.personal_development|learning|knowledge|857|Personal Development|個人成長|个人成长|personal growth;self development
