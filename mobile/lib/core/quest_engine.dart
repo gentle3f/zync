@@ -3,6 +3,7 @@ import 'progress_event.dart';
 enum ZyncQuestCadence {
   daily,
   weekly,
+  lifetime,
 }
 
 enum ZyncQuestMetric {
@@ -11,6 +12,7 @@ enum ZyncQuestMetric {
   triedTogether,
   realWorldActions,
   distinctInterestCategories,
+  groupActivities,
 }
 
 enum ZyncQuestRewardKind {
@@ -137,9 +139,29 @@ class ZyncQuestEngine {
       ),
     ),
     ZyncQuestDefinition(
-      id: 'weekly_meet_two_new_people',
+      id: 'daily_two_real_world_actions',
+      cadence: ZyncQuestCadence.daily,
+      metric: ZyncQuestMetric.realWorldActions,
+      target: 2,
+      reward: ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.drawToken,
+        amount: 1,
+      ),
+    ),
+    ZyncQuestDefinition(
+      id: 'weekly_three_zyncs',
       cadence: ZyncQuestCadence.weekly,
-      metric: ZyncQuestMetric.newPersonZyncs,
+      metric: ZyncQuestMetric.oneToOneZyncs,
+      target: 3,
+      reward: ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.standardPack,
+        amount: 1,
+      ),
+    ),
+    ZyncQuestDefinition(
+      id: 'weekly_two_tried_together',
+      cadence: ZyncQuestCadence.weekly,
+      metric: ZyncQuestMetric.triedTogether,
       target: 2,
       reward: ZyncQuestRewardPreview(
         kind: ZyncQuestRewardKind.standardPack,
@@ -147,9 +169,39 @@ class ZyncQuestEngine {
       ),
     ),
     ZyncQuestDefinition(
-      id: 'weekly_real_world_three',
+      id: 'weekly_group_activity',
+      cadence: ZyncQuestCadence.weekly,
+      metric: ZyncQuestMetric.groupActivities,
+      target: 1,
+      reward: ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.discoveryPack,
+        amount: 1,
+      ),
+    ),
+    ZyncQuestDefinition(
+      id: 'weekly_five_real_world_actions',
       cadence: ZyncQuestCadence.weekly,
       metric: ZyncQuestMetric.realWorldActions,
+      target: 5,
+      reward: ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.discoveryPack,
+        amount: 1,
+      ),
+    ),
+    ZyncQuestDefinition(
+      id: 'lifetime_five_zyncs',
+      cadence: ZyncQuestCadence.lifetime,
+      metric: ZyncQuestMetric.oneToOneZyncs,
+      target: 5,
+      reward: ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.standardPack,
+        amount: 1,
+      ),
+    ),
+    ZyncQuestDefinition(
+      id: 'lifetime_three_tried_together',
+      cadence: ZyncQuestCadence.lifetime,
+      metric: ZyncQuestMetric.triedTogether,
       target: 3,
       reward: ZyncQuestRewardPreview(
         kind: ZyncQuestRewardKind.standardPack,
@@ -157,10 +209,20 @@ class ZyncQuestEngine {
       ),
     ),
     ZyncQuestDefinition(
-      id: 'weekly_three_interest_worlds',
-      cadence: ZyncQuestCadence.weekly,
-      metric: ZyncQuestMetric.distinctInterestCategories,
+      id: 'lifetime_three_group_activities',
+      cadence: ZyncQuestCadence.lifetime,
+      metric: ZyncQuestMetric.groupActivities,
       target: 3,
+      reward: ZyncQuestRewardPreview(
+        kind: ZyncQuestRewardKind.discoveryPack,
+        amount: 1,
+      ),
+    ),
+    ZyncQuestDefinition(
+      id: 'lifetime_eight_real_world_actions',
+      cadence: ZyncQuestCadence.lifetime,
+      metric: ZyncQuestMetric.realWorldActions,
+      target: 8,
       reward: ZyncQuestRewardPreview(
         kind: ZyncQuestRewardKind.discoveryPack,
         amount: 1,
@@ -270,6 +332,13 @@ class ZyncQuestEngine {
       ZyncQuestMetric.distinctInterestCategories => events
           .where((event) => event.interestCategories.isNotEmpty)
           .toList(growable: false),
+      ZyncQuestMetric.groupActivities => events
+          .where(
+            (event) =>
+                event.type == ZyncProgressEventType.triedTogetherCompleted &&
+                event.participantCount >= 3,
+          )
+          .toList(growable: false),
     };
   }
 
@@ -331,6 +400,11 @@ class ZyncQuestEngine {
           Duration(days: localClock.weekday - DateTime.monday),
         );
         length = const Duration(days: 7);
+      case ZyncQuestCadence.lifetime:
+        return _QuestWindow(
+          start: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+          end: DateTime.utc(9999),
+        );
     }
 
     final start = localStart.subtract(offset);

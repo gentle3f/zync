@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
 
+const LIFETIME_CYCLE_START = '1970-01-01T00:00:00.000Z';
+
 const QUESTS = Object.freeze({
   daily_make_a_zync: Object.freeze({
     cadence: 'daily',
@@ -17,26 +19,74 @@ const QUESTS = Object.freeze({
     responseKind: 'drawToken',
     amount: 1,
   }),
-  weekly_meet_two_new_people: Object.freeze({
+  daily_two_real_world_actions: Object.freeze({
+    cadence: 'daily',
+    metric: 'real_world_actions',
+    target: 2,
+    rewardKind: 'draw_token',
+    responseKind: 'drawToken',
+    amount: 1,
+  }),
+  weekly_three_zyncs: Object.freeze({
     cadence: 'weekly',
-    metric: 'new_person_zyncs',
+    metric: 'one_to_one_zyncs',
+    target: 3,
+    rewardKind: 'standard_pack',
+    responseKind: 'standardPack',
+    amount: 1,
+  }),
+  weekly_two_tried_together: Object.freeze({
+    cadence: 'weekly',
+    metric: 'tried_together',
     target: 2,
     rewardKind: 'standard_pack',
     responseKind: 'standardPack',
     amount: 1,
   }),
-  weekly_real_world_three: Object.freeze({
+  weekly_group_activity: Object.freeze({
+    cadence: 'weekly',
+    metric: 'group_activities',
+    target: 1,
+    rewardKind: 'discovery_pack',
+    responseKind: 'discoveryPack',
+    amount: 1,
+  }),
+  weekly_five_real_world_actions: Object.freeze({
     cadence: 'weekly',
     metric: 'real_world_actions',
+    target: 5,
+    rewardKind: 'discovery_pack',
+    responseKind: 'discoveryPack',
+    amount: 1,
+  }),
+  lifetime_five_zyncs: Object.freeze({
+    cadence: 'lifetime',
+    metric: 'one_to_one_zyncs',
+    target: 5,
+    rewardKind: 'standard_pack',
+    responseKind: 'standardPack',
+    amount: 1,
+  }),
+  lifetime_three_tried_together: Object.freeze({
+    cadence: 'lifetime',
+    metric: 'tried_together',
     target: 3,
     rewardKind: 'standard_pack',
     responseKind: 'standardPack',
     amount: 1,
   }),
-  weekly_three_interest_worlds: Object.freeze({
-    cadence: 'weekly',
-    metric: 'distinct_interest_categories',
+  lifetime_three_group_activities: Object.freeze({
+    cadence: 'lifetime',
+    metric: 'group_activities',
     target: 3,
+    rewardKind: 'discovery_pack',
+    responseKind: 'discoveryPack',
+    amount: 1,
+  }),
+  lifetime_eight_real_world_actions: Object.freeze({
+    cadence: 'lifetime',
+    metric: 'real_world_actions',
+    target: 8,
     rewardKind: 'discovery_pack',
     responseKind: 'discoveryPack',
     amount: 1,
@@ -248,6 +298,8 @@ export function normalizeQuestClaim(raw = {}) {
 
   if (!eligibilityKey ||
       eligibilityKey !== definition.questId + ':' + cycleStart.toISOString() ||
+      (definition.cadence === 'lifetime' &&
+        cycleStart.toISOString() !== LIFETIME_CYCLE_START) ||
       !IDEMPOTENCY_KEY.test(idempotencyKey) ||
       clientContractVersion !== 1 ||
       proofEventIds.length < 1 ||
@@ -276,9 +328,16 @@ export function evaluateQuestProofs(questIdValue, cycleStartValue, rows) {
   const proofs = Array.isArray(rows) ? rows : [];
   const cycleColumn = definition.cadence === 'daily'
     ? 'daily_cycle_start'
-    : 'weekly_cycle_start';
+    : definition.cadence === 'weekly'
+      ? 'weekly_cycle_start'
+      : null;
 
-  if (proofs.some((row) => iso(row[cycleColumn]) !== cycleStart)) {
+  if (cycleColumn &&
+      proofs.some((row) => iso(row[cycleColumn]) !== cycleStart)) {
+    throw domainError('cardverse_quest_proof_cycle_mismatch');
+  }
+  if (definition.cadence === 'lifetime' &&
+      cycleStart !== LIFETIME_CYCLE_START) {
     throw domainError('cardverse_quest_proof_cycle_mismatch');
   }
 
@@ -312,6 +371,13 @@ export function evaluateQuestProofs(questIdValue, cycleStartValue, rows) {
       current = categories.size;
       break;
     }
+    case 'group_activities':
+      current = proofs.filter(
+        (row) =>
+          row.event_type === 'tried_together_completed' &&
+          Number(row.participant_count) >= 3,
+      ).length;
+      break;
     default:
       throw domainError('cardverse_quest_unknown');
   }
@@ -393,7 +459,7 @@ export async function claimQuestReward(db, accountIdValue, rawClaim) {
     if (existing.length > 0) throw domainError('cardverse_quest_already_claimed');
 
     const proofRows = await tx.query(
-      'SELECT proof_id, client_event_id, event_type, repeat_person, interest_categories, ' +
+      'SELECT proof_id, client_event_id, event_type, repeat_person, participant_count, interest_categories, ' +
         'daily_cycle_start, weekly_cycle_start ' +
       'FROM cardverse_reward_proofs ' +
       'WHERE account_id = $1 AND client_event_id = ANY($2::text[]) FOR UPDATE',
