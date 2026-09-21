@@ -110,11 +110,20 @@ function requestHash(accountId, request) {
     .digest('hex');
 }
 
-async function replay(tx, accountId, request, hash) {
+export function storageDrawIdempotencyKey(idempotencyKey) {
+  if (IDEMPOTENCY_KEY.test(idempotencyKey)) return idempotencyKey;
+  if (!LEGACY_DRAW_IDEMPOTENCY_KEY.test(idempotencyKey)) {
+    throw domainError('cardverse_draw_request_invalid');
+  }
+  return 'legacy-draw:' +
+    createHash('sha256').update(idempotencyKey).digest('hex');
+}
+
+async function replay(tx, accountId, request, hash, storageKey) {
   const rows = await tx.query(
     'SELECT request_hash, response_json FROM cardverse_idempotency_records ' +
       'WHERE account_id = $1 AND scope = $2 AND idempotency_key = $3 FOR UPDATE',
-    [accountId, 'draw_token_redeem', request.idempotencyKey],
+    [accountId, 'draw_token_redeem', storageKey],
   );
   if (rows.length !== 1) throw domainError('cardverse_idempotency_lost');
   if (rows[0].request_hash !== hash) throw domainError('cardverse_idempotency_conflict');
@@ -134,6 +143,7 @@ export async function redeemDrawToken(db, accountIdValue, rawRequest, options = 
   const accountId = cleanUuid(accountIdValue, 'cardverse_account_id_invalid');
   const request = normalizeDrawTokenRequest(rawRequest);
   const hash = requestHash(accountId, request);
+  const storageKey = storageDrawIdempotencyKey(request.idempotencyKey);
 
   return db.transaction(async (tx) => {
     const accounts = await tx.query(
@@ -148,10 +158,10 @@ export async function redeemDrawToken(db, accountIdValue, rawRequest, options = 
         "VALUES ($1, 'draw_token_redeem', $2, $3) " +
         'ON CONFLICT (account_id, scope, idempotency_key) DO NOTHING ' +
         'RETURNING request_hash',
-      [accountId, request.idempotencyKey, hash],
+      [accountId, storageKey, hash],
     );
     if (reserved.length === 0) {
-      return replay(tx, accountId, request, hash);
+      return replay(tx, accountId, request, hash, storageKey);
     }
 
     const balances = await tx.query(
@@ -229,7 +239,7 @@ export async function redeemDrawToken(db, accountIdValue, rawRequest, options = 
       'UPDATE cardverse_idempotency_records SET response_json = $4::jsonb, completed_at = now() ' +
         "WHERE account_id = $1 AND scope = 'draw_token_redeem' AND idempotency_key = $2 " +
         'AND request_hash = $3',
-      [accountId, request.idempotencyKey, hash, JSON.stringify(response)],
+      [accountId, storageKey, hash, JSON.stringify(response)],
     );
 
     return { ...response, idempotentReplay: false };

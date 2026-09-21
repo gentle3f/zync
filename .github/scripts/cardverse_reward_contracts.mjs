@@ -229,6 +229,18 @@ assert.deepEqual(
     clientRevealVersion: 1,
   },
 );
+assert.equal(
+  drawStore.storageDrawIdempotencyKey('draw:12:1').length,
+  76,
+);
+assert.match(
+  drawStore.storageDrawIdempotencyKey('draw:12:1'),
+  /^legacy-draw:[0-9a-f]{64}$/,
+);
+assert.equal(
+  drawStore.storageDrawIdempotencyKey('draw-token-redeem-0001'),
+  'draw-token-redeem-0001',
+);
 
 assert.throws(
   () => drawStore.normalizeDrawTokenRequest({
