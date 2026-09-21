@@ -10,7 +10,6 @@ wellness.barre|wellness|fitness|1100|Barre|芭蕾塑形|芭蕾塑形|barre worko
 wellness.powerlifting|wellness|fitness|1101|Powerlifting|力量舉|力量举|power lifting
 wellness.kettlebell_training|wellness|fitness|1102|Kettlebell Training|壺鈴訓練|壶铃训练|kettlebells;kettlebell workout
 wellness.functional_training|wellness|fitness|1103|Functional Training|功能性訓練|功能性训练|functional fitness
-wellness.indoor_cycling|wellness|fitness|1104|Indoor Cycling|室內單車|室内骑行|spin class;spinning;stationary bike
 wellness.tai_chi|wellness|mind_body|1105|Tai Chi|太極|太极|taiji;太極拳;太极拳
 sports.obstacle_course_racing|sports|running|1110|Obstacle Course Racing|障礙賽跑|障碍赛跑|ocr;obstacle racing
 sports.parkour|sports|fitness|1111|Parkour|跑酷|跑酷|parkour training
