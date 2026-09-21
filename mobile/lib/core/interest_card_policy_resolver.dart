@@ -96,17 +96,21 @@ class InterestCardPolicyResolver {
     }
 
     final explicit = InterestEntityMetadataRegistry.byInterestId(item.id)?.card;
-    if (explicit != null && explicit.artPolicy != CardArtPolicy.notCollectible) {
+    if (explicit != null) {
+      final artPolicy = explicit.collectible ? explicit.artPolicy : CardArtPolicy.notCollectible;
+      final licensedOnly = artPolicy == CardArtPolicy.licensedOnly;
       return InterestCardPolicyDecision(
-        artPolicy: explicit.artPolicy,
-        baselineArtEligible: explicit.artPolicy == CardArtPolicy.originalGeneric ||
-            explicit.artPolicy == CardArtPolicy.abstractOnly,
-        ipSensitive: explicit.artPolicy == CardArtPolicy.licensedOnly,
-        partnerOpportunity: explicit.artPolicy == CardArtPolicy.licensedOnly,
-        reasonCode: 'explicit_metadata',
+        artPolicy: artPolicy,
+        baselineArtEligible: explicit.collectible &&
+            (artPolicy == CardArtPolicy.originalGeneric || artPolicy == CardArtPolicy.abstractOnly),
+        ipSensitive: licensedOnly,
+        partnerOpportunity: licensedOnly,
+        reasonCode: artPolicy == CardArtPolicy.notCollectible
+            ? 'explicit_not_collectible'
+            : 'explicit_metadata',
         eventAffinityPriority: _eventPriorityFor(item),
-        partnerType: explicit.artPolicy == CardArtPolicy.licensedOnly ? _partnerTypeFor(item) : null,
-        proxyFamily: explicit.artPolicy == CardArtPolicy.licensedOnly ? _proxyFamilyFor(item) : null,
+        partnerType: licensedOnly ? _partnerTypeFor(item) : null,
+        proxyFamily: licensedOnly ? _proxyFamilyFor(item) : null,
       );
     }
 
