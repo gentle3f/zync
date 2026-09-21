@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/screens/cardverse_visual_lab_screen.dart';
 
 void main() {
-  testWidgets('Cardverse visual lab exposes twelve proof cards',
+  testWidgets('Cardverse visual lab exposes the expanded 50-card review batch',
       (tester) async {
     tester.view.physicalSize = const Size(430, 900);
     tester.view.devicePixelRatio = 1;
@@ -28,7 +28,7 @@ void main() {
 
     await tester.scrollUntilVisible(
       find.byKey(
-        const ValueKey('card-lab-item-crafts.diy'),
+        const ValueKey('card-lab-item-crafts.knitting'),
       ),
       500,
       scrollable: find.byType(Scrollable).first,
@@ -37,7 +37,7 @@ void main() {
 
     expect(
       find.byKey(
-        const ValueKey('card-lab-item-crafts.diy'),
+        const ValueKey('card-lab-item-crafts.knitting'),
       ),
       findsOneWidget,
     );
