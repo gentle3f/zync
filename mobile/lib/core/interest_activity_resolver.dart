@@ -40,7 +40,16 @@ class InterestActivityResolver {
       return null;
     }
 
-    if (item.category == 'gaming') return _gaming;
+    if (item.category == 'gaming') {
+      if (const {
+        'gaming.subgenre.modding_games',
+        'gaming.escape_room_design',
+      }.contains(item.id)) {
+        return _creativeMaking;
+      }
+      if (item.id == 'gaming.game_streaming') return null;
+      return _gaming;
+    }
 
     if (item.category == 'music') {
       if (cluster.contains('making')) return _musicMaking;
@@ -54,6 +63,7 @@ class InterestActivityResolver {
 
     if (item.category == 'arts') {
       if (cluster == 'dance') return _dance;
+      if (cluster == 'performance') return _performance;
       if (cluster.contains('photography')) return _photography;
       return _creativeMaking;
     }
@@ -272,6 +282,27 @@ class InterestActivityResolver {
     firstTimerFriendly: true,
     locationDependency: LocationDependency.genericSpace,
     crossoverTags: {'dance', 'movement', 'music', 'social'},
+    templateIds: {'activity.peer_teaches_beginner', 'activity.shared_mini_challenge'},
+  );
+
+  static const ActivityProfile _performance = ActivityProfile(
+    eligible: true,
+    verbs: {
+      ActivityVerb.practice,
+      ActivityVerb.learn,
+      ActivityVerb.discuss,
+      ActivityVerb.challenge,
+    },
+    energy: {ActivityEnergy.chill, ActivityEnergy.moderate, ActivityEnergy.active},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor},
+    costBands: {ActivityCostBand.free, ActivityCostBand.low, ActivityCostBand.medium},
+    durationBands: {ActivityDurationBand.under30m, ActivityDurationBand.under90m},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    peerTeachable: true,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.genericSpace,
+    crossoverTags: {'performance', 'creative', 'social'},
     templateIds: {'activity.peer_teaches_beginner', 'activity.shared_mini_challenge'},
   );
 
