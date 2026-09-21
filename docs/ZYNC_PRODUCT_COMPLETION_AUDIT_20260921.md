@@ -10,22 +10,22 @@ The repository contains many certified engines, backend contracts and internal p
 
 | Area | Current state | Main gap |
 | --- | --- | --- |
-| 1:1 Zync | real baseline works | richer interaction mechanics, pacing, final polish |
+| 1:1 Zync | real reveal/conversation flow + polished staged reveal UI | deeper interaction/game variety, final pacing QA |
 | Onboarding | functional 5-interest start | motivation/progressive profiling/search polish |
 | Interest catalog | large canonical catalog + localisation gate | continuing taxonomy/quality audit; card metadata coverage |
 | AI Interaction | structured foundation | more tactile Guess/Pick/Rank/Reveal mechanics |
-| Zync Now | real group-capable flow | recommendation/presentation/post-choice polish |
-| Group Zync | foundation exists | room UX, game variety, recovery, physical QA |
-| Curiosity Board | visible local quest progress | real Claim UX + claimed-state sync |
-| Achievements | visible foundation | merge into coherent progression/world surface |
-| Cardverse account | real Google staging login works | stable QA signing + product-facing account UX |
+| Zync Now | real group-capable flow + polished host/participant decision moments | candidate quality, recovery and physical group QA |
+| Group Zync | live room flow + polished lobby/reveal surfaces on host and participant | more game variety, recovery and physical QA |
+| Curiosity Board | daily/weekly/lifetime tasks + real Claim UX and claimed-state sync | physical reward-loop QA and balancing |
+| Achievements | 40+ achievements across 4 families; secret requirements hidden until unlock | celebration/motion polish and balance tuning |
+| Cardverse account | real Google staging login + product-facing Zync Account UX | stable QA signing + repeat-login/restore QA |
 | Cloud ownership | Neon/Postgres + ledger + inventory | bind live inventory into mobile product |
 | Pack rewards | real backend grant/open contracts | mobile claim/open API integration |
-| Pack reveal | strong internal receipt-driven proof | connect to real packs; remove Lab language in product mode |
-| Collection | strong 50-card mock Binder proof | render real cloud inventory + restore |
-| Draw Tokens | server balance exists | spending rule not frozen; do not invent economy silently |
-| Card graphics | procedural system + 50-card proof | art-direction review and production/full coverage |
-| My Zync World | concept only | unify cards, packs, trophies, quests, Want to Try, memories |
+| Pack reveal | real player-mode reveal; Lab diagnostics hidden; finish-aware haptics | physical QA + final sound/art polish |
+| Collection | live cloud inventory renders in My Zync World and connects cards to Want to Try | restore QA + richer binder/filter presentation |
+| Draw Tokens | Daily Check-in grants 1 Draw; 1 Token redeems one server-authoritative card | physical QA + economy/anti-abuse tuning |
+| Card graphics | 50-card review lab + broader palette diversity + procedural scene grammar | human art-direction review before scaling beyond proof batch |
+| My Zync World | unified daily destination for Daily Draw, packs, collection, trophies, tasks and Want to Try | recent-activity/memory layer + final polish |
 | Trading | contracts only | later after ownership is proven |
 | Guest Zync | not implemented | later growth milestone |
 | Communities/places/brands | deliberately later | not required for first complete V1 |
@@ -85,10 +85,33 @@ Guest Zync, trading UI, communities, place/restaurant data, brand integrations a
 
 ## Active implementation order
 
-1. Typed live Cardverse inventory/reward/open APIs.
-2. Real My Zync World cloud surface.
-3. Curiosity Claim UX and claimed-state sync.
-4. Unopened pack → real server open → reveal → refreshed collection.
-5. Player copy instead of Lab copy.
-6. CI + physical Android QA.
-7. Broader Home / Interaction / graphics polish.
+1. Finish/observe current CI for the latest UI/graphics pass.
+2. Controlled Preview deployment of the current reward/draw backend.
+3. Verify Preview-only dependencies and enable only required gates.
+4. Physical Android smoke:
+   - Google/Zync Account;
+   - Daily Check-in → Draw Token → single-card draw;
+   - Daily/Weekly/Lifetime Quest Claim;
+   - unopened pack → 5-card reveal;
+   - My Zync World restore after logout/login.
+5. Human review of the expanded 50-card Visual Lab; refine weak category/family identities before scaling.
+6. Continue interaction/gameplay polish where physical QA exposes friction.
+7. Establish permanent Android QA signing.
+8. Final accessibility/performance/store-readiness pass.
+9. Only then start iOS / Sign in with Apple / TestFlight.
+
+### UI/UX polish progress completed on 2026-09-21
+
+- Home has a stronger branded hero and clearer hierarchy; My Zync World is the featured progression destination.
+- Shared design primitives now include gradient hero panels, section headings, metric pills and status pills.
+- My Zync World now prioritises Daily Draw, today's progress, packs and collection.
+- Quest Board has Today / This Week / Lifetime summary metrics.
+- Achievements use collectible family presentation and deliberate secret-achievement styling.
+- Zync Account is player-facing and removes token/debug language.
+- Pack opening hides receipt/server-roll diagnostics in player mode while preserving Lab diagnostics.
+- 1:1 Zync staged reveal, Group Zync host/participant reveal, and Zync Now host/participant decision moments now share the same polished visual language and restrained haptics.
+- Cardverse Visual Lab now exposes the expanded 50-card review batch instead of only the original 12-card proof set.
+- Card palettes were broadened across major categories to reduce same-category visual sameness.
+- Small-phone Home overflow regressions introduced during polish were fixed and re-certified.
+
+Production and Play remain closed.

@@ -2,7 +2,7 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260921_PRODUCT_COMPLETION_PHASE1.md`
+`AI_STATE/HANDOFF_20260921_UIUX_POLISH_SPRINT2.md`
 
 Canonical product completion audit:
 
@@ -16,4 +16,4 @@ Read the authoritative checkpoint in full. Do not restart repository discovery o
 
 Current active task:
 
-> **Finish and certify the real Android player loop: controlled Preview backend redeploy → enable Preview-only proof/Quest/pack gates after dependency verification → physical Quest Claim → unopened pack → server Pack Open → player-mode reveal → live My Zync World collection restore. Then continue the broader UI/UX and card-art polish pass. Keep Production and Play closed.**
+> **Continue from UI/UX Polish Sprint 2. First confirm the latest Flutter/AAB CI result, then controlled Preview deploy and physical Android end-to-end reward-loop QA (Daily Check-in → Draw, Quest → Claim, Pack → reveal, collection restore). In parallel, use the expanded 50-card Visual Lab for human art-direction review before scaling card art. Keep Production and Play closed.**
