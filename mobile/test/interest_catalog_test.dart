@@ -181,6 +181,21 @@ void main() {
     expect(a.customCategory, 'other');
   });
 
+  test('cross-category exact ambiguity is surfaced instead of first-winning', () {
+    final persona = InterestCatalog.exactMatches('Persona');
+    expect(
+      persona.map((item) => item.id),
+      containsAll(<String>[
+        'entertainment.classic_film.persona',
+        'gaming.franchise.persona',
+      ]),
+    );
+    expect(InterestCatalog.exact('Persona'), isNull);
+    expect(() => InterestCatalog.instantSelection('Persona'), throwsFormatException);
+
+    expect(InterestCatalog.exact('Badminton')!.id, 'sports.badminton');
+  });
+
   test('known labels and aliases instantly resolve to canonical IDs instead of custom IDs', () {
     final f1 = InterestCatalog.instantSelection('formula one');
     final coffee = InterestCatalog.instantSelection('咖啡');
