@@ -12,6 +12,11 @@ export function cardverseQuestClaimEnabled() {
     String(process.env.CARDVERSE_QUEST_CLAIM_ENABLED || '').trim().toLowerCase() === 'true';
 }
 
+export function cardverseDrawEnabled() {
+  return cardverseApiEnabled() &&
+    String(process.env.CARDVERSE_DRAW_ENABLED || '').trim().toLowerCase() === 'true';
+}
+
 export function cardverseProofRedeemEnabled() {
   return cardverseApiEnabled() &&
     String(process.env.CARDVERSE_PROOF_REDEEM_ENABLED || '').trim().toLowerCase() === 'true';

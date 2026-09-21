@@ -39,6 +39,14 @@
       "destination": "/api/v1/cardverse-router?cardverse_route=inventory"
     },
     {
+      "source": "/api/v1/cardverse/rewards/daily-login",
+      "destination": "/api/v1/cardverse-router?cardverse_route=rewards/daily-login"
+    },
+    {
+      "source": "/api/v1/cardverse/draws/redeem",
+      "destination": "/api/v1/cardverse-router?cardverse_route=draws/redeem"
+    },
+    {
       "source": "/api/v1/cardverse/packs/open",
       "destination": "/api/v1/cardverse-router?cardverse_route=packs/open"
     },

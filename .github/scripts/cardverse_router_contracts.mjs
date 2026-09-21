@@ -32,6 +32,8 @@ const expected = [
   'auth/provider',
   'auth/unlink',
   'inventory',
+  'rewards/daily-login',
+  'draws/redeem',
   'packs/open',
   'proofs/redeem',
   'quests/claim',

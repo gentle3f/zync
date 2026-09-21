@@ -6,6 +6,8 @@ import authLogout from '../../server/cardverse/routes/auth/logout.js';
 import authProvider from '../../server/cardverse/routes/auth/provider.js';
 import authUnlink from '../../server/cardverse/routes/auth/unlink.js';
 import inventory from '../../server/cardverse/routes/inventory.js';
+import dailyLogin from '../../server/cardverse/routes/rewards/daily-login.js';
+import drawRedeem from '../../server/cardverse/routes/draws/redeem.js';
 import packOpen from '../../server/cardverse/routes/packs/open.js';
 import proofRedeem from '../../server/cardverse/routes/proofs/redeem.js';
 import questClaim from '../../server/cardverse/routes/quests/claim.js';
@@ -20,6 +22,8 @@ const ROUTES = Object.freeze({
   'auth/provider': authProvider,
   'auth/unlink': authUnlink,
   'inventory': inventory,
+  'rewards/daily-login': dailyLogin,
+  'draws/redeem': drawRedeem,
   'packs/open': packOpen,
   'proofs/redeem': proofRedeem,
   'quests/claim': questClaim,
