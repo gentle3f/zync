@@ -207,3 +207,29 @@ export function createCardversePackRoller(options = {}) {
     };
   };
 }
+
+
+export function createCardverseSingleCardRoller(options = {}) {
+  const policy = options.policy ?? loadConfiguredCardversePackPolicyV1();
+  const randomInt = options.randomInt ?? cryptoRandomInt;
+
+  return () => {
+    const packPolicy = policy.packs.standard;
+    if (!packPolicy) throw domainError('cardverse_pack_type_invalid');
+    return {
+      policyVersion: policy.version,
+      item: {
+        canonicalInterestId: drawWeighted(
+          packPolicy.interestWeights,
+          randomInt,
+        ),
+        finishId: drawWeighted(packPolicy.finishWeights, randomInt),
+        editionId: packPolicy.editionId,
+        ownershipKind: 'stackable',
+        quantity: 1,
+        artSystemVersion: CARDVERSE_ART_SYSTEM_VERSION,
+        soulbound: false,
+      },
+    };
+  };
+}
