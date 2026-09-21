@@ -53,6 +53,7 @@ class InterestActivityResolver {
     }
 
     if (item.category == 'arts') {
+      if (cluster == 'dance') return _dance;
       if (cluster.contains('photography')) return _photography;
       return _creativeMaking;
     }
@@ -256,6 +257,22 @@ class InterestActivityResolver {
     locationDependency: LocationDependency.none,
     crossoverTags: {'photography', 'creative', 'exploration'},
     templateIds: {'activity.photo_theme_challenge', 'activity.peer_teaches_beginner'},
+  );
+
+  static const ActivityProfile _dance = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.practice, ActivityVerb.learn, ActivityVerb.challenge},
+    energy: {ActivityEnergy.moderate, ActivityEnergy.active},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor},
+    costBands: {ActivityCostBand.free, ActivityCostBand.low, ActivityCostBand.medium},
+    durationBands: {ActivityDurationBand.under30m, ActivityDurationBand.under90m},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    peerTeachable: true,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.genericSpace,
+    crossoverTags: {'dance', 'movement', 'music', 'social'},
+    templateIds: {'activity.peer_teaches_beginner', 'activity.shared_mini_challenge'},
   );
 
   static const ActivityProfile _creativeMaking = ActivityProfile(
