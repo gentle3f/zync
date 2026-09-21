@@ -64,10 +64,14 @@ void main() {
   test('new social and wellness concepts can feed safe Zync Now activities', () {
     final thrifting = InterestCatalog.byId('lifestyle.thrifting')!;
     final cityWalks = InterestCatalog.byId('lifestyle.city_walks')!;
+    final cafeHopping = InterestCatalog.byId('food.cafe_hopping')!;
+    final brunch = InterestCatalog.byId('food.brunch')!;
     final selfCare = InterestCatalog.byId('wellness.self_care')!;
     final podcasts = InterestCatalog.byId('entertainment.podcasts')!;
     expect(InterestActivityResolver.resolve(thrifting)!.templateIds, contains('activity.browse_theme_challenge'));
     expect(InterestActivityResolver.resolve(cityWalks), isNotNull);
+    expect(InterestActivityResolver.resolve(cafeHopping)!.templateIds, contains('activity.shared_exploration'));
+    expect(InterestActivityResolver.resolve(brunch)!.templateIds, contains('activity.shared_exploration'));
     expect(InterestActivityResolver.resolve(selfCare)!.templateIds, contains('activity.simple_wellness_reset'));
     expect(InterestActivityResolver.resolve(podcasts)!.verbs, contains(ActivityVerb.listen));
   });
