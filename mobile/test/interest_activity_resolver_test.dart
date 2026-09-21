@@ -44,11 +44,14 @@ void main() {
     final minecraft = InterestCatalog.byId('gaming.minecraft');
     final classicFilm =
         InterestCatalog.byId('entertainment.classic_film.the_godfather');
+    final jojo = InterestCatalog.byId('anime.jojo');
 
     expect(minecraft, isNotNull);
     expect(classicFilm, isNotNull);
+    expect(jojo, isNotNull);
     expect(InterestActivityResolver.resolve(minecraft!), isNull);
     expect(InterestActivityResolver.resolve(classicFilm!), isNull);
+    expect(InterestActivityResolver.resolve(jojo!), isNull);
   });
 
   test('higher-risk sport families stay unsupported without explicit review', () {
