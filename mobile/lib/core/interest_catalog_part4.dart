@@ -3,9 +3,9 @@ import 'models.dart';
 
 final List<InterestDefinition> kInterestCatalogPart4 = parseInterestCatalogRows(r'''travel.general|travel|travel_general|19|Travel|旅行|旅行|travelling;旅遊;旅游
 travel.japan|travel|travel_destinations|20|Japan Travel|日本旅行|日本旅行|japan;日本旅遊;日本旅游
-travel.roadtrip|travel|travel_styles|21|Road Trips|自駕遊|自驾游|road trip
+travel.roadtrip|travel|travel_styles|21|Road Trips|自駕遊|自驾游|road trip;road tripping
 food.japanese|food|cuisines|22|Japanese Food|日本料理|日本料理|japanese cuisine;日餐
-food.coffee|food|coffee|23|Coffee|咖啡|咖啡|specialty coffee
+food.coffee|food|coffee|23|Coffee|咖啡|咖啡|
 food.cooking|food|cooking|24|Cooking|烹飪|烹饪|cook;煮食;下廚
 food.chinese|food|cuisines|440|Chinese Food|中菜|中餐|中菜;中餐
 food.cantonese|food|cuisines|441|Cantonese Food|廣東菜|粤菜|廣東菜;粤菜
@@ -62,7 +62,7 @@ travel.budget|travel|travel_styles|513|Budget Travel|平價旅行|经济旅行|�
 travel.backpacking|travel|travel_styles|514|Backpacking Travel|背包旅行|背包旅行|背包旅行
 travel.city_breaks|travel|travel_styles|515|City Breaks|城市短假|城市短途旅行|
 travel.beach|travel|travel_styles|516|Beach Holidays|海灘假期|海滩度假|海灘假期;海滩度假
-travel.cruises|travel|travel_styles|517|Cruises|郵輪旅行|邮轮旅行|郵輪;邮轮
+travel.cruises|travel|travel_styles|517|Cruises|郵輪旅行|邮轮旅行|cruise travel;郵輪;邮轮
 travel.staycations|travel|travel_styles|518|Staycations|本地度假|宅度假|宅度假
 travel.food_travel|travel|travel_styles|519|Food Travel|美食旅行|美食旅行|美食旅行
 travel.cultural_travel|travel|travel_styles|520|Cultural Travel|文化旅行|文化旅行|文化旅行
