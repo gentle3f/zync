@@ -52,10 +52,11 @@ class InterestCatalog {
       ),
   ];
 
-  /// Earlier bundled IDs win when a label/alias is shared. The semantic audit
-  /// prevents same-category duplicate concepts, while cross-category terms can
-  /// still intentionally point to the first long-lived canonical definition.
-  static final Map<String, InterestDefinition> _exactIndex = _buildExactIndex();
+  /// Exact terms may intentionally map to more than one canonical concept
+  /// across categories (for example Persona as a film and a game franchise).
+  /// Same-category ambiguity is rejected by catalog tests; cross-category
+  /// ambiguity must be surfaced to the user instead of silently first-winning.
+  static final Map<String, List<InterestDefinition>> _exactIndex = _buildExactIndex();
 
   static final List<String> categories = _buildCategories();
 
@@ -148,10 +149,15 @@ class InterestCatalog {
     return adjacent.contains(key) ? 4 : 6;
   }
 
-  static InterestDefinition? exact(String input) {
+  static List<InterestDefinition> exactMatches(String input) {
     final q = normalizeText(input);
-    if (q.isEmpty) return null;
-    return _exactIndex[q];
+    if (q.isEmpty) return const <InterestDefinition>[];
+    return _exactIndex[q] ?? const <InterestDefinition>[];
+  }
+
+  static InterestDefinition? exact(String input) {
+    final matches = exactMatches(input);
+    return matches.length == 1 ? matches.single : null;
   }
 
   static List<InterestDefinition> search(
@@ -318,9 +324,12 @@ class InterestCatalog {
   }
 
   static SelectedInterest instantSelection(String input) {
-    final known = exact(input);
-    if (known != null) {
-      return SelectedInterest(id: known.id, strength: InterestStrength.like);
+    final matches = exactMatches(input);
+    if (matches.length == 1) {
+      return SelectedInterest(id: matches.single.id, strength: InterestStrength.like);
+    }
+    if (matches.length > 1) {
+      throw const FormatException('Interest is ambiguous; choose a canonical result');
     }
     final display = input.trim().replaceAll(RegExp(r'\s+'), ' ');
     final normalized = normalizeText(display);
@@ -368,14 +377,17 @@ class InterestCatalog {
     }..remove('');
   }
 
-  static Map<String, InterestDefinition> _buildExactIndex() {
-    final result = <String, InterestDefinition>{};
+  static Map<String, List<InterestDefinition>> _buildExactIndex() {
+    final mutable = <String, List<InterestDefinition>>{};
     for (final item in seed) {
       for (final term in _exactTerms(item)) {
-        result.putIfAbsent(term, () => item);
+        (mutable[term] ??= <InterestDefinition>[]).add(item);
       }
     }
-    return Map.unmodifiable(result);
+    return Map.unmodifiable({
+      for (final entry in mutable.entries)
+        entry.key: List<InterestDefinition>.unmodifiable(entry.value),
+    });
   }
 
   static int? _searchScore(_InterestSearchRow row, String q) {
