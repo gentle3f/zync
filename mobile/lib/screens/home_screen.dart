@@ -82,7 +82,6 @@ class HomeScreen extends StatelessWidget {
       MediaQuery.textScalerOf(context).scale(1) > 1.15;
 
   Widget _header(BuildContext context, AppLocalizations l10n) {
-    final compact = _useCompactHeader(context);
     return Row(
         children: [
           const ZyncMark(size: 38, strokeWidth: 4),
