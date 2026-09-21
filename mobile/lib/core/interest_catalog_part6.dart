@@ -15,10 +15,10 @@ learning.nonfiction|learning|books|661|Non-fiction|非虛構作品|非虚构作�
 learning.science_fiction_books|learning|books|662|Science Fiction Books|科幻小說|科幻小说|科幻小說;科幻小说
 learning.fantasy_books|learning|books|663|Fantasy Books|奇幻小說|奇幻小说|奇幻小說;奇幻小说
 learning.mystery_books|learning|books|664|Mystery & Crime Books|推理與犯罪小說|推理与犯罪小说|推理小說;推理小说
-learning.romance_books|learning|books|665|Romance Books|愛情小說|爱情小说|愛情小說;爱情小说
-learning.biographies|learning|books|666|Biographies|傳記|传记|傳記;传记
+learning.romance_books|learning|books|665|Romance Books|愛情小說|爱情小说|romance novels;愛情小說;爱情小说
+learning.biographies|learning|books|666|Biographies|傳記|传记|biography;傳記;传记
 learning.business_books|learning|books|667|Business Books|商業書籍|商业书籍|商業書;商业书
-learning.self_improvement|learning|books|668|Self-improvement Books|自我提升書籍|自我提升书籍|自我提升
+learning.self_improvement|learning|books|668|Self-improvement Books|自我提升書籍|自我提升书籍|self-help books;self help;自我提升
 learning.poetry|learning|books|669|Poetry|詩歌|诗歌|詩;诗
 learning.book_clubs|learning|books|670|Book Clubs|讀書會|读书会|讀書會;读书会
 learning.english|learning|languages|675|English|英語|英语|英語;英语
