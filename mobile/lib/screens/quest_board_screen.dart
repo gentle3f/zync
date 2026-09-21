@@ -270,6 +270,11 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
           (item) => item.definition.cadence == ZyncQuestCadence.weekly,
         )
         .toList(growable: false);
+    final lifetime = _snapshot!.progress
+        .where(
+          (item) => item.definition.cadence == ZyncQuestCadence.lifetime,
+        )
+        .toList(growable: false);
 
     return RefreshIndicator(
       onRefresh: _load,
@@ -301,8 +306,8 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
                       const SizedBox(height: 4),
                       Text(
                         _isZh
-                            ? '唔需要撳五個screen、睇廣告或者掛機。Zync、識新朋友、真係一齊做活動先會推進。'
-                            : 'No tap-grind, ad watching or idle farming. Progress comes from Zyncs, new people and activities you actually do together.',
+                            ? '唔需要撳五個 screen、睇廣告或者掛機。每日、每週同永久任務都係靠真人 Zync 同真係一齊做嘢推進。'
+                            : 'No tap-grind, ad watching or idle farming. Daily, weekly and lifetime tasks progress through real Zyncs and things you actually do together.',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -330,6 +335,19 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
           ),
           const SizedBox(height: 10),
           for (final item in weekly) ...[
+            _questCard(item),
+            const SizedBox(height: 10),
+          ],
+          const SizedBox(height: 12),
+          _sectionHeader(
+            icon: Icons.all_inclusive_rounded,
+            title: _isZh ? '永久任務' : 'Lifetime',
+            subtitle: _isZh
+                ? '唔會重設；一路累積你真實世界嘅 Zync 經歷'
+                : 'Never resets; it grows with your real-world Zync history',
+          ),
+          const SizedBox(height: 10),
+          for (final item in lifetime) ...[
             _questCard(item),
             const SizedBox(height: 10),
           ],
@@ -564,7 +582,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
           icon: Icons.person_add_alt_1_outlined,
           background: ZyncPalette.mint,
           foreground: const Color(0xFF176B57),
-          title: _isZh ? '同一個人 Zync' : 'Make one Zync',
+          title: _isZh ? '今日 Zync 一次' : 'Make one Zync today',
           description: _isZh
               ? '完成一次面對面 1:1 Zync。'
               : 'Complete one face-to-face 1:1 Zync.',
@@ -573,37 +591,91 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
           icon: Icons.bolt_rounded,
           background: ZyncPalette.peach,
           foreground: ZyncPalette.orangeDeep,
-          title: _isZh ? '真係一齊做' : 'Actually do it together',
+          title: _isZh ? '今日真係一齊做' : 'Actually do it together',
           description: _isZh
-              ? '完成一個 Zync Now 選出嚟嘅活動。'
+              ? '完成一個 Zync Now 揀出嚟嘅活動。'
               : 'Complete an activity chosen by Zync Now.',
         ),
-      'weekly_meet_two_new_people' => _QuestCopy(
-          icon: Icons.people_alt_outlined,
-          background: ZyncPalette.mint,
-          foreground: const Color(0xFF176B57),
-          title: _isZh ? '識兩個新朋友' : 'Meet two new people',
-          description: _isZh
-              ? '今週同兩個未 Zync 過嘅人完成 1:1 Zync。'
-              : 'Complete 1:1 Zyncs with two people you have not Zynced before.',
-        ),
-      'weekly_real_world_three' => _QuestCopy(
+      'daily_two_real_world_actions' => _QuestCopy(
           icon: Icons.directions_walk_rounded,
-          background: const Color(0xFFE9E5FF),
-          foreground: ZyncPalette.plum,
-          title: _isZh ? '三次真實世界行動' : 'Three real-world actions',
+          background: const Color(0xFFFFE9B7),
+          foreground: const Color(0xFF8B5A00),
+          title: _isZh ? '今日兩次真實行動' : 'Two real actions today',
           description: _isZh
               ? '1:1 Zync 同 Tried Together 都會計。'
               : 'Both 1:1 Zyncs and Tried Together count.',
         ),
-      'weekly_three_interest_worlds' => _QuestCopy(
+      'weekly_three_zyncs' => _QuestCopy(
+          icon: Icons.people_alt_outlined,
+          background: ZyncPalette.mint,
+          foreground: const Color(0xFF176B57),
+          title: _isZh ? '今週 Zync 三次' : 'Three Zyncs this week',
+          description: _isZh
+              ? '完成三次真人 1:1 Zync。'
+              : 'Complete three real 1:1 Zyncs.',
+        ),
+      'weekly_two_tried_together' => _QuestCopy(
+          icon: Icons.bolt_rounded,
+          background: ZyncPalette.peach,
+          foreground: ZyncPalette.orangeDeep,
+          title: _isZh ? '今週做兩次' : 'Do two things together',
+          description: _isZh
+              ? '真實完成兩個 Zync Now 活動。'
+              : 'Complete two Zync Now activities in real life.',
+        ),
+      'weekly_group_activity' => _QuestCopy(
+          icon: Icons.groups_3_outlined,
+          background: const Color(0xFFE9E5FF),
+          foreground: ZyncPalette.plum,
+          title: _isZh ? '約齊一班人' : 'Get a group together',
+          description: _isZh
+              ? '完成一次三人或以上嘅 Tried Together。'
+              : 'Complete one Tried Together activity with 3+ people.',
+        ),
+      'weekly_five_real_world_actions' => _QuestCopy(
+          icon: Icons.explore_outlined,
+          background: const Color(0xFFFFE9B7),
+          foreground: const Color(0xFF8B5A00),
+          title: _isZh ? '今週五次真實行動' : 'Five real-world actions',
+          description: _isZh
+              ? '今週累積五次 1:1 Zync 或 Tried Together。'
+              : 'Complete five 1:1 Zync or Tried Together actions this week.',
+        ),
+      'lifetime_five_zyncs' => _QuestCopy(
+          icon: Icons.handshake_outlined,
+          background: ZyncPalette.mint,
+          foreground: const Color(0xFF176B57),
+          title: _isZh ? '人生頭五次 Zync' : 'Your first five Zyncs',
+          description: _isZh
+              ? '永久累積完成五次真人 1:1 Zync。'
+              : 'Complete five real 1:1 Zyncs over your Zync journey.',
+        ),
+      'lifetime_three_tried_together' => _QuestCopy(
+          icon: Icons.rocket_launch_outlined,
+          background: ZyncPalette.peach,
+          foreground: ZyncPalette.orangeDeep,
+          title: _isZh ? '由傾到做三次' : 'Three times from talk to action',
+          description: _isZh
+              ? '永久累積完成三次 Tried Together。'
+              : 'Complete three Tried Together activities over time.',
+        ),
+      'lifetime_three_group_activities' => _QuestCopy(
+          icon: Icons.diversity_3_outlined,
+          background: const Color(0xFFE9E5FF),
+          foreground: ZyncPalette.plum,
+          title: _isZh ? '群體動起來' : 'Group momentum',
+          description: _isZh
+              ? '永久累積三次三人或以上嘅活動。'
+              : 'Complete three activities with groups of 3+ people.',
+        ),
+      'lifetime_eight_real_world_actions' => _QuestCopy(
           icon: Icons.public_rounded,
           background: const Color(0xFFFFE9B7),
           foreground: const Color(0xFF8B5A00),
-          title: _isZh ? '探索三個興趣世界' : 'Explore three interest worlds',
+          title: _isZh ? '真實世界八步' : 'Eight steps into real life',
           description: _isZh
-              ? '透過真實互動接觸三個不同興趣類別。'
-              : 'Touch three different interest categories through real interactions.',
+              ? '永久累積八次真實 Zync 行動。'
+              : 'Complete eight real-world Zync actions over time.',
         ),
       _ => _QuestCopy(
           icon: Icons.task_alt_rounded,
@@ -614,7 +686,6 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
         ),
     };
   }
-}
 
 class _QuestCopy {
   const _QuestCopy({
