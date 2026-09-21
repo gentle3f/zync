@@ -16,6 +16,15 @@ Widget lab({
       ),
     );
 
+Widget playerPack({bool reduceMotion = true}) => MaterialApp(
+      home: MediaQuery(
+        data: MediaQueryData(disableAnimations: reduceMotion),
+        child: const CardversePackOpeningLabScreen(
+          labMode: false,
+        ),
+      ),
+    );
+
 void setPhone(WidgetTester tester) {
   tester.view.physicalSize = const Size(430, 900);
   tester.view.devicePixelRatio = 1;
@@ -41,6 +50,25 @@ void main() {
     expect(find.text('Piano'), findsNothing);
     expect(find.text('Japan'), findsNothing);
     expect(find.textContaining('server result locked'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('player pack hides receipt diagnostics and uses player copy',
+      (tester) async {
+    setPhone(tester);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(playerPack());
+    await tester.pump();
+
+    expect(find.text('RECEIPT'), findsNothing);
+    expect(find.textContaining('server result locked'), findsNothing);
+    expect(
+      find.text('5 cards · reveal them one by one'),
+      findsOneWidget,
+    );
+    expect(find.text('Open Pack'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 
