@@ -55,8 +55,8 @@ class _CardverseRewardLoopLabScreenState
         ),
         ZyncProgressEvent(
           id: 'lab-event-3',
-          type: ZyncProgressEventType.triedTogetherCompleted,
-          source: ZyncProgressSource.zyncNow,
+          type: ZyncProgressEventType.oneToOneZync,
+          source: ZyncProgressSource.oneToOne,
           occurredAt: DateTime.utc(2026, 9, 19, 10),
           participantCount: 3,
           interestCategories: const ['music'],
@@ -68,7 +68,7 @@ class _CardverseRewardLoopLabScreenState
 
     return snapshot.progress
         .firstWhere(
-          (item) => item.definition.id == 'weekly_real_world_three',
+          (item) => item.definition.id == 'weekly_three_zyncs',
         )
         .eligibility!;
   }
