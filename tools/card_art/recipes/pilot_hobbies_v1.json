@@ -88,7 +88,7 @@
       "id": "cinema",
       "title": "Cinema",
       "archetype": "atmosphere_immersive",
-      "subject": "The interior of a grand cinema theatre from behind the audience, a huge glowing screen mid-film casting dramatic light across rows of seated silhouettes, beams of projector light cutting through haze.",
+      "subject": "The interior of a grand cinema theatre from behind the audience, a huge screen showing a vivid, clearly-recognizable epic movie scene (a lone silhouetted hero facing a vast sweeping landscape at sunset), casting dramatic colored light across rows of seated silhouettes, beams of projector light cutting through haze.",
       "key_objects": "large glowing screen, theatre seats, projector light beams, silhouetted audience",
       "recognition_test": "Cinematic theatre and film-watching experience with storytelling atmosphere, not merely a film icon."
     },
