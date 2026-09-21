@@ -21,6 +21,13 @@
     "muddy focal hierarchy",
     "overabstract imagery",
     "generic concept wallpaper",
-    "confusing mixtures of different hobbies"
-  ]
+    "confusing mixtures of different hobbies",
+    "pseudo-text or gibberish lettering anywhere in the image",
+    "readable real-world brand names, logos, or trademarks",
+    "recognisable copyrighted film/game/cartoon characters or franchise costumes",
+    "collage, split-screen, comic-panel, or multi-panel layouts",
+    "photoreal stock-photo rendering unless explicitly requested by the hobby recipe"
+  ],
+  "style_reference_path": "references/zync-card-style-reference.png",
+  "reference_instruction": "Use the supplied Zync reference image only as a visual-style guide. Match its commercial-cinematic illustration language, crisp hero framing, rich atmospheric lighting, polished color grading, and collectible desirability. Do not copy its subjects, exact compositions, card frames, typography, handwritten slogans, logos, rarity labels, or UI."
 }

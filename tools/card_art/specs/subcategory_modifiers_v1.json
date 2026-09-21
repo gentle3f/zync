@@ -79,6 +79,100 @@
         "generic coder-at-desk",
         "abstract glowing interfaces without purpose"
       ]
+    },
+    "east_asia_travel": {
+      "recognition_anchors": [
+        "place-specific architecture or streetscape",
+        "traveler/discovery action",
+        "coherent local visual cues"
+      ],
+      "avoid": [
+        "geographically impossible landmark montage",
+        "flag-only shorthand",
+        "generic old-town ambiguity"
+      ]
+    },
+    "cafe_drinks": {
+      "recognition_anchors": [
+        "signature drink clearly visible",
+        "hands or preparation ritual",
+        "readable café/home beverage context"
+      ],
+      "avoid": [
+        "isolated product mug",
+        "generic restaurant scene with no drink focus"
+      ]
+    },
+    "visual_capture": {
+      "recognition_anchors": [
+        "camera/lens or viewing tool clearly visible",
+        "active framing/capture posture",
+        "target scene secondary to the act of capture"
+      ],
+      "avoid": [
+        "pure scenic wallpaper",
+        "camera too small to read",
+        "travel-vista composition dominating the hobby"
+      ]
+    },
+    "film_viewing": {
+      "recognition_anchors": [
+        "large movie screen with a narrative scene",
+        "theatre seating/audience",
+        "projector or cinema architecture cue"
+      ],
+      "avoid": [
+        "concert stage",
+        "musician on screen as dominant cue",
+        "blank or abstract glowing screen"
+      ]
+    },
+    "camping_outdoors": {
+      "recognition_anchors": [
+        "tent or shelter",
+        "campfire/camp setup",
+        "people or gear visibly using the campsite"
+      ],
+      "avoid": [
+        "generic mountain wallpaper",
+        "hiking-only scene",
+        "no campsite anchor"
+      ]
+    },
+    "ceramics": {
+      "recognition_anchors": [
+        "wet clay",
+        "pottery wheel or hand-building process",
+        "hands actively shaping"
+      ],
+      "avoid": [
+        "finished pottery display only",
+        "generic craft market"
+      ]
+    },
+    "endurance_running": {
+      "recognition_anchors": [
+        "clear running stride",
+        "running path/track/road",
+        "body posture showing active pace"
+      ],
+      "avoid": [
+        "walking/jogging ambiguity",
+        "generic fitness portrait",
+        "stock marathon ad look"
+      ]
+    },
+    "brick_building": {
+      "recognition_anchors": [
+        "visible studded interlocking bricks",
+        "hands actively assembling",
+        "coherent brick-built model"
+      ],
+      "avoid": [
+        "brand logo or wordmark",
+        "random toy pile",
+        "generic model without visible brick geometry"
+      ]
     }
   }
 }

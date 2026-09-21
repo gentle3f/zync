@@ -28,8 +28,10 @@
     }
   },
   "pass_rules": {
-    "long_tail": "no score below 3 and average >= 3.5",
-    "flagship": "no score below 3 and average >= 4.0"
+    "flagship": "no score below 3 and average >= 4.0",
+    "hard_case": "no score below 3, Recognition >= 4, and average >= 4.0",
+    "common": "no score below 3 and average >= 3.5",
+    "long_tail": "no score below 3 and average >= 3.5"
   },
   "reroll_triggers": [
     "hobby unclear",

@@ -1,103 +1,76 @@
-// Compiles one hobby_recipes_v1.jsonl record into a final prompt following the
-// composition order in specs/ZYNC_CARD_ART_PROMPT_SYSTEM_V1.md:
-//
-//   1. global style
-//   2. archetype guidance
-//   3. category modifier
-//   4. subcategory modifier
-//   5. hobby-specific subject and environment
-//   6. emotion
-//   7. composition / camera / lighting / palette
-//   8. recognition anchors
-//   9. must-include
-//   10. avoid
-//   11. global negatives
-//
-// Optional overrides (hobby_overrides_v1.json for long-tail/hard_case hobbies,
-// flagship_overrides_v1.json for the benchmark set) are merged in after the
-// base recipe and before global negatives.
-
+// V1 prompt compiler. Pure compilation only: no fal.ai calls.
 function list(items) {
   return items && items.length ? items.join(', ') : null;
 }
-
-export function compileHobbyPrompt({ hobby, globalStyle, archetypes, categories, subcategories, override, flagshipOverride }) {
-  const archetype = archetypes.archetypes[hobby.archetype];
-  if (!archetype) {
-    throw new Error(`Unknown archetype "${hobby.archetype}" for hobby "${hobby.id}"`);
+function stableIndex(id, n) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
   }
-  const category = categories.categories[hobby.category];
-  if (!category) {
-    throw new Error(`Unknown category "${hobby.category}" for hobby "${hobby.id}"`);
+  return (h >>> 0) % n;
+}
+function applyOverride(base, override) {
+  if (!override) return {...base};
+  const out = {...base};
+  for (const k of ['subject','environment','composition','camera','lighting','palette','visual_variant']) {
+    if (override[k] != null) out[k] = override[k];
   }
-  const subcategory = hobby.subcategory ? subcategories.subcategories[hobby.subcategory] : null;
-  if (hobby.subcategory && !subcategory) {
-    throw new Error(`Unknown subcategory "${hobby.subcategory}" for hobby "${hobby.id}"`);
-  }
+  out.emotion = [...(base.emotion || []), ...(override.emotion_add || [])];
+  out.recognition_anchors = [...(base.recognition_anchors || []), ...(override.recognition_anchors_add || [])];
+  out.must_include = [...(base.must_include || []), ...(override.must_include_add || [])];
+  out.avoid = [...(base.avoid || []), ...(override.avoid_add || []), ...(override.override_avoid || [])];
+  return out;
+}
+export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, categories, subcategories, override, flagshipOverride }) {
+  let effective = applyOverride(hobby, override);
+  effective = applyOverride(effective, flagshipOverride);
+  const archetype = archetypes.archetypes[effective.archetype];
+  if (!archetype) throw new Error(`Unknown archetype "${effective.archetype}" for hobby "${effective.id}"`);
+  const category = categories.categories[effective.category];
+  if (!category) throw new Error(`Unknown category "${effective.category}" for hobby "${effective.id}"`);
+  const subcategory = effective.subcategory ? subcategories.subcategories[effective.subcategory] : null;
+  if (effective.subcategory && !subcategory) throw new Error(`Unknown subcategory "${effective.subcategory}" for hobby "${effective.id}"`);
+  const pool = variants.archetypes[effective.archetype] || [];
+  if (!pool.length) throw new Error(`No visual variants for archetype "${effective.archetype}"`);
+  const variant = effective.visual_variant
+    ? pool.find(v => v.id === effective.visual_variant)
+    : pool[stableIndex(effective.id, pool.length)];
+  if (!variant) throw new Error(`Unknown visual_variant "${effective.visual_variant}" for hobby "${effective.id}"`);
 
   const sections = [];
-
-  // 1. global style
   sections.push(`GLOBAL STYLE: ${globalStyle.prompt}`);
+  sections.push(`REFERENCE STYLE: ${globalStyle.reference_instruction}`);
+  sections.push(`ARCHETYPE (${effective.archetype}): ${archetype.composition} ${archetype.camera} Emotional feeling: ${list(archetype.feeling)}. Recognition requirement: ${archetype.recognition}`);
+  sections.push(`VISUAL VARIANT (${variant.id}): ${variant.composition} ${variant.camera} Lighting bias: ${variant.lighting}`);
+  sections.push(`CATEGORY (${effective.category}): Palette bias — ${category.palette_bias}. ${list(category.extra_rules)}.`);
+  if (subcategory) sections.push(`SUBCATEGORY (${effective.subcategory}): Recognition anchors — ${list(subcategory.recognition_anchors)}.`);
+  sections.push(`SUBJECT: ${effective.subject}`);
+  sections.push(`ENVIRONMENT: ${effective.environment}`);
+  sections.push(`EMOTION: ${list(effective.emotion)}.`);
+  if (effective.composition) sections.push(`HOBBY COMPOSITION: ${effective.composition}`);
+  if (effective.camera) sections.push(`HOBBY CAMERA: ${effective.camera}`);
+  if (effective.lighting) sections.push(`HOBBY LIGHTING: ${effective.lighting}`);
+  if (effective.palette) sections.push(`HOBBY PALETTE: ${effective.palette}`);
+  sections.push(`HOBBY RECOGNITION ANCHORS: ${list(effective.recognition_anchors)}.`);
+  sections.push(`MUST INCLUDE: ${list(effective.must_include)}.`);
 
-  // 2. archetype guidance
-  sections.push(
-    `ARCHETYPE (${hobby.archetype}): ${archetype.composition} ${archetype.camera} Emotional feeling: ${list(archetype.feeling)}. Recognition requirement: ${archetype.recognition}`
-  );
-
-  // 3. category modifier
-  sections.push(
-    `CATEGORY (${hobby.category}): Palette bias — ${category.palette_bias}. ${list(category.extra_rules)}.`
-  );
-
-  // 4. subcategory modifier (optional)
-  if (subcategory) {
-    sections.push(
-      `SUBCATEGORY (${hobby.subcategory}): Recognition anchors — ${list(subcategory.recognition_anchors)}.`
-    );
-  }
-
-  // 5. hobby-specific subject and environment
-  sections.push(`SUBJECT: ${hobby.subject}`);
-  sections.push(`ENVIRONMENT: ${hobby.environment}`);
-
-  // 6. emotion
-  sections.push(`EMOTION: ${list(hobby.emotion)}.`);
-
-  // 7. composition / camera / lighting / palette — inherited from archetype (2) and category (3) above;
-  //    no hobby-level override fields present in v1 pilot data, so nothing additional here.
-
-  // 8. recognition anchors
-  sections.push(`HOBBY RECOGNITION ANCHORS: ${list(hobby.recognition_anchors)}.`);
-
-  // 9. must-include
-  sections.push(`MUST INCLUDE: ${list(hobby.must_include)}.`);
-
-  // optional override prompt additions (flagship or long-tail), inserted before avoid/negatives
-  const overrideAdditions = [
+  const promptAdditions = [
     ...(override?.override_prompt_additions || []),
-    ...(flagshipOverride?.override_prompt_additions || []),
+    ...(flagshipOverride?.override_prompt_additions || [])
   ];
-  if (overrideAdditions.length) {
-    sections.push(`OVERRIDE GUIDANCE: ${overrideAdditions.join(' ')}`);
-  }
+  if (promptAdditions.length) sections.push(`OVERRIDE GUIDANCE: ${promptAdditions.join(' ')}`);
 
-  // 10. avoid — hobby avoid + subcategory avoid + archetype avoid + override avoid
   const avoidList = [
-    ...(hobby.avoid || []),
+    ...(effective.avoid || []),
     ...(subcategory?.avoid || []),
-    ...(archetype.avoid || []),
-    ...(override?.override_avoid || []),
-    ...(flagshipOverride?.override_avoid || []),
+    ...(archetype.avoid || [])
   ];
-  sections.push(`AVOID: ${list(avoidList)}.`);
-
-  // 11. global negatives
+  sections.push(`AVOID: ${[...new Set(avoidList)].join(', ')}.`);
   sections.push(`GLOBAL NEGATIVES: ${list(globalStyle.global_negatives)}.`);
-
-  const compiledPrompt = sections.join('\n\n');
-
-  const negativeConstraints = [...new Set([...avoidList, ...globalStyle.global_negatives])];
-
-  return { compiledPrompt, negativeConstraints, archetype, category, subcategory };
+  return {
+    compiledPrompt: sections.join('\n\n'),
+    negativeConstraints: [...new Set([...avoidList, ...globalStyle.global_negatives])],
+    archetype, category, subcategory, variant, effective
+  };
 }

@@ -1,0 +1,306 @@
+{
+  "version": "v1",
+  "description": "Curated composition/camera variants. A hobby explicitly selects one where needed; otherwise the compiler deterministically assigns a variant within the hobby archetype. This prevents 3000+ cards from collapsing into one repeated composition per archetype.",
+  "archetypes": {
+    "solo_action": [
+      {
+        "id": "low_impact",
+        "composition": "One hero athlete dominates the frame at the decisive instant of action, with the body and equipment forming a strong diagonal.",
+        "camera": "Low three-quarter medium-wide action angle.",
+        "lighting": "Directional arena or natural edge light that separates the athlete cleanly from the background."
+      },
+      {
+        "id": "side_motion",
+        "composition": "Track the subject laterally in a clear side-on movement moment; background depth supports speed without competing with the hero.",
+        "camera": "Side-tracking medium shot with the subject crossing the frame.",
+        "lighting": "Clean directional light with restrained motion blur in the environment only."
+      },
+      {
+        "id": "front_pressure",
+        "composition": "The athlete advances toward or across the camera plane, making the key equipment a secondary foreground anchor.",
+        "camera": "Slightly low frontal three-quarter angle.",
+        "lighting": "High-contrast hero lighting with clear face/body readability."
+      }
+    ],
+    "vertical_adventure": [
+      {
+        "id": "wall_tension",
+        "composition": "The climber and climbing surface fill most of the frame; body tension and contact points are immediately readable.",
+        "camera": "Side three-quarter medium-wide angle.",
+        "lighting": "Raking light across the wall/rock texture with clear subject separation."
+      },
+      {
+        "id": "upward_reach",
+        "composition": "Freeze the instant before a difficult next hold, with one arm extending into clean negative space.",
+        "camera": "Slightly low upward angle, close enough to read hands and feet.",
+        "lighting": "Directional light emphasizing chalk, texture, and muscle tension."
+      },
+      {
+        "id": "topout",
+        "composition": "Show the final top-out or mantle moment, preserving the landing zone or route context below.",
+        "camera": "Three-quarter angle near the top edge of the problem.",
+        "lighting": "Warm achievement-oriented edge light without turning the scene into a distant landscape."
+      }
+    ],
+    "group_play": [
+      {
+        "id": "eye_level_reaction",
+        "composition": "Faces, hands, and the central game surface share the frame; capture a real reaction to a move.",
+        "camera": "Intimate eye-level or slightly elevated medium shot.",
+        "lighting": "Warm practical lamp light centered around the group."
+      },
+      {
+        "id": "table_overhead",
+        "composition": "The game board is the visual center, with multiple hands entering naturally from around the table and faces visible at the edge of frame.",
+        "camera": "High three-quarter tabletop angle, not a flat diagram.",
+        "lighting": "Warm pooled table light with darker surrounding room."
+      },
+      {
+        "id": "over_shoulder_board",
+        "composition": "Look past one player toward the board and other reacting players, creating depth and participation.",
+        "camera": "Over-shoulder medium-wide.",
+        "lighting": "Soft social interior light with one warm focal source."
+      }
+    ],
+    "food_hero": [
+      {
+        "id": "hand_finish",
+        "composition": "The hero dish fills the lower-middle frame while one human hand completes, serves, or reaches toward it.",
+        "camera": "Close three-quarter tabletop angle.",
+        "lighting": "Premium warm food light with appetising highlights and controlled background bokeh."
+      },
+      {
+        "id": "chef_pass",
+        "composition": "The dish is presented at the moment of handoff from maker to diner, with the food still dominating the image.",
+        "camera": "Counter-height medium-close.",
+        "lighting": "Warm restaurant key light with subtle steam/specular detail."
+      },
+      {
+        "id": "intimate_table",
+        "composition": "One hero plate anchors an intimate dining moment; surrounding context is minimal and subordinate.",
+        "camera": "Seated diner perspective, close-medium.",
+        "lighting": "Soft lantern/candle-like ambience with crisp food texture."
+      }
+    ],
+    "drink_ritual": [
+      {
+        "id": "hands_cup",
+        "composition": "Hands and the signature drink form one intimate focal cluster; café or home context falls softly behind.",
+        "camera": "Close-medium seated perspective.",
+        "lighting": "Soft window or café light with warm highlights."
+      },
+      {
+        "id": "pour_moment",
+        "composition": "Capture the decisive preparation/pour moment so the ritual itself is visible, not merely the finished drink.",
+        "camera": "Three-quarter close-up on hands, vessel, and cup.",
+        "lighting": "Warm tactile light with visible steam/liquid detail."
+      },
+      {
+        "id": "shared_pause",
+        "composition": "Two people share a quiet beverage moment, but one signature drink remains the primary visual anchor.",
+        "camera": "Medium-close side angle.",
+        "lighting": "Warm social light with uncluttered background."
+      }
+    ],
+    "travel_vista": [
+      {
+        "id": "leading_route",
+        "composition": "A road, path, or transit line leads the eye from a clear journey anchor into a distinctive destination.",
+        "camera": "Wide three-quarter view with strong leading lines.",
+        "lighting": "Destination-specific golden/blue-hour light without stock-photo lens flare."
+      },
+      {
+        "id": "traveler_foreground",
+        "composition": "A traveler fills the near foreground while the destination remains clearly identifiable behind them.",
+        "camera": "Medium-wide rear or three-quarter traveler perspective.",
+        "lighting": "Cinematic natural light with layered depth."
+      },
+      {
+        "id": "reveal_frame",
+        "composition": "Use a doorway, street opening, ridge, or architectural frame to reveal the destination as a discovery moment.",
+        "camera": "Human-height medium-wide reveal shot.",
+        "lighting": "Controlled contrast between foreground frame and luminous destination."
+      }
+    ],
+    "urban_discovery": [
+      {
+        "id": "street_corner",
+        "composition": "A person actively discovers something at a lively but readable street corner, with one specific hobby action as the anchor.",
+        "camera": "Human-height observational medium-wide.",
+        "lighting": "Mixed storefront and ambient city light."
+      },
+      {
+        "id": "over_shoulder_find",
+        "composition": "Look over the participant's shoulder toward the object/place they have just discovered.",
+        "camera": "Over-shoulder medium shot.",
+        "lighting": "Natural or practical light emphasizing discovery."
+      },
+      {
+        "id": "storefront_moment",
+        "composition": "Frame the hobby through an inviting storefront/window/stall interaction rather than a generic skyline.",
+        "camera": "Street-level three-quarter angle.",
+        "lighting": "Warm interior-to-exterior contrast."
+      }
+    ],
+    "performance": [
+      {
+        "id": "stage_threequarter",
+        "composition": "Performer and instrument/action dominate the frame, with enough venue atmosphere to convey performance.",
+        "camera": "Three-quarter medium hero shot.",
+        "lighting": "Focused key light with restrained background bokeh."
+      },
+      {
+        "id": "hands_instrument",
+        "composition": "Hands and the expressive interaction with the instrument/action become the foreground anchor while the performer remains identifiable.",
+        "camera": "Close-medium diagonal detail shot.",
+        "lighting": "Warm tactile performance light."
+      },
+      {
+        "id": "audience_over_shoulder",
+        "composition": "View the performer past a small amount of audience foreground to emphasize a shared live experience.",
+        "camera": "Audience over-shoulder medium-wide.",
+        "lighting": "Stage light focused on the performer, audience subdued."
+      }
+    ],
+    "creative_studio": [
+      {
+        "id": "hands_process",
+        "composition": "Hands, tools, and material dominate the scene at the most tactile step of creation.",
+        "camera": "Close-medium process view.",
+        "lighting": "Warm directional studio/window light revealing material texture."
+      },
+      {
+        "id": "maker_portrait",
+        "composition": "Show the maker's focused expression together with the active work surface; neither may obscure the making process.",
+        "camera": "Three-quarter medium shot.",
+        "lighting": "Soft studio key light with warm work-surface highlights."
+      },
+      {
+        "id": "workbench_diagonal",
+        "composition": "Use tools/materials as diagonal leading elements toward the active making point.",
+        "camera": "Slightly elevated three-quarter workbench angle.",
+        "lighting": "Practical studio light with controlled depth."
+      }
+    ],
+    "lens_perspective": [
+      {
+        "id": "over_shoulder_frame",
+        "composition": "The observer/photographer occupies much of the foreground; their camera/lens action is primary and the viewed scene is secondary.",
+        "camera": "Tight over-shoulder medium shot.",
+        "lighting": "Natural directional light with crisp equipment detail."
+      },
+      {
+        "id": "profile_capture",
+        "composition": "Show a strong profile of the person actively looking through the viewfinder/lens at the exact capture moment.",
+        "camera": "Medium side profile.",
+        "lighting": "Clean side light, background subordinate."
+      },
+      {
+        "id": "foreground_lens",
+        "composition": "A large lens or viewing tool anchors the foreground while the person and target scene remain understandable behind it.",
+        "camera": "Close-medium perspective with foreground equipment emphasis.",
+        "lighting": "Controlled highlight on glass/equipment without fake flare."
+      }
+    ],
+    "tech_workspace": [
+      {
+        "id": "over_shoulder_generation",
+        "composition": "Look over the creator's shoulder at one primary display where an input is visibly transforming into multiple coherent generated outputs; secondary screens stay subordinate.",
+        "camera": "Over-shoulder medium shot.",
+        "lighting": "Cool screen light balanced by warm human/environment accents."
+      },
+      {
+        "id": "creator_interface",
+        "composition": "The human creator and one meaningful AI/technology interaction share equal visual importance; show purposeful creation rather than passive coding.",
+        "camera": "Three-quarter medium workstation view.",
+        "lighting": "Controlled modern light with a clear face/hands focal hierarchy."
+      },
+      {
+        "id": "physical_digital_hybrid",
+        "composition": "Connect a physical input or gesture to an evolving digital result so the technology feels active and creative.",
+        "camera": "Medium-wide diagonal workstation view.",
+        "lighting": "Modern cool base with restrained luminous accents."
+      }
+    ],
+    "collection_object_hero": [
+      {
+        "id": "hands_build",
+        "composition": "Hands actively build or arrange one clearly readable collectible/object system; a single hero element sits in sharp foreground focus.",
+        "camera": "Close-medium elevated three-quarter angle.",
+        "lighting": "Bright premium tabletop light with tactile detail."
+      },
+      {
+        "id": "shelf_hero",
+        "composition": "A curated hero object dominates the foreground with a small amount of collection context behind it.",
+        "camera": "Eye-level close-medium product-with-owner perspective.",
+        "lighting": "Museum-like or warm collector lighting, not sterile catalogue light."
+      },
+      {
+        "id": "macro_detail",
+        "composition": "Use one unmistakable construction/material detail as a large foreground recognition anchor while the broader hobby context remains visible.",
+        "camera": "Macro-to-medium layered perspective.",
+        "lighting": "Crisp detail lighting with controlled depth of field."
+      }
+    ],
+    "calm_wellness": [
+      {
+        "id": "centered_ritual",
+        "composition": "One calm human ritual sits centrally with generous uncluttered space around it.",
+        "camera": "Human-height medium shot.",
+        "lighting": "Soft diffused daylight."
+      },
+      {
+        "id": "side_window",
+        "composition": "Use side window light to frame a quiet wellness action in profile.",
+        "camera": "Medium side view.",
+        "lighting": "Gentle window light with low contrast."
+      },
+      {
+        "id": "close_hands",
+        "composition": "Hands and the specific self-care/wellness action become the tactile foreground anchor.",
+        "camera": "Close-medium detail view.",
+        "lighting": "Soft warm natural light."
+      }
+    ],
+    "nature_immersion": [
+      {
+        "id": "warm_camp_anchor",
+        "composition": "A warm activity anchor such as fire, tent, fishing setup, or telescope dominates the foreground/midground while nature supports it.",
+        "camera": "Medium-wide human-height view.",
+        "lighting": "Strong warm/cool contrast between activity light and environment."
+      },
+      {
+        "id": "trail_approach",
+        "composition": "A person is visibly engaged in the nature activity while a path, shoreline, or terrain leads into the setting.",
+        "camera": "Rear three-quarter medium-wide.",
+        "lighting": "Natural dawn/dusk light without generic postcard treatment."
+      },
+      {
+        "id": "foreground_gear_vista",
+        "composition": "Specific hobby gear is unmistakable in the foreground while the natural setting creates scale behind it.",
+        "camera": "Low or seated perspective with layered depth.",
+        "lighting": "Natural atmospheric light with crisp gear detail."
+      }
+    ],
+    "story_culture": [
+      {
+        "id": "audience_immersion",
+        "composition": "The audience/participant is visible from behind or three-quarter view while the cultural medium itself dominates the focal area.",
+        "camera": "Centered or slightly off-center medium-wide audience perspective.",
+        "lighting": "Venue light spilling from the medium onto the audience."
+      },
+      {
+        "id": "medium_in_action",
+        "composition": "Show a person actively reading, viewing, performing, or engaging with the cultural medium rather than posing beside it.",
+        "camera": "Intimate medium shot.",
+        "lighting": "Atmospheric but legible practical light."
+      },
+      {
+        "id": "venue_reveal",
+        "composition": "Reveal the cultural venue and medium together so the setting supports, rather than replaces, the actual experience.",
+        "camera": "Human-height medium-wide reveal.",
+        "lighting": "Dramatic venue light with a clear focal source."
+      }
+    ]
+  }
+}
