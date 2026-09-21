@@ -80,7 +80,6 @@ First Contact Fiction|初次接觸科幻小說|首次接触科幻小说
 Military Science Fiction|軍事科幻小說|军事科幻小说
 Climate Fiction|氣候小說|cli-fi|气候小说
 Solarpunk|太陽朋克|太阳朋克
-Romance Novels|愛情小說|爱情小说
 Contemporary Romance|當代愛情小說|当代爱情小说
 Historical Romance Books|歷史愛情小說|历史爱情小说
 Romantic Comedy Books|愛情喜劇小說|爱情喜剧小说
@@ -103,7 +102,6 @@ Manhwa Reading|韓漫閱讀|韩漫阅读
 Webtoon Reading|網漫閱讀|网漫阅读
 Memoirs|回憶錄|回忆录
 Autobiography|自傳|自传
-Biography|傳記|传记
 History Books|歷史書籍|历史书籍
 Popular Science Books|科普書籍|科普书籍
 Science Writing|科學寫作|科学写作
@@ -123,7 +121,6 @@ Marketing Books|市場推廣書籍|市场营销书籍
 Startup Books|初創企業書籍|创业书籍
 Personal Finance Books|個人理財書籍|个人理财书籍
 Investing Books|投資書籍|投资书籍
-Self-Help Books|自助成長書籍|自我提升书籍
 Productivity Books|生產力書籍|效率提升书籍
 Leadership Books|領導力書籍|领导力书籍
 Technology Books|科技書籍|科技书籍
@@ -421,7 +418,6 @@ Pineapple Bun|菠蘿包|菠萝包
 Egg Tart|蛋撻|蛋挞
 French Toast Hong Kong Style|西多士|西多士|西多士
 Rice Noodle Rolls|腸粉|肠粉
-Soup Dumplings|小籠包|小笼包
 Sheng Jian Bao|生煎包|生煎包|生煎包
 Peking Duck|北京烤鴨|北京烤鸭
 Mapo Tofu|麻婆豆腐|麻婆豆腐|麻婆豆腐
@@ -429,7 +425,7 @@ Kung Pao Chicken|宮保雞丁|宫保鸡丁
 Dan Dan Noodles|擔擔麵|担担面
 Sichuan Boiled Fish|水煮魚|水煮鱼
 Mala Xiang Guo|麻辣香鍋|麻辣香锅
-Xiaolongbao|小籠包|小笼包
+Xiaolongbao|小籠包|Soup Dumplings|小笼包
 Scallion Pancakes|蔥油餅|葱油饼
 Taiwanese Beef Noodles|台灣牛肉麵|台湾牛肉面
 Lu Rou Fan|滷肉飯|卤肉饭
@@ -455,7 +451,7 @@ Tteokbokki|辣炒年糕|辣炒年糕
 Kimchi|泡菜|泡菜
 Kimbap|紫菜包飯|김밥|紫菜包饭
 Samgyeopsal|韓式五花肉|삼겹살|韩式五花肉
-Bulgogi|韓式烤肉|韩式烤肉
+Bulgogi|韓式燒牛肉|韩式烤牛肉
 Sundubu Jjigae|嫩豆腐鍋|순두부찌개|嫩豆腐锅
 Japchae|韓式炒粉絲|잡채|韩式炒粉丝
 Naengmyeon|冷麵|냉면|冷面
@@ -676,7 +672,7 @@ Morocco Travel|摩洛哥旅行
 Egypt Travel|埃及旅行
 Kenya Travel|肯亞旅行|肯尼亚旅行
 Tanzania Travel|坦桑尼亞旅行|坦桑尼亚旅行
-Safari Travel|野生動物旅行|野生动物旅行
+Safari Travel|Safari 之旅|Safari 旅行
 Antarctica Travel|南極旅行|南极旅行
 ''',
   ),
@@ -697,7 +693,6 @@ Night Trains|夜行列車旅行|夜行列车旅行
 Scenic Train Journeys|景觀鐵路旅行|景观铁路旅行
 Sleeper Trains|臥鋪列車旅行|卧铺列车旅行
 Luxury Trains|豪華列車旅行|豪华列车旅行
-Road Tripping|自駕遊|自驾游
 Campervan Travel|露營車旅行|房车旅行
 Motorcycle Touring|電單車旅行|摩托车旅行
 Cycling Tours|單車旅行|骑行旅行
@@ -733,7 +728,6 @@ Jungle Travel|叢林旅行|丛林旅行
 Archaeology Travel|考古旅行|考古旅行
 Historical Site Travel|歷史古蹟旅行|历史古迹旅行
 UNESCO Heritage Travel|世界遺產旅行|世界遗产旅行
-Cruise Travel|郵輪旅行|邮轮旅行
 River Cruises|河川郵輪旅行|内河游轮旅行
 Expedition Cruises|探險郵輪|探险邮轮
 Backpacking Southeast Asia|東南亞背包旅行|东南亚背包旅行
