@@ -227,17 +227,9 @@ class CardverseCloudClient {
         await fetchInventory(sessionToken),
       );
 
-  Future<CardverseRewardGrantReceipt> claimQuestReward({
-    required String sessionToken,
-    required CardverseQuestRewardClaimRequest request,
-  }) async {
-    final body = await _send(
-      method: 'POST',
-      path: '/api/v1/cardverse/quests/claim',
-      bearerToken: sessionToken,
-      body: request.toJson(),
-    );
-
+  CardverseRewardGrantReceipt _parseRewardGrant(
+    Map<String, dynamic> body,
+  ) {
     final kind = switch ((body['kind'] as String?)?.trim()) {
       'drawToken' => CardverseRewardGrantKind.drawToken,
       'standardPack' => CardverseRewardGrantKind.standardPack,
@@ -276,6 +268,37 @@ class CardverseCloudClient {
         failure: CardverseCloudFailure.invalidResponse,
       );
     }
+  }
+
+  Future<CardverseRewardGrantReceipt> claimDailyLogin({
+    required String sessionToken,
+    required String idempotencyKey,
+    required int timezoneOffsetMinutes,
+  }) async {
+    final body = await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/rewards/daily-login',
+      bearerToken: sessionToken,
+      body: {
+        'idempotencyKey': idempotencyKey,
+        'timezoneOffsetMinutes': timezoneOffsetMinutes,
+        'clientContractVersion': 1,
+      },
+    );
+    return _parseRewardGrant(body);
+  }
+
+  Future<CardverseRewardGrantReceipt> claimQuestReward({
+    required String sessionToken,
+    required CardverseQuestRewardClaimRequest request,
+  }) async {
+    final body = await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/quests/claim',
+      bearerToken: sessionToken,
+      body: request.toJson(),
+    );
+    return _parseRewardGrant(body);
   }
 
   Future<CardversePackOpenReceipt> openPack({
@@ -331,6 +354,55 @@ class CardverseCloudClient {
         idempotencyKey: (body['idempotencyKey'] as String?) ?? '',
         rolledAt: rolledAt,
         items: items,
+      );
+    } on FormatException {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+  }
+
+  Future<CardverseSingleDrawReceipt> redeemDrawToken({
+    required String sessionToken,
+    required CardverseDrawTokenRequest request,
+  }) async {
+    final body = await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/draws/redeem',
+      bearerToken: sessionToken,
+      body: request.toJson(),
+    );
+    final rolledAt = DateTime.tryParse(
+      (body['rolledAt'] as String?) ?? '',
+    )?.toUtc();
+    final rawItem = body['item'];
+    final rawVariant = rawItem is Map ? rawItem['variant'] : null;
+    if (body['serverAuthoritative'] != true ||
+        rolledAt == null ||
+        rawItem is! Map ||
+        rawVariant is! Map) {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+
+    try {
+      final item = CardversePackResultItem(
+        variant: CardVariantKey(
+          interestId:
+              (rawVariant['interestId'] as String?)?.trim() ?? '',
+          finishId:
+              (rawVariant['finishId'] as String?)?.trim() ?? '',
+          editionId:
+              (rawVariant['editionId'] as String?)?.trim() ?? '',
+        ),
+        quantity: (rawItem['quantity'] as num?)?.toInt() ?? 0,
+      );
+      return CardverseSingleDrawReceipt.serverValidated(
+        drawId: (body['drawId'] as String?) ?? '',
+        idempotencyKey: (body['idempotencyKey'] as String?) ?? '',
+        rolledAt: rolledAt,
+        item: item,
       );
     } on FormatException {
       throw const CardverseCloudException(

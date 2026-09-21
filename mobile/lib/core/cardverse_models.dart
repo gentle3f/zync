@@ -418,6 +418,56 @@ class CardversePackOpenReceipt {
   bool get serverAuthoritative => true;
 }
 
+class CardverseDrawTokenRequest {
+  const CardverseDrawTokenRequest({
+    required this.idempotencyKey,
+    this.clientRevealVersion = 1,
+  });
+
+  final String idempotencyKey;
+  final int clientRevealVersion;
+
+  Map<String, dynamic> toJson() => {
+        'idempotencyKey': idempotencyKey,
+        'clientRevealVersion': clientRevealVersion,
+      };
+}
+
+class CardverseSingleDrawReceipt {
+  const CardverseSingleDrawReceipt._({
+    required this.drawId,
+    required this.idempotencyKey,
+    required this.rolledAt,
+    required this.item,
+  });
+
+  final String drawId;
+  final String idempotencyKey;
+  final DateTime rolledAt;
+  final CardversePackResultItem item;
+
+  factory CardverseSingleDrawReceipt.serverValidated({
+    required String drawId,
+    required String idempotencyKey,
+    required DateTime rolledAt,
+    required CardversePackResultItem item,
+  }) {
+    if (drawId.trim().isEmpty ||
+        idempotencyKey.trim().isEmpty ||
+        item.quantity != 1) {
+      throw const FormatException('Invalid Cardverse single-draw receipt');
+    }
+    return CardverseSingleDrawReceipt._(
+      drawId: drawId.trim(),
+      idempotencyKey: idempotencyKey.trim(),
+      rolledAt: rolledAt.toUtc(),
+      item: item,
+    );
+  }
+
+  bool get serverAuthoritative => true;
+}
+
 class CardVisualIdentity {
   const CardVisualIdentity._();
 
