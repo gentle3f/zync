@@ -95,7 +95,7 @@ pets.cat_care|pets|pets|1371|Cat Care|貓咪照顧|猫咪照顾|caring for cats
 pets.pet_photography|pets|pets|1372|Pet Photography|寵物攝影|宠物摄影|animal photography;pets photos
 pets.pet_fostering|pets|pets|1373|Pet Fostering|動物暫養|动物暂养|fostering pets;foster animals
 pets.aquascaping|pets|pets|1374|Aquascaping|水草造景|水草造景|planted aquariums;aquarium landscaping
-pets.terrariums|pets|pets|1375|Terrariums|生態缸|生态缸|terrarium;vivarium
+pets.terrariums|pets|pets|1375|Terrariums|生態缸|生态缸|terrarium;vivarium;terrarium making
 arts.podcasting|arts|media_creation|1390|Podcasting|Podcast 製作|播客制作|podcast production;making podcasts
 arts.video_editing|arts|media_creation|1391|Video Editing|影片剪輯|视频剪辑|video editor;film editing
 arts.vlogging|arts|media_creation|1392|Vlogging|Vlog 製作|Vlog 制作|video blogging;vlogger
