@@ -366,6 +366,51 @@ class LocalizedDomainText {
         'es':'Deportes descubiertos','fr':'Sports découverts','pt':'Esportes descobertos',
       });
 
+  static String secretAchievementTitle(String locale) => _pick(locale, {
+        'en':'Secret trophy',
+        'zh-Hant':'隱藏成就',
+        'zh-Hans':'隐藏成就',
+        'ja':'シークレットトロフィー',
+        'ko':'숨겨진 트로피',
+        'es':'Trofeo secreto',
+        'fr':'Trophée secret',
+        'pt':'Troféu secreto',
+      });
+
+  static String secretAchievementHint(
+    String family,
+    String locale,
+  ) {
+    final values = switch (family) {
+      'connection' => {
+          'en':'Something about how your connections deepen.',
+          'zh-Hant':'同「關係點樣變熟」有關。繼續真人 Zync。',
+          'zh-Hans':'和“关系如何变熟”有关。继续真人 Zync。',
+        },
+      'discovery' => {
+          'en':'A particular mix of interests is hiding here.',
+          'zh-Hant':'某種特別嘅興趣組合藏喺呢度。',
+          'zh-Hans':'某种特别的兴趣组合藏在这里。',
+        },
+      'crew' => {
+          'en':'Meet the right mix of people and this crew will reveal itself.',
+          'zh-Hant':'遇到啱嘅一班同好，呢個成就自然會現身。',
+          'zh-Hans':'遇到合适的一群同好，这个成就自然会出现。',
+        },
+      'realWorld' => {
+          'en':'Do more things together in the real world.',
+          'zh-Hant':'真係同人一齊做多啲嘢，條件會自己揭曉。',
+          'zh-Hans':'真的和人一起多做些事，条件会自己揭晓。',
+        },
+      _ => {
+          'en':'Keep exploring Zync in real life.',
+          'zh-Hant':'繼續喺真實世界探索 Zync。',
+          'zh-Hans':'继续在现实世界探索 Zync。',
+        },
+    };
+    return _pick(locale, values);
+  }
+
   static String achievementProgress(int current, int target, String locale) => _pick(locale, {
         'en':'$current / $target','zh-Hant':'$current / $target','zh-Hans':'$current / $target','ja':'$current / $target','ko':'$current / $target',
         'es':'$current / $target','fr':'$current / $target','pt':'$current / $target',

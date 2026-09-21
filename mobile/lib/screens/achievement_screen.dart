@@ -286,6 +286,8 @@ class _AchievementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unlocked = item.unlocked;
+    final secretLocked =
+        AchievementService.isSecretAchievement(item.id) && !unlocked;
     return ZyncSurface(
       shadow: false,
       borderColor: unlocked ? const Color(0xFFFFD98A) : ZyncPalette.line,
@@ -311,15 +313,25 @@ class _AchievementCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  LocalizedDomainText.achievementTitle(item.id, locale),
+                  secretLocked
+                      ? LocalizedDomainText.secretAchievementTitle(locale)
+                      : LocalizedDomainText.achievementTitle(
+                          item.id,
+                          locale,
+                        ),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  LocalizedDomainText.achievementDescription(
-                    item.id,
-                    locale,
-                  ),
+                  secretLocked
+                      ? LocalizedDomainText.secretAchievementHint(
+                          item.family.name,
+                          locale,
+                        )
+                      : LocalizedDomainText.achievementDescription(
+                          item.id,
+                          locale,
+                        ),
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
@@ -328,28 +340,52 @@ class _AchievementCard extends StatelessWidget {
                         height: 1.35,
                       ),
                 ),
-                const SizedBox(height: 10),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(99),
-                  child: LinearProgressIndicator(
-                    value: item.fraction,
-                    minHeight: 7,
-                    backgroundColor: const Color(0xFFEDEAF3),
+                if (!secretLocked) ...[
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(99),
+                    child: LinearProgressIndicator(
+                      value: item.fraction,
+                      minHeight: 7,
+                      backgroundColor: const Color(0xFFEDEAF3),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  LocalizedDomainText.achievementProgress(
-                    item.current.clamp(0, item.target).toInt(),
-                    item.target,
-                    locale,
+                  const SizedBox(height: 5),
+                  Text(
+                    LocalizedDomainText.achievementProgress(
+                      item.current.clamp(0, item.target).toInt(),
+                      item.target,
+                      locale,
+                    ),
+                    style:
+                        Theme.of(context).textTheme.labelMedium?.copyWith(
+                              color: unlocked
+                                  ? const Color(0xFF8B5A00)
+                                  : ZyncPalette.inkSoft,
+                            ),
                   ),
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: unlocked
-                            ? const Color(0xFF8B5A00)
-                            : ZyncPalette.inkSoft,
+                ] else ...[
+                  const SizedBox(height: 9),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.help_outline_rounded,
+                        size: 16,
+                        color: ZyncPalette.inkSoft,
                       ),
-                ),
+                      const SizedBox(width: 5),
+                      Text(
+                        locale.toLowerCase().startsWith('zh')
+                            ? '條件隱藏 · 解鎖先揭曉'
+                            : 'Requirement hidden until unlocked',
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium
+                            ?.copyWith(color: ZyncPalette.inkSoft),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

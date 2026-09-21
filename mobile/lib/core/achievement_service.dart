@@ -56,6 +56,35 @@ class AchievementSnapshot {
 class AchievementService {
   const AchievementService._();
 
+  static const _secretAchievementIds = <String>{
+    'deep_circle_three',
+    'conversation_modes_six',
+    'racket_four',
+    'active_mix',
+    'culture_mix',
+    'maker_mix',
+    'taste_trip',
+    'mind_body_mix',
+    'basketball_starting_five',
+    'basketball_full_roster',
+    'football_starting_eleven',
+    'badminton_doubles_four',
+    'coffee_table_five',
+    'gaming_party_four',
+    'book_club_five',
+    'ai_roundtable_three',
+    'photo_walk_three',
+    'japan_crew_three',
+    'music_crew_five',
+    'group_activity_three',
+    'activity_categories_three',
+    'activity_categories_five',
+    'activity_modes_three',
+  };
+
+  static bool isSecretAchievement(String id) =>
+      _secretAchievementIds.contains(id);
+
   static const _racketInterests = <String>{
     'sports.badminton',
     'sports.tennis',
