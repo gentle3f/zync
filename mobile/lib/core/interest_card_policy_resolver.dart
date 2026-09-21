@@ -92,6 +92,16 @@ class InterestCardPolicyResolver {
     'travel.style_deep.universal_studios_travel',
   };
 
+  static const Set<String> _abstractOnlyIds = {
+    'technology.python',
+    'technology.javascript',
+    'technology.linux',
+    'learning.book_genre.booktok',
+    'learning.book_genre.booktube',
+    'learning.book_genre.bookstagram',
+    'travel.style_deep.unesco_heritage_travel',
+  };
+
   static InterestCardPolicyDecision resolve(InterestDefinition item) {
     if (_licensedIds.contains(item.id) || _licensedClusters.contains(item.cluster)) {
       return InterestCardPolicyDecision(
@@ -103,6 +113,17 @@ class InterestCardPolicyResolver {
         eventAffinityPriority: 'proxy_only',
         partnerType: _partnerTypeFor(item),
         proxyFamily: _proxyFamilyFor(item),
+      );
+    }
+
+    if (_abstractOnlyIds.contains(item.id)) {
+      return InterestCardPolicyDecision(
+        artPolicy: CardArtPolicy.abstractOnly,
+        baselineArtEligible: true,
+        ipSensitive: true,
+        partnerOpportunity: false,
+        reasonCode: _abstractReasonFor(item),
+        eventAffinityPriority: _eventPriorityFor(item),
       );
     }
 
@@ -133,6 +154,15 @@ class InterestCardPolicyResolver {
       reasonCode: 'generic_concept',
       eventAffinityPriority: _eventPriorityFor(item),
     );
+  }
+
+  static String _abstractReasonFor(InterestDefinition item) {
+    if (item.category == 'technology') return 'descriptive_technology_mark_abstract_only';
+    if (item.id == 'travel.style_deep.unesco_heritage_travel') {
+      return 'protected_heritage_mark_abstract_only';
+    }
+    if (item.category == 'learning') return 'platform_derived_community_term_abstract_only';
+    return 'mark_sensitive_abstract_only';
   }
 
   static String _reasonFor(InterestDefinition item) {
