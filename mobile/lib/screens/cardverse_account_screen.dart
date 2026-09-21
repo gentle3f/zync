@@ -194,70 +194,81 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                         padding:
                             const EdgeInsets.fromLTRB(20, 14, 20, 36),
                         children: [
-                          ZyncSurface(
-                            padding: EdgeInsets.zero,
-                            borderColor: const Color(0xFFE0D9FF),
-                            backgroundColor: const Color(0xFFF7F5FF),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(24),
-                              child: Stack(
-                                children: [
-                                  const Positioned.fill(
-                                    child: IgnorePointer(
-                                      child: ConnectionBackdrop(),
+                          ZyncHeroPanel(
+                            startColor: const Color(0xFFF2EEFF),
+                            endColor: const Color(0xFFFFF3EB),
+                            accentColor: ZyncPalette.plum,
+                            child: Column(
+                              children: [
+                                ZyncIconTile(
+                                  icon: _signedIn
+                                      ? Icons.cloud_done_rounded
+                                      : Icons.cloud_outlined,
+                                  size: 72,
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: ZyncPalette.plum,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  _signedIn
+                                      ? (_isZh
+                                          ? '你嘅 Zync World 已連接'
+                                          : 'Your Zync World is connected')
+                                      : (_isZh
+                                          ? '保留你一路發現嘅世界'
+                                          : 'Keep the world you discover'),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  _signedIn
+                                      ? (_isZh
+                                          ? '卡牌、卡包同獎勵會跟住你；換機之後都可以搵返。'
+                                          : 'Your cards, packs and rewards can follow you and come back on another device.')
+                                      : (_isZh
+                                          ? '當你開始收藏卡牌，連接帳戶先會保存呢部分雲端進度。People history、私人對話同社交連結仍然留喺你部機。'
+                                          : 'Connect an account to save your collection progress. People history, private conversations and social links stay on your device.'),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: ZyncPalette.inkSoft,
+                                        height: 1.4,
+                                      ),
+                                ),
+                                const SizedBox(height: 16),
+                                Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    ZyncStatusPill(
+                                      icon: _signedIn
+                                          ? Icons.check_circle_rounded
+                                          : Icons.lock_outline_rounded,
+                                      label: _signedIn
+                                          ? (_isZh
+                                              ? '雲端收藏已連接'
+                                              : 'Cloud collection connected')
+                                          : (_isZh
+                                              ? '私人資料 local-first'
+                                              : 'Private data stays local-first'),
+                                      foregroundColor: _signedIn
+                                          ? const Color(0xFF176B57)
+                                          : ZyncPalette.plum,
+                                      backgroundColor: _signedIn
+                                          ? const Color(0xFFDDF5EC)
+                                          : Colors.white.withValues(
+                                              alpha: 0.72,
+                                            ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(22),
-                                    child: Column(
-                                      children: [
-                                        ZyncIconTile(
-                                          icon: _signedIn
-                                              ? Icons.cloud_done_rounded
-                                              : Icons.cloud_outlined,
-                                          size: 72,
-                                          backgroundColor: Colors.white,
-                                          foregroundColor:
-                                              ZyncPalette.plum,
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          _signedIn
-                                              ? (_isZh
-                                                  ? '你嘅 Zync World 已連接'
-                                                  : 'Your Zync World is connected')
-                                              : (_isZh
-                                                  ? '保留你一路發現嘅世界'
-                                                  : 'Keep the world you discover'),
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall,
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          _signedIn
-                                              ? (_isZh
-                                                  ? '卡牌、未開卡包同雲端獎勵會跟住你，而唔係只留喺呢部電話。'
-                                                  : 'Cards, unopened packs and cloud rewards stay with you instead of only this phone.')
-                                              : (_isZh
-                                                  ? '當你開始收藏卡牌，我哋先需要一個帳戶。People history、私人對話同社交連結仍然保持 local-first。'
-                                                  : 'You only need an account when your collection begins. People history, private conversations and social links remain local-first.'),
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color:
-                                                    ZyncPalette.inkSoft,
-                                                height: 1.4,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 18),
@@ -299,6 +310,10 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                                     ? '使用 Google 繼續'
                                     : 'Continue with Google',
                               ),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: ZyncPalette.ink,
+                                foregroundColor: Colors.white,
+                              ),
                             )
                           else
                             OutlinedButton.icon(
@@ -316,8 +331,8 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                           const SizedBox(height: 18),
                           Text(
                             _isZh
-                                ? '登入只用作識別你嘅 Zync 雲端收藏。Google ID token 會直接交俾 Zync server 驗證，唔會顯示喺畫面。'
-                                : 'Sign-in is only used to identify your Zync cloud collection. The Google ID token is sent directly to the Zync server for verification and is never shown in the app.',
+                                ? 'Google 只用嚟確認係你本人。Zync 唔會因為登入而將你嘅私人 People history 或對話搬上雲端。'
+                                : 'Google is used only to confirm it is you. Signing in does not upload your private People history or conversations.',
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme
