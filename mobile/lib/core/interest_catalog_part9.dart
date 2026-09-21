@@ -11,7 +11,7 @@ final List<InterestDefinition> kInterestCatalogPart9 = List.unmodifiable([
 Alternative Rock|另類搖滾|另类摇滚
 Indie Rock|獨立搖滾|独立摇滚
 Indie Pop|獨立流行|独立流行
-Dream Pop|夢幻流行|梦幻流行
+Dream Pop|夢幻流行|dreamy pop|梦幻流行
 Shoegaze|瞪鞋搖滾|盯鞋摇滚
 Britpop|英倫搖滾|英伦摇滚
 Grunge|垃圾搖滾|垃圾摇滚
@@ -65,7 +65,6 @@ Bedroom Pop|臥室流行|卧室流行
 Chamber Pop|室內流行樂|室内流行乐
 Baroque Pop|巴洛克流行|巴洛克流行
 Art Pop|藝術流行|艺术流行
-Dreamy Pop|夢幻流行|梦幻流行
 Teen Pop|青少年流行|青少年流行
 Dance Pop|舞曲流行|舞曲流行
 Indie Folk|獨立民謠|独立民谣
@@ -95,7 +94,6 @@ Disco|的士高|迪斯科
 Boogie|布吉音樂|布吉音乐
 Quiet Storm|Quiet Storm 都市靈魂樂|Quiet Storm 都市灵魂乐
 New Jack Swing|新傑克搖擺|新杰克摇摆
-Hip-Hop|嘻哈|嘻哈
 Old-School Hip-Hop|老派嘻哈|老派嘻哈
 Golden Age Hip-Hop|黃金年代嘻哈|黄金年代嘻哈
 East Coast Hip-Hop|東岸嘻哈|东岸嘻哈
@@ -775,9 +773,8 @@ Cheer Chen|陳綺貞|陈绮贞
 Deserts Chang|張懸|张悬
 Crowd Lu|盧廣仲|卢广仲
 Wu Bai|伍佰
-Lo Ta-yu|羅大佑|罗大佑
+Lo Ta-yu|羅大佑|Tayu Lo|罗大佑
 Jonathan Lee|李宗盛
-Tayu Lo|羅大佑|罗大佑
 Teresa Teng|鄧麗君|邓丽君
 Fei Yu-ching|費玉清|费玉清
 Wakin Chau|周華健|周华健
