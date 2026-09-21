@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/group_relay_service.dart';
 import '../core/group_zync_protocol.dart';
@@ -85,9 +86,15 @@ class _ZyncNowParticipantScreenState
     if (coordinator == null || _polling || !mounted) return;
     _polling = true;
     try {
-      final previousRound = coordinator.latestState?.roundNumber;
+      final previous = coordinator.latestState;
+      final previousRound = previous?.roundNumber;
+      final previousPhase = previous?.phase;
       final state = await coordinator.poll();
       if (!mounted || state == null) return;
+      if (previousPhase != state.phase &&
+          state.phase == GroupRoomPhase.zyncNowResult) {
+        HapticFeedback.heavyImpact();
+      }
       if (previousRound != state.roundNumber) {
         _ratings.clear();
         _hardVetoes.clear();
@@ -362,17 +369,55 @@ class _ZyncNowParticipantScreenState
       }
     }
 
-    return _message(
-      state.resultOptionId == null
-          ? Icons.tune_rounded
-          : Icons.bolt_rounded,
-      state.title,
-      subtitle: chosen?.label ?? state.prompt,
-      action: FilledButton.icon(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const Icon(Icons.check_rounded),
-        label: Text(_isZh ? '完成' : 'Done'),
-      ),
+    final hasDecision = state.resultOptionId != null;
+    return ListView(
+      key: ValueKey('zync-now-participant-result-${state.roundNumber}'),
+      padding: const EdgeInsets.fromLTRB(24, 40, 24, 30),
+      children: [
+        ZyncHeroPanel(
+          startColor: hasDecision
+              ? const Color(0xFFEFFAF6)
+              : const Color(0xFFFFF3EB),
+          endColor: const Color(0xFFF2EEFF),
+          accentColor: hasDecision
+              ? const Color(0xFF176B57)
+              : ZyncPalette.orange,
+          child: Column(
+            children: [
+              ZyncIconTile(
+                icon: hasDecision
+                    ? Icons.bolt_rounded
+                    : Icons.tune_rounded,
+                size: 72,
+                backgroundColor: Colors.white,
+                foregroundColor: hasDecision
+                    ? const Color(0xFF176B57)
+                    : ZyncPalette.orangeDeep,
+              ),
+              const SizedBox(height: 18),
+              Text(
+                state.title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              if ((chosen?.label ?? state.prompt).isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  chosen?.label ?? state.prompt,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        FilledButton.icon(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.check_rounded),
+          label: Text(_isZh ? '完成' : 'Done'),
+        ),
+      ],
     );
   }
 

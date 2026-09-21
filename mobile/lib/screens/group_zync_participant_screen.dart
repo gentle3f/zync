@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/group_relay_service.dart';
 import '../core/group_zync_coordinator.dart';
@@ -102,6 +103,13 @@ class _GroupZyncParticipantScreenState
           _state == null ||
           next.roundNumber != _state!.roundNumber ||
           next.phase != _state!.phase;
+      final revealMoment = changedRound &&
+          (next.phase == GroupRoomPhase.reveal ||
+              next.phase == GroupRoomPhase.reaction ||
+              next.phase == GroupRoomPhase.zyncNowResult);
+      if (revealMoment) {
+        HapticFeedback.mediumImpact();
+      }
       setState(() {
         _state = next;
         _error = null;
@@ -478,30 +486,37 @@ class _GroupZyncParticipantScreenState
         key: ValueKey(
           'group-reveal-${state.roundNumber}-${state.phase.name}',
         ),
-        padding: const EdgeInsets.fromLTRB(20, 36, 20, 32),
+        padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
         children: [
-          const Center(
-            child: ZyncIconTile(
-              icon: Icons.auto_awesome_rounded,
-              size: 70,
-              backgroundColor: ZyncPalette.peach,
-              foregroundColor: ZyncPalette.orangeDeep,
+          ZyncHeroPanel(
+            startColor: const Color(0xFFFFF2E8),
+            endColor: const Color(0xFFF2EEFF),
+            accentColor: ZyncPalette.orange,
+            child: Column(
+              children: [
+                const ZyncIconTile(
+                  icon: Icons.auto_awesome_rounded,
+                  size: 68,
+                  backgroundColor: Colors.white,
+                  foregroundColor: ZyncPalette.orangeDeep,
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  state.title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  state.prompt,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            state.title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            state.prompt,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
           if (state.followUp.isNotEmpty) ...[
-            const SizedBox(height: 18),
+            const SizedBox(height: 16),
             ZyncSurface(
               backgroundColor: const Color(0xFFF1EEFF),
               borderColor: const Color(0xFFE0D9FF),
@@ -526,36 +541,43 @@ class _GroupZyncParticipantScreenState
 
     return ListView(
       key: ValueKey('zync-now-result-${state.roundNumber}'),
-      padding: const EdgeInsets.fromLTRB(20, 44, 20, 32),
+      padding: const EdgeInsets.fromLTRB(20, 34, 20, 32),
       children: [
-        const Center(
-          child: ZyncIconTile(
-            icon: Icons.bolt_rounded,
-            size: 76,
-            backgroundColor: ZyncPalette.mint,
-            foregroundColor: Color(0xFF176B57),
+        ZyncHeroPanel(
+          startColor: const Color(0xFFEFFAF6),
+          endColor: const Color(0xFFF2EEFF),
+          accentColor: const Color(0xFF176B57),
+          child: Column(
+            children: [
+              const ZyncIconTile(
+                icon: Icons.bolt_rounded,
+                size: 72,
+                backgroundColor: Colors.white,
+                foregroundColor: Color(0xFF176B57),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                state.title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                chosen?.label ?? state.prompt,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              if (chosen != null && state.prompt.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  state.prompt,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
+            ],
           ),
         ),
-        const SizedBox(height: 24),
-        Text(
-          state.title,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: 12),
-        Text(
-          chosen?.label ?? state.prompt,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        if (chosen != null && state.prompt.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          Text(
-            state.prompt,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        ],
       ],
     );
   }
