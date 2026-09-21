@@ -118,17 +118,16 @@ class _CardversePackOpeningLabScreenState
 
     if (!mounted) return;
     if (!reduceMotion) {
-      switch (next.finish) {
-        case CardFinishTier.legendary:
-        case CardFinishTier.secret:
-          HapticFeedback.heavyImpact();
-        case CardFinishTier.holo:
-        case CardFinishTier.prism:
-          HapticFeedback.mediumImpact();
-        case CardFinishTier.foil:
-          HapticFeedback.lightImpact();
-        case CardFinishTier.normal:
-          HapticFeedback.selectionClick();
+      if (next.finish == CardFinishTier.legendary ||
+          next.finish == CardFinishTier.secret) {
+        HapticFeedback.heavyImpact();
+      } else if (next.finish == CardFinishTier.holo ||
+          next.finish == CardFinishTier.prism) {
+        HapticFeedback.mediumImpact();
+      } else if (next.finish == CardFinishTier.foil) {
+        HapticFeedback.lightImpact();
+      } else {
+        HapticFeedback.selectionClick();
       }
     }
     setState(() {
