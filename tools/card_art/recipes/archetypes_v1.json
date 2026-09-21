@@ -1,0 +1,36 @@
+{
+  "version": "v1",
+  "description": "Composition archetypes group hobbies with similar scene-construction needs so prompts stay reusable instead of one-off per hobby.",
+  "archetypes": {
+    "solo_action": {
+      "label": "Solo Dynamic Action",
+      "composition": "A single human figure captured mid-action at the peak of physical effort, dynamic pose with implied motion (motion blur, dust, spray, or fabric movement), camera angle slightly low or side-on to emphasize power and momentum, environment visible but secondary to the figure.",
+      "emotion": "exertion, focus, exhilaration, personal challenge"
+    },
+    "craft_maker": {
+      "label": "Craft / Maker Focus",
+      "composition": "A person actively engaged with their hands or tools on the core object of the hobby, medium-close framing that shows both the skilled action and enough environment to read as a real studio/workspace/performance setting, warm practical lighting on the work surface.",
+      "emotion": "concentration, mastery, quiet flow state, creative satisfaction"
+    },
+    "social_gathering": {
+      "label": "Social Gathering",
+      "composition": "Multiple people (3-4) grouped closely around a shared activity/table, visible interaction (leaning in, laughing, reacting), warm ambient light source in frame (lamp, candles, string lights), activity's key objects clearly readable on the table/surface.",
+      "emotion": "connection, warmth, shared joy, belonging"
+    },
+    "journey_atmosphere": {
+      "label": "Journey & Atmosphere",
+      "composition": "A wide-ish environmental scene with a human figure small-to-medium in frame to convey scale and sense of place, strong depth (foreground/midground/background layering), distinctive recognizable location cues, dramatic natural or golden-hour lighting.",
+      "emotion": "wonder, freedom, discovery, escape"
+    },
+    "lifestyle_ritual": {
+      "label": "Lifestyle Ritual",
+      "composition": "A beautifully styled close-to-medium shot of the hobby's signature object presented with premium presentation quality, human hands or a seated figure present for lifestyle context (not just a product shot), soft warm ambient interior lighting.",
+      "emotion": "comfort, indulgence, mindful ritual, everyday luxury"
+    },
+    "atmosphere_immersive": {
+      "label": "Immersive Atmosphere",
+      "composition": "A scene built around a strong light source and a large-scale focal element that anchors the hobby, human figure(s) present but often silhouetted or backlit to preserve mood, heavy atmospheric depth (haze, glow, reflections).",
+      "emotion": "immersion, story, spectacle, anticipation"
+    }
+  }
+}

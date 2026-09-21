@@ -1,0 +1,16 @@
+{
+  "name": "zync-card-art-pilot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone fal.ai artwork generation pilot for Zync Hobby Cards. Not part of the main app runtime.",
+  "scripts": {
+    "generate": "node src/generate.js",
+    "contact-sheet": "node src/contact-sheet.js"
+  },
+  "dependencies": {
+    "@fal-ai/client": "^1.6.4",
+    "dotenv": "^16.4.5",
+    "sharp": "^0.33.5"
+  }
+}

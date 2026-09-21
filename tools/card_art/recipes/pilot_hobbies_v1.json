@@ -1,0 +1,128 @@
+{
+  "version": "v1",
+  "global_style": "A cinematic, richly illustrated digital painting in a single coherent collectible-card art universe: strong recognizable subject filling the frame, premium collectible-game concept-art quality, bright but sophisticated color grading (warm golds, teals, soft magentas), dramatic atmospheric lighting with visible depth and layered foreground/midground/background, painterly semi-realistic rendering (not flat vector, not photoreal photography), emotional storytelling in the pose and framing, aspirational lifestyle feeling of a brighter, more curious life.",
+  "global_restrictions": "Portrait orientation, approximately 2:3 aspect ratio. Artwork only, no text of any kind, no logos, no wordmarks, no handwritten notes, no slogans, no hobby name or title, no rarity badge or label, no card frame or border, no card number, no icons, no UI elements, no watermark, no signature. Do not copy the layout, logo, typography, or card-frame design from the reference image; use it only to match illustration style, lighting, and color grading.",
+  "reference_instruction": "Match the illustration technique, lighting mood, and color grading shown in the attached reference image, applied to a completely new scene for this hobby. Ignore all text, logos, frames, and UI in the reference image.",
+  "hobbies": [
+    {
+      "id": "badminton",
+      "title": "Badminton",
+      "archetype": "solo_action",
+      "subject": "A young athletic player mid-lunge on an indoor badminton court, racket swung overhead in a smash motion, shuttlecock frozen in flight just above the racket.",
+      "key_objects": "badminton racket, shuttlecock, court lines, net in background",
+      "recognition_test": "Dynamic player + racket + shuttle + court/action feeling, readable as badminton within 2 seconds."
+    },
+    {
+      "id": "bouldering",
+      "title": "Bouldering",
+      "archetype": "solo_action",
+      "subject": "A climber mid-reach on a tall natural boulder or climbing wall, chalk dust puffing off their hands, visible height and exposure below them, focused determined expression.",
+      "key_objects": "rock/boulder texture or climbing wall holds, chalk bag, climbing shoes",
+      "recognition_test": "Human climbing a recognisable boulder/wall with visible height and physical challenge."
+    },
+    {
+      "id": "sushi",
+      "title": "Sushi",
+      "archetype": "lifestyle_ritual",
+      "subject": "An elegant arrangement of premium nigiri and rolls on a dark ceramic plate in a warm Japanese dining setting, chopsticks resting beside the plate, soft glowing lanterns in the background.",
+      "key_objects": "nigiri, sushi rolls, chopsticks, ceramic plate, warm izakaya-style lighting",
+      "recognition_test": "Premium appetising sushi presentation with a Japanese dining atmosphere."
+    },
+    {
+      "id": "japan",
+      "title": "Japan",
+      "archetype": "journey_atmosphere",
+      "subject": "A traveler with a small backpack walking down a traditional Japanese street lined with wooden buildings, cherry blossoms overhead, a mountain visible in the distance.",
+      "key_objects": "traditional architecture, cherry blossoms, distant mountain, cobblestone street",
+      "recognition_test": "Recognisable Japanese travel scene conveying discovery and wonder, not just a flag or icon."
+    },
+    {
+      "id": "piano",
+      "title": "Piano",
+      "archetype": "craft_maker",
+      "subject": "A pianist seated at a glossy grand piano mid-performance in a softly lit room or small stage, hands captured in motion on the keys, warm spotlight and soft bokeh city lights beyond a window.",
+      "key_objects": "grand piano, piano keys, performer's hands, ambient stage or window light",
+      "recognition_test": "Piano clearly visible with a sense of performance, emotion, and atmosphere."
+    },
+    {
+      "id": "roadtrip",
+      "title": "Road Trip",
+      "archetype": "journey_atmosphere",
+      "subject": "A car driving along a winding coastal or mountain road at golden hour, seen from a dramatic elevated angle, open landscape stretching to the horizon.",
+      "key_objects": "car, winding open road, expansive landscape, golden-hour sky",
+      "recognition_test": "Car and winding open road with landscape and a sense of freedom and journey."
+    },
+    {
+      "id": "coffee",
+      "title": "Coffee",
+      "archetype": "lifestyle_ritual",
+      "subject": "A steaming cup of latte art coffee on a wooden café table, a person's hands wrapped around the cup, warm cozy café interior with soft window light blurred behind.",
+      "key_objects": "latte art, coffee cup, wooden table, cozy café background",
+      "recognition_test": "Coffee clearly visible with a warm café ritual and human lifestyle context."
+    },
+    {
+      "id": "ai",
+      "title": "AI",
+      "archetype": "craft_maker",
+      "subject": "A person at a multi-monitor desk setup late at night, actively working with glowing code, diagrams, and generative visuals on the screens, focused and energized expression, reflected screen light on their face.",
+      "key_objects": "multiple glowing monitors, code/diagrams on screen, keyboard, desk setup",
+      "recognition_test": "Human actively creating or working with intelligent technology; avoid a generic glowing-brain cliche."
+    },
+    {
+      "id": "photography",
+      "title": "Photography",
+      "archetype": "craft_maker",
+      "subject": "A photographer crouched on a scenic overlook, camera raised to their eye actively framing a shot of a dramatic landscape below, backpack and gear visible.",
+      "key_objects": "camera, viewfinder pose, scenic landscape being framed, backpack/gear",
+      "recognition_test": "Person actively framing and capturing a scene with a camera and clear perspective."
+    },
+    {
+      "id": "boardgames",
+      "title": "Board Games",
+      "archetype": "social_gathering",
+      "subject": "A group of friends gathered closely around a table at night, a richly detailed tabletop board game with pieces and dice mid-play between them, warm lamp light, animated expressions of engagement.",
+      "key_objects": "board game with pieces, dice, table, friends' hands reaching in",
+      "recognition_test": "Friends around a table with a recognisable tabletop game and social energy."
+    },
+    {
+      "id": "cinema",
+      "title": "Cinema",
+      "archetype": "atmosphere_immersive",
+      "subject": "The interior of a grand cinema theatre from behind the audience, a huge glowing screen mid-film casting dramatic light across rows of seated silhouettes, beams of projector light cutting through haze.",
+      "key_objects": "large glowing screen, theatre seats, projector light beams, silhouetted audience",
+      "recognition_test": "Cinematic theatre and film-watching experience with storytelling atmosphere, not merely a film icon."
+    },
+    {
+      "id": "camping",
+      "title": "Camping",
+      "archetype": "journey_atmosphere",
+      "subject": "A glowing tent and crackling campfire in a forest clearing beneath a star-filled night sky, a small silhouetted figure seated by the fire, mountains faintly visible in the moonlight.",
+      "key_objects": "tent, campfire, starry night sky, forest/mountain silhouette",
+      "recognition_test": "Tent, camp, fire, and nature conveying an escape and adventure feeling."
+    },
+    {
+      "id": "pottery",
+      "title": "Pottery",
+      "archetype": "craft_maker",
+      "subject": "A potter's hands shaping wet clay on a spinning pottery wheel in a sunlit ceramics studio, water and clay texture visible, shelves of finished pieces softly blurred in the background.",
+      "key_objects": "pottery wheel, wet clay, potter's hands, studio shelves",
+      "recognition_test": "Hands shaping clay on a wheel in a studio, conveying tactile creativity."
+    },
+    {
+      "id": "running",
+      "title": "Running",
+      "archetype": "solo_action",
+      "subject": "A runner captured mid-stride on a scenic trail or urban bridge at sunrise, dynamic motion in their posture, light mist or lens flare around them, cityscape or nature stretching behind.",
+      "key_objects": "runner mid-stride, trail or road, sunrise/mist lighting, distant skyline or nature",
+      "recognition_test": "Runner in motion within an environment, conveying release and momentum."
+    },
+    {
+      "id": "lego",
+      "title": "LEGO",
+      "archetype": "craft_maker",
+      "subject": "A close, elevated view of hands assembling an intricate, colorful brick-built model on a well-lit tabletop, an impressive partially-built structure with visible interlocking bricks and small figures around it.",
+      "key_objects": "colorful interlocking bricks, hands mid-build, detailed model structure",
+      "recognition_test": "Creative building and collectible construction feeling; avoid a random toy pile."
+    }
+  ]
+}
