@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "zync-v1-rebuild-20260917": true
+      "zync-v1-rebuild-20260917": false
     }
   },
   "rewrites": [
