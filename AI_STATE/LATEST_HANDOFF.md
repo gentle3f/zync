@@ -2,7 +2,7 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260921_UIUX_POLISH_SPRINT2.md`
+`AI_STATE/HANDOFF_20260921_PREVIEW_REWARD_GATE_BLOCKER.md`
 
 Canonical product completion audit:
 
@@ -12,8 +12,8 @@ Branch:
 
 `zync-v1-rebuild-20260917`
 
-Read the authoritative checkpoint in full. Do not restart repository discovery or old Thunkable archaeology.
+Read the authoritative checkpoint in full. Do not restart repository discovery.
 
 Current active task:
 
-> **Continue from UI/UX Polish Sprint 2. First confirm the latest Flutter/AAB CI result, then controlled Preview deploy and physical Android end-to-end reward-loop QA (Daily Check-in → Draw, Quest → Claim, Pack → reveal, collection restore). In parallel, use the expanded 50-card Visual Lab for human art-direction review before scaling card art. Keep Production and Play closed.**
+> **Staging migration 0007 is applied and latest Preview backend is deployed. The remaining blocker is Preview-only feature gates: PROOF_REDEEM, QUEST_CLAIM, PACK_OPEN and DRAW. Confirm/set those in Vercel Preview only, redeploy, probe, then perform the physical Android reward loop. Production and Play remain closed.**
