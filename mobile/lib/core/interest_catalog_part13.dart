@@ -22,7 +22,6 @@ food.restaurant_hopping|food|food/dining|1243|Restaurant Hopping|餐廳探店|�
 food.dessert_hunting|food|food/dining|1244|Dessert Hunting|甜品探店|甜品探店|dessert hopping;dessert crawl
 food.food_markets|food|food/dining|1245|Food Markets|美食市集|美食市集|food market;food halls
 food.home_brewing|food|food/drinks|1246|Home Brewing|家庭釀造|家庭酿造|homebrew;brewing
-food.juicing|food|food/drinks|1247|Juicing|鮮榨果汁|鲜榨果汁|fresh juice;juice making
 food.healthy_cooking|food|cooking|1248|Healthy Cooking|健康烹飪|健康烹饪|healthy recipes
 food.meal_planning|food|cooking|1249|Meal Planning|膳食規劃|膳食规划|menu planning;weekly meals
 technology.electronics|technology|hardware|1260|Electronics|電子製作|电子制作|electronics projects
