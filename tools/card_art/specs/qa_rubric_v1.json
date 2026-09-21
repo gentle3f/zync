@@ -1,0 +1,44 @@
+{
+  "version": "v1",
+  "scores": {
+    "recognition": {
+      "min": 1,
+      "max": 5,
+      "description": "Can a normal viewer roughly identify the hobby within about 2 seconds without the title?"
+    },
+    "collectible_desirability": {
+      "min": 1,
+      "max": 5,
+      "description": "Does the image feel desirable enough to collect, not merely correct?"
+    },
+    "composition": {
+      "min": 1,
+      "max": 5,
+      "description": "Is there a strong focal hierarchy and visually satisfying card-friendly composition?"
+    },
+    "zync_style_consistency": {
+      "min": 1,
+      "max": 5,
+      "description": "Does it belong to the same premium illustrated Zync universe?"
+    },
+    "technical_coherence": {
+      "min": 1,
+      "max": 5,
+      "description": "Are key objects, anatomy, gear, scene logic, and text absence coherent?"
+    }
+  },
+  "pass_rules": {
+    "long_tail": "no score below 3 and average >= 3.5",
+    "flagship": "no score below 3 and average >= 4.0"
+  },
+  "reroll_triggers": [
+    "hobby unclear",
+    "wrong-hobby reading",
+    "recognition anchor missing",
+    "obvious duplicated key object",
+    "accidental text or logo",
+    "weak or muddy composition",
+    "generic stock feel",
+    "logical scene contradiction"
+  ]
+}

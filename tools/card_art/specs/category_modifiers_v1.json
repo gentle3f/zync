@@ -1,0 +1,75 @@
+{
+  "version": "v1",
+  "categories": {
+    "sports": {
+      "palette_bias": "energetic contrast with clean subject separation",
+      "extra_rules": [
+        "sport equipment must be anatomically and logically correct",
+        "prefer decisive action over posed portrait"
+      ]
+    },
+    "adventure": {
+      "palette_bias": "natural light with strong depth",
+      "extra_rules": [
+        "preserve scale and physical challenge",
+        "avoid generic landscape dominance"
+      ]
+    },
+    "food": {
+      "palette_bias": "appetising warmth with premium highlight contrast",
+      "extra_rules": [
+        "food texture must be readable",
+        "avoid sterile menu photography"
+      ]
+    },
+    "travel": {
+      "palette_bias": "destination-specific light and atmosphere",
+      "extra_rules": [
+        "show journey or discovery, not just scenery"
+      ]
+    },
+    "music": {
+      "palette_bias": "emotional stage or intimate ambient lighting",
+      "extra_rules": [
+        "instrument or performance act must be obvious"
+      ]
+    },
+    "gaming": {
+      "palette_bias": "warm social atmosphere with readable game surface",
+      "extra_rules": [
+        "interaction between people matters as much as game objects"
+      ]
+    },
+    "arts_crafts": {
+      "palette_bias": "material-rich warm natural light",
+      "extra_rules": [
+        "show process, tools, and hands where useful"
+      ]
+    },
+    "technology": {
+      "palette_bias": "cool modern base with controlled warm human accents",
+      "extra_rules": [
+        "avoid generic cyberpunk",
+        "show purposeful interaction"
+      ]
+    },
+    "culture": {
+      "palette_bias": "cinematic venue lighting",
+      "extra_rules": [
+        "medium or experience must be unmistakable"
+      ]
+    },
+    "wellness": {
+      "palette_bias": "soft restrained tones with clean light",
+      "extra_rules": [
+        "specific activity anchor required"
+      ]
+    },
+    "nature": {
+      "palette_bias": "natural atmospheric depth",
+      "extra_rules": [
+        "keep hobby identity stronger than scenery"
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "version": "v1",
+  "default_model": "flux-2/edit",
+  "fallback_model": "gemini-25-flash-image/edit",
+  "premium_model": "nano-banana-pro/edit",
+  "aspect_ratio": "2:3",
+  "baseline_resolution": "832x1248",
+  "prompt": "Create a premium collectible illustration for a Zync hobby card. The artwork should feel cinematic, aspirational, emotionally warm, commercially polished, and immediately readable on a small mobile card. Use a strong focal subject, crisp subject separation, rich but controlled colour, atmospheric depth, premium lighting, and clear visual storytelling. Sell the emotional fantasy of doing the hobby rather than merely depicting an object. Aim for the feel of a miniature lifestyle poster or hero illustration inside one coherent Zync collectible universe. Keep edges and subject readability cleaner than soft editorial painting. No text, no logo, no typography, no card border, no rarity badge, no watermark, no UI.",
+  "global_negatives": [
+    "text",
+    "logos",
+    "watermarks",
+    "card borders",
+    "rarity labels",
+    "UI elements",
+    "floating unrelated objects",
+    "duplicated key objects unless explicitly requested",
+    "flat procedural vector art",
+    "bland corporate illustration",
+    "generic stock-photo composition",
+    "muddy focal hierarchy",
+    "overabstract imagery",
+    "generic concept wallpaper",
+    "confusing mixtures of different hobbies"
+  ]
+}

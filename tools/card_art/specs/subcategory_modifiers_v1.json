@@ -1,0 +1,84 @@
+{
+  "version": "v1",
+  "subcategories": {
+    "racket_sports": {
+      "recognition_anchors": [
+        "correct racket type",
+        "correct projectile",
+        "net or court geometry where relevant"
+      ],
+      "avoid": [
+        "wrong ball",
+        "wrong racket",
+        "duplicate projectile"
+      ]
+    },
+    "tabletop_games": {
+      "recognition_anchors": [
+        "central board or play surface",
+        "pieces or dice",
+        "multiple engaged players"
+      ],
+      "avoid": [
+        "generic dinner party",
+        "empty tabletop",
+        "visual clutter hiding the game"
+      ]
+    },
+    "climbing_sports": {
+      "recognition_anchors": [
+        "clear wall or rock interaction",
+        "climbing shoes or chalk where relevant",
+        "body tension"
+      ],
+      "avoid": [
+        "generic hiking",
+        "unclear climbing surface"
+      ]
+    },
+    "japanese_food": {
+      "recognition_anchors": [
+        "dish-specific food forms",
+        "Japanese dining context when helpful"
+      ],
+      "avoid": [
+        "random pan-Asian décor",
+        "dish ambiguity"
+      ]
+    },
+    "road_journey": {
+      "recognition_anchors": [
+        "vehicle",
+        "road",
+        "visible route direction",
+        "open destination context"
+      ],
+      "avoid": [
+        "traffic jam",
+        "map UI",
+        "abstract route lines"
+      ]
+    },
+    "musical_instruments": {
+      "recognition_anchors": [
+        "instrument clearly visible",
+        "hands actively playing",
+        "performance atmosphere"
+      ],
+      "avoid": [
+        "generic stage",
+        "instrument cropped beyond recognition"
+      ]
+    },
+    "digital_creation": {
+      "recognition_anchors": [
+        "human actively creating",
+        "subfield-specific output or interaction"
+      ],
+      "avoid": [
+        "generic coder-at-desk",
+        "abstract glowing interfaces without purpose"
+      ]
+    }
+  }
+}

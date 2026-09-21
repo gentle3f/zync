@@ -1,0 +1,242 @@
+{
+  "version": "v1",
+  "archetypes": {
+    "solo_action": {
+      "feeling": [
+        "energy",
+        "momentum",
+        "focus",
+        "self-mastery"
+      ],
+      "composition": "One clear hero person at the decisive action moment. Use a dynamic diagonal body pose and visible movement direction with breathing room around the action.",
+      "camera": "Low or medium-low dynamic angle, medium-wide action framing.",
+      "recognition": "Hero person plus unmistakable gear plus relevant environment.",
+      "avoid": [
+        "static standing pose",
+        "generic gym ambiguity",
+        "duplicate sports objects",
+        "wrong-sport equipment"
+      ]
+    },
+    "vertical_adventure": {
+      "feeling": [
+        "challenge",
+        "height",
+        "courage",
+        "accomplishment"
+      ],
+      "composition": "Strong vertical emphasis with the body visibly interacting with a wall, rock face, or height surface. Preserve a readable sense of elevation.",
+      "camera": "Side or slightly low angle with enough background for scale.",
+      "recognition": "Climbing surface, body tension, holds or rock texture, climbing gear as appropriate.",
+      "avoid": [
+        "generic hiking",
+        "no visible vertical challenge",
+        "illogical indoor/outdoor mixture"
+      ]
+    },
+    "group_play": {
+      "feeling": [
+        "connection",
+        "laughter",
+        "shared strategy",
+        "belonging"
+      ],
+      "composition": "Three to five people gathered around one central play surface, visibly reacting to the shared activity.",
+      "camera": "Slightly elevated intimate medium shot.",
+      "recognition": "People plus readable tabletop layout plus clear game objects.",
+      "avoid": [
+        "empty table",
+        "social gathering without visible game",
+        "unreadable clutter"
+      ]
+    },
+    "food_hero": {
+      "feeling": [
+        "craving",
+        "delight",
+        "culture",
+        "sensory pleasure"
+      ],
+      "composition": "The food is the clear hero, with enough human or cultural context to avoid a sterile product shot.",
+      "camera": "Close or medium-close slightly angled serving viewpoint.",
+      "recognition": "Highly recognisable dish with supporting context.",
+      "avoid": [
+        "generic restaurant blur",
+        "multiple competing dishes",
+        "sterile catalogue food shot"
+      ]
+    },
+    "drink_ritual": {
+      "feeling": [
+        "ritual",
+        "warmth",
+        "pause",
+        "conversation"
+      ],
+      "composition": "One clearly readable drink moment anchored by human hands or nearby lifestyle context.",
+      "camera": "Intimate medium-close view.",
+      "recognition": "Distinct beverage plus ritual setting.",
+      "avoid": [
+        "isolated mug on blank table",
+        "generic café stock image",
+        "no human context"
+      ]
+    },
+    "travel_vista": {
+      "feeling": [
+        "discovery",
+        "freedom",
+        "wonder",
+        "possibility"
+      ],
+      "composition": "A journey or destination scene with strong depth and one clear travel anchor such as a vehicle, traveler, road, or unmistakable architecture.",
+      "camera": "Wide enough for place identity but not so distant that the hobby disappears.",
+      "recognition": "Destination or route cues plus intentional travel action.",
+      "avoid": [
+        "generic wallpaper landscape",
+        "no journey subject",
+        "beauty without hobby identity"
+      ]
+    },
+    "urban_discovery": {
+      "feeling": [
+        "curiosity",
+        "serendipity",
+        "trend",
+        "discovery"
+      ],
+      "composition": "Human exploration inside a readable urban context, with one deliberate activity anchor.",
+      "camera": "Observational medium-wide.",
+      "recognition": "City cues plus specific activity.",
+      "avoid": [
+        "generic skyline",
+        "unidentifiable walking scene"
+      ]
+    },
+    "performance": {
+      "feeling": [
+        "expression",
+        "emotion",
+        "intimacy",
+        "artistry"
+      ],
+      "composition": "Performer and instrument or performance act are both unmistakable, with atmosphere supporting rather than obscuring them.",
+      "camera": "Medium hero framing.",
+      "recognition": "Performer plus clear instrument or act.",
+      "avoid": [
+        "instrument barely visible",
+        "generic stage lights with no clear act"
+      ]
+    },
+    "creative_studio": {
+      "feeling": [
+        "making",
+        "craft",
+        "flow",
+        "tactile satisfaction"
+      ],
+      "composition": "Hands-on making process is visible, with materials and tools clearly reading as the hobby.",
+      "camera": "Medium-close tactile framing.",
+      "recognition": "Process plus tool plus material.",
+      "avoid": [
+        "finished object only",
+        "no visible making process",
+        "workbench clutter overwhelming the action"
+      ]
+    },
+    "lens_perspective": {
+      "feeling": [
+        "observation",
+        "perspective",
+        "capture",
+        "seeing differently"
+      ],
+      "composition": "Show the act of observing or framing, not merely a scenic view.",
+      "camera": "Over-shoulder or medium profile.",
+      "recognition": "Camera, binoculars, lens, or visual framing action must be visible.",
+      "avoid": [
+        "travel wallpaper",
+        "floating camera icon",
+        "composition too similar to travel_vista"
+      ]
+    },
+    "tech_workspace": {
+      "feeling": [
+        "curiosity",
+        "creation",
+        "experimentation",
+        "future"
+      ],
+      "composition": "Human actively interacting with technology in a way specific to the subfield. Screens support the story rather than becoming abstract screen soup.",
+      "camera": "Medium layered workstation view.",
+      "recognition": "Subfield-specific interaction, tools, and output.",
+      "avoid": [
+        "generic coder at desk",
+        "glowing brain cliché",
+        "anonymous cyberpunk screen soup"
+      ]
+    },
+    "collection_object_hero": {
+      "feeling": [
+        "fascination",
+        "identity",
+        "pride",
+        "curation"
+      ],
+      "composition": "A hero object or build dominates the scene, supported by hands or collector context when useful.",
+      "camera": "Medium-close object hero with human warmth.",
+      "recognition": "Clear object language plus sense of ownership or creation.",
+      "avoid": [
+        "random pile",
+        "catalogue-only product shot",
+        "overclutter"
+      ]
+    },
+    "calm_wellness": {
+      "feeling": [
+        "calm",
+        "reset",
+        "balance",
+        "self-care"
+      ],
+      "composition": "Spacious, soothing composition with one specific wellness action.",
+      "camera": "Soft medium shot.",
+      "recognition": "One clearly readable calming action.",
+      "avoid": [
+        "generic wellness stock",
+        "no specific activity anchor"
+      ]
+    },
+    "nature_immersion": {
+      "feeling": [
+        "escape",
+        "peace",
+        "outdoors",
+        "adventure"
+      ],
+      "composition": "Nature provides atmosphere but the activity anchor must remain obvious.",
+      "camera": "Medium-wide or wide with a clear human or gear anchor.",
+      "recognition": "Tent, campfire, trail, fishing setup, stargazing gear, or other specific activity anchor.",
+      "avoid": [
+        "generic nature wallpaper",
+        "no activity identity"
+      ]
+    },
+    "story_culture": {
+      "feeling": [
+        "imagination",
+        "immersion",
+        "meaning",
+        "shared experience"
+      ],
+      "composition": "The cultural experience itself must be readable through venue, medium, audience, or action.",
+      "camera": "Medium-wide, sometimes symmetrical.",
+      "recognition": "Make the experience readable, not just the setting.",
+      "avoid": [
+        "vague artsy image",
+        "concert/cinema confusion",
+        "generic scenic image"
+      ]
+    }
+  }
+}
