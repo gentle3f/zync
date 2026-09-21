@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDEMPOTENCY_KEY = /^[A-Za-z0-9._:-]{16,128}$/;
+const LEGACY_DRAW_IDEMPOTENCY_KEY = /^draw:[0-9]+:[0-9]+$/;
 const FINISH_IDS = new Set(['normal', 'foil', 'holo', 'prism', 'legendary', 'secret']);
 
 function domainError(code) {
@@ -52,7 +53,8 @@ export function normalizeDrawTokenRequest(raw = {}) {
   }
   const idempotencyKey = cleanText(raw.idempotencyKey, 128);
   const clientRevealVersion = Number(raw.clientRevealVersion);
-  if (!IDEMPOTENCY_KEY.test(idempotencyKey) ||
+  if (!(IDEMPOTENCY_KEY.test(idempotencyKey) ||
+        LEGACY_DRAW_IDEMPOTENCY_KEY.test(idempotencyKey)) ||
       !Number.isInteger(clientRevealVersion) ||
       clientRevealVersion < 1 ||
       clientRevealVersion > 100) {

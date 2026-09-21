@@ -232,7 +232,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         sessionToken: session.token,
         request: CardverseDrawTokenRequest(
           idempotencyKey:
-              'draw:${inventory.ledgerCursor}:${inventory.availableDrawTokens}',
+              'draw:${inventory.accountId}:${inventory.ledgerCursor}:${inventory.availableDrawTokens}',
         ),
       );
       if (!mounted) return;

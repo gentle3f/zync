@@ -219,6 +219,17 @@ assert.deepEqual(
     clientRevealVersion: 1,
   },
 );
+assert.deepEqual(
+  drawStore.normalizeDrawTokenRequest({
+    idempotencyKey: 'draw:12:1',
+    clientRevealVersion: 1,
+  }),
+  {
+    idempotencyKey: 'draw:12:1',
+    clientRevealVersion: 1,
+  },
+);
+
 assert.throws(
   () => drawStore.normalizeDrawTokenRequest({
     idempotencyKey: 'draw-token-redeem-0001',
