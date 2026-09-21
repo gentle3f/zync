@@ -93,6 +93,13 @@ const weeklyRows = [
     interest_categories: ['music'],
     weekly_cycle_start: '2026-09-13T16:00:00.000Z',
   },
+  {
+    event_type: 'one_to_one_zync',
+    repeat_person: false,
+    participant_count: 2,
+    interest_categories: [],
+    weekly_cycle_start: '2026-09-13T16:00:00.000Z',
+  },
 ];
 
 assert.throws(
