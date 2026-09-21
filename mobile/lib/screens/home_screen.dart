@@ -395,7 +395,6 @@ class _PrimaryAction extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final bool compact;
-  final bool featured;
 
   @override
   Widget build(BuildContext context) => FilledButton.icon(
@@ -460,6 +459,7 @@ class _MenuTile extends StatelessWidget {
   final String? subtitle;
   final VoidCallback onTap;
   final bool compact;
+  final bool featured;
 
   @override
   Widget build(BuildContext context) => Material(
