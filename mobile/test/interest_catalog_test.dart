@@ -5,8 +5,8 @@ import 'package:zync/core/models.dart';
 
 void main() {
   test('bundled catalog reaches deep V1 coverage, stays unique, and preserves legacy IDs', () {
-    expect(InterestCatalog.count, greaterThanOrEqualTo(2500));
-    expect(InterestCatalog.count, lessThanOrEqualTo(3700));
+    expect(InterestCatalog.count, greaterThanOrEqualTo(3700));
+    expect(InterestCatalog.count, lessThanOrEqualTo(4200));
     expect(InterestCatalog.seed.map((item) => item.id).toSet(), hasLength(InterestCatalog.count));
 
     for (final legacyId in const [
@@ -105,6 +105,32 @@ void main() {
     expect(InterestCatalog.search('BYD', 'en').first.id, 'transport.car_brand.byd');
   });
 
+  test('everyday breadth expansion covers offline, maker, family and creator interests', () {
+    final expected = <String, String>{
+      'powerlifting': 'wellness.powerlifting',
+      'salsa dancing': 'arts.salsa_dancing',
+      'forest bathing': 'outdoors.forest_bathing',
+      'bookbinding': 'crafts.bookbinding',
+      'language exchange': 'learning.language_exchange',
+      'homelab': 'technology.homelab',
+      'comic collecting': 'collecting.comic_collecting',
+      'parenting': 'lifestyle.parenting',
+      'acting': 'arts.acting',
+      'jigsaw puzzles': 'learning.jigsaw_puzzles',
+      'motion graphics': 'arts.motion_graphics',
+      'side hustles': 'business.side_hustles',
+      'photo walks': 'arts.photo_walks',
+    };
+
+    for (final entry in expected.entries) {
+      expect(
+        InterestCatalog.search(entry.key, 'en').first.id,
+        entry.value,
+        reason: 'unexpected canonical for ${entry.key}',
+      );
+    }
+  });
+
   test('Hong Kong Chinese locale resolves Traditional Chinese labels', () {
     expect(InterestCatalog.byId('sports.tennis')!.labelFor('zh-HK'), '網球');
     expect(InterestCatalog.byId('food.coffee')!.labelFor('zh-Hant'), '咖啡');
@@ -132,6 +158,12 @@ void main() {
       limit: 200,
     );
     expect(classics.map((item) => item.id), contains('entertainment.classic_film.casablanca'));
+
+    final artsL2 = InterestCatalog.clustersForCategory('arts');
+    expect(artsL2, containsAll(<String>['dance', 'performance', 'media_creation']));
+
+    final lifestyleL2 = InterestCatalog.clustersForCategory('lifestyle');
+    expect(lifestyleL2, containsAll(<String>['home', 'social', 'shopping', 'family']));
 
     final musicL2 = InterestCatalog.clustersForCategory('music');
     expect(musicL2, containsAll(<String>['genres_styles', 'artists', 'making']));
