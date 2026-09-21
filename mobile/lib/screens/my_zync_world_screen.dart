@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/achievement_service.dart';
 import '../core/card_interest_bridge.dart';
@@ -10,6 +11,7 @@ import '../core/cardverse_session_store.dart';
 import '../core/interest_catalog.dart';
 import '../core/local_store.dart';
 import '../core/models.dart';
+import '../core/quest_engine.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_card_preview.dart';
 import 'achievement_screen.dart';
@@ -39,6 +41,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   CardverseSessionCredential? _session;
   CardverseInventorySnapshot? _inventory;
   AchievementSnapshot? _achievement;
+  ZyncQuestBoardSnapshot? _quests;
   bool _loading = true;
   String _error = '';
   String? _openingPackId;
@@ -78,6 +81,12 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       history,
       events: events,
     );
+    final now = DateTime.now();
+    final quests = ZyncQuestEngine.evaluate(
+      events: events,
+      now: now,
+      timezoneOffset: now.timeZoneOffset,
+    );
     final session = await _sessions.load();
     if (session == null) {
       if (!mounted) return;
@@ -85,6 +94,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _session = null;
         _inventory = null;
         _achievement = achievement;
+        _quests = quests;
         _loading = false;
       });
       return;
@@ -97,6 +107,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _session = session;
         _inventory = inventory;
         _achievement = achievement;
+        _quests = quests;
         _loading = false;
       });
     } on CardverseCloudException catch (error) {
@@ -116,6 +127,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _session = session;
         _inventory = null;
         _achievement = achievement;
+        _quests = quests;
         _loading = false;
         _error = _isZh
             ? '暫時連接唔到你嘅 Cardverse 收藏。'
@@ -171,6 +183,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         timezoneOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes,
       );
       if (!mounted) return;
+      HapticFeedback.mediumImpact();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -223,6 +236,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         ),
       );
       if (!mounted) return;
+      HapticFeedback.heavyImpact();
       await _showSingleDraw(receipt);
       await _load();
     } on CardverseCloudException catch (error) {
@@ -500,9 +514,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       key: const ValueKey('my-zync-world-live'),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
       children: [
-        _hero(),
-        const SizedBox(height: 18),
-        _stats(inventory),
+        _hero(inventory: inventory),
         const SizedBox(height: 16),
         _dailyDrawPanel(inventory),
         const SizedBox(height: 16),
@@ -534,113 +546,143 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     );
   }
 
-  Widget _hero() => ZyncSurface(
-        padding: EdgeInsets.zero,
-        borderColor: ZyncPalette.peach,
-        backgroundColor: const Color(0xFFFFF3EB),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
+  Widget _hero({CardverseInventorySnapshot? inventory}) {
+    final achievement = _achievement;
+    final unlocked = achievement?.unlockedCount ?? 0;
+    final packs = inventory?.unopenedPacks.length ?? 0;
+    final tokens = inventory?.availableDrawTokens ?? 0;
+
+    return ZyncHeroPanel(
+      startColor: const Color(0xFFF2EEFF),
+      endColor: const Color(0xFFFFF1E8),
+      accentColor: ZyncPalette.plum,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Positioned.fill(
-                child: IgnorePointer(child: ConnectionBackdrop()),
+              const ZyncIconTile(
+                icon: Icons.public_rounded,
+                size: 54,
+                backgroundColor: Colors.white,
+                foregroundColor: ZyncPalette.plum,
               ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
+              const SizedBox(width: 13),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const ZyncIconTile(
-                      icon: Icons.public_rounded,
-                      size: 56,
-                      backgroundColor: Colors.white,
-                      foregroundColor: ZyncPalette.plum,
+                    Text(
+                      'My Zync World',
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'My Zync World',
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            _isZh
-                                ? '你喺真實世界 Zync、探索同一齊做嘅事，會慢慢變成屬於你嘅興趣世界。'
-                                : 'Real-world Zyncs, discoveries and things you do together grow into a world that is yours.',
-                          ),
-                        ],
-                      ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _isZh
+                          ? '你每一次真人 Zync、探索同一齊做嘅事，都會令呢個世界再大一點。'
+                          : 'Every real Zync, discovery and thing you do together makes this world a little bigger.',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
-      );
-
-  Widget _progressHub() {
-    final achievement = _achievement;
-    final trophyValue = achievement == null
-        ? '—'
-        : '${achievement.unlockedCount} / ${achievement.progress.length}';
-
-    return ZyncSurface(
-      shadow: false,
-      borderColor: const Color(0xFFE0D9FF),
-      backgroundColor: const Color(0xFFF8F7FF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _isZh ? '你嘅進度世界' : 'Your progress world',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 5),
-          Text(
-            _isZh
-                ? '成就、探索任務同 Cardverse 唔應該係三個孤島；佢哋都係你真實世界 Zync 累積出嚟嘅進度。'
-                : 'Trophies, Curiosity quests and Cardverse are parts of the same real-world Zync progression.',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: ZyncPalette.inkSoft),
-          ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
-                child: _progressTile(
-                  icon: Icons.emoji_events_outlined,
-                  value: trophyValue,
-                  label: _isZh ? '已解鎖成就' : 'trophies unlocked',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const AchievementScreen(),
-                    ),
-                  ),
+                child: ZyncMetricPill(
+                  icon: Icons.emoji_events_rounded,
+                  value: '$unlocked',
+                  label: _isZh ? '成就' : 'trophies',
+                  accentColor: const Color(0xFF8B5A00),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
-                child: _progressTile(
-                  icon: Icons.explore_outlined,
-                  value: _isZh ? '任務' : 'Quests',
-                  label: _isZh ? '探索任務板' : 'Curiosity Board',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const QuestBoardScreen(),
-                    ),
-                  ),
+                child: ZyncMetricPill(
+                  icon: Icons.inventory_2_outlined,
+                  value: '$packs',
+                  label: _isZh ? '卡包' : 'packs',
+                  accentColor: ZyncPalette.orangeDeep,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ZyncMetricPill(
+                  icon: Icons.auto_awesome_rounded,
+                  value: '$tokens',
+                  label: 'Draws',
+                  accentColor: ZyncPalette.plum,
                 ),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _progressHub() {
+    final achievement = _achievement;
+    final quests = _quests;
+    final trophyValue = achievement == null
+        ? '—'
+        : '${achievement.unlockedCount} / ${achievement.progress.length}';
+    final daily = quests?.progress
+            .where(
+              (item) =>
+                  item.definition.cadence == ZyncQuestCadence.daily,
+            )
+            .toList(growable: false) ??
+        const <ZyncQuestProgress>[];
+    final dailyDone = daily.where((item) => item.complete).length;
+    final dailyValue =
+        daily.isEmpty ? '—' : '$dailyDone / ${daily.length}';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ZyncSectionHeading(
+          icon: Icons.timeline_rounded,
+          title: _isZh ? '今日進度' : 'Today in your world',
+          subtitle: _isZh
+              ? '做真實世界嘅事，收藏同成就自然會跟住成長。'
+              : 'Do things in the real world and your collection grows with you.',
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _progressTile(
+                icon: Icons.emoji_events_outlined,
+                value: trophyValue,
+                label: _isZh ? '已解鎖成就' : 'trophies unlocked',
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AchievementScreen(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _progressTile(
+                icon: Icons.task_alt_rounded,
+                value: dailyValue,
+                label: _isZh ? '今日任務' : 'today tasks',
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const QuestBoardScreen(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -687,10 +729,12 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     final claimed = _dailyClaimed(inventory);
     final tokens = inventory.availableDrawTokens;
 
-    return ZyncSurface(
-      shadow: false,
-      borderColor: const Color(0xFFFFD98A),
-      backgroundColor: const Color(0xFFFFF8E8),
+    return ZyncHeroPanel(
+      padding: const EdgeInsets.all(18),
+      startColor: const Color(0xFFFFF5D9),
+      endColor: const Color(0xFFFFE8D8),
+      accentColor: const Color(0xFFD88B00),
+      radius: 24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -698,9 +742,9 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
             children: [
               const ZyncIconTile(
                 icon: Icons.wb_sunny_rounded,
-                size: 46,
-                backgroundColor: Color(0xFFFFE9B7),
-                foregroundColor: Color(0xFF8B5A00),
+                size: 48,
+                backgroundColor: Colors.white,
+                foregroundColor: Color(0xFF9A6500),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -708,25 +752,53 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _isZh ? '每日卡牌抽取' : 'Daily Card Draw',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      _isZh ? '今日一抽' : 'Your Daily Draw',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    const SizedBox(height: 3),
-                    Text(
-                      claimed
-                          ? (_isZh
-                              ? '今日登入獎勵已領取。'
-                              : 'Today\'s login reward is claimed.')
-                          : (_isZh
-                              ? '每日登入可以拎 1 個 Draw Token。'
-                              : 'Check in each day for 1 Draw Token.'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: ZyncPalette.inkSoft),
+                    const SizedBox(height: 2),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 220),
+                      child: Text(
+                        claimed
+                            ? (_isZh
+                                ? '今日 check-in 已完成；你有 $tokens 次抽卡可以用。'
+                                : 'Check-in complete. You have $tokens draw${tokens == 1 ? '' : 's'} ready.')
+                            : (_isZh
+                                ? '今日返嚟，就送你 1 次卡牌抽取。'
+                                : 'Come back today and claim 1 card draw.'),
+                        key: ValueKey('${claimed}_$tokens'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: ZyncPalette.inkSoft),
+                      ),
                     ),
                   ],
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              ZyncStatusPill(
+                icon: claimed
+                    ? Icons.check_circle_rounded
+                    : Icons.card_giftcard_rounded,
+                label: claimed
+                    ? (_isZh ? '今日已領' : 'Claimed today')
+                    : (_isZh ? '今日 +1 Draw' : '+1 draw today'),
+                foregroundColor: claimed
+                    ? const Color(0xFF176B57)
+                    : const Color(0xFF8B5A00),
+                backgroundColor: claimed
+                    ? const Color(0xFFDDF5EC)
+                    : Colors.white.withValues(alpha: 0.72),
+              ),
+              const Spacer(),
+              Text(
+                _isZh ? '現有 $tokens' : '$tokens available',
+                style: Theme.of(context).textTheme.labelLarge,
               ),
             ],
           ),
@@ -747,29 +819,16 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                     : const Icon(Icons.card_giftcard_rounded),
                 label: Text(
                   _isZh
-                      ? '領取今日 1 次抽卡'
-                      : 'Claim today\'s card draw',
+                      ? '領取今日抽卡'
+                      : 'Claim today\'s draw',
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: ZyncPalette.ink,
+                  foregroundColor: Colors.white,
                 ),
               ),
-            )
-          else
-            Row(
-              children: [
-                const Icon(
-                  Icons.check_circle_rounded,
-                  color: Color(0xFF176B57),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    _isZh
-                        ? '今日 Check-in 完成'
-                        : 'Today\'s check-in is complete',
-                  ),
-                ),
-              ],
             ),
-          const SizedBox(height: 12),
+          if (!claimed) const SizedBox(height: 9),
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
@@ -786,11 +845,11 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
               label: Text(
                 tokens > 0
                     ? (_isZh
-                        ? '使用 1 Token 抽 1 張卡 · 剩 $tokens'
-                        : 'Use 1 Token to draw 1 card · $tokens left')
+                        ? '抽 1 張卡 · 使用 1 Draw'
+                        : 'Draw 1 card · use 1 draw')
                     : (_isZh
-                        ? '暫時冇 Draw Token'
-                        : 'No Draw Tokens yet'),
+                        ? '完成今日 check-in 或任務先有抽卡'
+                        : 'Check in or complete tasks to earn a draw'),
               ),
             ),
           ),
@@ -799,59 +858,10 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     );
   }
 
-  Widget _stats(CardverseInventorySnapshot inventory) => Row(
-        children: [
-          Expanded(
-            child: _statCard(
-              '${inventory.discoveredVariants}',
-              _isZh ? '卡牌款式' : 'card variants',
-              Icons.style_outlined,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: _statCard(
-              '${inventory.unopenedPacks.length}',
-              _isZh ? '未開卡包' : 'unopened packs',
-              Icons.inventory_2_outlined,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: _statCard(
-              '${inventory.availableDrawTokens}',
-              'Draw Tokens',
-              Icons.brightness_5_outlined,
-            ),
-          ),
-        ],
-      );
-
-  Widget _statCard(String value, String label, IconData icon) => ZyncSurface(
-        shadow: false,
-        padding: const EdgeInsets.all(13),
-        child: Column(
-          children: [
-            Icon(icon, size: 21, color: ZyncPalette.plum),
-            const SizedBox(height: 7),
-            Text(value, style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ],
-        ),
-      );
-
-  Widget _sectionTitle(String title, IconData icon) => Row(
-        children: [
-          Icon(icon, color: ZyncPalette.plum),
-          const SizedBox(width: 8),
-          Text(title, style: Theme.of(context).textTheme.titleLarge),
-        ],
+  Widget _sectionTitle(String title, IconData icon) =>
+      ZyncSectionHeading(
+        icon: icon,
+        title: title,
       );
 
   Widget _emptyPacks() => ZyncSurface(
@@ -867,8 +877,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
             Expanded(
               child: Text(
                 _isZh
-                    ? '完成探索任務可以得到由 server 發出嘅卡包。'
-                    : 'Complete Curiosity quests to earn packs issued by the server.',
+                    ? '完成探索任務可以拎到新卡包。'
+                    : 'Complete Curiosity quests to earn new card packs.',
               ),
             ),
             TextButton(
@@ -917,8 +927,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                 ),
                 Text(
                   _isZh
-                      ? '5 張 · 結果由 server 決定'
-                      : '5 cards · server-authoritative draw',
+                      ? '5 張 · 開包結果已安全鎖定'
+                      : '5 cards · result safely locked',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
