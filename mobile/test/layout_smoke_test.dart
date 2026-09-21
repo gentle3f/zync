@@ -42,7 +42,8 @@ void main() {
     expect(find.text('Scan someone'), findsOneWidget);
     expect(find.text('Group Zync'), findsOneWidget);
     expect(find.text('Zync Now'), findsOneWidget);
-    expect(find.text('Curiosity Board'), findsOneWidget);
+    expect(find.text('My Zync World'), findsOneWidget);
+    expect(find.text('Curiosity Board'), findsNothing);
     expect(find.byType(ListView), findsNothing);
     expect(tester.takeException(), isNull);
   });
