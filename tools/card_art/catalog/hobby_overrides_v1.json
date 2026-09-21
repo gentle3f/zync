@@ -1,0 +1,5 @@
+{
+  "version": "v1",
+  "description": "Per-hobby correction layer applied on top of a hobby_recipes_v1.jsonl record during compilation, per ZYNC_CARD_ART_PROMPT_SYSTEM_V1.md's 'optional override' step. Per the Long-Tail Strategy, long-tail and hard_case hobbies only get an entry here after a real QA failure (reroll trigger) is observed under this system — they are not pre-written speculatively. Currently empty: none of the 15 pilot hobbies have failed QA under the V1 compiled prompts yet (no generation has run against them). Populate an entry per hobby id as failures are found during prompt review or QA reroll, using the same field shapes as a hobby_recipes_v1.jsonl record (any subset of subject/environment/emotion/recognition_anchors/must_include/avoid); compiled fields are appended to, not replacing, the base recipe.",
+  "overrides": {}
+}

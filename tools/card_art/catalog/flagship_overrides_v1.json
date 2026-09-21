@@ -1,0 +1,51 @@
+{
+  "version": "v1",
+  "description": "Manual review layer for the 5 benchmark/flagship hobbies (ZYNC_CARD_ART_PROMPT_SYSTEM_V1.md Benchmark Set: Badminton, Board Games, Bouldering, Cinema, Sushi). Unlike hobby_overrides_v1.json, these are populated proactively from actual pilot_v1 QA results, since flagship hobbies get manual review by design. 'override_prompt_additions' are appended to the compiled prompt; 'override_avoid' are appended to negative_constraints.",
+  "flagship": {
+    "badminton": {
+      "override_prompt_additions": [],
+      "override_avoid": [
+        "any readable real-world sportswear brand name or logo (e.g. do not render text on clothing or shoes)"
+      ],
+      "reason": "flux-2/edit comparison test (2026-09) hallucinated a real sportswear brand name on the shorts. Trademark/brand risk, not just a style issue.",
+      "source": "pilot_v1 + flux-2/edit model comparison QA",
+      "override_needed": true
+    },
+    "boardgames": {
+      "override_prompt_additions": [],
+      "override_avoid": [],
+      "reason": "Scored 5/5 across all four pilot QA categories. Treat as the reference execution for the group_play archetype; no correction required.",
+      "source": "pilot_v1 report (PILOT_V1_REPORT.md)",
+      "override_needed": false
+    },
+    "bouldering": {
+      "override_prompt_additions": [],
+      "override_avoid": [],
+      "reason": "Scored 5/5 across all four pilot QA categories. Best-in-batch composition; no correction required.",
+      "source": "pilot_v1 report (PILOT_V1_REPORT.md)",
+      "override_needed": false
+    },
+    "cinema": {
+      "override_prompt_additions": [
+        "The screen must display a specific, legible illustrated movie moment (a scene with a subject and setting) — never an abstract color gradient or blank glow."
+      ],
+      "override_avoid": [
+        "screen showing only abstract light/color with no depicted scene"
+      ],
+      "reason": "Pilot v1 attempt 1 scored 4/5 with an abstract color-gradient screen (a QA reroll trigger: 'weak or muddy composition'). Attempt 2 fixed this by requiring a legible scene on-screen and reached 5/5. Base recipe already carries this fix; override kept as an explicit, auditable guardrail for flagship review.",
+      "source": "pilot_v1 retry (attempt 2) + PILOT_V1_REPORT.md",
+      "override_needed": true
+    },
+    "sushi": {
+      "override_prompt_additions": [
+        "Keep exactly one hand and one plate in frame; remove any secondary diner or background eating figure to keep focal hierarchy clean."
+      ],
+      "override_avoid": [
+        "a second person eating in the background competing for focus"
+      ],
+      "reason": "Pilot v1 scored 4/5 on composition specifically because a background diner figure split attention from the hero plate.",
+      "source": "pilot_v1 report (PILOT_V1_REPORT.md)",
+      "override_needed": true
+    }
+  }
+}

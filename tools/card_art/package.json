@@ -6,7 +6,8 @@
   "description": "Standalone fal.ai artwork generation pilot for Zync Hobby Cards. Not part of the main app runtime.",
   "scripts": {
     "generate": "node src/generate.js",
-    "contact-sheet": "node src/contact-sheet.js"
+    "contact-sheet": "node src/contact-sheet.js",
+    "compile-prompts": "node src/compilePrompts.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",
