@@ -115,7 +115,7 @@ wellness.pilates|wellness|fitness|215|Pilates|普拉提|普拉提|普拉提
 wellness.yoga|wellness|fitness|216|Yoga|瑜伽|瑜伽|瑜伽
 wellness.stretching|wellness|fitness|217|Stretching|拉筋|拉伸|拉筋
 wellness.mobility|wellness|fitness|218|Mobility Training|活動度訓練|活动度训练|
-wellness.spin_class|wellness|fitness|219|Spin Class|室內單車課|动感单车课|
+wellness.spin_class|wellness|fitness|219|Spin Class|室內單車課|动感单车课|indoor cycling;spinning;stationary bike
 wellness.aerobics|wellness|fitness|220|Aerobics|健身操|健身操|
 wellness.dance_fitness|wellness|fitness|221|Dance Fitness|舞蹈健身|舞蹈健身|zumba
 wellness.jump_rope|wellness|fitness|222|Jump Rope|跳繩|跳绳|跳繩;跳绳
