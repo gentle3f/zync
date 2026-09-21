@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/cardverse_models.dart';
 import '../core/cardverse_pack_reveal.dart';
@@ -116,6 +117,20 @@ class _CardversePackOpeningLabScreenState
     }
 
     if (!mounted) return;
+    if (!reduceMotion) {
+      switch (next.finish) {
+        case CardFinishTier.legendary:
+        case CardFinishTier.secret:
+          HapticFeedback.heavyImpact();
+        case CardFinishTier.holo:
+        case CardFinishTier.prism:
+          HapticFeedback.mediumImpact();
+        case CardFinishTier.foil:
+          HapticFeedback.lightImpact();
+        case CardFinishTier.normal:
+          HapticFeedback.selectionClick();
+      }
+    }
     setState(() {
       _cursor = _cursor.revealNext();
       _revealing = false;
@@ -146,9 +161,10 @@ class _CardversePackOpeningLabScreenState
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
-                    _ReceiptBadge(
-                      rollId: _plan.serverRollId,
-                    ),
+                    if (widget.labMode)
+                      _ReceiptBadge(
+                        rollId: _plan.serverRollId,
+                      ),
                   ],
                 ),
               ),
@@ -251,9 +267,13 @@ class _CardversePackOpeningLabScreenState
                                 ),
                               ),
                               child: Text(
-                                _isZh
-                                    ? '5 張 · 結果已由 server 鎖定'
-                                    : '5 cards · server result locked',
+                                widget.labMode
+                                    ? (_isZh
+                                        ? '5 張 · 結果已由 server 鎖定'
+                                        : '5 cards · server result locked')
+                                    : (_isZh
+                                        ? '5 張 · 每張都有驚喜'
+                                        : '5 cards · reveal them one by one'),
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelMedium
@@ -286,8 +306,8 @@ class _CardversePackOpeningLabScreenState
                     ? 'Lab只驗開包UX。5張結果已存在receipt，動畫唔會改卡、finish或者次序。'
                     : 'This lab validates reveal UX only. All 5 cards already exist in the receipt; animation cannot change the cards, finishes or order.')
                 : (_isZh
-                    ? '結果已經由 Cardverse server 鎖定。逐張揭曉只係動畫，唔會重新抽卡。'
-                    : 'Your result is already locked by the Cardverse server. Revealing cards never rerolls the pack.'),
+                    ? '每一張卡已經安全決定；逐張揭曉只係將驚喜打開。'
+                    : 'Every card is already safely decided; revealing them only opens the surprise.'),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: ZyncPalette.inkSoft,
@@ -515,28 +535,56 @@ class _CardversePackOpeningLabScreenState
             },
           ),
           const SizedBox(height: 18),
-          ZyncSurface(
-            shadow: false,
-            backgroundColor: const Color(0xFFF1EEFF),
-            borderColor: const Color(0xFFE0D9FF),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.verified_user_outlined,
-                  color: ZyncPalette.plum,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'serverRollId: ${_plan.serverRollId}',
-                    key: const ValueKey('pack-lab-server-roll-id'),
-                    style: Theme.of(context).textTheme.bodySmall,
+          if (widget.labMode)
+            ZyncSurface(
+              shadow: false,
+              backgroundColor: const Color(0xFFF1EEFF),
+              borderColor: const Color(0xFFE0D9FF),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.verified_user_outlined,
+                    color: ZyncPalette.plum,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'serverRollId: ${_plan.serverRollId}',
+                      key: const ValueKey('pack-lab-server-roll-id'),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            ZyncHeroPanel(
+              padding: const EdgeInsets.all(16),
+              startColor: const Color(0xFFEFFAF6),
+              endColor: const Color(0xFFF1EEFF),
+              accentColor: const Color(0xFF176B57),
+              radius: 22,
+              child: Row(
+                children: [
+                  const ZyncIconTile(
+                    icon: Icons.collections_bookmark_outlined,
+                    size: 44,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Color(0xFF176B57),
+                  ),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Text(
+                      _isZh
+                          ? '5 張卡已經加入你嘅 My Zync World 收藏。'
+                          : 'All 5 cards are now part of your My Zync World collection.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       );
 
