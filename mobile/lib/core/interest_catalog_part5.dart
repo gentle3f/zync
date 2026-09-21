@@ -46,7 +46,7 @@ technology.chatgpt|technology|ai|606|ChatGPT|ChatGPT|ChatGPT|
 technology.machine_learning|technology|ai|607|Machine Learning|機器學習|机器学习|機器學習;机器学习
 technology.robotics|technology|ai|608|Robotics|機械人|机器人|機械人;机器人
 technology.computer_vision|technology|ai|609|Computer Vision|電腦視覺|计算机视觉|電腦視覺;计算机视觉
-technology.programming|technology|software|615|Programming|編程|编程|coding;編程;编程
+technology.programming|technology|software|615|Programming|編程|编程|coding;編程;编程;coding practice
 technology.web_development|technology|software|616|Web Development|網站開發|网站开发|網站開發;网站开发
 technology.app_development|technology|software|617|App Development|App 開發|App 开发|app開發;应用开发
 technology.python|technology|software|618|Python|Python|Python|
