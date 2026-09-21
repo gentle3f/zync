@@ -152,7 +152,7 @@ Incremental Games|增量遊戲|增量游戏
 Idle Games|放置遊戲|放置游戏
 Collectathons|收集型遊戲|收集型游戏
 Speedrunning|速通|速通
-Modding Games|遊戲模組製作|游戏模组制作
+Modding Games|遊戲模組製作|game modding;mods|游戏模组制作
 Level Editors|關卡編輯器|关卡编辑器
 Game Creation Tools|遊戲製作工具|游戏制作工具
 ''',
