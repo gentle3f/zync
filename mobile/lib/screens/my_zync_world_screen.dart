@@ -42,6 +42,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   bool _loading = true;
   String _error = '';
   String? _openingPackId;
+  bool _claimingDaily = false;
+  bool _drawingCard = false;
 
   bool get _isZh =>
       Localizations.localeOf(context).toLanguageTag().startsWith('zh');
@@ -129,6 +131,209 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       ),
     );
     await _load();
+  }
+
+  DateTime _dailyCycleStart() {
+    final now = DateTime.now();
+    final offset = now.timeZoneOffset;
+    final localClock = now.toUtc().add(offset);
+    final localDay = DateTime.utc(
+      localClock.year,
+      localClock.month,
+      localClock.day,
+    );
+    return localDay.subtract(offset);
+  }
+
+  String _dailyEligibilityKey() =>
+      'daily_login:${_dailyCycleStart().toIso8601String()}';
+
+  bool _dailyClaimed(CardverseInventorySnapshot inventory) =>
+      inventory.claimedEligibilityKeys.contains(_dailyEligibilityKey());
+
+  Future<void> _claimDailyDraw(
+    CardverseInventorySnapshot inventory,
+  ) async {
+    final session = _session;
+    if (session == null || _claimingDaily || _dailyClaimed(inventory)) {
+      return;
+    }
+
+    setState(() => _claimingDaily = true);
+    try {
+      final cycle = _dailyCycleStart();
+      await _cloud.claimDailyLogin(
+        sessionToken: session.token,
+        idempotencyKey:
+            'daily-login:${cycle.millisecondsSinceEpoch}',
+        timezoneOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _isZh
+                ? '今日卡牌抽取 +1。'
+                : 'Your daily card draw is ready.',
+          ),
+        ),
+      );
+      await _load();
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.failure) {
+        CardverseCloudFailure.conflict => _isZh
+            ? '今日嘅登入獎勵已經領取。'
+            : 'Today\'s login reward is already claimed.',
+        CardverseCloudFailure.disabled => _isZh
+            ? 'Daily Draw 喺呢個環境仲未開啟。'
+            : 'Daily Draw is not enabled in this environment yet.',
+        _ => _isZh
+            ? '今日獎勵暫時未能領取，請稍後再試。'
+            : 'The daily reward could not be claimed. Please try again.',
+      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      await _load();
+    } finally {
+      if (mounted) setState(() => _claimingDaily = false);
+    }
+  }
+
+  Future<void> _drawOneCard(
+    CardverseInventorySnapshot inventory,
+  ) async {
+    final session = _session;
+    if (session == null ||
+        _drawingCard ||
+        inventory.availableDrawTokens < 1) {
+      return;
+    }
+
+    setState(() => _drawingCard = true);
+    try {
+      final receipt = await _cloud.redeemDrawToken(
+        sessionToken: session.token,
+        request: CardverseDrawTokenRequest(
+          idempotencyKey:
+              'draw:${inventory.ledgerCursor}:${inventory.availableDrawTokens}',
+        ),
+      );
+      if (!mounted) return;
+      await _showSingleDraw(receipt);
+      await _load();
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.failure) {
+        CardverseCloudFailure.conflict => _isZh
+            ? 'Draw Token 狀態已更新，重新整理後再試。'
+            : 'Your Draw Token balance changed. Refresh and try again.',
+        CardverseCloudFailure.disabled => _isZh
+            ? '單卡抽取喺呢個環境仲未開啟。'
+            : 'Single-card draws are not enabled in this environment yet.',
+        _ => _isZh
+            ? '今次抽卡未完成；未確認成功前唔會喺畫面假裝出卡。'
+            : 'The draw did not complete. No card is shown unless the server confirms it.',
+      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      await _load();
+    } finally {
+      if (mounted) setState(() => _drawingCard = false);
+    }
+  }
+
+  Future<void> _showSingleDraw(
+    CardverseSingleDrawReceipt receipt,
+  ) async {
+    final item = receipt.item;
+    final recipe =
+        CardVisualRecipeResolver.resolve(item.variant.interestId);
+    final interest = InterestCatalog.byId(item.variant.interestId);
+    final title =
+        interest?.labelFor(_locale) ?? item.variant.interestId;
+    final finish = _finish(item.variant.finishId);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFFDFCFB),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: const EdgeInsets.fromLTRB(22, 14, 22, 30),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD7D2DE),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                _isZh ? '你抽到一張新卡' : 'You drew a card',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                _isZh
+                    ? '結果由 Cardverse server 決定；1 個 Draw Token 已經使用。'
+                    : 'The Cardverse server decided this result; 1 Draw Token was used.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 18),
+              if (recipe != null)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 330),
+                  child: AspectRatio(
+                    aspectRatio: 5 / 7,
+                    child: ZyncCardPreview(
+                      recipe: recipe,
+                      title: title,
+                      subtitle: _finishLabel(finish),
+                      finish: finish,
+                      editionLabel: _edition(item.variant.editionId),
+                      cardNumberLabel: 'NEW',
+                      animateFinish: true,
+                    ),
+                  ),
+                )
+              else
+                ZyncSurface(
+                  shadow: false,
+                  child: ListTile(
+                    leading: const Icon(Icons.style_outlined),
+                    title: Text(title),
+                    subtitle: Text(_finishLabel(finish)),
+                  ),
+                ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(sheetContext).pop(),
+                  child: Text(_isZh ? '加入收藏' : 'Add to collection'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _openPack(CardverseUnopenedPack pack) async {
@@ -296,6 +501,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _hero(),
         const SizedBox(height: 18),
         _stats(inventory),
+        const SizedBox(height: 16),
+        _dailyDrawPanel(inventory),
         const SizedBox(height: 16),
         _progressHub(),
         const SizedBox(height: 22),
@@ -473,6 +680,122 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
           ),
         ),
       );
+
+  Widget _dailyDrawPanel(CardverseInventorySnapshot inventory) {
+    final claimed = _dailyClaimed(inventory);
+    final tokens = inventory.availableDrawTokens;
+
+    return ZyncSurface(
+      shadow: false,
+      borderColor: const Color(0xFFFFD98A),
+      backgroundColor: const Color(0xFFFFF8E8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const ZyncIconTile(
+                icon: Icons.wb_sunny_rounded,
+                size: 46,
+                backgroundColor: Color(0xFFFFE9B7),
+                foregroundColor: Color(0xFF8B5A00),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isZh ? '每日卡牌抽取' : 'Daily Card Draw',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      claimed
+                          ? (_isZh
+                              ? '今日登入獎勵已領取。'
+                              : 'Today\'s login reward is claimed.')
+                          : (_isZh
+                              ? '每日登入可以拎 1 個 Draw Token。'
+                              : 'Check in each day for 1 Draw Token.'),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: ZyncPalette.inkSoft),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          if (!claimed)
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                key: const ValueKey('daily-card-draw-claim'),
+                onPressed: _claimingDaily
+                    ? null
+                    : () => _claimDailyDraw(inventory),
+                icon: _claimingDaily
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.card_giftcard_rounded),
+                label: Text(
+                  _isZh
+                      ? '領取今日 1 次抽卡'
+                      : 'Claim today\'s card draw',
+                ),
+              ),
+            )
+          else
+            Row(
+              children: [
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: Color(0xFF176B57),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    _isZh
+                        ? '今日 Check-in 完成'
+                        : 'Today\'s check-in is complete',
+                  ),
+                ),
+              ],
+            ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              key: const ValueKey('draw-one-card'),
+              onPressed: tokens > 0 && !_drawingCard
+                  ? () => _drawOneCard(inventory)
+                  : null,
+              icon: _drawingCard
+                  ? const SizedBox.square(
+                      dimension: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.auto_awesome_rounded),
+              label: Text(
+                tokens > 0
+                    ? (_isZh
+                        ? '使用 1 Token 抽 1 張卡 · 剩 $tokens'
+                        : 'Use 1 Token to draw 1 card · $tokens left')
+                    : (_isZh
+                        ? '暫時冇 Draw Token'
+                        : 'No Draw Tokens yet'),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _stats(CardverseInventorySnapshot inventory) => Row(
         children: [
