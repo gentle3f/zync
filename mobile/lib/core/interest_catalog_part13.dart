@@ -7,7 +7,7 @@ import 'models.dart';
 final List<InterestDefinition> kInterestCatalogPart13 = parseInterestCatalogRows(r'''
 food.bread_baking|food|cooking|1230|Bread Baking|麵包烘焙|面包烘焙|bread making
 food.sourdough_baking|food|cooking|1231|Sourdough Baking|酸種麵包烘焙|酸种面包烘焙|sourdough;sourdough bread
-food.pastry_making|food|cooking|1232|Pastry Making|西點製作|西点制作|pastry baking;pastries
+food.pastry_making|food|cooking|1232|Pastry Making|西點製作|西点制作|pastry baking;pastries;pastry
 food.cake_decorating|food|cooking|1233|Cake Decorating|蛋糕裝飾|蛋糕装饰|cake decoration
 food.cookie_decorating|food|cooking|1234|Cookie Decorating|曲奇裝飾|饼干装饰|biscuit decorating
 food.chocolate_making|food|cooking|1235|Chocolate Making|朱古力製作|巧克力制作|chocolate crafting
@@ -48,7 +48,7 @@ collecting.cd_collecting|collecting|collecting|1290|CD Collecting|CD 收藏|CD �
 collecting.comic_collecting|collecting|collecting|1291|Comic Collecting|漫畫收藏|漫画收藏|comic books collecting
 collecting.manga_collecting|collecting|collecting|1292|Manga Collecting|日本漫畫收藏|日本漫画收藏|manga collection
 collecting.camera_collecting|collecting|collecting|1293|Camera Collecting|相機收藏|相机收藏|vintage camera collecting
-collecting.rocks_minerals|collecting|collecting|1294|Rocks & Minerals Collecting|岩石與礦物收藏|岩石与矿物收藏|mineral collecting;rock collecting
+collecting.rocks_minerals|collecting|collecting|1294|Rocks & Minerals Collecting|岩石與礦物收藏|岩石与矿物收藏|mineral collecting;rock collecting;rocks and minerals
 collecting.fossil_collecting|collecting|collecting|1295|Fossil Collecting|化石收藏|化石收藏|fossils
 collecting.pin_collecting|collecting|collecting|1296|Pin Collecting|徽章收藏|徽章收藏|pins;badge collecting
 collecting.patch_collecting|collecting|collecting|1297|Patch Collecting|布章收藏|布章收藏|patches;embroidered patches
