@@ -108,7 +108,7 @@
     },
     "music": {
       "art_category": "music",
-      "archetype": "story_culture",
+      "archetype": "music_listening",
       "subject_template": "A person actively listening to, exploring, or experiencing ${title}, with the musical experience visually specific without readable text",
       "environment_template": "An intimate listening, rehearsal, record, home, or live-music setting appropriate to ${title}",
       "emotion": [
@@ -636,7 +636,7 @@
       },
       "patch": {
         "art_category": "culture",
-        "archetype": "story_culture"
+        "archetype": "reading_world"
       }
     },
     {
@@ -666,6 +666,15 @@
       "patch": {
         "art_category": "collecting",
         "archetype": "collection_object_hero"
+      }
+    },
+    {
+      "match": {
+        "category": "music",
+        "id_contains": "concerts"
+      },
+      "patch": {
+        "archetype": "story_culture"
       }
     }
   ]
