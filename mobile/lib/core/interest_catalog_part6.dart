@@ -96,7 +96,7 @@ lifestyle.gardening|lifestyle|home|778|Gardening|園藝|园艺|園藝;园艺
 lifestyle.aquariums|lifestyle|home|779|Aquariums|水族|水族|水族
 lifestyle.minimalism|lifestyle|home|780|Minimalism|極簡生活|极简生活|極簡生活;极简生活
 lifestyle.organization|lifestyle|home|781|Home Organization|家居收納|家居收纳|收納;收纳
-lifestyle.nightlife|lifestyle|social|790|Nightlife|夜生活|夜生活|夜生活;clubbing;club nights
+lifestyle.nightlife|lifestyle|social|790|Nightlife|夜生活|夜生活|夜生活;clubbing;club nights;nightclubs;night clubs
 lifestyle.bars|lifestyle|social|791|Bars|酒吧|酒吧|酒吧
 lifestyle.pub_quizzes|lifestyle|social|792|Pub Quizzes|酒吧問答夜|酒吧问答|quiz night;trivia nights;trivia night
 lifestyle.escape_rooms|lifestyle|social|793|Escape Rooms|密室逃脫|密室逃脱|密室逃脫;密室逃脱
