@@ -537,6 +537,22 @@
   "profile_rules": [
     {
       "match": {
+        "category": "learning",
+        "cluster": "campus"
+      },
+      "patch": {
+        "art_category": "learning",
+        "archetype": "campus_activity",
+        "subject_template": "Students actively participating in ${title}, with the defining campus, club, competition, media, exchange, or academic action clearly visible",
+        "environment_template": "A believable school, university, club-room, campus-event, competition, studio, or student-community setting appropriate to ${title}",
+        "must_include": [
+          "student participation",
+          "one concrete ${title} activity cue"
+        ]
+      }
+    },
+    {
+      "match": {
         "category": "lifestyle",
         "cluster": "home"
       },
@@ -1012,6 +1028,206 @@
       },
       "patch": {
         "visual_variant": "workshop_hands"
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id_in": [
+          "learning.model_united_nations",
+          "learning.mock_trial",
+          "learning.moot_court"
+        ]
+      },
+      "patch": {
+        "visual_variant": "debate_floor"
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id_in": [
+          "learning.student_newspaper",
+          "learning.campus_radio",
+          "learning.yearbook"
+        ]
+      },
+      "patch": {
+        "visual_variant": "media_project"
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id_in": [
+          "learning.math_olympiad",
+          "learning.science_olympiad",
+          "learning.academic_competitions"
+        ]
+      },
+      "patch": {
+        "visual_variant": "academic_challenge"
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id_in": [
+          "learning.exchange_programs",
+          "learning.study_abroad"
+        ]
+      },
+      "patch": {
+        "visual_variant": "exchange_campus"
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id_in": [
+          "learning.student_volunteering",
+          "learning.student_societies",
+          "learning.campus_events"
+        ]
+      },
+      "patch": {
+        "visual_variant": "club_event"
+      }
+    },
+    {
+      "match": {
+        "category": "business",
+        "id_in": [
+          "business.founder_meetups",
+          "business.startup_meetups",
+          "business.tech_meetups",
+          "business.alumni_networking"
+        ]
+      },
+      "patch": {
+        "art_category": "lifestyle",
+        "archetype": "community_gathering",
+        "visual_variant": "event_networking",
+        "subject_template": "A small group actively connecting through ${title}, with natural conversation and one relevant professional/community cue",
+        "environment_template": "A believable meetup, community event, coworking, alumni, or informal professional gathering space appropriate to ${title}",
+        "must_include": [
+          "multiple engaged participants",
+          "one concrete meetup/community cue"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "lifestyle",
+        "id_in": [
+          "lifestyle.book_swaps",
+          "lifestyle.clothing_swaps"
+        ]
+      },
+      "patch": {
+        "archetype": "community_gathering",
+        "visual_variant": "swap_exchange",
+        "subject_template": "People actively exchanging, comparing, and discussing items through ${title}",
+        "environment_template": "A believable community table, market, library, hall, or neighborhood swap setting",
+        "must_include": [
+          "visible exchange between people",
+          "tangible swap items"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "lifestyle",
+        "id": "lifestyle.repair_workshops"
+      },
+      "patch": {
+        "archetype": "community_gathering",
+        "visual_variant": "shared_activity",
+        "subject_template": "People actively repairing and teaching each other through Repair Workshops, with tools, hands, and the item being fixed clearly visible",
+        "environment_template": "A believable community repair table, makerspace, hall, or workshop",
+        "must_include": [
+          "shared repair action",
+          "generic tools",
+          "item visibly being fixed"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "id_in": [
+          "wellness.hot_springs",
+          "wellness.cold_plunge"
+        ]
+      },
+      "patch": {
+        "archetype": "wellness_experience",
+        "visual_variant": "immersion_ritual",
+        "subject_template": "A person safely experiencing ${title}, with the water/immersion ritual and body response clearly visible",
+        "environment_template": "A believable generic hot-spring, plunge, bath, or outdoor wellness setting appropriate to ${title}",
+        "must_include": [
+          "clear water-immersion context",
+          "safe human participation"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "id": "wellness.sauna"
+      },
+      "patch": {
+        "archetype": "wellness_experience",
+        "visual_variant": "heat_room",
+        "subject_template": "A person safely relaxing in a generic Sauna, with seated posture and the heat-room environment clearly visible",
+        "environment_template": "A believable unbranded wood or stone sauna interior",
+        "must_include": [
+          "recognisable sauna interior",
+          "safe seated wellness posture"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "id_in": [
+          "wellness.spa",
+          "wellness.massage"
+        ]
+      },
+      "patch": {
+        "archetype": "wellness_experience",
+        "visual_variant": "treatment_relax"
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "id": "wellness.sound_bath"
+      },
+      "patch": {
+        "archetype": "wellness_experience",
+        "visual_variant": "sound_rest"
+      }
+    },
+    {
+      "match": {
+        "category": "business",
+        "id_in": [
+          "business.case_competitions",
+          "business.startup_competitions"
+        ]
+      },
+      "patch": {
+        "archetype": "professional_world",
+        "visual_variant": "collaboration_case",
+        "subject_template": "A student or young-professional team actively preparing, presenting, or reacting during ${title}, with a concrete case/pitch collaboration visible and no readable slides",
+        "environment_template": "A believable competition, classroom, event-room, or pitch setting with generic presentation materials",
+        "must_include": [
+          "team collaboration",
+          "presentation or case-work action",
+          "no readable company names or slide text"
+        ]
       }
     }
   ],
