@@ -46,7 +46,7 @@ music.saxophone|music|music_making|369|Saxophone|色士風|萨克斯|色士風;�
 music.djing|music|music_making|370|DJing|DJ 打碟|DJ 打碟|dj
 music.music_production|music|music_making|371|Music Production|音樂製作|音乐制作|
 music.songwriting|music|music_making|372|Songwriting|歌曲創作|歌曲创作|
-music.concerts|music|music_making|373|Concerts & Live Music|演唱會與現場音樂|演唱会与现场音乐|演唱會;演唱会;live music;concert going
+music.concerts|music|music_making|373|Concerts & Live Music|演唱會與現場音樂|演唱会与现场音乐|演唱會;演唱会;live music;concert going;music festivals;music festival
 music.vinyl|music|music_making|374|Vinyl Records|黑膠唱片|黑胶唱片|黑膠;黑胶
 entertainment.documentaries|entertainment|screen|380|Documentaries|紀錄片|纪录片|紀錄片;纪录片
 entertainment.comedy|entertainment|screen|381|Comedy|喜劇|喜剧|喜劇;喜剧
