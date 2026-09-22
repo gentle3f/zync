@@ -381,6 +381,70 @@
         "camera": "Human-height three-quarter medium frame.",
         "lighting": "Cinematic natural or garage light without glossy advertisement treatment."
       }
+    ],
+    "music_listening": [
+      {
+        "id": "headphones_immersion",
+        "composition": "One listener is absorbed in music through plain unbranded headphones; expression and body language sell the emotional experience while the environment stays supportive.",
+        "camera": "Intimate three-quarter medium-close portrait in action.",
+        "lighting": "Soft cinematic practical light with warm skin tones and restrained cool ambient depth."
+      },
+      {
+        "id": "record_selection",
+        "composition": "Hands select or place an unbranded record while a small curated shelf/turntable context shows active music discovery without readable covers.",
+        "camera": "Close-medium tactile three-quarter view.",
+        "lighting": "Warm shelf or room light with crisp hand, sleeve, and turntable detail."
+      },
+      {
+        "id": "shared_listening",
+        "composition": "Two people share a listening moment around speakers or one music source, reacting naturally rather than posing.",
+        "camera": "Eye-level intimate medium social frame.",
+        "lighting": "Warm domestic or studio practical light with one soft focal pool."
+      },
+      {
+        "id": "room_speakers",
+        "composition": "A listener actively chooses, adjusts, or reacts to music in a coherent room setup with generic speakers or audio gear large enough to read.",
+        "camera": "Layered medium environmental view.",
+        "lighting": "Low-key evening ambience with warm practical highlights on person and audio gear."
+      },
+      {
+        "id": "generic_live_music",
+        "composition": "A listener is visibly immersed in a small generic live-music environment; performer silhouettes or instruments support the experience without becoming a named artist depiction.",
+        "camera": "Audience-level medium-wide with listener and stage context both readable.",
+        "lighting": "Controlled live-venue light with no logos, banners, or readable signage."
+      }
+    ],
+    "reading_world": [
+      {
+        "id": "close_reading",
+        "composition": "One reader and an open book form the clear focal cluster; posture and expression show absorption while pages remain unreadable.",
+        "camera": "Close-medium seated three-quarter view.",
+        "lighting": "Warm window or lamp light with crisp book and hand detail."
+      },
+      {
+        "id": "library_discovery",
+        "composition": "A reader actively browses or pulls one book from a shelf, with enough library context to show discovery but no readable spines.",
+        "camera": "Human-height medium environmental frame.",
+        "lighting": "Soft library daylight or warm aisle light with clean depth."
+      },
+      {
+        "id": "book_club",
+        "composition": "Two or three people discuss books around one shared table or seating area, holding generic unbranded books with natural reactions.",
+        "camera": "Eye-level intimate social medium shot.",
+        "lighting": "Warm conversational interior light."
+      },
+      {
+        "id": "bookshop_browse",
+        "composition": "A person browses a coherent bookshop display, actively comparing or opening books while covers and signs remain non-readable.",
+        "camera": "Three-quarter medium environmental view.",
+        "lighting": "Inviting retail ambient light with the reader as focal subject."
+      },
+      {
+        "id": "outdoor_reading",
+        "composition": "A reader is immersed in a book in a calm park, garden, or cafe-edge outdoor setting; the reading act stays larger than the scenery.",
+        "camera": "Human-height medium-wide lifestyle framing.",
+        "lighting": "Gentle natural daylight with soft atmospheric separation."
+      }
     ]
   }
 }
