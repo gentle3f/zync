@@ -215,7 +215,7 @@ class InterestCardPolicyResolver {
   static String _eventPriorityFor(InterestDefinition item) {
     if (const {'lifestyle', 'wellness', 'sports', 'outdoors', 'food', 'travel', 'arts', 'crafts'}
         .contains(item.category)) return 'high';
-    if (const {'gaming', 'music', 'entertainment', 'learning', 'technology', 'pets'}
+    if (const {'gaming', 'music', 'entertainment', 'learning', 'technology', 'pets', 'career'}
         .contains(item.category)) return 'medium';
     return 'low';
   }
