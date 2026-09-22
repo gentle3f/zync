@@ -1,0 +1,21 @@
+{
+  "version": "v1",
+  "description": "Maps legacy/manual card-art recipe IDs to stable runtime canonical interest IDs. Rights policy is evaluated on canonical_interest_id before any baseline prompt is compiled.",
+  "manual_to_canonical": {
+    "badminton": "sports.badminton",
+    "bouldering": "outdoors.bouldering",
+    "sushi": "food.sushi",
+    "japan": "travel.japan",
+    "piano": "music.piano",
+    "roadtrip": "travel.roadtrip",
+    "coffee": "food.coffee",
+    "ai": "technology.ai",
+    "photography": "photography.general",
+    "boardgames": "gaming.board",
+    "cinema": "media.movies",
+    "camping": "outdoors.camping",
+    "pottery": "arts.ceramics",
+    "running": "sports.running",
+    "lego": "collecting.lego"
+  }
+}
