@@ -339,6 +339,92 @@
         "generic library room with no reader action",
         "floating literary symbols"
       ]
+    },
+    "strategy_table": {
+      "feeling": [
+        "focus",
+        "anticipation",
+        "strategy",
+        "friendly competition"
+      ],
+      "composition": "One to four players actively engage with a clearly readable abstract board, cards, tiles, or strategy surface. Hands, pieces, and reactions show the decision moment without relying on text.",
+      "camera": "Intimate eye-level or high three-quarter tabletop framing.",
+      "recognition": "Correct board/card/tile interaction plus deliberate thinking or social strategy context.",
+      "avoid": [
+        "athletic sports pose",
+        "empty tabletop",
+        "readable branded game packaging",
+        "casino branding or readable betting text"
+      ]
+    },
+    "digital_play": {
+      "feeling": [
+        "focus",
+        "fun",
+        "challenge",
+        "shared excitement"
+      ],
+      "composition": "One or two people actively play a digital or arcade-style game using a clear generic controller, keyboard/mouse, handheld, simulator control, or physical arcade machine. The play interaction is the hero.",
+      "camera": "Over-shoulder or three-quarter medium framing with both player input and generic game feedback visible.",
+      "recognition": "Human play action plus a clear generic digital/arcade input device and non-IP gameplay context.",
+      "avoid": [
+        "recognisable copyrighted characters",
+        "game logos or readable titles",
+        "generic person staring at a screen",
+        "tabletop board-game composition",
+        "unreadable cyberpunk screen soup"
+      ]
+    },
+    "fitness_training": {
+      "feeling": [
+        "effort",
+        "discipline",
+        "progress",
+        "self-mastery"
+      ],
+      "composition": "One person actively performs the defining exercise or training movement with correct body mechanics and only the relevant equipment visible.",
+      "camera": "Dynamic human-height medium or medium-wide training angle.",
+      "recognition": "Specific exercise posture or movement plus correct training equipment or studio/gym cue.",
+      "avoid": [
+        "static bodybuilding pose",
+        "generic wellness meditation pose",
+        "wrong exercise equipment",
+        "brand logos or readable gym signage"
+      ]
+    },
+    "water_outdoors": {
+      "feeling": [
+        "immersion",
+        "freedom",
+        "skill",
+        "adventure"
+      ],
+      "composition": "A person is visibly engaged with the specific water-based activity. Water, body position, vessel/board/gear, and safety context must coherently explain the hobby.",
+      "camera": "Human-scale action or activity angle close enough to read gear and water interaction.",
+      "recognition": "Correct water environment plus activity-specific gear, vessel, body position, or catch/observation cue.",
+      "avoid": [
+        "generic beach wallpaper",
+        "wrong water-sport equipment",
+        "impossible water/gear physics",
+        "brand logos or sponsor marks"
+      ]
+    },
+    "outdoor_motion": {
+      "feeling": [
+        "momentum",
+        "freedom",
+        "challenge",
+        "adventure"
+      ],
+      "composition": "One person actively moves through terrain in the defining outdoor sport, with correct equipment and route/surface cues carrying the identity.",
+      "camera": "Dynamic three-quarter or side medium-wide action view.",
+      "recognition": "Specific movement plus correct gear plus terrain/surface appropriate to the activity.",
+      "avoid": [
+        "generic scenic wallpaper",
+        "static gear portrait",
+        "wrong-sport equipment",
+        "brand logos or sponsor marks"
+      ]
     }
   }
 }
