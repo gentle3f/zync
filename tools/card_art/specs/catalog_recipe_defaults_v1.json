@@ -677,5 +677,15 @@
         "archetype": "story_culture"
       }
     }
+  ],
+  "hard_case_ids": [
+    "books.reading",
+    "history.general",
+    "learning.philosophy",
+    "learning.philosophy_discussions",
+    "wellness.mindfulness"
+  ],
+  "hard_case_categories": [
+    "fashion"
   ]
 }
