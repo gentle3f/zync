@@ -10,6 +10,11 @@ import 'interest_locale_music_b.dart';
 import 'interest_locale_gaming_a.dart';
 import 'interest_locale_gaming_b.dart';
 import 'interest_locale_gaming_c.dart';
+import 'interest_locale_learning_a.dart';
+import 'interest_locale_learning_b.dart';
+import 'interest_locale_entertainment_core.dart';
+import 'interest_locale_entertainment_movie_a.dart';
+import 'interest_locale_entertainment_movie_b.dart';
 import 'models.dart';
 
 class InterestLocaleRegistry {
@@ -143,6 +148,11 @@ class InterestLocaleRegistry {
     addGeneric(kInterestLocaleGamingARaw);
     addGeneric(kInterestLocaleGamingBRaw);
     addGeneric(kInterestLocaleGamingCRaw);
+    addGeneric(kInterestLocaleLearningARaw);
+    addGeneric(kInterestLocaleLearningBRaw);
+    addGeneric(kInterestLocaleEntertainmentCoreRaw);
+    addGeneric(kInterestLocaleEntertainmentMovieARaw);
+    addGeneric(kInterestLocaleEntertainmentMovieBRaw);
 
     return Map.unmodifiable({
       for (final entry in result.entries)

@@ -7,7 +7,7 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_BULK_LOCALIZATION_STAGE_C.md`
+`AI_STATE/HANDOFF_20260922_BULK_LOCALIZATION_STAGE_D.md`
 
 Branch:
 
@@ -15,4 +15,4 @@ Branch:
 
 Current active task:
 
-> **Continue bulk localization from Stage C. Runtime has 4,053 interests; 3,361 are explicit in all 8 locales. Translate the remaining 692 generic rows into es/fr/pt/ja/ko: learning 204, entertainment 183, then smaller categories 305. Keep Vercel, GitHub Actions, Production, Play and image generation closed.**
+> **Finish bulk localization. Runtime has 4,053 interests; 3,748 are explicit in all 8 locales. Translate the final 305 generic rows into es/fr/pt/ja/ko, then run full 4,053 × 8-locale completeness and collision audits and promote localization to a hard release gate. Keep Vercel, GitHub Actions, Production, Play and image generation closed.**

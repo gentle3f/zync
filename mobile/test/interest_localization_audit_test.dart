@@ -116,7 +116,7 @@ void main() {
   });
 
 
-  test('staged bulk localization covers 3361 rows across all eight locales', () {
+  test('staged bulk localization covers 3748 rows across all eight locales', () {
     final audit = InterestLocalizationAudit.run();
 
     expect(audit.total, 4053);
@@ -125,7 +125,7 @@ void main() {
     for (final locale in const ['es', 'fr', 'pt', 'ja', 'ko']) {
       expect(
         audit.missingForLocale(locale),
-        hasLength(692),
+        hasLength(305),
         reason: 'unexpected staged debt for $locale',
       );
     }
@@ -135,7 +135,7 @@ void main() {
         (locale) => (item.labels[locale]?.trim() ?? '').isNotEmpty,
       ),
     );
-    expect(fullyLocalized, hasLength(3361));
+    expect(fullyLocalized, hasLength(3748));
   });
 
   test('legacy launch interests resolve in the five newly localized languages', () {
@@ -155,6 +155,11 @@ void main() {
       ('K-팝', 'ko', 'music.k_pop'),
       ('Juegos de estrategia', 'es', 'gaming.strategy'),
       ('라이프 시뮬레이션', 'ko', 'gaming.subgenre.life_sim'),
+      ('Intercambio de idiomas', 'es', 'learning.language_exchange'),
+      ('Philosophie', 'fr', 'learning.philosophy'),
+      ('学術コンテスト', 'ja', 'learning.academic_competitions'),
+      ('영화', 'ko', 'media.movies'),
+      ('Cinéma japonais', 'fr', 'entertainment.movie_subgenre.japanese_cinema'),
     ];
     for (final row in cases) {
       expect(
