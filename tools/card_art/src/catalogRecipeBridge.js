@@ -235,6 +235,10 @@ function deriveRecipe(item, defaults, policy) {
 
   const rankMax = Number(defaults.tiering?.common_rank_max ?? 1200);
   const defaultTier = defaults.tiering?.default_tier || 'long_tail';
+  const configuredHardCase =
+    (defaults.hard_case_ids || []).includes(item.id) ||
+    (defaults.hard_case_categories || []).includes(item.category);
+  const hardCase = policy.art_policy === 'abstractOnly' || configuredHardCase;
   const avoid = (profile.avoid || []).map(x => renderTemplate(x, item));
   if (policy.art_policy === 'abstractOnly') {
     avoid.push(
@@ -250,8 +254,8 @@ function deriveRecipe(item, defaults, policy) {
     subcategory: null,
     archetype: profile.archetype,
     tier: item.rank <= rankMax ? 'common' : defaultTier,
-    difficulty: policy.art_policy === 'abstractOnly' ? 'hard_case' : 'normal',
-    human_review_required: policy.art_policy === 'abstractOnly',
+    difficulty: hardCase ? 'hard_case' : 'normal',
+    human_review_required: hardCase,
     subject: renderTemplate(profile.subject_template, item),
     environment: renderTemplate(profile.environment_template, item),
     emotion: (profile.emotion || []).map(x => renderTemplate(x, item)),
