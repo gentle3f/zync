@@ -551,6 +551,46 @@
         "camera": "Low or human-height close-medium action angle.",
         "lighting": "Crisp edge light and textured terrain detail."
       }
+    ],
+    "home_lifestyle": [
+      {
+        "id": "hands_home_project",
+        "composition": "Hands actively improve, arrange, repair, organize, plant, or make something in a lived-in home space.",
+        "camera": "Close-medium three-quarter process view.",
+        "lighting": "Warm natural window light with tactile object/tool detail."
+      },
+      {
+        "id": "lived_in_action",
+        "composition": "One or two people perform the defining home or family activity while the room context stays specific and believable.",
+        "camera": "Human-height medium environmental shot.",
+        "lighting": "Soft warm domestic practical light."
+      },
+      {
+        "id": "plant_garden_care",
+        "composition": "The person actively tends plants, soil, balcony/garden elements, or a home-growing system; care action remains obvious.",
+        "camera": "Medium close-to-environmental view.",
+        "lighting": "Fresh natural daylight with crisp plant and hand detail."
+      }
+    ],
+    "food_exploration": [
+      {
+        "id": "market_discovery",
+        "composition": "A person actively chooses or tastes one clear food item at a market or stall while the surrounding food scene stays coherent and secondary.",
+        "camera": "Human-height three-quarter medium view.",
+        "lighting": "Warm market light with appetising food highlights."
+      },
+      {
+        "id": "shared_table",
+        "composition": "Two or three people actively share, compare, or discover a meal at one table; the experience and food remain equally readable.",
+        "camera": "Intimate eye-level medium shot.",
+        "lighting": "Warm social dining light with crisp hero dishes."
+      },
+      {
+        "id": "counter_tasting",
+        "composition": "Capture the moment of receiving, tasting, or comparing food at a counter, chef-pass, café, or tasting setting.",
+        "camera": "Counter-height medium-close.",
+        "lighting": "Premium warm practical light with clean human/food separation."
+      }
     ]
   }
 }
