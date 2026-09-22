@@ -343,6 +343,13 @@
         "composition": "The animal is shown with one unmistakable habitat, equipment, or observation cue while a person engages from a safe natural distance.",
         "camera": "Layered medium-wide environmental view.",
         "lighting": "Natural habitat light with the animal as the clear focal point."
+      },
+      {
+        "id": "training_action",
+        "generic_eligible": false,
+        "composition": "Human and animal are caught in one clear training or agility action; the obstacle, cue, movement, and safe handler position make the activity unmistakable.",
+        "camera": "Dynamic eye-level or slightly low medium-wide action view.",
+        "lighting": "Clean natural or training-venue light with crisp animal motion and obstacle/cue detail."
       }
     ],
     "professional_world": [
@@ -376,7 +383,8 @@
         "id": "workshop_hands",
         "composition": "Hands actively maintain, build, tune, or inspect one machine component while the larger generic vehicle remains readable nearby.",
         "camera": "Close-medium workshop perspective.",
-        "lighting": "Warm workshop key light with crisp mechanical texture."
+        "lighting": "Warm workshop key light with crisp mechanical texture.",
+        "generic_eligible": false
       },
       {
         "id": "owner_machine",
