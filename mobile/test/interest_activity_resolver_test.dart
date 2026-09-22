@@ -112,6 +112,57 @@ void main() {
     expect(InterestActivityResolver.resolve(streaming), isNull);
   });
 
+  test('abstract-only art policy does not incorrectly ban safe activity semantics', () {
+    final bookTok = InterestCatalog.byId('learning.book_genre.booktok')!;
+    final profile = InterestActivityResolver.resolve(bookTok);
+
+    expect(profile, isNotNull);
+    expect(profile!.verbs, contains(ActivityVerb.read));
+    expect(profile.verbs, contains(ActivityVerb.discuss));
+  });
+
+  test('live culture avoids music-making and home-viewing fallthrough', () {
+    final concerts = InterestCatalog.byId('music.concerts')!;
+    final theatre = InterestCatalog.byId('entertainment.theatre_going')!;
+
+    final concertProfile = InterestActivityResolver.resolve(concerts)!;
+    final theatreProfile = InterestActivityResolver.resolve(theatre)!;
+
+    expect(concertProfile.verbs, isNot(contains(ActivityVerb.practice)));
+    expect(concertProfile.verbs, contains(ActivityVerb.explore));
+    expect(concertProfile.locationDependency, LocationDependency.dedicatedVenue);
+
+    expect(theatreProfile.verbs, contains(ActivityVerb.watch));
+    expect(theatreProfile.verbs, contains(ActivityVerb.explore));
+    expect(theatreProfile.settings, isNot(contains(ActivitySetting.homePossible)));
+    expect(theatreProfile.locationDependency, LocationDependency.dedicatedVenue);
+  });
+
+  test('new dining and local-culture interests use low-risk exploration semantics', () {
+    final yumCha = InterestCatalog.byId('food.yum_cha')!;
+    final templeFairs = InterestCatalog.byId('lifestyle.temple_fairs')!;
+
+    expect(
+      InterestActivityResolver.resolve(yumCha)!.templateIds,
+      contains('activity.shared_exploration'),
+    );
+    expect(
+      InterestActivityResolver.resolve(templeFairs)!.templateIds,
+      contains('activity.shared_exploration'),
+    );
+  });
+
+  test('party and boat-party interests remain conservative despite social taxonomy', () {
+    expect(
+      InterestActivityResolver.resolve(InterestCatalog.byId('lifestyle.parties')!),
+      isNull,
+    );
+    expect(
+      InterestActivityResolver.resolve(InterestCatalog.byId('lifestyle.boat_parties')!),
+      isNull,
+    );
+  });
+
   test('deep drink taxonomy is not automatically made an activity pool', () {
     final redWine = InterestCatalog.search('Red Wine', 'en').firstWhere(
       (item) => item.labels['en'] == 'Red Wine',
