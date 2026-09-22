@@ -24,7 +24,7 @@ lifestyle.city_walks|lifestyle|social|853|City Walks|城市漫步|城市漫步|c
 lifestyle.dinner_parties|lifestyle|social|855|Dinner Parties|晚餐聚會|晚餐聚会|dinner party;home dinner
 lifestyle.local_events|lifestyle|social|856|Local Events|本地活動|本地活动|community events;local happenings;neighborhood events;neighbourhood events
 learning.personal_development|learning|knowledge|857|Personal Development|個人成長|个人成长|personal growth;self development
-learning.debating|learning|knowledge|858|Debating|辯論|辩论|debate;debates
+learning.debating|learning|knowledge|858|Debating|辯論|辩论|debate;debates;debate club
 technology.pc_building|technology|hardware|859|PC Building|砌電腦|组装电脑|build a pc;computer building;砌機;装机
 fashion.hair_styling|fashion|fashion|860|Hair Styling|髮型造型|发型造型|hairstyling;hair style
 fashion.fragrance|fashion|fashion|861|Fragrance|香水與香氛|香水与香氛|perfume;fragrances;scent
