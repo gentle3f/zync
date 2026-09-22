@@ -20,9 +20,14 @@ class InterestActivityResolver {
         InterestEntityMetadataRegistry.byInterestId(item.id)?.activity;
     if (explicit != null) return explicit;
 
-    // Rights-aware partner/title classifications must never fall through to a
-    // generic activity merely because their localization metadata is complete.
-    if (InterestCardPolicyResolver.resolve(item).ipSensitive) return null;
+    // Partner/title classifications must never fall through to a generic
+    // activity merely because localization metadata is complete. Abstract-only
+    // is an ART restriction, not an activity restriction; only licensed-only
+    // concepts are blocked here.
+    if (InterestCardPolicyResolver.resolve(item).artPolicy ==
+        CardArtPolicy.licensedOnly) {
+      return null;
+    }
 
     // Localization remains a secondary proper-name boundary for legacy items
     // that have not yet received a full entity/card classification.
@@ -52,11 +57,15 @@ class InterestActivityResolver {
     }
 
     if (item.category == 'music') {
+      if (item.id == 'music.concerts') return _liveCultureExperience;
       if (cluster.contains('making')) return _musicMaking;
       return _musicListening;
     }
 
     if (item.category == 'entertainment') {
+      if (item.id == 'entertainment.theatre_going') {
+        return _liveCultureExperience;
+      }
       if (cluster == 'audio') return _listenAndDiscuss;
       return _watchAndDiscuss;
     }
@@ -75,7 +84,9 @@ class InterestActivityResolver {
     }
 
     if (item.category == 'food') {
-      if (const {'food.cafe_hopping', 'food.brunch'}.contains(item.id)) {
+      if (const {'food.cafe_hopping', 'food.brunch'}.contains(item.id) ||
+          cluster == 'dining' ||
+          cluster == 'food/dining') {
         return _socialExploration;
       }
       if (cluster == 'cooking' ||
@@ -92,8 +103,14 @@ class InterestActivityResolver {
 
     if (item.category == 'lifestyle') {
       if (cluster == 'shopping') return _browseAndCompare;
+      if (cluster == 'local_culture') return _socialExploration;
       if (cluster == 'social') {
-        if (const {'lifestyle.bars', 'lifestyle.nightlife'}.contains(item.id)) {
+        if (const {
+          'lifestyle.bars',
+          'lifestyle.nightlife',
+          'lifestyle.parties',
+          'lifestyle.boat_parties',
+        }.contains(item.id)) {
           return null;
         }
         return _socialExploration;
@@ -204,6 +221,21 @@ class InterestActivityResolver {
     locationDependency: LocationDependency.none,
     crossoverTags: {'music', 'listening', 'conversation'},
     templateIds: {'activity.listen_and_compare', 'activity.peer_teaches_beginner'},
+  );
+
+  static const ActivityProfile _liveCultureExperience = ActivityProfile(
+    eligible: true,
+    verbs: {ActivityVerb.listen, ActivityVerb.watch, ActivityVerb.explore, ActivityVerb.discuss},
+    energy: {ActivityEnergy.chill, ActivityEnergy.moderate},
+    settings: {ActivitySetting.indoor, ActivitySetting.outdoor},
+    costBands: {ActivityCostBand.low, ActivityCostBand.medium, ActivityCostBand.high},
+    durationBands: {ActivityDurationBand.under90m, ActivityDurationBand.halfDay},
+    minGroupSize: 2,
+    maxGroupSize: 8,
+    firstTimerFriendly: true,
+    locationDependency: LocationDependency.dedicatedVenue,
+    crossoverTags: {'live-culture', 'social', 'conversation'},
+    templateIds: {'activity.shared_exploration'},
   );
 
   static const ActivityProfile _musicMaking = ActivityProfile(
