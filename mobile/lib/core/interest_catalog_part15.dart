@@ -20,7 +20,7 @@ lifestyle.temple_fairs|lifestyle|local_culture|1732|Temple Fairs|廟會|庙会|t
 lifestyle.lantern_festivals|lifestyle|local_culture|1733|Lantern Festivals|燈會|灯会|lantern festival;燈會;灯会
 lifestyle.flower_markets|lifestyle|local_culture|1734|Flower Markets|花市|花市|flower market;年宵花市
 lifestyle.wet_markets|lifestyle|local_culture|1735|Wet Markets|街市|菜市场|wet market;傳統市場;传统市场
-lifestyle.boat_parties|lifestyle|social|1736|Boat Parties|船上派對|船上派对|junk boat party;boat party
+lifestyle.boat_parties|lifestyle|social|1736|Boat Parties|船上派對|船上派对|junk boat party;junk boat parties;boat party
 outdoors.squid_fishing|outdoors|water|1737|Squid Fishing|釣墨魚|钓鱿鱼|squid jigging;night squid fishing
 outdoors.city_cycling|outdoors|cycling|1738|City Cycling|城市踩單車|城市骑行|urban cycling;city biking
 transport.scooter_touring|transport|cars|1739|Scooter Touring|綿羊仔／電單車旅行|踏板摩托旅行|scooter trips;scooter road trips
