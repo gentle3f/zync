@@ -122,6 +122,15 @@ function main() {
     'wellness.mindfulness': {archetype:'calm_wellness', difficulty:'hard_case'},
     'fashion.streetwear': {archetype:'urban_discovery', difficulty:'hard_case'},
     'technology.python': {archetype:'tech_workspace', difficulty:'hard_case'},
+    'learning.model_united_nations': {archetype:'campus_activity', visual_variant:'debate_floor'},
+    'learning.campus_radio': {archetype:'campus_activity', visual_variant:'media_project'},
+    'learning.math_olympiad': {archetype:'campus_activity', visual_variant:'academic_challenge'},
+    'learning.study_abroad': {archetype:'campus_activity', visual_variant:'exchange_campus'},
+    'business.founder_meetups': {archetype:'community_gathering', visual_variant:'event_networking'},
+    'lifestyle.book_swaps': {archetype:'community_gathering', visual_variant:'swap_exchange'},
+    'wellness.hot_springs': {archetype:'wellness_experience', visual_variant:'immersion_ritual'},
+    'wellness.sauna': {archetype:'wellness_experience', visual_variant:'heat_room'},
+    'wellness.yoga': {archetype:'calm_wellness', visual_variant:'centered_ritual'},
   };
   for (const [id, expected] of Object.entries(expectedRoutes)) {
     const row = bridge.eligible.find(item => item.canonical_interest_id === id);
