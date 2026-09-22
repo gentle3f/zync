@@ -12,6 +12,7 @@ import 'interest_catalog_part11.dart';
 import 'interest_catalog_part12.dart';
 import 'interest_catalog_part13.dart';
 import 'interest_catalog_part14.dart';
+import 'interest_catalog_part15.dart';
 import 'interest_popularity_service.dart';
 import 'interest_relevance.dart';
 import 'models.dart';
@@ -34,6 +35,7 @@ class InterestCatalog {
     ...kInterestCatalogPart12,
     ...kInterestCatalogPart13,
     ...kInterestCatalogPart14,
+    ...kInterestCatalogPart15,
   ]);
 
   static final Map<String, InterestDefinition> _byId = {
@@ -139,6 +141,10 @@ class InterestCatalog {
       'arts|crafts',
       'science|technology',
       'learning|science',
+      'business|career',
+      'career|learning',
+      'career|technology',
+      'career|science',
       'motorsport|transport',
       'fashion|lifestyle',
       'outdoors|pets',
