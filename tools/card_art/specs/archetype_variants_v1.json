@@ -445,6 +445,112 @@
         "camera": "Human-height medium-wide lifestyle framing.",
         "lighting": "Gentle natural daylight with soft atmospheric separation."
       }
+    ],
+    "strategy_table": [
+      {
+        "id": "decision_overhead",
+        "composition": "The strategy surface is central while one or more hands make a decisive move and faces remain partly visible.",
+        "camera": "High three-quarter tabletop view, not a flat diagram.",
+        "lighting": "Warm focused table light with crisp piece/card/tile separation."
+      },
+      {
+        "id": "face_and_board",
+        "composition": "A focused player reaction and the board/card/tile state share the frame so thought and play are both readable.",
+        "camera": "Eye-level three-quarter medium shot across the play surface.",
+        "lighting": "Soft social interior light with the play surface slightly brighter."
+      },
+      {
+        "id": "two_player_tension",
+        "composition": "Two players face each other across one strategy surface at a clear decision moment.",
+        "camera": "Side-on intimate medium-wide view.",
+        "lighting": "Controlled warm light with clean hands, pieces, and faces."
+      }
+    ],
+    "digital_play": [
+      {
+        "id": "over_shoulder_input",
+        "composition": "Look past the player toward generic gameplay feedback while controller/keyboard/handheld input remains clearly visible.",
+        "camera": "Tight over-shoulder medium shot.",
+        "lighting": "Screen light balanced by warm room accents; no neon overload."
+      },
+      {
+        "id": "shared_couch_play",
+        "composition": "Two players react naturally while using generic unbranded controllers; the screen remains secondary but visibly interactive.",
+        "camera": "Three-quarter social medium shot.",
+        "lighting": "Warm living-room light with restrained screen glow."
+      },
+      {
+        "id": "desktop_focus",
+        "composition": "Hands on keyboard/mouse or simulator controls and the player's focused reaction form one clear play story.",
+        "camera": "Side three-quarter workstation medium shot.",
+        "lighting": "Clean monitor key light with practical room depth."
+      },
+      {
+        "id": "arcade_interaction",
+        "composition": "A player physically interacts with one generic arcade or claw-style machine; hands, controls, and machine mechanism remain readable without logos.",
+        "camera": "Human-height three-quarter medium-wide view.",
+        "lighting": "Colorful venue light kept controlled enough to preserve machine/action clarity."
+      }
+    ],
+    "fitness_training": [
+      {
+        "id": "decisive_rep",
+        "composition": "Freeze the strongest readable phase of one exercise repetition with correct posture and relevant equipment.",
+        "camera": "Three-quarter medium-wide training angle.",
+        "lighting": "Directional gym/studio light defining body mechanics without glamour-ad treatment."
+      },
+      {
+        "id": "side_form",
+        "composition": "Show the exercise side-on so joint position, movement path, and equipment are easy to read.",
+        "camera": "Human-height side medium shot.",
+        "lighting": "Clean natural or studio training light."
+      },
+      {
+        "id": "floor_training",
+        "composition": "For mat/bodyweight training, keep the whole body and contact points visible with a simple studio or gym context.",
+        "camera": "Slightly elevated medium-wide view.",
+        "lighting": "Soft but crisp studio light with uncluttered background."
+      }
+    ],
+    "water_outdoors": [
+      {
+        "id": "water_action",
+        "composition": "Capture the defining active instant on or in the water, keeping body position and activity-specific gear unmistakable.",
+        "camera": "Water-level or close shoreline three-quarter action view.",
+        "lighting": "Natural directional light with crisp water/gear separation."
+      },
+      {
+        "id": "vessel_interaction",
+        "composition": "The person and relevant board/boat/kayak/canoe or other vessel form the central action cluster with route/water context behind.",
+        "camera": "Side or rear three-quarter medium-wide view.",
+        "lighting": "Natural outdoor light with readable vessel shape and water texture."
+      },
+      {
+        "id": "water_ritual",
+        "composition": "For slower water hobbies, show hands, line, mask, observation gear, catch, or preparation interacting directly with the water activity.",
+        "camera": "Close-medium tactile activity view.",
+        "lighting": "Natural dawn/daylight with strong gear and hand detail."
+      }
+    ],
+    "outdoor_motion": [
+      {
+        "id": "side_motion",
+        "composition": "Track the participant laterally through the correct terrain or surface while equipment and body position remain clear.",
+        "camera": "Side-tracking medium-wide action angle.",
+        "lighting": "Natural directional outdoor light with controlled motion depth."
+      },
+      {
+        "id": "route_attack",
+        "composition": "The route or terrain leads the eye through one decisive movement moment; person and gear remain large enough to identify.",
+        "camera": "Three-quarter medium-wide perspective.",
+        "lighting": "Cinematic natural light without postcard treatment."
+      },
+      {
+        "id": "terrain_close",
+        "composition": "Bring the athlete and terrain interaction close enough to show wheel, ski, board, shoe, or other contact mechanics.",
+        "camera": "Low or human-height close-medium action angle.",
+        "lighting": "Crisp edge light and textured terrain detail."
+      }
     ]
   }
 }
