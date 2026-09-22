@@ -1,4 +1,8 @@
 import 'interest_locale_part16.dart';
+import 'interest_locale_proper_names.dart';
+import 'interest_locale_generic_launch_v1.dart';
+import 'interest_locale_generic_launch_v2.dart';
+import 'interest_locale_generic_launch_v3.dart';
 import 'models.dart';
 
 class InterestLocaleRegistry {
@@ -80,23 +84,51 @@ class InterestLocaleRegistry {
 
   static Map<String, Map<String, String>> _parseLabels() {
     final result = <String, Map<String, String>>{};
-    for (final line in kInterestLocalePart16Raw.split('\n')) {
-      final trimmed = line.trim();
-      if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
-      final parts = trimmed.split('|');
-      if (parts.length != 8) {
-        throw StateError('Invalid interest locale row: $trimmed');
+
+    void addFull(String raw) {
+      for (final line in raw.split('\n')) {
+        final trimmed = line.trim();
+        if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
+        final parts = trimmed.split('|');
+        if (parts.length != 8) {
+          throw StateError('Invalid full interest locale row: $trimmed');
+        }
+        result[parts[0]] = {
+          'zh-Hant': parts[1],
+          'zh-Hans': parts[2],
+          'es': parts[3],
+          'fr': parts[4],
+          'pt': parts[5],
+          'ja': parts[6],
+          'ko': parts[7],
+        };
       }
-      result[parts[0]] = {
-        'zh-Hant': parts[1],
-        'zh-Hans': parts[2],
-        'es': parts[3],
-        'fr': parts[4],
-        'pt': parts[5],
-        'ja': parts[6],
-        'ko': parts[7],
-      };
     }
+
+    void addGeneric(String raw) {
+      for (final line in raw.split('\n')) {
+        final trimmed = line.trim();
+        if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
+        final parts = trimmed.split('|');
+        if (parts.length != 6) {
+          throw StateError('Invalid generic interest locale row: $trimmed');
+        }
+        (result[parts[0]] ??= <String, String>{}).addAll({
+          'es': parts[1],
+          'fr': parts[2],
+          'pt': parts[3],
+          'ja': parts[4],
+          'ko': parts[5],
+        });
+      }
+    }
+
+    addFull(kInterestLocalePart16Raw);
+    addFull(kInterestLocaleProperNamesRaw);
+    addGeneric(kInterestLocaleGenericLaunchV1Raw);
+    addGeneric(kInterestLocaleGenericLaunchV2Raw);
+    addGeneric(kInterestLocaleGenericLaunchV3Raw);
+
     return Map.unmodifiable({
       for (final entry in result.entries)
         entry.key: Map.unmodifiable(entry.value),

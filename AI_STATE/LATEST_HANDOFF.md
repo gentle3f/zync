@@ -6,11 +6,9 @@ Before any write, commit, push, PR, CI, Vercel, deployment or external-infrastru
 
 `AI_STATE/OPERATING_RULES.md`
 
-This is a hard project rule, not an optional note.
-
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_US_HK_RANKING_LOCALIZATION_V1.md`
+`AI_STATE/HANDOFF_20260922_BULK_LOCALIZATION_STAGE_A.md`
 
 Branch:
 
@@ -18,8 +16,4 @@ Branch:
 
 Current active task:
 
-> **Continue from the activated 4,054-interest US/HK launch-sector checkpoint. Part 16 is 119/119 eight-locale certified. Next bulk-translate the remaining legacy 3,935 canonicals into es/fr/pt/ja/ko plus any explicit missing Chinese labels through the locale-overlay architecture, auditing collisions batch-by-batch. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**
-
-Previous candidate checkpoint remains historical input:
-
-`AI_STATE/US_FIRST_INTEREST_EXPANSION_CANDIDATES_V1.json`
+> **Continue bulk localization from Stage A. Runtime has 4,054 interests; 2,502 are now explicit in all 8 locales. Translate the remaining 1,552 generic legacy rows into es/fr/pt/ja/ko, using deterministic locale-overlay batches and same-category collision audits. Prioritize food, music, gaming, learning and entertainment. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**

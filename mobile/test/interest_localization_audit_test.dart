@@ -115,6 +115,46 @@ void main() {
     }
   });
 
+
+  test('staged bulk localization covers 2502 rows across all eight locales', () {
+    final audit = InterestLocalizationAudit.run();
+
+    expect(audit.total, 4054);
+    expect(audit.missingForLocale('zh-Hant'), isEmpty);
+    expect(audit.missingForLocale('zh-Hans'), isEmpty);
+    for (final locale in const ['es', 'fr', 'pt', 'ja', 'ko']) {
+      expect(
+        audit.missingForLocale(locale),
+        hasLength(1552),
+        reason: 'unexpected staged debt for $locale',
+      );
+    }
+
+    final fullyLocalized = InterestCatalog.seed.where(
+      (item) => InterestLocaleRegistry.supportedLocales.every(
+        (locale) => (item.labels[locale]?.trim() ?? '').isNotEmpty,
+      ),
+    );
+    expect(fullyLocalized, hasLength(2502));
+  });
+
+  test('legacy launch interests resolve in the five newly localized languages', () {
+    final cases = <(String, String, String)>[
+      ('Bádminton', 'es', 'sports.badminton'),
+      ('Randonnée', 'fr', 'sports.hiking'),
+      ('Viagens pelo Japão', 'pt', 'travel.japan'),
+      ('写真', 'ja', 'photography.general'),
+      ('헬스·피트니스', 'ko', 'sports.gym'),
+    ];
+    for (final row in cases) {
+      expect(
+        InterestCatalog.search(row.$1, row.$2).first.id,
+        row.$3,
+        reason: 'localized legacy search failed for ${row.$1}',
+      );
+    }
+  });
+
   test('audit identifies missing scripts independently', () {
     const synthetic = InterestDefinition(
       id: 'sports.synthetic_badminton',
