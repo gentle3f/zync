@@ -7,12 +7,12 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_BULK_LOCALIZATION_STAGE_D.md`
+`AI_STATE/HANDOFF_20260923_EIGHT_LOCALE_COMPLETE.md`
 
 Branch:
 
 `card-art-pilot-v1-20260921`
 
-Current active task:
+Current state:
 
-> **Finish bulk localization. Runtime has 4,053 interests; 3,748 are explicit in all 8 locales. Translate the final 305 generic rows into es/fr/pt/ja/ko, then run full 4,053 × 8-locale completeness and collision audits and promote localization to a hard release gate. Keep Vercel, GitHub Actions, Production, Play and image generation closed.**
+> **Eight-locale display-label localization is complete: 4,053 / 4,053 canonical interests have explicit en, zh-Hant, zh-Hans, es, fr, pt, ja and ko labels. Full es/fr/pt/ja/ko source audit has 20,265 entries and 0 same-category collisions. Permanent hard tests now enforce completeness and localized-label uniqueness. Locale-specific aliases are not yet exhaustively translated. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**

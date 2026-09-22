@@ -15,6 +15,10 @@ import 'interest_locale_learning_b.dart';
 import 'interest_locale_entertainment_core.dart';
 import 'interest_locale_entertainment_movie_a.dart';
 import 'interest_locale_entertainment_movie_b.dart';
+import 'interest_locale_final_a.dart';
+import 'interest_locale_final_b.dart';
+import 'interest_locale_final_c.dart';
+import 'interest_locale_final_d.dart';
 import 'models.dart';
 
 class InterestLocaleRegistry {
@@ -153,6 +157,10 @@ class InterestLocaleRegistry {
     addGeneric(kInterestLocaleEntertainmentCoreRaw);
     addGeneric(kInterestLocaleEntertainmentMovieARaw);
     addGeneric(kInterestLocaleEntertainmentMovieBRaw);
+    addGeneric(kInterestLocaleFinalARaw);
+    addGeneric(kInterestLocaleFinalBRaw);
+    addGeneric(kInterestLocaleFinalCRaw);
+    addGeneric(kInterestLocaleFinalDRaw);
 
     return Map.unmodifiable({
       for (final entry in result.entries)

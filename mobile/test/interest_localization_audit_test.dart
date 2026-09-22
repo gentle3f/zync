@@ -116,17 +116,16 @@ void main() {
   });
 
 
-  test('staged bulk localization covers 3748 rows across all eight locales', () {
+  test('full interest catalog is explicit in all eight locales', () {
     final audit = InterestLocalizationAudit.run();
 
     expect(audit.total, 4053);
-    expect(audit.missingForLocale('zh-Hant'), isEmpty);
-    expect(audit.missingForLocale('zh-Hans'), isEmpty);
-    for (final locale in const ['es', 'fr', 'pt', 'ja', 'ko']) {
+    expect(audit.fullLocaleComplete, isTrue);
+    for (final locale in InterestLocaleRegistry.supportedLocales) {
       expect(
         audit.missingForLocale(locale),
-        hasLength(305),
-        reason: 'unexpected staged debt for $locale',
+        isEmpty,
+        reason: 'missing explicit $locale labels',
       );
     }
 
@@ -135,7 +134,30 @@ void main() {
         (locale) => (item.labels[locale]?.trim() ?? '').isNotEmpty,
       ),
     );
-    expect(fullyLocalized, hasLength(3748));
+    expect(fullyLocalized, hasLength(4053));
+  });
+
+  test('all localized labels are unique inside each category and locale', () {
+    for (final locale in InterestLocaleRegistry.supportedLocales) {
+      final seen = <String, String>{};
+      final collisions = <String>[];
+      for (final item in InterestCatalog.seed) {
+        final label = InterestCatalog.normalizeText(item.labels[locale] ?? '');
+        if (label.isEmpty) continue;
+        final key = '${item.category}|$label';
+        final previous = seen[key];
+        if (previous == null) {
+          seen[key] = item.id;
+        } else if (previous != item.id) {
+          collisions.add('$locale:$label: $previous <> ${item.id}');
+        }
+      }
+      expect(
+        collisions,
+        isEmpty,
+        reason: 'localized label collisions for $locale:\n${collisions.join('\n')}',
+      );
+    }
   });
 
   test('legacy launch interests resolve in the five newly localized languages', () {
@@ -160,6 +182,11 @@ void main() {
       ('学術コンテスト', 'ja', 'learning.academic_competitions'),
       ('영화', 'ko', 'media.movies'),
       ('Cinéma japonais', 'fr', 'entertainment.movie_subgenre.japanese_cinema'),
+      ('Inteligencia artificial', 'es', 'technology.ai'),
+      ('Robotique', 'fr', 'technology.robotics'),
+      ('Engenharia de dados', 'pt', 'career.data_engineering'),
+      ('木工', 'ja', 'crafts.woodworking'),
+      ('고양이', 'ko', 'pets.cats'),
     ];
     for (final row in cases) {
       expect(
