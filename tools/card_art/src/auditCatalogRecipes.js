@@ -131,6 +131,13 @@ function main() {
     'wellness.hot_springs': {archetype:'wellness_experience', visual_variant:'immersion_ritual'},
     'wellness.sauna': {archetype:'wellness_experience', visual_variant:'heat_room'},
     'wellness.yoga': {archetype:'calm_wellness', visual_variant:'centered_ritual'},
+    'arts.podcasting': {archetype:'creator_workflow', visual_variant:'microphone_session'},
+    'arts.video_editing': {archetype:'creator_workflow', visual_variant:'editing_workstation'},
+    'arts.vlogging': {archetype:'creator_workflow', visual_variant:'camera_creation'},
+    'arts.animation_production': {archetype:'creator_workflow', visual_variant:'drawing_animation'},
+    'arts.blogging': {archetype:'creator_workflow', visual_variant:'writing_desk'},
+    'gaming.game_streaming': {archetype:'creator_workflow', visual_variant:'stream_broadcast'},
+    'gaming.escape_room_design': {archetype:'creative_studio'},
   };
   for (const [id, expected] of Object.entries(expectedRoutes)) {
     const row = bridge.eligible.find(item => item.canonical_interest_id === id);
