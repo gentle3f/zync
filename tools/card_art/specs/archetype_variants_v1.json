@@ -710,6 +710,56 @@
         "camera": "Soft medium-wide floor/room view.",
         "lighting": "Calm diffused light with instrument highlights."
       }
+    ],
+    "creator_workflow": [
+      {
+        "id": "creator_workspace",
+        "composition": "A creator actively works with one medium-specific tool while a clean generic production workspace supports the action.",
+        "camera": "Three-quarter medium workstation view.",
+        "lighting": "Warm practical creator-studio light balanced with restrained screen light."
+      },
+      {
+        "id": "microphone_session",
+        "generic_eligible": false,
+        "composition": "A creator actively records voice or sound with a plain microphone, headphones, and acoustic/audio context clearly visible.",
+        "camera": "Close-medium side or three-quarter recording view.",
+        "lighting": "Warm studio key light with crisp microphone and face detail."
+      },
+      {
+        "id": "camera_creation",
+        "generic_eligible": false,
+        "composition": "A creator actively records or presents to a generic camera/phone rig, with lighting or framing gear visible but no platform UI.",
+        "camera": "Behind-camera or three-quarter medium view.",
+        "lighting": "Clean creator lighting with warm human tones and controlled background."
+      },
+      {
+        "id": "editing_workstation",
+        "generic_eligible": false,
+        "composition": "Hands and creator focus are visible while a generic non-readable editing/timeline/color/audio workflow appears on screen; the medium-specific input device remains clear.",
+        "camera": "Tight over-shoulder medium workstation view.",
+        "lighting": "Balanced screen and room light with readable human/tool interaction."
+      },
+      {
+        "id": "drawing_animation",
+        "generic_eligible": false,
+        "composition": "The creator actively draws, animates, sequences, or refines visual media using a tablet, stylus, storyboard-like non-text frames, or drawing surface.",
+        "camera": "Close-medium hands-and-screen/tablet view.",
+        "lighting": "Soft studio light with crisp stylus/hand/visual-work detail."
+      },
+      {
+        "id": "writing_desk",
+        "generic_eligible": false,
+        "composition": "A creator actively drafts or edits written content at a calm desk with notebook/keyboard and non-readable layout cues, avoiding visible article text.",
+        "camera": "Warm close-medium writing perspective.",
+        "lighting": "Natural window or desk-lamp light."
+      },
+      {
+        "id": "stream_broadcast",
+        "generic_eligible": false,
+        "composition": "A creator actively broadcasts gameplay or live content using a generic microphone, camera, controls, and screen feedback; the streaming process reads without platform logos or chat text.",
+        "camera": "Three-quarter medium creator-and-rig view.",
+        "lighting": "Controlled screen light with warm studio accents, no neon overload."
+      }
     ]
   }
 }
