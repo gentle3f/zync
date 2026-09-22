@@ -6,7 +6,6 @@ import 'models.dart';
 /// kept as aliases on older stable canonicals instead of creating duplicates.
 final List<InterestDefinition> kInterestCatalogPart15 = parseInterestCatalogRows(r'''
 food.yum_cha|food|food/dining|1720|Yum Cha|飲茶|饮茶|dim sum tea;yumcha;飲茶;饮茶
-food.cha_chaan_teng|food|food/dining|1721|Cha Chaan Teng|茶餐廳|茶餐厅|hong kong cafe;茶記;茶餐厅
 food.dai_pai_dong|food|food/dining|1722|Dai Pai Dong|大牌檔|大排档|open-air food stalls;大牌檔;大排档
 food.tea_house_hopping|food|food/dining|1723|Tea House Hopping|茶館探店|茶馆探店|tea houses;tea house visits
 food.night_markets|food|food/dining|1724|Night Markets|夜市|夜市|night market food;逛夜市
@@ -54,7 +53,6 @@ arts.square_dancing|arts|dance|1784|Square Dancing|方塊舞|广场舞|square da
 arts.chinese_painting|arts|visual_art|1785|Chinese Painting|中國畫|中国画|chinese ink painting;國畫;国画
 pets.bird_keeping|pets|pets|1800|Bird Keeping|養鳥|养鸟|bird care;pet birds
 pets.parrots|pets|pets|1801|Parrots|鸚鵡|鹦鹉|parrot keeping;pet parrots
-pets.aquarium_keeping|pets|pets|1802|Aquarium Keeping|水族飼養|水族饲养|fishkeeping;aquarium hobby;tropical fish
 pets.reptile_keeping|pets|pets|1803|Reptile Keeping|爬蟲飼養|爬虫饲养|pet reptiles;reptile care
 pets.snakes|pets|pets|1804|Snakes|蛇類飼養|蛇类饲养|pet snakes;snake keeping
 pets.lizards|pets|pets|1805|Lizards|蜥蜴飼養|蜥蜴饲养|pet lizards;lizard keeping
