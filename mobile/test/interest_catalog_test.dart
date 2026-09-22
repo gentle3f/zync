@@ -187,6 +187,28 @@ void main() {
     }
   });
 
+  test('USA Spanish and Hong Kong alias V2 covers remaining colloquial gaps', () {
+    final cases = <(String, String, String)>[
+      ('ir de compras', 'es', 'lifestyle.shopping'),
+      ('foto callejera', 'es', 'photography.street'),
+      ('fans del fútbol americano', 'es', 'sports.american_football_fandom'),
+      ('viajar a Corea', 'es', 'travel.korea'),
+      ('韓舞', 'zh-Hant', 'arts.kpop_dance'),
+      ('美妝', 'zh-Hant', 'fashion.makeup'),
+      ('護膚', 'zh-Hant', 'fashion.skincare'),
+      ('街拍', 'zh-Hant', 'photography.street'),
+      ('市區行山', 'zh-Hant', 'outdoors.urban_hiking'),
+      ('去韓國', 'zh-Hant', 'travel.korea'),
+    ];
+    for (final row in cases) {
+      expect(
+        InterestCatalog.search(row.$1, row.$2).first.id,
+        row.$3,
+        reason: 'launch alias V2 search failed for ${row.$1} (${row.$2})',
+      );
+    }
+  });
+
   test('localized alias packs merge instead of overwriting older aliases', () {
     expect(
       InterestLocaleRegistry.aliasesFor('sports.sports_watch_parties', 'es'),

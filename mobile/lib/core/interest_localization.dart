@@ -1,5 +1,6 @@
 import 'interest_locale_part16.dart';
 import 'interest_locale_aliases_launch_v1.dart';
+import 'interest_locale_aliases_launch_v2.dart';
 import 'interest_locale_proper_names.dart';
 import 'interest_locale_generic_launch_v1.dart';
 import 'interest_locale_generic_launch_v2.dart';
@@ -195,6 +196,7 @@ class InterestLocaleRegistry {
 
     addAliases(kInterestLocaleAliasesPart16Raw);
     addAliases(kInterestLocaleAliasesLaunchV1Raw);
+    addAliases(kInterestLocaleAliasesLaunchV2Raw);
 
     return Map.unmodifiable({
       for (final entry in result.entries)
