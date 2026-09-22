@@ -10,7 +10,11 @@ This is a hard project rule, not an optional note.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_CATALOG_PROMPT_ROUTING_V32.md`
+`AI_STATE/HANDOFF_20260922_US_FIRST_INTEREST_EXPANSION_V1.md`
+
+Supporting machine-readable candidate checkpoint:
+
+`AI_STATE/US_FIRST_INTEREST_EXPANSION_CANDIDATES_V1.json`
 
 Branch:
 
@@ -18,4 +22,8 @@ Branch:
 
 Current active task:
 
-> **Continue from the V3.2 prompt-routing checkpoint: execute the pure local catalog recipe audit and 41-interest stratified prompt compiler when command execution is available, review the actual compiled prompts, then compile the full 2,092 rights-eligible prompt catalog. Keep image generation, Production and Play closed. Conserve GitHub Actions until the 2026-10-01 reset.**
+> **Continue the USA-first interest expansion from the saved candidate JSON. Final-dedupe the 117 generic candidates against the 3,935 runtime catalog, resolve canonical-vs-alias decisions, then design the full per-locale interest label/alias architecture (English first, Spanish next) before activating Part 16. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required. Batch writes.**
+
+Previous card-art checkpoint, still valid but temporarily secondary:
+
+`AI_STATE/HANDOFF_20260922_CATALOG_PROMPT_ROUTING_V32.md`

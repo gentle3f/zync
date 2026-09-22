@@ -1,0 +1,432 @@
+{
+  "schema_version": 1,
+  "checkpoint_date": "2026-09-22",
+  "branch": "card-art-pilot-v1-20260921",
+  "strategy": "USA-first, global-ready; preserve regional breadth but do not prioritize Asia because of user location",
+  "runtime_catalog_unchanged": true,
+  "runtime_catalog_count": 3935,
+  "generic_us_candidates_count": 117,
+  "generic_us_candidates": {
+    "sports_fandom": [
+      "American Football Fandom",
+      "Basketball Fandom",
+      "Baseball Fandom",
+      "Hockey Fandom",
+      "Soccer Fandom",
+      "College Sports",
+      "College Football",
+      "College Basketball",
+      "Fantasy Sports",
+      "Fantasy Football",
+      "Fantasy Baseball",
+      "Fantasy Basketball",
+      "Tailgating",
+      "Sports Watch Parties",
+      "Recreational Sports Leagues",
+      "Intramural Sports",
+      "Kickball",
+      "Flag Football",
+      "Cornhole",
+      "Bocce",
+      "Shuffleboard",
+      "Axe Throwing"
+    ],
+    "local_social": [
+      "Block Parties",
+      "Community Cleanups",
+      "Game Nights",
+      "Puzzle Nights",
+      "Craft Nights",
+      "Coffee Walks",
+      "Silent Discos",
+      "Dance Socials",
+      "Estate Sales",
+      "Garage & Yard Sales",
+      "Record Store Browsing",
+      "Bookstore Browsing",
+      "Library Events",
+      "Plant Shop Browsing",
+      "Food Trucks",
+      "American Diners",
+      "County & State Fairs",
+      "Renaissance Fairs",
+      "Food Festivals",
+      "Art Festivals",
+      "Street Festivals",
+      "Parades",
+      "Neighborhood Exploration"
+    ],
+    "outdoors": [
+      "State Parks",
+      "Scenic Drives",
+      "Cabin Getaways",
+      "Lake Life",
+      "Beach Days",
+      "River Tubing",
+      "Float Trips",
+      "Bass Fishing",
+      "Ice Fishing",
+      "ATV Riding",
+      "UTV Riding",
+      "Dirt Bikes",
+      "Motocross",
+      "Snowmobiling",
+      "RV Life"
+    ],
+    "cars": [
+      "Pickup Trucks",
+      "Truck Culture",
+      "Muscle Cars",
+      "Car Meets",
+      "Car Shows",
+      "Auto Detailing",
+      "Car Restoration"
+    ],
+    "college_life": [
+      "Greek Life",
+      "Student Government",
+      "Dorm Life",
+      "Campus Life",
+      "Homecoming",
+      "Spring Break",
+      "School Spirit",
+      "Career Fairs",
+      "Internships"
+    ],
+    "family": [
+      "New Parents",
+      "Playdates",
+      "Toddler Activities",
+      "Family Game Nights",
+      "Family Movie Nights",
+      "Date Nights",
+      "Youth Sports",
+      "Youth Baseball",
+      "Summer Camp"
+    ],
+    "pets_equestrian": [
+      "Dog Parks",
+      "Pet Adoption",
+      "Dog Sports",
+      "Pet Sitting",
+      "Horse Shows",
+      "Rodeo",
+      "Western Riding"
+    ],
+    "home": [
+      "Lawn Care",
+      "Home Gym"
+    ],
+    "digital_culture": [
+      "Online Communities",
+      "Memes",
+      "Internet Culture",
+      "True Crime Podcasts",
+      "Newsletter Reading"
+    ],
+    "career": [
+      "Software Engineering",
+      "Journalism",
+      "Hospitality",
+      "Construction",
+      "Skilled Trades",
+      "Social Work",
+      "Physiotherapy",
+      "Veterinary Medicine",
+      "AI & Machine Learning Engineering",
+      "Culinary Profession"
+    ],
+    "wellness_entertainment": [
+      "Hot Yoga",
+      "Reformer Pilates",
+      "Slow Living",
+      "Alcohol-Free Socials",
+      "Film Festivals",
+      "Anime Conventions",
+      "City-Building Games",
+      "Life Simulation Games"
+    ]
+  },
+  "alias_only": [
+    {
+      "term": "Coding Club",
+      "target": "technology.programming"
+    },
+    {
+      "term": "Photography Club",
+      "target": "photography.general"
+    },
+    {
+      "term": "Chess Club",
+      "target": "gaming.chess"
+    },
+    {
+      "term": "Esports Club",
+      "target": "gaming.esports"
+    },
+    {
+      "term": "Entrepreneurship Club",
+      "target": "learning.entrepreneurship"
+    },
+    {
+      "term": "Debate Club",
+      "target": "learning.debating"
+    },
+    {
+      "term": "Robotics Club",
+      "target": "technology.robotics"
+    },
+    {
+      "term": "Drama Club",
+      "target": "arts.acting"
+    },
+    {
+      "term": "School Musical",
+      "target": "arts.musical_theatre"
+    },
+    {
+      "term": "School Choir",
+      "target": "music.choir"
+    }
+  ],
+  "unresolved_alias_or_canonical": [
+    {
+      "term": "Art Club",
+      "note": "choose best existing general visual-art canonical before adding alias"
+    },
+    {
+      "term": "Dance Team",
+      "note": "choose best existing dance canonical before adding alias"
+    },
+    {
+      "term": "Strength Training",
+      "note": "decide canonical vs alias to Gym & Fitness / Weightlifting after semantic review"
+    },
+    {
+      "term": "Coffee Shops",
+      "note": "likely alias/search wording rather than separate canonical from Coffee/Cafe Hopping"
+    },
+    {
+      "term": "Plant Parenting",
+      "note": "likely alias to Houseplants"
+    },
+    {
+      "term": "Home Cooking",
+      "note": "likely alias to Cooking"
+    },
+    {
+      "term": "Backyard Gardening",
+      "note": "likely alias to Gardening"
+    },
+    {
+      "term": "Super Bowl Parties",
+      "note": "likely alias to Sports Watch Parties / American Football Fandom"
+    },
+    {
+      "term": "Fraternity Life",
+      "note": "likely child/alias under Greek Life rather than separate canonical"
+    },
+    {
+      "term": "Sorority Life",
+      "note": "likely child/alias under Greek Life rather than separate canonical"
+    }
+  ],
+  "rights_gated_platform_brands": {
+    "note": "YouTube already exists. These should use the existing brands/platform rights policy; do not generate logo/UI/trade-dress-heavy art.",
+    "items": [
+      "Facebook",
+      "Instagram",
+      "TikTok",
+      "Snapchat",
+      "Reddit",
+      "Discord",
+      "Twitch",
+      "Spotify",
+      "Pinterest",
+      "LinkedIn",
+      "WhatsApp",
+      "Threads",
+      "X"
+    ]
+  },
+  "rights_gated_sports_ecosystems": {
+    "note": "separate rights-gated layer; team-level fandom can be added later after policy review",
+    "items": [
+      "NFL",
+      "NBA",
+      "WNBA",
+      "MLB",
+      "NHL",
+      "MLS",
+      "UFC",
+      "NCAA Sports"
+    ]
+  },
+  "regional_global_deferred_pack": [
+    "Cherry Blossom Viewing / Hanami",
+    "Japanese Festivals / Matsuri",
+    "Fireworks Festivals",
+    "Shrine Visits",
+    "Night Cycling",
+    "Photo Booths / Purikura",
+    "Hawker Centres",
+    "Bakery Hopping",
+    "Dessert Cafes",
+    "Afternoon Tea",
+    "Electronics Repair",
+    "Woodturning",
+    "Tidepooling",
+    "Wild Camping",
+    "Campfire Cooking",
+    "Science Fairs",
+    "Student Leadership"
+  ],
+  "sensitive_holdouts": [
+    {
+      "group": "gambling",
+      "examples": [
+        "Sports Betting",
+        "Casino / Gambling"
+      ],
+      "reason": "age/safety policy review required"
+    },
+    {
+      "group": "weapons_hunting",
+      "examples": [
+        "Hunting",
+        "Deer Hunting",
+        "Duck Hunting",
+        "Bowhunting",
+        "Target Shooting",
+        "Skeet Shooting"
+      ],
+      "reason": "separate safety/card-art review required"
+    },
+    {
+      "group": "alcohol",
+      "examples": [
+        "beer/wine/liquor-centric identity interests"
+      ],
+      "reason": "age-sensitive; do not add as ordinary youth-capable interests"
+    },
+    {
+      "group": "religion",
+      "examples": [
+        "religious affiliation / campus ministry identity"
+      ],
+      "reason": "sensitive attribute/privacy review"
+    },
+    {
+      "group": "politics",
+      "examples": [
+        "party affiliation / political identity"
+      ],
+      "reason": "sensitive attribute/privacy review"
+    }
+  ],
+  "verified_existing_examples": [
+    "Farmers' Markets",
+    "Flea Markets",
+    "Thrifting",
+    "Book Clubs",
+    "Run Clubs",
+    "Walking Groups",
+    "Pub Quizzes / Trivia Nights",
+    "Supper Clubs",
+    "Language Exchange",
+    "Coworking",
+    "Open Mic Nights",
+    "Poetry Slams",
+    "Improv Comedy",
+    "Stand-up Comedy",
+    "Escape Rooms",
+    "Barre",
+    "Functional Training",
+    "Massage",
+    "Sound Baths",
+    "Journaling",
+    "Gratitude Journaling",
+    "Digital Detox",
+    "Forest Bathing",
+    "Self-Care",
+    "Meal Prep",
+    "Debating",
+    "Robotics",
+    "Cheerleading",
+    "Choir",
+    "A Cappella",
+    "Hot Pot",
+    "Bubble Tea",
+    "Tea Tasting",
+    "Tea Ceremony",
+    "Street Food",
+    "Cafe Hopping",
+    "Yakiniku",
+    "Izakaya Food",
+    "3D Printing",
+    "Laser Cutting",
+    "CNC Machining",
+    "Leathercraft",
+    "Resin Art",
+    "Model Building",
+    "Aquascaping",
+    "Terrariums",
+    "Hydroponics",
+    "Foraging",
+    "Mushroom Hunting",
+    "Beachcombing",
+    "Car Camping",
+    "Product Management",
+    "UX Design",
+    "UI Design",
+    "Graphic Design",
+    "Consulting",
+    "Sales",
+    "Entrepreneurship",
+    "Aviation",
+    "Real Estate",
+    "Data Science",
+    "Cybersecurity",
+    "Project Management",
+    "Reality TV",
+    "K-Dramas",
+    "Chinese Dramas",
+    "Japanese Dramas",
+    "Variety Shows",
+    "Cozy Games",
+    "MOBA",
+    "MMORPG",
+    "Social Deduction Games",
+    "Deckbuilding Games",
+    "Metroidvania",
+    "Soulslike"
+  ],
+  "localization_finding": {
+    "app_ui_locale_files": [
+      "en",
+      "es",
+      "fr",
+      "ja",
+      "ko",
+      "pt",
+      "zh",
+      "zh-Hans",
+      "zh-Hant"
+    ],
+    "ordinary_catalog_rows": [
+      "en",
+      "zh-Hant",
+      "zh-Hans"
+    ],
+    "family_rows_can_optionally_include": [
+      "ja",
+      "ko"
+    ],
+    "missing_for_full_interest_localization": [
+      "es",
+      "fr",
+      "pt"
+    ],
+    "recommendation": "separate canonical taxonomy from per-locale labels/aliases before large-scale activation; English first, Spanish highest priority for USA launch"
+  }
+}
