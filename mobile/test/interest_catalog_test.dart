@@ -131,6 +131,38 @@ void main() {
     }
   });
 
+  test('Asia campus career and maker expansion resolves stable canonical IDs', () {
+    final expected = <String, String>{
+      'yum cha': 'food.yum_cha',
+      'KTV': 'music.karaoke',
+      'cha chaan teng': 'food.hong_kong',
+      'river tracing': 'outdoors.river_tracing',
+      'dragon boat racing': 'sports.dragon_boat_racing',
+      'Model United Nations': 'learning.model_united_nations',
+      'robotics club': 'technology.robotics',
+      'debate club': 'learning.debating',
+      'Moot Court': 'learning.moot_court',
+      'bonsai': 'lifestyle.bonsai',
+      'aquarium keeping': 'pets.fish',
+      'dog agility': 'pets.dog_agility',
+      'legal profession': 'career.legal_profession',
+      'nursing': 'career.nursing',
+      'cloud engineering': 'career.cloud_engineering',
+      'metalworking': 'crafts.metalworking',
+      'pottery wheel': 'crafts.pottery_wheel',
+      'night hiking': 'outdoors.night_hiking',
+      'junk boat parties': 'lifestyle.boat_parties',
+    };
+
+    for (final entry in expected.entries) {
+      expect(
+        InterestCatalog.search(entry.key, 'en').first.id,
+        entry.value,
+        reason: 'unexpected canonical for ${entry.key}',
+      );
+    }
+  });
+
   test('Hong Kong Chinese locale resolves Traditional Chinese labels', () {
     expect(InterestCatalog.byId('sports.tennis')!.labelFor('zh-HK'), '網球');
     expect(InterestCatalog.byId('food.coffee')!.labelFor('zh-Hant'), '咖啡');
@@ -164,6 +196,15 @@ void main() {
 
     final lifestyleL2 = InterestCatalog.clustersForCategory('lifestyle');
     expect(lifestyleL2, containsAll(<String>['home', 'social', 'shopping', 'family']));
+
+    final careerL2 = InterestCatalog.clustersForCategory('career');
+    expect(
+      careerL2,
+      containsAll(<String>['legal', 'healthcare', 'education', 'engineering', 'finance', 'operations', 'research']),
+    );
+
+    final learningL2 = InterestCatalog.clustersForCategory('learning');
+    expect(learningL2, contains('campus'));
 
     final musicL2 = InterestCatalog.clustersForCategory('music');
     expect(musicL2, containsAll(<String>['genres_styles', 'artists', 'making']));
