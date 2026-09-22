@@ -510,6 +510,24 @@
         "unsafe heat/cold behavior",
         "brand signage or product labels"
       ]
+    },
+    "creator_workflow": {
+      "feeling": [
+        "creation",
+        "focus",
+        "expression",
+        "publishing momentum"
+      ],
+      "composition": "A creator actively records, edits, designs, writes, streams, or assembles media. The human workflow and one concrete production tool/output must make the medium clear without readable text or platform branding.",
+      "camera": "Layered medium or close-medium creator-workspace framing.",
+      "recognition": "Human creation action plus medium-specific microphone, camera, timeline-like non-text visuals, drawing tools, audio gear, or publishing workflow.",
+      "avoid": [
+        "generic influencer pose",
+        "platform logos",
+        "readable UI/text",
+        "random multi-screen cyberpunk setup",
+        "finished content with no creation process"
+      ]
     }
   }
 }
