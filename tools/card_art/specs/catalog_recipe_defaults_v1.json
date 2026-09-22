@@ -951,7 +951,8 @@
         "environment_template": "A calm uncluttered studio, home, or outdoor setting appropriate to ${title}",
         "must_include": [
           "one clearly readable ${title} pose or movement"
-        ]
+        ],
+        "visual_variant": "centered_ritual"
       }
     },
     {
