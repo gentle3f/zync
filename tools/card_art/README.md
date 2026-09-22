@@ -95,6 +95,10 @@ npm run audit-catalog-recipes
 # rights-gate the full runtime catalog, derive long-tail recipes, then compile all
 # baseline-art-eligible canonical interests — still no API calls
 npm run compile-prompts
+
+# compile a fixed 41-interest stratified QA sample across manual/generic,
+# new archetypes, hard cases and abstract-only policies — no image API calls
+npm run audit-prompt-samples
 ```
 
 The catalog-scale path is now rights-first:
