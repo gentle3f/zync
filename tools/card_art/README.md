@@ -123,8 +123,8 @@ cannot bypass rights policy. In particular, the preserved legacy LEGO recipe map
 
 At the 2026-09-22 V3 checkpoint the independent static audit is:
 
-- runtime canonicals: **3,935**
-- baseline-art eligible: **2,092**
+- runtime canonicals: **4,053**
+- baseline-art eligible: **2,210**
 - blocked by runtime rights policy: **1,843**
 - abstract-only: **7**
 - reviewed manual recipes: **15**, of which **14** are eligible and **1 (LEGO)** is blocked
@@ -133,6 +133,43 @@ The checked-in `generated/compiled_prompts_v1.jsonl` predates this bridge and is
 **15-hobby pre-bridge snapshot**, not evidence that the full catalog has already been
 compiled. Re-run `npm run compile-prompts` before treating generated prompt outputs as
 current. The compiler makes no fal.ai calls.
+
+## Launch-first structured image batch
+
+Do **not** use the legacy `src/generate.js` for catalog-scale artwork. It is preserved only
+for the historical 15-card pilot.
+
+The rights-safe structured runner is:
+
+```bash
+# zero-credit preflight: rights gate + structured prompt compilation
+npm run audit-launch-image-batch
+
+# generate the reviewed launch batch through the default FLUX path
+npm run generate-compiled-batch
+
+# generate selected canonical IDs only
+node src/generateCompiledBatch.js --only=sports.badminton,food.coffee
+
+# reroll one failed card on the fallback model
+node src/generateCompiledBatch.js --retry=technology.ai --model=fallback --only=technology.ai
+```
+
+Default batch:
+`catalog/launch_image_batch_v1.json`
+
+The current V1 batch contains 16 rights-safe USA/Hong Kong launch interests spanning
+manual recipes, derived recipes, hard cases, Part 16 concepts, and multiple archetypes.
+The runner rebuilds the runtime rights-first bridge in memory before every generation and
+refuses any canonical that is not baseline-art eligible.
+
+Model cost estimates recorded by the runner:
+- FLUX.2 edit: ~US$0.025/image
+- Gemini 2.5 Flash Image edit: ~US$0.039/image
+- Nano Banana Pro edit: ~US$0.15/image
+
+At 16 cards, the default FLUX first pass is approximately **US$0.40** before any QA rerolls.
+
 
 See `src/buildPromptV1.js` for final prompt assembly. Catalog-scale output records include
 canonical hobby ID, runtime category/cluster, art policy, recipe source, tier,

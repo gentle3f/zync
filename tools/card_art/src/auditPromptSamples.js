@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, '..');
 const readJson = p => JSON.parse(fs.readFileSync(p, 'utf-8'));
 
 const SAMPLE_IDS = [
+  'sports.american_football',
+  'sports.hiking',
+  'lifestyle.game_nights',
+  'transport.car_meets',
   'sports.badminton',
   'gaming.chess',
   'wellness.weightlifting',

@@ -1,0 +1,30 @@
+{
+  "version": "v1",
+  "purpose": "Launch-first rights-safe image pilot spanning USA, Hong Kong, manual, derived, hard-case, and Part 16 interests.",
+  "ids": [
+    "sports.american_football",
+    "sports.hiking",
+    "sports.badminton",
+    "gaming.board",
+    "outdoors.bouldering",
+    "food.coffee",
+    "travel.roadtrip",
+    "photography.general",
+    "crafts.diy",
+    "technology.ai",
+    "learning.campus_life",
+    "lifestyle.game_nights",
+    "pets.dogs",
+    "fashion.streetwear",
+    "music.k_pop",
+    "transport.car_meets"
+  ],
+  "policy": {
+    "default_model": "flux-2/edit",
+    "fallback_model": "gemini-25-flash-image/edit",
+    "premium_model": "nano-banana-pro/edit",
+    "generate_only_if_baseline_art_eligible": true,
+    "reference_style": "references/zync-card-style-reference.png",
+    "output": "tools/card_art/output/launch_v1"
+  }
+}

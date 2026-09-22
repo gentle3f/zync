@@ -1373,6 +1373,122 @@
           "generic locks, mechanisms, or props"
         ]
       }
+    },
+    {
+      "match": {
+        "id": "sports.american_football"
+      },
+      "patch": {
+        "art_category": "sports",
+        "archetype": "solo_action",
+        "visual_variant": "front_pressure",
+        "subject_template": "An American football player in generic unbranded helmet and shoulder pads actively carrying, catching, or preparing to throw one brown oval American football during a live play",
+        "environment_template": "A believable generic American football field with yard-line geometry and end-zone context, with no team branding or readable stadium text",
+        "recognition_anchors": [
+          "American football helmet and shoulder pads",
+          "one brown oval American football",
+          "American football yard-line field geometry"
+        ],
+        "must_include": [
+          "generic unbranded helmet and shoulder pads",
+          "exactly one brown oval American football",
+          "yard-line field context"
+        ],
+        "avoid": [
+          "soccer ball",
+          "rugby scrum or rugby kit",
+          "round ball",
+          "team logos or mascots",
+          "readable jersey names or numbers",
+          "multiple footballs"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "sports.hiking"
+      },
+      "patch": {
+        "art_category": "nature",
+        "archetype": "nature_immersion",
+        "visual_variant": "trail_approach",
+        "subject_template": "A hiker actively walking a clearly readable trail with natural forward movement, practical day-hike gear, and a small backpack",
+        "environment_template": "A believable woodland, hillside, coastal, or mountain hiking trail with terrain and path cues supporting the journey rather than dominating it",
+        "recognition_anchors": [
+          "person visibly walking a hiking trail",
+          "small backpack or practical day-hike gear",
+          "clear natural trail or path"
+        ],
+        "must_include": [
+          "active walking posture",
+          "visible hiking trail",
+          "practical hiking gear or small backpack"
+        ],
+        "avoid": [
+          "running or sprinting posture",
+          "generic landscape with no hiker",
+          "mountaineering rope or technical climbing gear",
+          "travel-postcard composition"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "lifestyle.game_nights"
+      },
+      "patch": {
+        "art_category": "gaming",
+        "archetype": "group_play",
+        "visual_variant": "eye_level_reaction",
+        "subject_template": "Three to four friends actively playing a tabletop game during Game Nights, reacting naturally to one shared move around a central play surface",
+        "environment_template": "A warm believable home, dorm, cafe, or community-room game night with the game surface as the social focal point",
+        "recognition_anchors": [
+          "central board or card-game play surface",
+          "multiple engaged reacting players",
+          "visible game pieces, cards, or dice"
+        ],
+        "must_include": [
+          "three to four engaged players",
+          "one clearly readable tabletop game activity",
+          "hands interacting with pieces, cards, or dice"
+        ],
+        "avoid": [
+          "generic dinner party",
+          "empty table",
+          "street-corner scene",
+          "video-game screen dominating the image",
+          "recognisable branded game artwork"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "transport.car_meets"
+      },
+      "patch": {
+        "art_category": "transport",
+        "archetype": "community_gathering",
+        "visual_variant": "shared_activity",
+        "subject_template": "A small group of car enthusiasts actively comparing and discussing two or three distinct generic unbranded cars at a casual Car Meet",
+        "environment_template": "A believable parking-lot, garage-courtyard, roadside, or enthusiast-event setting with several cars and natural social interaction, never a dealership",
+        "recognition_anchors": [
+          "two or three distinct generic unbranded cars",
+          "multiple enthusiasts actively comparing or discussing the cars",
+          "casual meet-up setting rather than showroom presentation"
+        ],
+        "must_include": [
+          "multiple engaged people",
+          "at least two clearly distinct unbranded cars",
+          "visible social comparison or enthusiast interaction"
+        ],
+        "avoid": [
+          "single hero car advertisement",
+          "dealership showroom",
+          "manufacturer logos or badges",
+          "readable license plates",
+          "racing-series branding"
+        ]
+      }
     }
   ],
   "hard_case_ids": [
