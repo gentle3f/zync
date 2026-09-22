@@ -3,6 +3,8 @@ import 'interest_locale_proper_names.dart';
 import 'interest_locale_generic_launch_v1.dart';
 import 'interest_locale_generic_launch_v2.dart';
 import 'interest_locale_generic_launch_v3.dart';
+import 'interest_locale_food_a.dart';
+import 'interest_locale_food_b.dart';
 import 'models.dart';
 
 class InterestLocaleRegistry {
@@ -128,6 +130,8 @@ class InterestLocaleRegistry {
     addGeneric(kInterestLocaleGenericLaunchV1Raw);
     addGeneric(kInterestLocaleGenericLaunchV2Raw);
     addGeneric(kInterestLocaleGenericLaunchV3Raw);
+    addGeneric(kInterestLocaleFoodARaw);
+    addGeneric(kInterestLocaleFoodBRaw);
 
     return Map.unmodifiable({
       for (final entry in result.entries)

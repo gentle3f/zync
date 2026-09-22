@@ -2,13 +2,12 @@
 
 ## Mandatory first read
 
-Before any write, commit, push, PR, CI, Vercel, deployment or external-infrastructure action, read and obey:
-
-`AI_STATE/OPERATING_RULES.md`
+Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
+CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_BULK_LOCALIZATION_STAGE_A.md`
+`AI_STATE/HANDOFF_20260922_BULK_LOCALIZATION_STAGE_B.md`
 
 Branch:
 
@@ -16,4 +15,4 @@ Branch:
 
 Current active task:
 
-> **Continue bulk localization from Stage A. Runtime has 4,054 interests; 2,502 are now explicit in all 8 locales. Translate the remaining 1,552 generic legacy rows into es/fr/pt/ja/ko, using deterministic locale-overlay batches and same-category collision audits. Prioritize food, music, gaming, learning and entertainment. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**
+> **Continue bulk localization from Stage B. Runtime has 4,054 interests; 2,831 are explicit in all 8 locales. Translate the remaining 1,223 generic rows into es/fr/pt/ja/ko. Next priority: music (294), gaming (237), learning (204), entertainment (183), then smaller categories (305). Keep Vercel, GitHub Actions, Production, Play and image generation closed.**

@@ -116,7 +116,7 @@ void main() {
   });
 
 
-  test('staged bulk localization covers 2502 rows across all eight locales', () {
+  test('staged bulk localization covers 2831 rows across all eight locales', () {
     final audit = InterestLocalizationAudit.run();
 
     expect(audit.total, 4054);
@@ -125,7 +125,7 @@ void main() {
     for (final locale in const ['es', 'fr', 'pt', 'ja', 'ko']) {
       expect(
         audit.missingForLocale(locale),
-        hasLength(1552),
+        hasLength(1223),
         reason: 'unexpected staged debt for $locale',
       );
     }
@@ -135,7 +135,7 @@ void main() {
         (locale) => (item.labels[locale]?.trim() ?? '').isNotEmpty,
       ),
     );
-    expect(fullyLocalized, hasLength(2502));
+    expect(fullyLocalized, hasLength(2831));
   });
 
   test('legacy launch interests resolve in the five newly localized languages', () {
@@ -145,6 +145,11 @@ void main() {
       ('Viagens pelo Japão', 'pt', 'travel.japan'),
       ('写真', 'ja', 'photography.general'),
       ('헬스·피트니스', 'ko', 'sports.gym'),
+      ('Cocina de Sichuan', 'es', 'food.sichuan'),
+      ('Cuisine japonaise', 'fr', 'food.japanese'),
+      ('Café de especialidade', 'pt', 'food.specialty_coffee'),
+      ('おまかせ', 'ja', 'food.omakase'),
+      ('마라샹궈', 'ko', 'food.dish.mala_xiang_guo'),
     ];
     for (final row in cases) {
       expect(
