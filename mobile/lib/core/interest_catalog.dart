@@ -240,6 +240,50 @@ class InterestCatalog {
     return rows.map((entry) => entry.key).toList(growable: false);
   }
 
+  /// A broad first-run sampler. One strong item from every top-level world is
+  /// shown before overall popularity fills the remaining slots, so onboarding
+  /// does not become a wall of whichever categories happened to receive the
+  /// oldest/smallest ranks.
+  static List<InterestDefinition> quickStart({
+    String region = 'global',
+    InterestPopularitySnapshot? popularity,
+    int limit = 24,
+  }) {
+    if (limit <= 0) return const <InterestDefinition>[];
+
+    final picked = <InterestDefinition>[];
+    final seen = <String>{};
+
+    for (final category in categories) {
+      final candidates = seed.where((item) => item.category == category).toList()
+        ..sort((a, b) => InterestRelevance.compare(
+              a,
+              b,
+              region: region,
+              popularity: popularity,
+            ));
+      if (candidates.isEmpty) continue;
+      final item = candidates.first;
+      if (seen.add(item.id)) picked.add(item);
+      if (picked.length >= limit) {
+        return picked.take(limit).toList(growable: false);
+      }
+    }
+
+    final fallback = seed.toList()
+      ..sort((a, b) => InterestRelevance.compare(
+            a,
+            b,
+            region: region,
+            popularity: popularity,
+          ));
+    for (final item in fallback) {
+      if (seen.add(item.id)) picked.add(item);
+      if (picked.length >= limit) break;
+    }
+    return picked.toList(growable: false);
+  }
+
   static List<InterestDefinition> popular({
     String? category,
     String? cluster,
