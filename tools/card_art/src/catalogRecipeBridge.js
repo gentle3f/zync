@@ -221,6 +221,9 @@ function matchesRule(item, match) {
   if (match.cluster && item.cluster !== match.cluster) return false;
   if (match.cluster_prefix && !(item.cluster === match.cluster_prefix || item.cluster.startsWith(`${match.cluster_prefix}/`))) return false;
   if (match.cluster_contains && !item.cluster.includes(match.cluster_contains)) return false;
+  if (match.id && item.id !== match.id) return false;
+  if (match.id_in && !match.id_in.includes(item.id)) return false;
+  if (match.id_prefix && !item.id.startsWith(match.id_prefix)) return false;
   if (match.id_contains && !item.id.includes(match.id_contains)) return false;
   return true;
 }
@@ -253,6 +256,7 @@ function deriveRecipe(item, defaults, policy) {
     category: profile.art_category,
     subcategory: null,
     archetype: profile.archetype,
+    ...(profile.visual_variant ? {visual_variant: profile.visual_variant} : {}),
     tier: item.rank <= rankMax ? 'common' : defaultTier,
     difficulty: hardCase ? 'hard_case' : 'normal',
     human_review_required: hardCase,
