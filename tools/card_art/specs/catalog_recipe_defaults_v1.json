@@ -537,6 +537,22 @@
   "profile_rules": [
     {
       "match": {
+        "category": "arts",
+        "cluster": "media_creation"
+      },
+      "patch": {
+        "art_category": "technology",
+        "archetype": "creator_workflow",
+        "subject_template": "A creator actively producing ${title}, with the defining recording, editing, drawing, audio, camera, or publishing workflow clearly visible",
+        "environment_template": "A believable unbranded creator studio, desk, recording space, editing setup, or production workspace appropriate to ${title}",
+        "must_include": [
+          "active human creation process",
+          "one medium-specific ${title} production tool or workflow cue"
+        ]
+      }
+    },
+    {
+      "match": {
         "category": "learning",
         "cluster": "campus"
       },
@@ -1228,6 +1244,133 @@
           "team collaboration",
           "presentation or case-work action",
           "no readable company names or slide text"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "id_in": [
+          "arts.podcasting",
+          "arts.voiceover"
+        ]
+      },
+      "patch": {
+        "visual_variant": "microphone_session"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "id_in": [
+          "arts.vlogging",
+          "arts.content_creation",
+          "arts.livestreaming",
+          "arts.online_video_creation",
+          "arts.short_form_video"
+        ]
+      },
+      "patch": {
+        "visual_variant": "camera_creation"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "id_in": [
+          "arts.video_editing",
+          "arts.motion_graphics",
+          "arts.sound_design",
+          "arts.audio_editing"
+        ]
+      },
+      "patch": {
+        "visual_variant": "editing_workstation"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "id_in": [
+          "arts.animation_production",
+          "arts.webcomics"
+        ]
+      },
+      "patch": {
+        "visual_variant": "drawing_animation"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "id_in": [
+          "arts.blogging",
+          "arts.newsletter_writing"
+        ]
+      },
+      "patch": {
+        "art_category": "technology",
+        "archetype": "creator_workflow",
+        "visual_variant": "writing_desk",
+        "subject_template": "A creator actively drafting and refining ${title}, with a clear writing/publishing workflow but no readable article or newsletter text",
+        "environment_template": "A calm unbranded writing desk, home studio, cafe, or creator workspace appropriate to ${title}",
+        "must_include": [
+          "active writing/editing posture",
+          "generic writing or publishing tools",
+          "no readable content text"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "gaming",
+        "id": "gaming.game_streaming"
+      },
+      "patch": {
+        "art_category": "technology",
+        "archetype": "creator_workflow",
+        "visual_variant": "stream_broadcast",
+        "subject_template": "A game streamer actively broadcasting a generic non-branded game, using microphone, camera, controls, and a clear live-production workflow",
+        "environment_template": "A believable unbranded home or creator streaming setup without platform logos, chat text, or copyrighted game characters",
+        "must_include": [
+          "active streamer",
+          "microphone or camera",
+          "generic game controls",
+          "broadcast-production context"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "gaming",
+        "id": "gaming.subgenre.modding_games"
+      },
+      "patch": {
+        "art_category": "technology",
+        "archetype": "tech_workspace",
+        "subject_template": "A game modder actively altering or building generic game content through a non-readable editor, assets, scripting, or level-design workflow",
+        "environment_template": "A believable unbranded PC creator workspace with generic game-development/modding tools and no copyrighted game assets",
+        "must_include": [
+          "active content modification workflow",
+          "generic editor or asset creation cue",
+          "no recognisable game IP"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "gaming",
+        "id": "gaming.escape_room_design"
+      },
+      "patch": {
+        "art_category": "arts_crafts",
+        "archetype": "creative_studio",
+        "subject_template": "A designer actively prototyping an Escape Room Design with physical puzzle components, locks, props, sketches-without-readable-text, and hands-on testing",
+        "environment_template": "A believable workshop or prototype room with generic puzzle mechanisms and no branded theme IP",
+        "must_include": [
+          "physical puzzle prototype",
+          "hands-on design/testing action",
+          "generic locks, mechanisms, or props"
         ]
       }
     }
