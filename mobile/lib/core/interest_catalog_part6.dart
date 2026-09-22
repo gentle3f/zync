@@ -108,7 +108,7 @@ lifestyle.volunteering|lifestyle|social|798|Volunteering|義工服務|志愿服�
 pets.dogs|pets|pets|805|Dogs|狗|狗|狗
 pets.cats|pets|pets|806|Cats|貓|猫|貓;猫
 pets.birds|pets|pets|807|Birds|雀鳥|鸟类|雀鳥;鸟
-pets.fish|pets|pets|808|Fishkeeping|養魚|养鱼|養魚;养鱼
+pets.fish|pets|pets|808|Fishkeeping|養魚|养鱼|養魚;养鱼;aquarium keeping;aquarium hobby;tropical fish
 pets.reptiles|pets|pets|809|Reptiles|爬蟲類寵物|爬宠|爬蟲類;爬宠
 pets.rabbits|pets|pets|810|Rabbits|兔仔|兔子|兔
 pets.hamsters|pets|pets|811|Hamsters|倉鼠|仓鼠|倉鼠;仓鼠
