@@ -121,4 +121,10 @@ outdoors.sunrise_hiking|outdoors|hiking|1914|Sunrise Hiking|日出行山|日出�
 outdoors.night_hiking|outdoors|hiking|1915|Night Hiking|夜行山|夜间徒步|night hike
 outdoors.urban_hiking|outdoors|hiking|1916|Urban Hiking|城市遠足|城市徒步|city hiking;urban walks
 outdoors.kayak_touring|outdoors|water|1917|Kayak Touring|獨木舟旅行|皮划艇旅行|sea kayak touring;kayaking trips
+sports.gravel_cycling|sports|cycling|1920|Gravel Cycling|碎石路單車|砾石路骑行|gravel biking;gravel riding
+sports.open_water_swimming|sports|water|1921|Open Water Swimming|公開水域游泳|公开水域游泳|open-water swimming;sea swimming
+arts.acrylic_painting|arts|visual_art|1922|Acrylic Painting|塑膠彩畫|丙烯画|acrylics;acrylic art
+technology.cad|technology|software|1923|CAD|電腦輔助設計|计算机辅助设计|computer aided design;computer-aided design
+learning.archaeology|learning|history|1924|Archaeology|考古學|考古学|archaeological studies
+learning.mythology|learning|knowledge|1925|Mythology|神話學|神话学|myths;world mythology
 ''');
