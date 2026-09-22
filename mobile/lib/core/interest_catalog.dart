@@ -510,11 +510,14 @@ class InterestCatalog {
     const preferred = [
       'sports', 'wellness', 'outdoors', 'gaming', 'music', 'entertainment',
       'food', 'travel', 'arts', 'crafts', 'technology', 'science', 'learning',
-      'transport', 'motorsport', 'collecting', 'fashion', 'lifestyle', 'pets',
-      'business',
+      'career', 'transport', 'motorsport', 'collecting', 'fashion',
+      'lifestyle', 'pets', 'business',
     ];
     final available = seed.map((item) => item.category).toSet();
-    return preferred.where(available.contains).toList(growable: false);
+    final ordered = preferred.where(available.contains).toList();
+    final unlisted = available.difference(preferred.toSet()).toList()..sort();
+    ordered.addAll(unlisted);
+    return List.unmodifiable(ordered);
   }
 }
 
