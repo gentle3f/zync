@@ -34,7 +34,7 @@ music.folk|music|music_genres|351|Folk Music|民謠|民谣|
 music.world_music|music|music_genres|352|World Music|世界音樂|世界音乐|
 music.soundtracks|music|music_genres|353|Film & Game Soundtracks|電影與遊戲配樂|电影与游戏配乐|ost
 music.singing|music|music_making|360|Singing|唱歌|唱歌|唱歌
-music.karaoke|music|music_making|361|Karaoke|卡拉 OK|卡拉 OK|卡拉OK
+music.karaoke|music|music_making|361|Karaoke|卡拉 OK|卡拉 OK|卡拉OK;KTV;karaoke night;karaoke nights
 music.guitar|music|music_making|362|Guitar|結他|吉他|結他;吉他
 music.piano|music|music_making|363|Piano|鋼琴|钢琴|鋼琴;钢琴
 music.drums|music|music_making|364|Drums|鼓|鼓|鼓
