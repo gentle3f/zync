@@ -102,8 +102,11 @@ class InterestRelevance {
 
   static double baseScore(InterestDefinition item, String region) {
     final r = math.max(0, item.rank);
-    final global = (96 - 12 * math.log(1 + (r / 100))).clamp(35.0, 96.0);
-    return (global + _regionalBoost(item, InterestRegion.canonical(region)))
+    final rankPrior = (96 - 12 * math.log(1 + (r / 100))).clamp(35.0, 96.0);
+    final launchAudience = _launchAudienceBoost(item);
+    final actionability = _actionabilityBoost(item);
+    final regional = _regionalBoost(item, InterestRegion.canonical(region));
+    return ((rankPrior * 0.55) + launchAudience + actionability + regional)
         .clamp(10.0, 100.0);
   }
 
@@ -140,6 +143,131 @@ class InterestRelevance {
     return rankOrder != 0 ? rankOrder : a.id.compareTo(b.id);
   }
 
+
+  /// Rerank broad discovery so a legacy rank block cannot turn onboarding into
+  /// a wall of one category or one fine-grained cluster.
+  static List<InterestDefinition> diversified(
+    Iterable<InterestDefinition> source, {
+    required String region,
+    InterestPopularitySnapshot? popularity,
+    required int limit,
+  }) {
+    if (limit <= 0) return const <InterestDefinition>[];
+    final remaining = source.toList()
+      ..sort((a, b) => compare(
+            a,
+            b,
+            region: region,
+            popularity: popularity,
+          ));
+    final picked = <InterestDefinition>[];
+    final categoryCounts = <String, int>{};
+    final clusterCounts = <String, int>{};
+
+    while (picked.length < limit && remaining.isNotEmpty) {
+      final early = picked.length < 12;
+      final categoryCap = early ? 3 : 6;
+      final clusterCap = early ? 1 : 3;
+      InterestDefinition? best;
+      var bestAdjusted = double.negativeInfinity;
+
+      for (final item in remaining) {
+        final categoryCount = categoryCounts[item.category] ?? 0;
+        final clusterCount = clusterCounts[item.cluster] ?? 0;
+        if (categoryCount >= categoryCap || clusterCount >= clusterCap) continue;
+
+        var adjusted = score(item, region: region, popularity: popularity)
+            - (categoryCount * 1.2)
+            - (clusterCount * 3.0);
+        if (picked.isNotEmpty && picked.last.category == item.category) {
+          adjusted -= 1.5;
+        }
+        if (picked.reversed.take(4).any((row) => row.cluster == item.cluster)) {
+          adjusted -= 2.0;
+        }
+        if (adjusted > bestAdjusted) {
+          bestAdjusted = adjusted;
+          best = item;
+        }
+      }
+
+      best ??= remaining.first;
+      remaining.remove(best);
+      picked.add(best);
+      categoryCounts[best.category] = (categoryCounts[best.category] ?? 0) + 1;
+      clusterCounts[best.cluster] = (clusterCounts[best.cluster] ?? 0) + 1;
+    }
+    return List.unmodifiable(picked);
+  }
+
+  static const Set<String> _audienceHigh = {
+    'sports.gym', 'gaming.video', 'media.movies', 'travel.general',
+    'food.coffee', 'music.pop', 'sports.running', 'sports.hiking',
+    'sports.basketball', 'media.anime', 'photography.general', 'gaming.board',
+    'food.cooking', 'books.reading', 'technology.ai', 'music.concerts',
+    'fashion.streetwear', 'learning.languages', 'outdoors.cycling',
+    'outdoors.swimming', 'outdoors.bouldering', 'lifestyle.local_events',
+    'lifestyle.escape_rooms', 'sports.run_clubs', 'food.cafe_hopping',
+    'arts.dance', 'sports.american_football', 'sports.badminton',
+  };
+
+  static const Set<String> _audienceMedium = {
+    'media.manga', 'technology.gadgets', 'music.rock', 'outdoors.camping',
+    'travel.roadtrip', 'food.japanese', 'fashion.sneakers',
+    'fashion.skincare', 'fashion.makeup', 'lifestyle.volunteering',
+    'lifestyle.city_walks', 'arts.photo_walks', 'music.k_pop',
+    'music.cantopop', 'music.karaoke', 'sports.table_tennis',
+    'sports.pickleball', 'sports.football', 'sports.baseball', 'travel.japan',
+    'learning.language_exchange', 'learning.student_societies',
+    'learning.campus_events', 'lifestyle.game_nights', 'learning.campus_life',
+    'sports.college_sports', 'sports.sports_watch_parties',
+    'transport.car_meets', 'outdoors.state_parks',
+    'entertainment.anime_conventions', 'lifestyle.online_communities',
+    'entertainment.memes', 'lifestyle.study_cafes',
+    'arts.painting_socials', 'lifestyle.pop_up_markets',
+    'food.late_night_eats',
+  };
+
+  static const Set<String> _audienceLight = {
+    'outdoors.night_hiking', 'lifestyle.cat_cafes', 'gaming.mahjong',
+    'lifestyle.shopping', 'lifestyle.thrifting', 'lifestyle.craft_markets',
+    'collecting.capsule_toys', 'gaming.claw_machines',
+    'lifestyle.photo_booths', 'food.bubble_tea', 'food.hot_pot',
+    'food.dessert_hunting', 'travel.staycations', 'learning.study_groups',
+    'arts.kpop_dance', 'sports.american_football_fandom',
+    'sports.college_football', 'sports.fantasy_football', 'sports.tailgating',
+    'sports.recreational_sports_leagues', 'transport.pickup_trucks',
+    'learning.greek_life', 'learning.homecoming',
+    'entertainment.film_festivals', 'pets.dog_parks',
+    'wellness.reformer_pilates',
+  };
+
+  static double _launchAudienceBoost(InterestDefinition item) {
+    if (_audienceHigh.contains(item.id)) return 25;
+    if (_audienceMedium.contains(item.id)) return 18;
+    if (_audienceLight.contains(item.id)) return 10;
+    return 0;
+  }
+
+  static double _actionabilityBoost(InterestDefinition item) {
+    final cluster = item.cluster;
+    const activeClusters = {
+      'social', 'campus', 'fitness', 'photography', 'coffee', 'dance',
+      'running', 'hiking', 'cycling', 'tabletop',
+    };
+    var boost = 0.0;
+    if (activeClusters.any(
+      (value) => cluster == value || cluster.startsWith('$value/'),
+    )) {
+      boost += 4;
+    }
+    if (const {'lifestyle', 'arts', 'food', 'travel', 'wellness'}
+        .contains(item.category)) {
+      boost += 2;
+    }
+    return boost;
+  }
+
   static InterestSignalCount? _combine(
     InterestSignalCount? previous,
     InterestSignalCount? older,
@@ -173,45 +301,39 @@ class InterestRelevance {
     switch (region) {
       case 'hk':
       case 'mo':
-        if (id == 'music.cantopop') boost += 25;
-        if (clusterStarts('music/hk_cantopop')) boost += 22;
-        if (id == 'gaming.mahjong') boost += 20;
-        if (id == 'sports.badminton') boost += 12;
-        if (id == 'sports.hiking') boost += 16;
-        if (id == 'music.karaoke') boost += 10;
         if (inIds({
-          'food.hong_kong', 'food.cantonese', 'food.dim_sum',
-          'entertainment.movie_subgenre.hong_kong_action_cinema',
-          'entertainment.movie_subgenre.hong_kong_new_wave',
-          'entertainment.modern_film.infernal_affairs',
-          'entertainment.modern_film.in_the_mood_for_love',
-          'entertainment.modern_film.chungking_express',
-          'entertainment.modern_film.fallen_angels',
-          'entertainment.modern_film.happy_together',
-          'entertainment.modern_film.a_better_tomorrow',
-          'entertainment.modern_film.hard_boiled',
-          'entertainment.modern_film.police_story',
-          'entertainment.modern_film.drunken_master',
-          'entertainment.modern_film.kung_fu_hustle',
-          'entertainment.modern_film.shaolin_soccer',
-          'entertainment.modern_film.ip_man',
-          'entertainment.modern_film.the_grandmaster',
+          'sports.hiking', 'sports.badminton', 'travel.japan',
+          'music.cantopop', 'music.k_pop', 'food.cafe_hopping',
+          'music.karaoke', 'arts.photo_walks', 'outdoors.night_hiking',
         })) {
-          boost += 18;
+          boost += 20;
+        } else if (inIds({
+          'sports.gym', 'gaming.video', 'media.anime', 'photography.general',
+          'photography.street', 'gaming.board', 'sports.basketball',
+          'sports.table_tennis', 'outdoors.bouldering', 'music.concerts',
+          'sports.run_clubs', 'lifestyle.escape_rooms', 'lifestyle.city_walks',
+          'lifestyle.local_events', 'learning.student_societies',
+          'learning.campus_events', 'learning.language_exchange',
+          'food.bubble_tea', 'food.hot_pot', 'food.dessert_hunting',
+          'fashion.streetwear', 'lifestyle.study_cafes',
+          'arts.painting_socials', 'lifestyle.pop_up_markets',
+          'food.late_night_eats',
+        })) {
+          boost += 12;
+        } else if (inIds({
+          'travel.korea', 'travel.staycations', 'learning.study_groups',
+          'lifestyle.cat_cafes', 'outdoors.dragon_boat', 'arts.kpop_dance',
+          'gaming.mahjong', 'lifestyle.shopping', 'lifestyle.thrifting',
+          'lifestyle.craft_markets', 'collecting.capsule_toys',
+          'gaming.claw_machines', 'lifestyle.photo_booths',
+          'fashion.sneakers', 'fashion.skincare', 'fashion.makeup',
+          'outdoors.urban_hiking',
+        })) {
+          boost += 6;
         }
-        if (inIds({
-          'food.dish.cantonese_roast_meat',
-          'food.dish.char_siu',
-          'food.dish.roast_goose',
-          'food.dish.claypot_rice',
-          'food.dish.wonton_noodles',
-          'food.dish.beef_brisket_noodles',
-          'food.dish.hong_kong_milk_tea',
-          'food.dish.pineapple_bun',
-          'food.dish.egg_tart',
-          'food.dish.french_toast_hong_kong_style',
-        })) {
-          boost += 18;
+        if (clusterStarts('music/hk_cantopop')) boost += 8;
+        if (inIds({'food.hong_kong', 'food.cantonese', 'food.dim_sum'})) {
+          boost += 4;
         }
         break;
       case 'tw':
@@ -274,9 +396,26 @@ class InterestRelevance {
         }
         break;
       case 'us':
-        if (id == 'sports.american_football') boost += 22;
-        if (id == 'sports.baseball') boost += 16;
-        if (id == 'sports.basketball') boost += 14;
+        if (inIds({
+          'sports.american_football', 'sports.college_sports',
+          'sports.college_football', 'learning.campus_life',
+          'outdoors.state_parks',
+        })) {
+          boost += 20;
+        } else if (inIds({
+          'sports.basketball', 'sports.baseball', 'sports.pickleball',
+          'travel.roadtrip', 'transport.car_meets',
+          'sports.sports_watch_parties', 'lifestyle.game_nights',
+        })) {
+          boost += 12;
+        } else if (inIds({
+          'sports.gym', 'gaming.video', 'media.movies', 'music.pop',
+          'food.coffee', 'sports.hiking', 'media.anime', 'gaming.board',
+          'music.concerts', 'sports.running', 'entertainment.memes',
+          'lifestyle.online_communities', 'entertainment.anime_conventions',
+        })) {
+          boost += 6;
+        }
         break;
       case 'gb':
         if (id == 'sports.football') boost += 18;

@@ -1,12 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/interest_catalog.dart';
+import 'package:zync/core/interest_catalog_part16.dart';
+import 'package:zync/core/interest_localization.dart';
 import 'package:zync/core/matching_service.dart';
 import 'package:zync/core/models.dart';
 
 void main() {
   test('bundled catalog reaches deep V1 coverage, stays unique, and preserves legacy IDs', () {
-    expect(InterestCatalog.count, greaterThanOrEqualTo(3700));
-    expect(InterestCatalog.count, lessThanOrEqualTo(4200));
+    expect(InterestCatalog.count, 4054);
     expect(InterestCatalog.seed.map((item) => item.id).toSet(), hasLength(InterestCatalog.count));
 
     for (final legacyId in const [
@@ -275,6 +276,79 @@ void main() {
     final represented = quick.map((item) => item.category).toSet();
     expect(represented, containsAll(InterestCatalog.categories));
     expect(represented.length, InterestCatalog.categories.length);
+  });
+
+
+  test('Part 16 is searchable in every launch locale', () {
+    final cases = <(String, String, String)>[
+      ('Afición al fútbol americano', 'es', 'sports.american_football_fandom'),
+      ('Marchés éphémères', 'fr', 'lifestyle.pop_up_markets'),
+      ('Fãs de basquetebol', 'pt', 'sports.basketball_fandom'),
+      ('大学スポーツ', 'ja', 'sports.college_sports'),
+      ('스터디 카페', 'ko', 'lifestyle.study_cafes'),
+      ('車聚', 'zh-Hant', 'transport.car_meets'),
+      ('夜宵', 'zh-Hans', 'food.late_night_eats'),
+    ];
+    for (final row in cases) {
+      expect(
+        InterestCatalog.search(row.$1, row.$2).first.id,
+        row.$3,
+        reason: 'localized search failed for ${row.$1} (${row.$2})',
+      );
+    }
+  });
+
+  test('Part 16 carries explicit labels for all eight supported locales', () {
+    expect(kInterestCatalogPart16Ids, hasLength(119));
+    for (final id in kInterestCatalogPart16Ids) {
+      final item = InterestCatalog.byId(id);
+      expect(item, isNotNull, reason: 'Part 16 ID missing: $id');
+      for (final locale in InterestLocaleRegistry.supportedLocales) {
+        expect(
+          item!.labels[locale]?.trim(),
+          isNotEmpty,
+          reason: '$id missing explicit $locale label',
+        );
+      }
+    }
+  });
+
+  test('USA and Hong Kong broad discovery use launch-sector ranking with diversity', () {
+    final us = InterestCatalog.search('', 'en', region: 'us', limit: 30);
+    final hk = InterestCatalog.search('', 'zh-Hant', region: 'hk', limit: 30);
+
+    expect(us.take(8).map((item) => item.id), contains('sports.american_football'));
+    expect(us.map((item) => item.id), containsAll(<String>[
+      'learning.campus_life',
+      'lifestyle.game_nights',
+      'outdoors.state_parks',
+      'sports.college_sports',
+      'transport.car_meets',
+    ]));
+
+    expect(hk.take(8).map((item) => item.id), containsAll(<String>[
+      'sports.hiking',
+      'sports.badminton',
+      'sports.gym',
+      'food.cafe_hopping',
+    ]));
+    expect(hk.map((item) => item.id), containsAll(<String>[
+      'media.anime',
+      'outdoors.bouldering',
+      'music.k_pop',
+      'lifestyle.local_events',
+      'music.cantopop',
+      'arts.photo_walks',
+      'music.karaoke',
+    ]));
+
+    for (final rows in [us.take(12), hk.take(12)]) {
+      final counts = <String, int>{};
+      for (final item in rows) {
+        counts[item.category] = (counts[item.category] ?? 0) + 1;
+      }
+      expect(counts.values.every((count) => count <= 3), isTrue);
+    }
   });
 
   test('category discovery remains bounded even with the deep catalog', () {

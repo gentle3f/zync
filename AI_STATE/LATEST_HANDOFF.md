@@ -10,11 +10,7 @@ This is a hard project rule, not an optional note.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_US_FIRST_INTEREST_EXPANSION_V1.md`
-
-Supporting machine-readable candidate checkpoint:
-
-`AI_STATE/US_FIRST_INTEREST_EXPANSION_CANDIDATES_V1.json`
+`AI_STATE/HANDOFF_20260922_US_HK_RANKING_LOCALIZATION_V1.md`
 
 Branch:
 
@@ -22,8 +18,8 @@ Branch:
 
 Current active task:
 
-> **Continue the USA-first interest expansion from the saved candidate JSON. Final-dedupe the 117 generic candidates against the 3,935 runtime catalog, resolve canonical-vs-alias decisions, then design the full per-locale interest label/alias architecture (English first, Spanish next) before activating Part 16. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required. Batch writes.**
+> **Continue from the activated 4,054-interest US/HK launch-sector checkpoint. Part 16 is 119/119 eight-locale certified. Next bulk-translate the remaining legacy 3,935 canonicals into es/fr/pt/ja/ko plus any explicit missing Chinese labels through the locale-overlay architecture, auditing collisions batch-by-batch. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**
 
-Previous card-art checkpoint, still valid but temporarily secondary:
+Previous candidate checkpoint remains historical input:
 
-`AI_STATE/HANDOFF_20260922_CATALOG_PROMPT_ROUTING_V32.md`
+`AI_STATE/US_FIRST_INTEREST_EXPANSION_CANDIDATES_V1.json`

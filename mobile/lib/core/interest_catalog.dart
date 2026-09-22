@@ -13,6 +13,8 @@ import 'interest_catalog_part12.dart';
 import 'interest_catalog_part13.dart';
 import 'interest_catalog_part14.dart';
 import 'interest_catalog_part15.dart';
+import 'interest_catalog_part16.dart';
+import 'interest_localization.dart';
 import 'interest_popularity_service.dart';
 import 'interest_relevance.dart';
 import 'models.dart';
@@ -20,23 +22,26 @@ import 'models.dart';
 class InterestCatalog {
   const InterestCatalog._();
 
-  static final List<InterestDefinition> seed = List.unmodifiable([
-    ...kInterestCatalogPart1,
-    ...kInterestCatalogPart2,
-    ...kInterestCatalogPart3,
-    ...kInterestCatalogPart4,
-    ...kInterestCatalogPart5,
-    ...kInterestCatalogPart6,
-    ...kInterestCatalogPart7,
-    ...kInterestCatalogPart8,
-    ...kInterestCatalogPart9,
-    ...kInterestCatalogPart10,
-    ...kInterestCatalogPart11,
-    ...kInterestCatalogPart12,
-    ...kInterestCatalogPart13,
-    ...kInterestCatalogPart14,
-    ...kInterestCatalogPart15,
-  ]);
+  static final List<InterestDefinition> seed = List.unmodifiable(
+    <InterestDefinition>[
+      ...kInterestCatalogPart1,
+      ...kInterestCatalogPart2,
+      ...kInterestCatalogPart3,
+      ...kInterestCatalogPart4,
+      ...kInterestCatalogPart5,
+      ...kInterestCatalogPart6,
+      ...kInterestCatalogPart7,
+      ...kInterestCatalogPart8,
+      ...kInterestCatalogPart9,
+      ...kInterestCatalogPart10,
+      ...kInterestCatalogPart11,
+      ...kInterestCatalogPart12,
+      ...kInterestCatalogPart13,
+      ...kInterestCatalogPart14,
+      ...kInterestCatalogPart15,
+      ...kInterestCatalogPart16,
+    ].map(InterestLocaleRegistry.apply),
+  );
 
   static final Map<String, InterestDefinition> _byId = {
     for (final item in seed) item.id: item,
@@ -44,15 +49,18 @@ class InterestCatalog {
 
   /// Pre-normalized once per process so typing into search never has to rebuild
   /// thousands of normalized label/alias strings on every keystroke.
-  static final List<_InterestSearchRow> _searchIndex = [
-    for (final item in seed)
-      _InterestSearchRow(
-        item: item,
-        terms: _searchTerms(item),
-        normalizedId: normalizeText(item.id.replaceAll('.', ' ').replaceAll('_', ' ')),
-        normalizedCategory: normalizeText(item.category),
-      ),
-  ];
+  static final Map<String, List<_InterestSearchRow>> _searchIndexes = {
+    for (final locale in InterestLocaleRegistry.supportedLocales)
+      locale: [
+        for (final item in seed)
+          _InterestSearchRow(
+            item: item,
+            terms: _searchTerms(item, locale),
+            normalizedId: normalizeText(item.id.replaceAll('.', ' ').replaceAll('_', ' ')),
+            normalizedCategory: normalizeText(item.category),
+          ),
+      ],
+  };
 
   /// Exact terms may intentionally map to more than one canonical concept
   /// across categories (for example Persona as a film and a game franchise).
@@ -176,21 +184,31 @@ class InterestCatalog {
   }) {
     final q = normalizeText(query);
     if (q.isEmpty) {
-      final items = (category == null || category.isEmpty
-              ? seed
-              : seed.where((item) => item.category == category))
-          .toList()
+      final items = category == null || category.isEmpty
+          ? seed
+          : seed.where((item) => item.category == category);
+      if (category == null || category.isEmpty) {
+        return InterestRelevance.diversified(
+          items,
+          region: region,
+          popularity: popularity,
+          limit: limit,
+        );
+      }
+      final sorted = items.toList()
         ..sort((a, b) => InterestRelevance.compare(
               a,
               b,
               region: region,
               popularity: popularity,
             ));
-      return items.take(limit).toList(growable: false);
+      return sorted.take(limit).toList(growable: false);
     }
 
+    final localeCode = InterestLocaleRegistry.canonicalLocale(locale);
+    final searchIndex = _searchIndexes[localeCode] ?? _searchIndexes['en']!;
     final scored = <({InterestDefinition item, int score})>[];
-    for (final row in _searchIndex) {
+    for (final row in searchIndex) {
       if (category != null && category.isNotEmpty && row.item.category != category) continue;
       final score = _searchScore(row, q);
       if (score != null) scored.add((item: row.item, score: score));
@@ -304,6 +322,15 @@ class InterestCatalog {
         return path.l3 == subcluster;
       });
     }
+    if ((category == null || category.isEmpty) &&
+        (cluster == null || cluster.isEmpty)) {
+      return InterestRelevance.diversified(
+        items,
+        region: region,
+        popularity: popularity,
+        limit: limit,
+      );
+    }
     final sorted = items.toList()
       ..sort((a, b) => InterestRelevance.compare(
             a,
@@ -412,10 +439,12 @@ class InterestCatalog {
     return text;
   }
 
-  static Set<String> _searchTerms(InterestDefinition item) {
+  static Set<String> _searchTerms(InterestDefinition item, String locale) {
     return {
-      ...item.labels.values.map(normalizeText),
+      normalizeText(item.labelFor(locale)),
+      normalizeText(item.labels['en'] ?? ''),
       ...item.aliases.map(normalizeText),
+      ...InterestLocaleRegistry.aliasesFor(item.id, locale).map(normalizeText),
       normalizeText(item.id.split('.').last.replaceAll('_', ' ')),
     }..remove('');
   }
@@ -423,7 +452,10 @@ class InterestCatalog {
   static Set<String> _exactTerms(InterestDefinition item) {
     return {
       normalizeText(item.id),
-      ..._searchTerms(item),
+      ...item.labels.values.map(normalizeText),
+      ...item.aliases.map(normalizeText),
+      ...InterestLocaleRegistry.allLocalizedAliases(item.id).map(normalizeText),
+      normalizeText(item.id.split('.').last.replaceAll('_', ' ')),
     }..remove('');
   }
 

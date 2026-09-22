@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/core/interest_catalog.dart';
+import 'package:zync/core/interest_catalog_part16.dart';
+import 'package:zync/core/interest_localization.dart';
 import 'package:zync/core/interest_localization_audit.dart';
 import 'package:zync/core/interest_localization_policy.dart';
 import 'package:zync/core/models.dart';
@@ -73,6 +75,44 @@ void main() {
       InterestLocalizationPolicy.requiresChinese(destination),
       isFalse,
     );
+  });
+
+
+  test('Part 16 is an eight-locale certified translation batch', () {
+    final batch = InterestCatalog.seed
+        .where((item) => kInterestCatalogPart16Ids.contains(item.id))
+        .toList(growable: false);
+    final audit = InterestLocalizationAudit.run(catalog: batch);
+
+    expect(batch, hasLength(119));
+    expect(audit.fullLocaleComplete, isTrue);
+    for (final locale in InterestLocaleRegistry.supportedLocales) {
+      expect(
+        audit.missingForLocale(locale),
+        isEmpty,
+        reason: 'Part 16 is missing $locale translations',
+      );
+    }
+  });
+
+  test('Part 16 localized labels are unique inside each category and locale', () {
+    final batch = InterestCatalog.seed
+        .where((item) => kInterestCatalogPart16Ids.contains(item.id));
+    for (final locale in InterestLocaleRegistry.supportedLocales) {
+      final seen = <String, String>{};
+      final collisions = <String>[];
+      for (final item in batch) {
+        final label = InterestCatalog.normalizeText(item.labels[locale] ?? '');
+        final key = '${item.category}|$label';
+        final previous = seen[key];
+        if (previous == null) {
+          seen[key] = item.id;
+        } else if (previous != item.id) {
+          collisions.add('$locale:$label: $previous <> ${item.id}');
+        }
+      }
+      expect(collisions, isEmpty, reason: collisions.join('\n'));
+    }
   });
 
   test('audit identifies missing scripts independently', () {
