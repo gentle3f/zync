@@ -1,0 +1,672 @@
+{
+  "version": "v1",
+  "description": "Inheritance defaults for deriving auditable long-tail card-art recipes from the runtime interest catalog. Ordered profile_rules refine category_defaults. Manual recipes still win when rights-eligible.",
+  "tiering": {
+    "common_rank_max": 1200,
+    "default_tier": "long_tail"
+  },
+  "category_defaults": {
+    "sports": {
+      "art_category": "sports",
+      "archetype": "solo_action",
+      "subject_template": "One person actively doing ${title} at a decisive, unmistakable moment, with the key equipment or movement clearly visible",
+      "environment_template": "A coherent real-world ${title} setting with only the environmental cues needed to identify the activity",
+      "emotion": [
+        "energy",
+        "focus",
+        "challenge",
+        "satisfaction"
+      ],
+      "recognition_anchors": [
+        "the defining ${title} action",
+        "activity-specific equipment or body movement",
+        "a coherent real-world setting"
+      ],
+      "must_include": [
+        "one unmistakable ${title} action anchor"
+      ],
+      "avoid": [
+        "posed athlete portrait with no activity",
+        "wrong-sport equipment",
+        "brand logos or readable sponsor text"
+      ]
+    },
+    "wellness": {
+      "art_category": "wellness",
+      "archetype": "calm_wellness",
+      "subject_template": "A person actively practicing ${title} in a specific, believable wellness ritual rather than posing",
+      "environment_template": "A calm uncluttered indoor, outdoor, or home setting appropriate to ${title}",
+      "emotion": [
+        "calm",
+        "balance",
+        "renewal",
+        "self-mastery"
+      ],
+      "recognition_anchors": [
+        "one specific ${title} action",
+        "human participation",
+        "clear wellness context"
+      ],
+      "must_include": [
+        "a concrete ${title} action"
+      ],
+      "avoid": [
+        "generic wellness stock pose",
+        "medical claims or clinical treatment imagery",
+        "logos or readable product labels"
+      ]
+    },
+    "outdoors": {
+      "art_category": "nature",
+      "archetype": "nature_immersion",
+      "subject_template": "A person actively engaged in ${title}, with the defining outdoor action or gear large enough to read immediately",
+      "environment_template": "A believable natural or outdoor environment specifically supporting ${title}",
+      "emotion": [
+        "freedom",
+        "discovery",
+        "challenge",
+        "connection with nature"
+      ],
+      "recognition_anchors": [
+        "the defining ${title} action or gear",
+        "outdoor context that supports the activity",
+        "human participation where appropriate"
+      ],
+      "must_include": [
+        "one unmistakable ${title} activity anchor"
+      ],
+      "avoid": [
+        "generic landscape wallpaper",
+        "activity too small to identify",
+        "brand logos on gear"
+      ]
+    },
+    "gaming": {
+      "art_category": "gaming",
+      "archetype": "group_play",
+      "subject_template": "People actively enjoying ${title}, visibly reacting to the shared play or challenge",
+      "environment_template": "A warm believable play setting where the interaction and game activity are easy to read",
+      "emotion": [
+        "connection",
+        "challenge",
+        "fun",
+        "shared excitement"
+      ],
+      "recognition_anchors": [
+        "active play",
+        "engaged participant reaction",
+        "clear game or play-surface cue"
+      ],
+      "must_include": [
+        "a visible ${title} play interaction"
+      ],
+      "avoid": [
+        "generic social gathering with no game cue",
+        "readable game branding or copyrighted characters",
+        "screen soup"
+      ]
+    },
+    "music": {
+      "art_category": "music",
+      "archetype": "story_culture",
+      "subject_template": "A person actively listening to, exploring, or experiencing ${title}, with the musical experience visually specific without readable text",
+      "environment_template": "An intimate listening, rehearsal, record, home, or live-music setting appropriate to ${title}",
+      "emotion": [
+        "expression",
+        "connection",
+        "immersion",
+        "identity"
+      ],
+      "recognition_anchors": [
+        "a concrete music-listening or performance cue",
+        "human emotional engagement",
+        "genre or instrument context without logos"
+      ],
+      "must_include": [
+        "one visually specific ${title} music-experience anchor"
+      ],
+      "avoid": [
+        "generic stage lights with no musical act",
+        "readable artist/album text",
+        "recognisable branded or copyrighted artwork"
+      ]
+    },
+    "entertainment": {
+      "art_category": "culture",
+      "archetype": "story_culture",
+      "subject_template": "A person actively engaging with ${title} as a cultural or screen experience, with the medium itself clearly readable",
+      "environment_template": "A believable viewing, venue, fan, or cultural setting appropriate to ${title}",
+      "emotion": [
+        "immersion",
+        "anticipation",
+        "curiosity",
+        "shared experience"
+      ],
+      "recognition_anchors": [
+        "the cultural medium or experience",
+        "human participation",
+        "venue or viewing context"
+      ],
+      "must_include": [
+        "a clear ${title} experience anchor"
+      ],
+      "avoid": [
+        "recognisable copyrighted characters",
+        "franchise costumes or logos",
+        "vague artsy image with no experience"
+      ]
+    },
+    "food": {
+      "art_category": "food",
+      "archetype": "food_hero",
+      "subject_template": "A visually appetising, unmistakable ${title} moment with a human serving, preparing, sharing, or enjoying it",
+      "environment_template": "A believable dining, kitchen, market, cafe, or home context appropriate to ${title}",
+      "emotion": [
+        "delight",
+        "ritual",
+        "warmth",
+        "sensory pleasure"
+      ],
+      "recognition_anchors": [
+        "recognisable ${title} food or preparation",
+        "human context",
+        "dish or ingredient texture"
+      ],
+      "must_include": [
+        "a clearly recognisable ${title} food or preparation anchor"
+      ],
+      "avoid": [
+        "sterile menu photography",
+        "unrelated dishes competing for focus",
+        "brand packaging or readable labels"
+      ]
+    },
+    "travel": {
+      "art_category": "travel",
+      "archetype": "travel_vista",
+      "subject_template": "A traveler actively experiencing ${title}, with one coherent destination, route, or discovery cue",
+      "environment_template": "A geographically coherent travel scene appropriate to ${title}, avoiding impossible landmark montages",
+      "emotion": [
+        "wonder",
+        "freedom",
+        "discovery",
+        "possibility"
+      ],
+      "recognition_anchors": [
+        "traveler or journey action",
+        "destination or route-specific visual cue",
+        "coherent sense of place"
+      ],
+      "must_include": [
+        "one clear travel/discovery anchor for ${title}"
+      ],
+      "avoid": [
+        "flag-only shorthand",
+        "impossible landmark collage",
+        "generic scenic wallpaper"
+      ]
+    },
+    "arts": {
+      "art_category": "arts_crafts",
+      "archetype": "creative_studio",
+      "subject_template": "A person actively creating or practicing ${title}, with hands, tools, material, movement, or process clearly visible",
+      "environment_template": "A believable studio, rehearsal, field, or making setting appropriate to ${title}",
+      "emotion": [
+        "flow",
+        "expression",
+        "craft",
+        "creative pride"
+      ],
+      "recognition_anchors": [
+        "the defining ${title} process",
+        "relevant tool, material, movement, or medium",
+        "human participation"
+      ],
+      "must_include": [
+        "one unmistakable ${title} creation or practice anchor"
+      ],
+      "avoid": [
+        "finished object only with no creative action",
+        "generic craft table",
+        "brand logos or readable text"
+      ]
+    },
+    "crafts": {
+      "art_category": "arts_crafts",
+      "archetype": "creative_studio",
+      "subject_template": "Hands actively making ${title}, with the defining material, tool, and transformation process clearly visible",
+      "environment_template": "A warm believable workshop or home-making space appropriate to ${title}",
+      "emotion": [
+        "tactile satisfaction",
+        "focus",
+        "craft",
+        "creative pride"
+      ],
+      "recognition_anchors": [
+        "hands-on ${title} process",
+        "defining material",
+        "defining tool or technique"
+      ],
+      "must_include": [
+        "hands or active making process",
+        "a specific ${title} material/tool cue"
+      ],
+      "avoid": [
+        "finished product display only",
+        "clutter hiding the process",
+        "branded tools or packaging"
+      ]
+    },
+    "technology": {
+      "art_category": "technology",
+      "archetype": "tech_workspace",
+      "subject_template": "A person actively building, configuring, experimenting with, or creating through ${title}, with the subfield-specific interaction clearly visible",
+      "environment_template": "A modern but believable workspace, lab, maker bench, or home setup appropriate to ${title}",
+      "emotion": [
+        "curiosity",
+        "creation",
+        "problem-solving",
+        "future-facing energy"
+      ],
+      "recognition_anchors": [
+        "human actively using ${title}",
+        "subfield-specific hardware, output, or process",
+        "purposeful interaction"
+      ],
+      "must_include": [
+        "a concrete ${title} interaction"
+      ],
+      "avoid": [
+        "generic coder at desk",
+        "glowing brain or meaningless holograms",
+        "readable code, logos, or brand names"
+      ]
+    },
+    "science": {
+      "art_category": "science",
+      "archetype": "learning_exploration",
+      "subject_template": "A person actively observing, studying, measuring, comparing, or documenting ${title} through a concrete real-world subject",
+      "environment_template": "A field, lab, museum, natural, or study context genuinely appropriate to ${title}",
+      "emotion": [
+        "curiosity",
+        "wonder",
+        "discovery",
+        "understanding"
+      ],
+      "recognition_anchors": [
+        "a concrete ${title} subject or specimen",
+        "observation or investigation action",
+        "field or instrument context"
+      ],
+      "must_include": [
+        "one real-world ${title} evidence or observation anchor"
+      ],
+      "avoid": [
+        "meaningless glowing science graphics",
+        "text-heavy diagram",
+        "generic laboratory with no field-specific cue"
+      ]
+    },
+    "learning": {
+      "art_category": "learning",
+      "archetype": "learning_exploration",
+      "subject_template": "A person actively learning, examining, discussing, reading, solving, or exploring ${title} through a concrete source or activity",
+      "environment_template": "A believable library, museum, field, home, study, workshop, or discussion setting appropriate to ${title}",
+      "emotion": [
+        "curiosity",
+        "discovery",
+        "reflection",
+        "understanding"
+      ],
+      "recognition_anchors": [
+        "a concrete ${title} source, object, activity, or place",
+        "active learning",
+        "human curiosity"
+      ],
+      "must_include": [
+        "one tangible ${title} learning anchor"
+      ],
+      "avoid": [
+        "generic classroom stock photo",
+        "readable pages or diagrams carrying the concept",
+        "floating educational icons"
+      ]
+    },
+    "career": {
+      "art_category": "career",
+      "archetype": "professional_world",
+      "subject_template": "A professional actively doing ${title}, using a field-specific tool, object, environment, or collaboration cue",
+      "environment_template": "A believable real-world workplace or field setting specific to ${title}",
+      "emotion": [
+        "purpose",
+        "mastery",
+        "collaboration",
+        "ambition"
+      ],
+      "recognition_anchors": [
+        "profession-specific action",
+        "field-specific tool or environment",
+        "human work in progress"
+      ],
+      "must_include": [
+        "one unmistakable ${title} professional-work anchor"
+      ],
+      "avoid": [
+        "generic laptop office",
+        "corporate handshake stock photo",
+        "readable documents, logos, or screens"
+      ]
+    },
+    "business": {
+      "art_category": "career",
+      "archetype": "professional_world",
+      "subject_template": "People actively practicing ${title} through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment_template": "A believable work, shop, studio, meeting, market, or planning setting appropriate to ${title}",
+      "emotion": [
+        "agency",
+        "ambition",
+        "collaboration",
+        "progress"
+      ],
+      "recognition_anchors": [
+        "concrete ${title} task",
+        "human decision or collaboration",
+        "field-specific physical context"
+      ],
+      "must_include": [
+        "a visible ${title} work or decision-making anchor"
+      ],
+      "avoid": [
+        "generic corporate handshake",
+        "meaningless laptop meeting",
+        "readable financial numbers, logos, or company names"
+      ]
+    },
+    "transport": {
+      "art_category": "transport",
+      "archetype": "journey_machine",
+      "subject_template": "A person actively using, maintaining, building, or enjoying ${title}, with the generic unbranded machine or transport cue unmistakable",
+      "environment_template": "A coherent route, garage, workshop, station, road, track, or enthusiast setting appropriate to ${title}",
+      "emotion": [
+        "motion",
+        "freedom",
+        "craft",
+        "enthusiasm"
+      ],
+      "recognition_anchors": [
+        "generic unbranded ${title} machine or transport cue",
+        "human use or enthusiast action",
+        "coherent route/workshop context"
+      ],
+      "must_include": [
+        "one unmistakable unbranded ${title} machine or journey anchor"
+      ],
+      "avoid": [
+        "brand badges or logos",
+        "showroom advertising",
+        "generic parked vehicle with no hobby story"
+      ]
+    },
+    "motorsport": {
+      "art_category": "transport",
+      "archetype": "journey_machine",
+      "subject_template": "A motorsport enthusiast actively experiencing ${title} through a generic unbranded racing, karting, engineering, or trackside cue",
+      "environment_template": "A coherent generic circuit, garage, karting, simulator, or enthusiast environment without series branding",
+      "emotion": [
+        "speed",
+        "focus",
+        "engineering fascination",
+        "excitement"
+      ],
+      "recognition_anchors": [
+        "generic racing or motorsport action",
+        "track/garage context",
+        "human enthusiast cue"
+      ],
+      "must_include": [
+        "one generic unbranded motorsport anchor"
+      ],
+      "avoid": [
+        "series logos",
+        "team liveries",
+        "sponsor marks",
+        "recognisable racing brand trade dress"
+      ]
+    },
+    "collecting": {
+      "art_category": "collecting",
+      "archetype": "collection_object_hero",
+      "subject_template": "A collector carefully curating, comparing, arranging, or handling ${title}, with one hero object and a small coherent collection context",
+      "environment_template": "A warm home, hobby room, shelf, desk, fair, or archival setting appropriate to ${title}",
+      "emotion": [
+        "fascination",
+        "identity",
+        "pride",
+        "curation"
+      ],
+      "recognition_anchors": [
+        "recognisable ${title} object language",
+        "careful handling or curation",
+        "collection context"
+      ],
+      "must_include": [
+        "one clear ${title} hero object or collection cue"
+      ],
+      "avoid": [
+        "random pile",
+        "sterile catalogue product shot",
+        "brand logos or readable packaging"
+      ]
+    },
+    "fashion": {
+      "art_category": "lifestyle",
+      "archetype": "urban_discovery",
+      "subject_template": "A person actively practicing or exploring ${title}, with the style, making, grooming, or discovery action clear without logos",
+      "environment_template": "A believable home, studio, salon-like generic, street, market, or wardrobe context appropriate to ${title}",
+      "emotion": [
+        "self-expression",
+        "curiosity",
+        "confidence",
+        "creativity"
+      ],
+      "recognition_anchors": [
+        "specific ${title} styling, making, grooming, or browsing action",
+        "human participation",
+        "unbranded visual cues"
+      ],
+      "must_include": [
+        "one concrete ${title} action or style anchor"
+      ],
+      "avoid": [
+        "fashion-logo display",
+        "generic influencer pose",
+        "readable brand labels"
+      ]
+    },
+    "lifestyle": {
+      "art_category": "lifestyle",
+      "archetype": "urban_discovery",
+      "subject_template": "People actively enjoying ${title} as a believable everyday, social, family, home, or local-culture experience",
+      "environment_template": "A coherent lived-in, neighborhood, social, home, market, venue, or community setting appropriate to ${title}",
+      "emotion": [
+        "connection",
+        "curiosity",
+        "belonging",
+        "everyday joy"
+      ],
+      "recognition_anchors": [
+        "specific ${title} activity",
+        "human participation",
+        "believable social or lifestyle context"
+      ],
+      "must_include": [
+        "one clear ${title} lived-experience anchor"
+      ],
+      "avoid": [
+        "generic lifestyle stock pose",
+        "brand signage",
+        "activity identifiable only through text"
+      ]
+    },
+    "pets": {
+      "art_category": "pets",
+      "archetype": "companion_bond",
+      "subject_template": "A person naturally caring for, training, observing, or bonding through ${title}, with the animal or habitat clearly visible",
+      "environment_template": "A safe believable home, outdoor, training, rescue, stable, aquarium, or habitat setting appropriate to ${title}",
+      "emotion": [
+        "care",
+        "connection",
+        "trust",
+        "delight"
+      ],
+      "recognition_anchors": [
+        "species or animal/habitat cue",
+        "specific ${title} care, training, observation, or companionship action",
+        "safe human-animal interaction"
+      ],
+      "must_include": [
+        "a clearly identifiable animal or habitat relevant to ${title}"
+      ],
+      "avoid": [
+        "unsafe handling",
+        "costume-like anthropomorphism",
+        "generic pet portrait with no hobby action"
+      ]
+    }
+  },
+  "profile_rules": [
+    {
+      "match": {
+        "category": "arts",
+        "cluster_prefix": "photography"
+      },
+      "patch": {
+        "archetype": "lens_perspective"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "cluster": "photography"
+      },
+      "patch": {
+        "archetype": "lens_perspective"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "cluster": "dance"
+      },
+      "patch": {
+        "art_category": "music",
+        "archetype": "performance"
+      }
+    },
+    {
+      "match": {
+        "category": "arts",
+        "cluster": "performance"
+      },
+      "patch": {
+        "art_category": "culture",
+        "archetype": "performance"
+      }
+    },
+    {
+      "match": {
+        "category": "music",
+        "cluster_contains": "making"
+      },
+      "patch": {
+        "archetype": "performance"
+      }
+    },
+    {
+      "match": {
+        "category": "food",
+        "cluster": "coffee"
+      },
+      "patch": {
+        "archetype": "drink_ritual"
+      }
+    },
+    {
+      "match": {
+        "category": "food",
+        "cluster_prefix": "food/drinks"
+      },
+      "patch": {
+        "archetype": "drink_ritual"
+      }
+    },
+    {
+      "match": {
+        "category": "gaming",
+        "cluster_prefix": "tabletop"
+      },
+      "patch": {
+        "archetype": "group_play"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "id_contains": "climbing"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "vertical_adventure"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "id_contains": "bouldering"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "vertical_adventure"
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "cluster_prefix": "books"
+      },
+      "patch": {
+        "art_category": "culture",
+        "archetype": "story_culture"
+      }
+    },
+    {
+      "match": {
+        "category": "lifestyle",
+        "cluster": "social"
+      },
+      "patch": {
+        "archetype": "urban_discovery"
+      }
+    },
+    {
+      "match": {
+        "category": "lifestyle",
+        "cluster": "local_culture"
+      },
+      "patch": {
+        "art_category": "culture",
+        "archetype": "urban_discovery"
+      }
+    },
+    {
+      "match": {
+        "category": "collecting",
+        "id_contains": "lego"
+      },
+      "patch": {
+        "art_category": "collecting",
+        "archetype": "collection_object_hero"
+      }
+    }
+  ]
+}
