@@ -56,6 +56,9 @@ function main() {
     if (!Array.isArray(variants[recipe.archetype]) || variants[recipe.archetype].length === 0) {
       fail(`missing visual variants for archetype "${recipe.archetype}" (${row.canonical_interest_id})`);
     }
+    if (!variants[recipe.archetype].some(variant => variant.generic_eligible !== false)) {
+      fail(`archetype has no generic-eligible visual variant: "${recipe.archetype}"`);
+    }
     if (recipe.visual_variant &&
         !variants[recipe.archetype].some(variant => variant.id === recipe.visual_variant)) {
       fail(`unknown explicit visual variant "${recipe.visual_variant}" for ${row.canonical_interest_id}`);
