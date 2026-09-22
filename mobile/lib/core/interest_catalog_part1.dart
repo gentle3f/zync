@@ -67,7 +67,7 @@ sports.roller_skating|sports|skating|131|Roller Skating|滾軸溜冰|轮滑|
 sports.inline_skating|sports|skating|132|Inline Skating|直排輪|直排轮滑|
 outdoors.backpacking|outdoors|hiking|140|Backpacking|背包徒步|背包徒步|
 outdoors.mountaineering|outdoors|hiking|141|Mountaineering|登山|登山|
-outdoors.rock_climbing|outdoors|hiking|142|Rock Climbing|攀石|攀岩|
+outdoors.rock_climbing|outdoors|hiking|142|Rock Climbing|攀石|攀岩|climbing
 outdoors.bouldering|outdoors|hiking|143|Bouldering|抱石|抱石|
 outdoors.via_ferrata|outdoors|hiking|144|Via Ferrata|鐵索攀岩|铁索攀岩|
 outdoors.canyoning|outdoors|hiking|145|Canyoning|溪降|溪降|
