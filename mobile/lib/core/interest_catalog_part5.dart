@@ -32,7 +32,7 @@ crafts.knitting|crafts|crafts|585|Knitting|編織|编织|編織;编织
 crafts.crochet|crafts|crafts|586|Crochet|鉤針編織|钩针编织|鉤針;钩针
 crafts.sewing|crafts|crafts|587|Sewing|縫紉|缝纫|縫紉;缝纫
 crafts.embroidery|crafts|crafts|588|Embroidery|刺繡|刺绣|刺繡;刺绣
-crafts.leathercraft|crafts|crafts|589|Leathercraft|皮革工藝|皮革工艺|皮革工藝;皮具制作
+crafts.leathercraft|crafts|crafts|589|Leathercraft|皮革工藝|皮革工艺|皮革工藝;皮具制作;leatherworking
 crafts.woodworking|crafts|crafts|590|Woodworking|木工|木工|木工
 crafts.jewelry_making|crafts|crafts|591|Jewelry Making|首飾製作|首饰制作|首飾製作;首饰制作
 crafts.candle_making|crafts|crafts|592|Candle Making|蠟燭製作|蜡烛制作|蠟燭製作;蜡烛制作
@@ -44,7 +44,7 @@ crafts.diy|crafts|crafts|597|DIY Projects|DIY 手作|DIY 手工|手作;手工
 technology.generative_ai|technology|ai|605|Generative AI|生成式 AI|生成式 AI|生成式AI
 technology.chatgpt|technology|ai|606|ChatGPT|ChatGPT|ChatGPT|
 technology.machine_learning|technology|ai|607|Machine Learning|機器學習|机器学习|機器學習;机器学习
-technology.robotics|technology|ai|608|Robotics|機械人|机器人|機械人;机器人
+technology.robotics|technology|ai|608|Robotics|機械人|机器人|機械人;机器人;robotics club
 technology.computer_vision|technology|ai|609|Computer Vision|電腦視覺|计算机视觉|電腦視覺;计算机视觉
 technology.programming|technology|software|615|Programming|編程|编程|coding;編程;编程;coding practice
 technology.web_development|technology|software|616|Web Development|網站開發|网站开发|網站開發;网站开发
