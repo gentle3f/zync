@@ -29,15 +29,19 @@
       ]
     },
     "music": {
-      "palette_bias": "emotional stage or intimate ambient lighting",
+      "palette_bias": "emotional listening, rehearsal, or live-music lighting appropriate to the interest",
       "extra_rules": [
-        "instrument or performance act must be obvious"
+        "make the music experience obvious through listening medium, instrument, performer, rehearsal, or live context as appropriate",
+        "do not force an instrument or stage into a listening-only interest",
+        "avoid readable album art, artist branding, or named-rightsholder imagery"
       ]
     },
     "gaming": {
-      "palette_bias": "warm social atmosphere with readable game surface",
+      "palette_bias": "engaging interactive atmosphere with clear player-input and game-context readability",
       "extra_rules": [
-        "interaction between people matters as much as game objects"
+        "the player's interaction with the game must be visually obvious",
+        "show social interaction when it is intrinsic to the interest, but do not force extra people into solo digital play",
+        "keep game feedback generic and non-IP unless a rights-cleared recipe explicitly says otherwise"
       ]
     },
     "arts_crafts": {
