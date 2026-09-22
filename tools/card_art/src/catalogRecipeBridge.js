@@ -231,7 +231,7 @@ function matchesRule(item, match) {
 function deriveRecipe(item, defaults, policy) {
   const base = defaults.category_defaults[item.category];
   if (!base) throw new Error(`No card-art category default for runtime category "${item.category}" (${item.id})`);
-  let profile = structuredClone(base);
+  let profile = JSON.parse(JSON.stringify(base));
   for (const rule of defaults.profile_rules || []) {
     if (matchesRule(item, rule.match || {})) profile = { ...profile, ...(rule.patch || {}) };
   }
