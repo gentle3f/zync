@@ -14,7 +14,7 @@ arts.creative_writing|arts|writing|842|Creative Writing|創意寫作|创意写�
 arts.journaling|arts|writing|843|Journaling|寫手帳／日誌|写手账／日志|journal;diary;手帳;手账
 arts.food_photography|arts|photography|844|Food Photography|美食攝影|美食摄影|food photos;影食物;拍美食
 outdoors.foraging|outdoors|hiking|845|Foraging|野外採集|野外采集|wild food foraging
-lifestyle.parties|lifestyle|social|846|Parties & Social Gatherings|派對與聚會|派对与聚会|parties;social gatherings;聚會;聚会
+lifestyle.parties|lifestyle|social|846|Parties & Social Gatherings|派對與聚會|派对与聚会|parties;social gatherings;聚會;聚会;house parties;house party
 lifestyle.shopping|lifestyle|shopping|848|Shopping|行街購物|逛街购物|shopping;行街;逛街
 lifestyle.thrifting|lifestyle|shopping|849|Thrifting|二手尋寶|逛二手店|thrift shopping;second-hand shopping;二手店
 lifestyle.flea_markets|lifestyle|shopping|850|Flea Markets|跳蚤市場|跳蚤市场|flea market;二手市集
@@ -29,7 +29,7 @@ technology.pc_building|technology|hardware|859|PC Building|砌電腦|组装电�
 fashion.hair_styling|fashion|fashion|860|Hair Styling|髮型造型|发型造型|hairstyling;hair style
 fashion.fragrance|fashion|fashion|861|Fragrance|香水與香氛|香水与香氛|perfume;fragrances;scent
 transport.driving|transport|cars|862|Driving|駕駛|驾驶|drive;揸車;开车
-entertainment.stand_up_comedy|entertainment|live_comedy|863|Stand-up Comedy|棟篤笑／單口喜劇|单口喜剧|standup comedy;stand-up;棟篤笑;脱口秀
+entertainment.stand_up_comedy|entertainment|live_comedy|863|Stand-up Comedy|棟篤笑／單口喜劇|单口喜剧|standup comedy;stand-up;棟篤笑;脱口秀;comedy clubs;comedy club
 entertainment.podcasts|entertainment|audio|864|Podcasts|Podcast／播客|播客|podcast;播客
 entertainment.online_video|entertainment|screen|865|Online Video|網上影片|在线视频|online videos;web video
 entertainment.youtube|entertainment|platforms/brands|866|YouTube|YouTube|YouTube|youtube videos
