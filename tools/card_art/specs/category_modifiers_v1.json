@@ -70,6 +70,55 @@
       "extra_rules": [
         "keep hobby identity stronger than scenery"
       ]
+    },
+    "learning": {
+      "palette_bias": "warm intellectual atmosphere with clear human curiosity",
+      "extra_rules": [
+        "show the act of learning, examining, reading, discussing, or discovering rather than an abstract symbol",
+        "avoid classroom-stock imagery unless the interest specifically requires it"
+      ]
+    },
+    "lifestyle": {
+      "palette_bias": "warm contemporary lifestyle color with inviting social depth",
+      "extra_rules": [
+        "show a believable lived experience or social ritual",
+        "avoid generic influencer or stock-lifestyle posing"
+      ]
+    },
+    "pets": {
+      "palette_bias": "warm natural tones with expressive human-animal connection",
+      "extra_rules": [
+        "animal species and care/activity cues must be coherent",
+        "avoid costume-like anthropomorphism or unsafe handling"
+      ]
+    },
+    "career": {
+      "palette_bias": "polished real-world professional light with human warmth",
+      "extra_rules": [
+        "show profession-specific work, tools, environment, or collaboration",
+        "avoid generic laptop-office imagery when a field has distinctive cues"
+      ]
+    },
+    "transport": {
+      "palette_bias": "cinematic machine detail with strong route or motion context",
+      "extra_rules": [
+        "keep vehicles generic and unbranded",
+        "show use, journey, maintenance, or enthusiast context rather than showroom advertising"
+      ]
+    },
+    "science": {
+      "palette_bias": "clean exploratory light with tactile real-world scientific detail",
+      "extra_rules": [
+        "show observation, fieldwork, experiment, specimen, instrument, or evidence",
+        "avoid meaningless glowing science graphics"
+      ]
+    },
+    "collecting": {
+      "palette_bias": "curated warm display light with tactile object detail",
+      "extra_rules": [
+        "show curation, ownership, comparison, or careful handling",
+        "avoid random piles and marketplace catalogue shots"
+      ]
     }
   }
 }
