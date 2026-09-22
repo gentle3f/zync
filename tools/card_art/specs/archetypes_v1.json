@@ -425,6 +425,40 @@
         "wrong-sport equipment",
         "brand logos or sponsor marks"
       ]
+    },
+    "home_lifestyle": {
+      "feeling": [
+        "comfort",
+        "care",
+        "creativity",
+        "belonging"
+      ],
+      "composition": "Show a specific hands-on home, garden, family, organization, renovation, or everyday-living action inside a believable lived-in environment. The activity, not décor alone, is the hero.",
+      "camera": "Warm human-height medium or close-medium lifestyle framing.",
+      "recognition": "Specific home/family action plus the relevant room, plant, object, tool, or human interaction.",
+      "avoid": [
+        "generic interior-design showroom",
+        "empty decorative room",
+        "generic family stock pose",
+        "brand packaging or readable signage"
+      ]
+    },
+    "food_exploration": {
+      "feeling": [
+        "discovery",
+        "appetite",
+        "social warmth",
+        "curiosity"
+      ],
+      "composition": "Show people actively discovering, choosing, sharing, or tasting food in a market, dining, counter, café, or communal setting. The experience and food cues must both read.",
+      "camera": "Human-height medium or medium-wide experiential framing.",
+      "recognition": "Food/dining context plus active choosing, sharing, tasting, or exploration.",
+      "avoid": [
+        "single isolated menu-product shot",
+        "generic crowd with no food cue",
+        "readable restaurant branding or menu text",
+        "unrelated dishes overwhelming the experience"
+      ]
     }
   }
 }
