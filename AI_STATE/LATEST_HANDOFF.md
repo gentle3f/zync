@@ -2,7 +2,7 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_CARD_ART_BRIDGE_ACTIVITY_V31.md`
+`AI_STATE/HANDOFF_20260922_CATALOG_PROMPT_ROUTING_V32.md`
 
 Branch:
 
@@ -10,4 +10,4 @@ Branch:
 
 Current active task:
 
-> **Continue from the V3.1 catalog-scale bridge checkpoint: execute the pure local catalog-recipe preflight and full prompt compilation when command execution is available, then audit a stratified sample across every major archetype and all hard cases before any image generation. Keep image generation, Production and Play closed. Conserve GitHub Actions until the 2026-10-01 reset.**
+> **Continue from the V3.2 prompt-routing checkpoint: execute the pure local catalog recipe audit and 41-interest stratified prompt compiler when command execution is available, review the actual compiled prompts, then compile the full 2,092 rights-eligible prompt catalog. Keep image generation, Production and Play closed. Conserve GitHub Actions until the 2026-10-01 reset.**
