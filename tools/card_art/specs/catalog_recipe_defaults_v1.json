@@ -541,7 +541,12 @@
         "cluster": "home"
       },
       "patch": {
-        "archetype": "home_lifestyle"
+        "archetype": "home_lifestyle",
+        "subject_template": "A person actively doing ${title} through a specific home, garden, care, organization, renovation, or everyday-living task",
+        "environment_template": "A believable lived-in home, balcony, garden, workshop corner, or domestic setting specifically appropriate to ${title}",
+        "must_include": [
+          "one concrete ${title} home/living action"
+        ]
       }
     },
     {
@@ -550,7 +555,12 @@
         "cluster": "family"
       },
       "patch": {
-        "archetype": "home_lifestyle"
+        "archetype": "home_lifestyle",
+        "subject_template": "Family members actively sharing ${title} through a specific play, learning, care, or together-time activity",
+        "environment_template": "A believable home, community, park, play, or family setting appropriate to ${title}",
+        "must_include": [
+          "a specific ${title} family interaction"
+        ]
       }
     },
     {
@@ -671,7 +681,13 @@
       },
       "patch": {
         "art_category": "gaming",
-        "archetype": "strategy_table"
+        "archetype": "strategy_table",
+        "subject_template": "One to four players actively engaged in ${title} at a clear decision moment, with the board, cards, tiles, or pieces visibly driving the strategy",
+        "environment_template": "A focused home, club, cafe, tournament-like generic, or social table setting appropriate to ${title}, with no readable branding",
+        "must_include": [
+          "a clearly readable ${title} strategy surface or game objects",
+          "active human decision-making"
+        ]
       }
     },
     {
@@ -701,7 +717,12 @@
       },
       "patch": {
         "art_category": "sports",
-        "archetype": "fitness_training"
+        "archetype": "fitness_training",
+        "subject_template": "One person actively performing ${title} with correct body mechanics and the relevant training equipment or movement clearly visible",
+        "environment_template": "A believable gym, studio, training space, or outdoor exercise setting appropriate to ${title}",
+        "must_include": [
+          "one unmistakable ${title} exercise or training action"
+        ]
       }
     },
     {
@@ -740,7 +761,13 @@
         "cluster_prefix": "photography"
       },
       "patch": {
-        "archetype": "lens_perspective"
+        "archetype": "lens_perspective",
+        "subject_template": "A photographer actively framing or capturing ${title}, with camera/lens interaction and the target subject both clearly readable",
+        "environment_template": "A believable setting appropriate to ${title}, kept secondary to the act of framing and capture",
+        "must_include": [
+          "a camera or lens large enough to identify",
+          "active framing or capture posture"
+        ]
       }
     },
     {
@@ -759,7 +786,12 @@
       },
       "patch": {
         "art_category": "music",
-        "archetype": "performance"
+        "archetype": "performance",
+        "subject_template": "A dancer actively performing a defining ${title} movement, with body line, footwork, rhythm, or partner interaction clearly readable",
+        "environment_template": "A believable dance studio, stage, social dance floor, rehearsal, or cultural performance setting appropriate to ${title}",
+        "must_include": [
+          "a clearly readable ${title} dance movement or partner pattern"
+        ]
       }
     },
     {
@@ -769,7 +801,12 @@
       },
       "patch": {
         "art_category": "culture",
-        "archetype": "performance"
+        "archetype": "performance",
+        "subject_template": "A performer actively presenting or rehearsing ${title}, with the defining act, movement, prop, voice, or stage interaction clearly readable",
+        "environment_template": "A believable rehearsal, stage, cultural venue, street-performance, or theatre setting appropriate to ${title}",
+        "must_include": [
+          "one unmistakable ${title} performance action"
+        ]
       }
     },
     {
@@ -778,7 +815,12 @@
         "cluster_contains": "making"
       },
       "patch": {
-        "archetype": "performance"
+        "archetype": "performance",
+        "subject_template": "A musician actively performing, rehearsing, or creating ${title}, with the defining instrument, voice, ensemble role, or music-making action clearly visible",
+        "environment_template": "A believable rehearsal room, studio, home-practice, school, or generic live-performance setting appropriate to ${title}",
+        "must_include": [
+          "one unmistakable ${title} music-making action"
+        ]
       }
     },
     {
@@ -874,6 +916,102 @@
       },
       "patch": {
         "archetype": "story_culture"
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "id_in": [
+          "wellness.yoga",
+          "wellness.pilates",
+          "wellness.stretching",
+          "wellness.mobility"
+        ]
+      },
+      "patch": {
+        "art_category": "wellness",
+        "archetype": "calm_wellness",
+        "subject_template": "A person actively practicing ${title} with correct, calm body positioning and the defining movement clearly visible",
+        "environment_template": "A calm uncluttered studio, home, or outdoor setting appropriate to ${title}",
+        "must_include": [
+          "one clearly readable ${title} pose or movement"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id": "learning.philosophy"
+      },
+      "patch": {
+        "visual_variant": "discussion_object",
+        "subject_template": "Two people actively discussing Philosophy through a concrete question, book, object, or idea-focused conversation, with no readable text",
+        "environment_template": "A quiet library, study, cafe, campus, or home discussion setting that supports reflective conversation",
+        "must_include": [
+          "two engaged discussants",
+          "one tangible but non-text-dependent discussion anchor"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "learning",
+        "id": "learning.philosophy_discussions"
+      },
+      "patch": {
+        "visual_variant": "discussion_object",
+        "subject_template": "A small group actively discussing Philosophy, reacting thoughtfully to one shared object, book, or question without readable text",
+        "environment_template": "A quiet discussion-circle, library, cafe, campus, or home setting",
+        "must_include": [
+          "engaged face-to-face philosophical discussion"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "motorsport",
+        "id": "motorsport.sim_racing"
+      },
+      "patch": {
+        "art_category": "gaming",
+        "archetype": "digital_play",
+        "visual_variant": "desktop_focus",
+        "subject_template": "A sim-racing driver actively controlling a generic unbranded steering wheel and pedals, focused on a non-branded racing simulation",
+        "environment_template": "A believable home or simulator rig with seat, wheel, pedals, and generic racing feedback but no series/team branding",
+        "must_include": [
+          "generic steering wheel and pedals",
+          "active seated driving posture",
+          "non-branded racing simulation context"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "pets",
+        "id": "pets.dog_agility"
+      },
+      "patch": {
+        "archetype": "companion_bond",
+        "visual_variant": "training_action",
+        "subject_template": "A dog actively completing an agility obstacle while a handler safely cues and moves alongside it",
+        "environment_template": "A believable dog-agility training field or indoor course with generic jumps, tunnel, or weave poles",
+        "must_include": [
+          "dog in active agility movement",
+          "handler cue",
+          "at least one recognisable agility obstacle"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "transport",
+        "id_in": [
+          "transport.car_modification",
+          "transport.car_detailing"
+        ]
+      },
+      "patch": {
+        "visual_variant": "workshop_hands"
       }
     }
   ],
