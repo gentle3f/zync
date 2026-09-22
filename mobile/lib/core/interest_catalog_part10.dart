@@ -564,7 +564,7 @@ Kombucha|康普茶|康普茶
 Mocktails|無酒精雞尾酒|无酒精鸡尾酒
 Craft Soda|手工汽水|手工汽水
 Sparkling Water|氣泡水|气泡水
-Wine Appreciation|葡萄酒品鑑|葡萄酒品鉴
+Wine Appreciation|葡萄酒品鑑|wine tasting|葡萄酒品鉴
 Red Wine|紅酒|红酒
 White Wine|白葡萄酒|白葡萄酒
 Natural Wine|自然酒|自然酒
