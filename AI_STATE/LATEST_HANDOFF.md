@@ -7,7 +7,7 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260923_US_HK_ALIAS_V2.md`
+`AI_STATE/HANDOFF_20260923_US_HK_ALIAS_V3.md`
 
 Branch:
 
@@ -15,4 +15,4 @@ Branch:
 
 Current state:
 
-> **Eight-locale display labels remain complete for all 4,053 interests. USA Spanish + Hong Kong Traditional Chinese launch alias V1+V2 now contains 182 id-locale rows / 328 useful search terms. V2 was driven by a 97-interest launch-priority gap audit and adds only materially different colloquial queries; all staged same-category collision audits are 0. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**
+> **Eight-locale display labels remain complete for all 4,053 interests. USA Spanish + Hong Kong Traditional Chinese localized search alias V1+V2+V3 now contains 222 id-locale rows / 384 useful search terms. V3 expands cars, pets, social, fitness and food, with 0 same-category collisions in staged catalog/localized audits. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**

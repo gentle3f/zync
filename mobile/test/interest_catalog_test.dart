@@ -209,6 +209,30 @@ void main() {
     }
   });
 
+  test('USA Spanish and Hong Kong alias V3 expands cars pets social and fitness', () {
+    final cases = <(String, String, String)>[
+      ('carros', 'es', 'motorsport.cars'),
+      ('motos', 'es', 'transport.motorcycles'),
+      ('sacar al perro', 'es', 'pets.dog_walking'),
+      ('salir de fiesta', 'es', 'lifestyle.nightlife'),
+      ('parques de diversiones', 'es', 'lifestyle.theme_parks'),
+      ('levantar pesas', 'es', 'wellness.weightlifting'),
+      ('揸車', 'zh-Hant', 'transport.driving'),
+      ('老爺車', 'zh-Hant', 'transport.classic_cars'),
+      ('放狗', 'zh-Hant', 'pets.dog_walking'),
+      ('掃街', 'zh-Hant', 'food.street_food'),
+      ('夜蒲', 'zh-Hant', 'lifestyle.nightlife'),
+      ('拍拖', 'zh-Hant', 'lifestyle.date_nights'),
+    ];
+    for (final row in cases) {
+      expect(
+        InterestCatalog.search(row.$1, row.$2).first.id,
+        row.$3,
+        reason: 'launch alias V3 search failed for ${row.$1} (${row.$2})',
+      );
+    }
+  });
+
   test('localized alias packs merge instead of overwriting older aliases', () {
     expect(
       InterestLocaleRegistry.aliasesFor('sports.sports_watch_parties', 'es'),
