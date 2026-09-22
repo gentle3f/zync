@@ -7,7 +7,7 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260923_EIGHT_LOCALE_COMPLETE.md`
+`AI_STATE/HANDOFF_20260923_US_HK_ALIAS_V1.md`
 
 Branch:
 
@@ -15,4 +15,4 @@ Branch:
 
 Current state:
 
-> **Eight-locale display-label localization is complete: 4,053 / 4,053 canonical interests have explicit en, zh-Hant, zh-Hans, es, fr, pt, ja and ko labels. Full es/fr/pt/ja/ko source audit has 20,265 entries and 0 same-category collisions. Permanent hard tests now enforce completeness and localized-label uniqueness. Locale-specific aliases are not yet exhaustively translated. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**
+> **Eight-locale display labels remain complete for all 4,053 interests. USA Spanish + Hong Kong Traditional Chinese high-value search alias V1 is implemented as 163 id-locale rows / 294 alias terms, with 0 same-category collisions after QA. Localized alias packs now merge instead of overwrite, and the ambiguity hard gate now includes localized aliases. Keep Vercel, GitHub Actions, Production, Play and image generation closed unless genuinely required.**

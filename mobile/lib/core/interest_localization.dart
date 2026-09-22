@@ -1,4 +1,5 @@
 import 'interest_locale_part16.dart';
+import 'interest_locale_aliases_launch_v1.dart';
 import 'interest_locale_proper_names.dart';
 import 'interest_locale_generic_launch_v1.dart';
 import 'interest_locale_generic_launch_v2.dart';
@@ -170,21 +171,31 @@ class InterestLocaleRegistry {
 
   static Map<String, Map<String, List<String>>> _parseLocalizedAliases() {
     final result = <String, Map<String, List<String>>>{};
-    for (final line in kInterestLocaleAliasesPart16Raw.split('\n')) {
-      final trimmed = line.trim();
-      if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
-      final parts = trimmed.split('|');
-      if (parts.length != 3) {
-        throw StateError('Invalid localized alias row: $trimmed');
+
+    void addAliases(String raw) {
+      for (final line in raw.split('\n')) {
+        final trimmed = line.trim();
+        if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
+        final parts = trimmed.split('|');
+        if (parts.length != 3) {
+          throw StateError('Invalid localized alias row: $trimmed');
+        }
+        final locale = canonicalLocale(parts[1]);
+        final aliases = parts[2]
+            .split(';')
+            .map((value) => value.trim())
+            .where((value) => value.isNotEmpty);
+        final byLocale = result[parts[0]] ??= <String, List<String>>{};
+        final merged = <String>{};
+        merged.addAll(byLocale[locale] ?? const <String>[]);
+        merged.addAll(aliases);
+        byLocale[locale] = merged.toList(growable: false);
       }
-      final locale = canonicalLocale(parts[1]);
-      final aliases = parts[2]
-          .split(';')
-          .map((value) => value.trim())
-          .where((value) => value.isNotEmpty)
-          .toList(growable: false);
-      (result[parts[0]] ??= <String, List<String>>{})[locale] = aliases;
     }
+
+    addAliases(kInterestLocaleAliasesPart16Raw);
+    addAliases(kInterestLocaleAliasesLaunchV1Raw);
+
     return Map.unmodifiable({
       for (final entry in result.entries)
         entry.key: Map.unmodifiable(entry.value),

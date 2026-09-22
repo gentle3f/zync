@@ -48,6 +48,7 @@ void main() {
       final terms = <String>{
         ...item.labels.values,
         ...item.aliases,
+        ...InterestLocaleRegistry.allLocalizedAliases(item.id),
         item.id.split('.').last.replaceAll('_', ' '),
       };
 
@@ -162,6 +163,46 @@ void main() {
         reason: 'unexpected canonical for ${entry.key}',
       );
     }
+  });
+
+  test('USA Spanish and Hong Kong colloquial aliases resolve to canonicals', () {
+    final cases = <(String, String, String)>[
+      ('básquet', 'es', 'sports.basketball'),
+      ('boba', 'es', 'food.bubble_tea'),
+      ('tiendas de segunda mano', 'es', 'lifestyle.thrifting'),
+      ('fútbol americano universitario', 'es', 'sports.college_football'),
+      ('行山', 'zh-Hant', 'sports.hiking'),
+      ('打機', 'zh-Hant', 'gaming.video'),
+      ('唱K', 'zh-Hant', 'music.karaoke'),
+      ('打邊爐', 'zh-Hant', 'food.hot_pot'),
+      ('夾公仔', 'zh-Hant', 'gaming.claw_machines'),
+      ('兄弟會', 'zh-Hant', 'learning.greek_life'),
+    ];
+    for (final row in cases) {
+      expect(
+        InterestCatalog.search(row.$1, row.$2).first.id,
+        row.$3,
+        reason: 'regional alias search failed for ${row.$1} (${row.$2})',
+      );
+    }
+  });
+
+  test('localized alias packs merge instead of overwriting older aliases', () {
+    expect(
+      InterestLocaleRegistry.aliasesFor('sports.sports_watch_parties', 'es'),
+      containsAll(<String>[
+        'Fiestas para ver el partido',
+        'ver el partido',
+        'fiesta para ver el partido',
+      ]),
+    );
+    expect(
+      InterestLocaleRegistry.aliasesFor(
+        'sports.sports_watch_parties',
+        'zh-Hant',
+      ),
+      containsAll(<String>['睇波派對', '睇波', '觀賽聚會']),
+    );
   });
 
   test('Hong Kong Chinese locale resolves Traditional Chinese labels', () {
