@@ -305,6 +305,40 @@
         "impossible vehicle anatomy",
         "generic parked vehicle with no hobby story"
       ]
+    },
+    "music_listening": {
+      "feeling": [
+        "identity",
+        "emotion",
+        "discovery",
+        "connection"
+      ],
+      "composition": "Make the act of listening, sharing, discovering, or physically engaging with music unmistakable. Human emotion and one concrete listening medium or environment must carry the scene without artist logos or album art.",
+      "camera": "Intimate medium or medium-close lifestyle framing.",
+      "recognition": "Human listening/selection action plus headphones, speakers, records, instruments in context, or a generic live-music environment.",
+      "avoid": [
+        "generic portrait with decorative music notes",
+        "readable album art or artist branding",
+        "concert-only imagery for every music interest",
+        "floating audio icons"
+      ]
+    },
+    "reading_world": {
+      "feeling": [
+        "curiosity",
+        "escape",
+        "reflection",
+        "shared discovery"
+      ],
+      "composition": "Show the physical and emotional act of reading, browsing, discussing, or discovering books. Books and human engagement must be visible without relying on readable covers or page text.",
+      "camera": "Warm human-height medium or close-medium reading perspective.",
+      "recognition": "Book or reading material plus active reader/browsing/discussion context.",
+      "avoid": [
+        "readable copyrighted cover art",
+        "page text carrying the concept",
+        "generic library room with no reader action",
+        "floating literary symbols"
+      ]
     }
   }
 }
