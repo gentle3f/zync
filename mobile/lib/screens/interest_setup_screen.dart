@@ -184,7 +184,7 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
   List<InterestDefinition> _stableQuickStartResults() {
     const key = '__quick_start__';
     final ids = _stableBrowseOrders.putIfAbsent(key, () {
-      return InterestCatalog.popular(
+      return InterestCatalog.quickStart(
         region: _region,
         popularity: _popularity,
         limit: 24,
