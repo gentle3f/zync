@@ -88,12 +88,49 @@ premium rescue `nano-banana-pro/edit` — escalate only on a QA reroll trigger
 (`specs/qa_rubric_v1.json`).
 
 ```bash
-# compile all hobby recipes into generated/compiled_prompts_v1.jsonl — no API calls
-node src/compilePrompts.js
+# pure preflight: parse runtime catalog + runtime rights policy + recipe inheritance
+# no API calls and no image generation
+npm run audit-catalog-recipes
+
+# rights-gate the full runtime catalog, derive long-tail recipes, then compile all
+# baseline-art-eligible canonical interests — still no API calls
+npm run compile-prompts
 ```
 
-This only reads `specs/` and `catalog/` and writes `generated/compiled_prompts_v1.jsonl`;
-it never calls fal.ai. See `src/buildPromptV1.js` for the compiler and
-`generated/compiled_prompts_v1.jsonl` for the auditable per-hobby output (hobby id, tier,
-default/fallback/premium model, archetype, category, subcategory, compiled prompt, negative
-constraints, fallback hint, QA notes).
+The catalog-scale path is now rights-first:
+
+```
+mobile runtime catalog
+→ mobile InterestCardPolicyResolver
+→ catalogRecipeBridge.js
+→ licensedOnly / notCollectible => blocked manifest
+→ originalGeneric / abstractOnly => manual recipe if present, otherwise inherited recipe
+→ buildPromptV1.js
+→ generated/compiled_prompts_v1.jsonl
+```
+
+`src/catalogRecipeBridge.js` statically mirrors the bundled Dart catalog/parser and the
+runtime card-policy sets. It writes auditable eligible/blocked manifests and refuses unknown
+runtime categories instead of silently falling back. Reviewed manual recipes are mapped to
+stable canonical IDs by `catalog/manual_recipe_canonical_map_v1.json`, but manual content
+cannot bypass rights policy. In particular, the preserved legacy LEGO recipe maps to
+`collecting.lego` and is blocked from baseline compilation because runtime policy is
+`licensedOnly`.
+
+At the 2026-09-22 V3 checkpoint the independent static audit is:
+
+- runtime canonicals: **3,935**
+- baseline-art eligible: **2,092**
+- blocked by runtime rights policy: **1,843**
+- abstract-only: **7**
+- reviewed manual recipes: **15**, of which **14** are eligible and **1 (LEGO)** is blocked
+
+The checked-in `generated/compiled_prompts_v1.jsonl` predates this bridge and is therefore a
+**15-hobby pre-bridge snapshot**, not evidence that the full catalog has already been
+compiled. Re-run `npm run compile-prompts` before treating generated prompt outputs as
+current. The compiler makes no fal.ai calls.
+
+See `src/buildPromptV1.js` for final prompt assembly. Catalog-scale output records include
+canonical hobby ID, runtime category/cluster, art policy, recipe source, tier,
+default/fallback/premium model, archetype, category, compiled prompt, negative constraints,
+fallback hint, and QA notes.
