@@ -360,6 +360,20 @@ void main() {
     expect(InterestCatalog.categories, contains('career'));
   });
 
+  test('quick start uses broad launch-friendly representatives for narrow legacy categories', () {
+    for (final region in const ['us', 'hk']) {
+      final quick = InterestCatalog.quickStart(region: region, limit: 24);
+      final ids = quick.map((item) => item.id).toSet();
+
+      expect(ids, contains('crafts.diy'));
+      expect(ids, contains('collecting.lego'));
+      expect(ids, contains('pets.dogs'));
+      expect(ids, isNot(contains('crafts.knitting')));
+      expect(ids, isNot(contains('transport.modelrailways')));
+      expect(ids, isNot(contains('pets.dog_parks')));
+    }
+  });
+
   test('quick start represents every top-level world before popularity fill', () {
     final quick = InterestCatalog.quickStart(limit: 24);
     expect(quick, hasLength(24));

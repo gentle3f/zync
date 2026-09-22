@@ -258,10 +258,22 @@ class InterestCatalog {
     return rows.map((entry) => entry.key).toList(growable: false);
   }
 
+  /// Curated broad anchors for categories whose smallest legacy rank is not a
+  /// good first-run representative of the whole interest world.
+  static const Map<String, String> _quickStartCategoryAnchors = {
+    'crafts': 'crafts.diy',
+    'collecting': 'collecting.lego',
+    'pets': 'pets.dogs',
+  };
+
   /// A broad first-run sampler. One strong item from every top-level world is
   /// shown before overall popularity fills the remaining slots, so onboarding
   /// does not become a wall of whichever categories happened to receive the
   /// oldest/smallest ranks.
+  ///
+  /// Most categories remain region-ranked. A tiny curated anchor map is used
+  /// only where historical rank ordering would otherwise show an overly narrow
+  /// niche as the category's first-run representative.
   static List<InterestDefinition> quickStart({
     String region = 'global',
     InterestPopularitySnapshot? popularity,
@@ -281,7 +293,12 @@ class InterestCatalog {
               popularity: popularity,
             ));
       if (candidates.isEmpty) continue;
-      final item = candidates.first;
+
+      final anchorId = _quickStartCategoryAnchors[category];
+      final anchor = anchorId == null ? null : byId(anchorId);
+      final item = anchor != null && anchor.category == category
+          ? anchor
+          : candidates.first;
       if (seen.add(item.id)) picked.add(item);
       if (picked.length >= limit) {
         return picked.take(limit).toList(growable: false);
