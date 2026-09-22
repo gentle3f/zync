@@ -16,6 +16,7 @@ function fail(message) {
 function main() {
   const bridge = buildCatalogRecipeBridge();
   const specs = path.join(ROOT, 'specs');
+  const defaults = readJson(path.join(specs, 'catalog_recipe_defaults_v1.json'));
   const categories = readJson(path.join(specs, 'category_modifiers_v1.json')).categories || {};
   const archetypes = readJson(path.join(specs, 'archetypes_v1.json')).archetypes || {};
   const variants = readJson(path.join(specs, 'archetype_variants_v1.json')).archetypes || {};
@@ -28,6 +29,11 @@ function main() {
   }
   if (bridge.counts.blocked !== bridge.blocked.length) {
     fail('blocked count mismatch');
+  }
+
+  const catalogIds = new Set(bridge.catalog.map(item => item.id));
+  for (const hardId of defaults.hard_case_ids || []) {
+    if (!catalogIds.has(hardId)) fail(`configured hard-case canonical does not exist: ${hardId}`);
   }
 
   const eligibleIds = new Set();
@@ -55,6 +61,9 @@ function main() {
     }
     if (!Array.isArray(recipe.recognition_anchors) || recipe.recognition_anchors.length === 0) {
       fail(`missing recognition anchors for ${row.canonical_interest_id}`);
+    }
+    if (recipe.difficulty === 'hard_case' && !recipe.human_review_required) {
+      fail(`hard-case recipe lacks mandatory human review: ${row.canonical_interest_id}`);
     }
     if (row.art_policy === 'abstractOnly') {
       if (!recipe.human_review_required) {
