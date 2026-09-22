@@ -147,3 +147,14 @@ NOT YET actually executed:
 5. Execute `npm run compile-prompts` for all 2,092 eligible interests.
 6. Do not generate images yet.
 7. After 2026-10-01, run Flutter gates and Android validation.
+
+
+## Mandatory infrastructure / automation guardrail
+
+Before any future repo write or infrastructure action, read and obey:
+
+`AI_STATE/OPERATING_RULES.md`
+
+Key rule: audit the automation blast radius **before** the first commit/push/PR/deployment. Do not use Vercel or GitHub Actions unless the task genuinely needs them. Prefer zero-cost static/repository work, batch changes, and avoid micro-commits that trigger CI or Preview deployments.
+
+This rule was added after the 2026-09-19 to 2026-09-22 incidents in which high-frequency Zync writes produced massive GitHub Actions churn and unnecessary Vercel Preview deployments / Deployment Storage consumption.

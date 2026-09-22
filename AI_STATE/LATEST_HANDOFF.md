@@ -1,5 +1,13 @@
 # Zync — Latest Handoff
 
+## Mandatory first read
+
+Before any write, commit, push, PR, CI, Vercel, deployment or external-infrastructure action, read and obey:
+
+`AI_STATE/OPERATING_RULES.md`
+
+This is a hard project rule, not an optional note.
+
 Authoritative continuation checkpoint:
 
 `AI_STATE/HANDOFF_20260922_CATALOG_PROMPT_ROUTING_V32.md`
