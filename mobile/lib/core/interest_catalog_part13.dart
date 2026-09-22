@@ -104,7 +104,7 @@ arts.livestreaming|arts|media_creation|1394|Livestreaming|直播創作|直播创
 arts.blogging|arts|writing|1395|Blogging|寫 Blog／網誌|博客写作|blog writing;blogger
 arts.newsletter_writing|arts|writing|1396|Newsletter Writing|電子報寫作|电子通讯写作|newsletter creation;email newsletter
 music.composing|music|music_making|1397|Composing|作曲|作曲|music composition;composer
-music.choir|music|music_making|1398|Choir|合唱團|合唱|choral singing;chorus
+music.choir|music|music_making|1398|Choir|合唱團|合唱|choral singing;chorus;community choir
 music.a_cappella|music|music_making|1399|A Cappella|無伴奏合唱|无伴奏合唱|acapella;a cappella singing
 music.beat_making|music|music_making|1400|Beat Making|Beat 製作|节拍制作|beatmaking;making beats
 ''');
