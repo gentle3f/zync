@@ -136,7 +136,7 @@ function matchingParen(source, openIndex) {
     const ch = source[i];
     if (quote) {
       if (escaped) escaped = false;
-      else if (ch === '\\\\') escaped = true;
+      else if (ch === '\\') escaped = true;
       else if (ch === quote) quote = null;
       continue;
     }
@@ -235,6 +235,14 @@ function deriveRecipe(item, defaults, policy) {
 
   const rankMax = Number(defaults.tiering?.common_rank_max ?? 1200);
   const defaultTier = defaults.tiering?.default_tier || 'long_tail';
+  const avoid = (profile.avoid || []).map(x => renderTemplate(x, item));
+  if (policy.art_policy === 'abstractOnly') {
+    avoid.push(
+      'official logos, wordmarks, mascots, badges, or certification seals',
+      'official-looking brand trade dress or endorsement cues',
+      'a composition whose recognition depends on copying a protected mark',
+    );
+  }
   return {
     id: item.id,
     title: item.title,
@@ -249,7 +257,7 @@ function deriveRecipe(item, defaults, policy) {
     emotion: (profile.emotion || []).map(x => renderTemplate(x, item)),
     recognition_anchors: (profile.recognition_anchors || []).map(x => renderTemplate(x, item)),
     must_include: (profile.must_include || []).map(x => renderTemplate(x, item)),
-    avoid: (profile.avoid || []).map(x => renderTemplate(x, item)),
+    avoid,
     notes: `Derived from runtime catalog ${item.id} via catalog_recipe_defaults_v1; art policy=${policy.art_policy}.`,
   };
 }
