@@ -2,7 +2,7 @@
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260922_INTEREST_BREADTH_RIGHTS_V3.md`
+`AI_STATE/HANDOFF_20260922_CARD_ART_BRIDGE_ACTIVITY_V31.md`
 
 Branch:
 
@@ -10,4 +10,4 @@ Branch:
 
 Current active task:
 
-> **Continue from the V3 interest-breadth checkpoint: stop chasing raw count, audit onboarding/browse discoverability and ranking for the 3,935-interest catalog, then re-audit Zync Now activity semantics and card-art prompt coverage. Keep image generation closed. Conserve GitHub Actions until the 2026-10-01 reset; Production and Play remain closed.**
+> **Continue from the V3.1 catalog-scale bridge checkpoint: execute the pure local catalog-recipe preflight and full prompt compilation when command execution is available, then audit a stratified sample across every major archetype and all hard cases before any image generation. Keep image generation, Production and Play closed. Conserve GitHub Actions until the 2026-10-01 reset.**
