@@ -605,6 +605,111 @@
         "camera": "Counter-height medium-close.",
         "lighting": "Premium warm practical light with clean human/food separation."
       }
+    ],
+    "campus_activity": [
+      {
+        "id": "campus_participation",
+        "composition": "A small student group actively participates in the defining campus activity with one concrete non-text cue carrying the identity.",
+        "camera": "Eye-level medium environmental shot.",
+        "lighting": "Bright natural or campus practical light with clean participant/activity separation."
+      },
+      {
+        "id": "debate_floor",
+        "generic_eligible": false,
+        "composition": "Students actively debate, advocate, or present across a formal generic room layout; opposing sides, speaker posture, and attentive peers make the event readable without logos or text.",
+        "camera": "Human-height medium-wide from audience or side aisle.",
+        "lighting": "Clean institutional light with strong speaker emphasis."
+      },
+      {
+        "id": "media_project",
+        "generic_eligible": false,
+        "composition": "Students actively produce campus media using a microphone, camera, audio desk, editing station, or publication workflow; equipment and collaboration are unmistakable.",
+        "camera": "Three-quarter medium studio/newsroom view.",
+        "lighting": "Warm practical media-room light with crisp equipment detail."
+      },
+      {
+        "id": "academic_challenge",
+        "generic_eligible": false,
+        "composition": "Students actively solve, build, calculate, present, or compare work in a competition setting with generic physical materials and visible concentration.",
+        "camera": "Medium collaborative challenge view.",
+        "lighting": "Clean event light with focused work surfaces and reactions."
+      },
+      {
+        "id": "exchange_campus",
+        "generic_eligible": false,
+        "composition": "Students from different backgrounds actively explore or connect in a campus/exchange setting through conversation, orientation, shared activity, or arrival context.",
+        "camera": "Human-height medium-wide social campus frame.",
+        "lighting": "Natural optimistic daylight with clear people/place separation."
+      },
+      {
+        "id": "club_event",
+        "generic_eligible": false,
+        "composition": "Students actively organize, volunteer, or participate in one campus club/event activity with tables, materials, badges-without-text, or hands-on action supporting the scene.",
+        "camera": "Warm eye-level medium group shot.",
+        "lighting": "Bright social event lighting with uncluttered context."
+      }
+    ],
+    "community_gathering": [
+      {
+        "id": "circle_conversation",
+        "composition": "A small group leans into an engaged conversation around one shared topic or object; reactions feel natural and specific.",
+        "camera": "Eye-level intimate medium shot.",
+        "lighting": "Warm social practical light."
+      },
+      {
+        "id": "shared_activity",
+        "composition": "People actively make, repair, compare, teach, or explore one shared activity together rather than merely standing and talking.",
+        "camera": "Three-quarter medium collaborative view.",
+        "lighting": "Warm focused activity light with readable hands/objects."
+      },
+      {
+        "id": "event_networking",
+        "composition": "Several people form a natural conversational cluster in a meetup/event setting, with one profession/hobby cue and no corporate handshake posing.",
+        "camera": "Human-height medium social frame.",
+        "lighting": "Polished but warm event light."
+      },
+      {
+        "id": "swap_exchange",
+        "composition": "Two or more people actively exchange, compare, or browse tangible items across a table or community stall.",
+        "camera": "Slightly elevated medium view keeping people and exchange objects visible.",
+        "lighting": "Warm community-market light with crisp object detail."
+      }
+    ],
+    "wellness_experience": [
+      {
+        "id": "wellness_venue",
+        "composition": "A person actively experiences a clear non-medical wellness venue or ritual; the environment and body interaction identify the experience.",
+        "camera": "Calm human-height medium-wide view.",
+        "lighting": "Soft atmospheric wellness light with clean environmental cues."
+      },
+      {
+        "id": "immersion_ritual",
+        "generic_eligible": false,
+        "composition": "The person is visibly immersed in or entering a hot/cold water ritual, with pool/tub/spring context and safe body position unmistakable.",
+        "camera": "Medium experiential side or three-quarter view.",
+        "lighting": "Natural steam/cool-water atmosphere with clear human/environment separation."
+      },
+      {
+        "id": "heat_room",
+        "generic_eligible": false,
+        "composition": "The sauna/heat-room experience is unmistakable through wood/stone heat context, seated relaxed posture, and atmospheric warmth without branding.",
+        "camera": "Human-height medium interior view.",
+        "lighting": "Warm low-contrast heat-room glow."
+      },
+      {
+        "id": "treatment_relax",
+        "generic_eligible": false,
+        "composition": "A non-medical spa or massage-like wellness treatment is shown through safe professional hands, table/chair context, towels or generic treatment cues without products or logos.",
+        "camera": "Calm close-medium treatment view.",
+        "lighting": "Soft premium natural/practical light."
+      },
+      {
+        "id": "sound_rest",
+        "generic_eligible": false,
+        "composition": "A resting participant experiences a generic sound-based wellness session with bowls or instruments clearly visible, avoiding mystical text or symbols.",
+        "camera": "Soft medium-wide floor/room view.",
+        "lighting": "Calm diffused light with instrument highlights."
+      }
     ]
   }
 }
