@@ -99,6 +99,37 @@ function main() {
     fail('LEGO stale manual recipe is not demonstrably blocked by canonical rights policy');
   }
 
+  const expectedRoutes = {
+    'gaming.chess': {archetype:'strategy_table'},
+    'gaming.claw_machines': {archetype:'digital_play', visual_variant:'arcade_interaction'},
+    'wellness.weightlifting': {archetype:'fitness_training'},
+    'wellness.yoga': {archetype:'calm_wellness'},
+    'outdoors.surfing': {archetype:'water_outdoors'},
+    'outdoors.kayaking': {archetype:'water_outdoors', visual_variant:'vessel_interaction'},
+    'sports.gravel_cycling': {archetype:'outdoor_motion'},
+    'lifestyle.gardening': {archetype:'home_lifestyle'},
+    'food.yum_cha': {archetype:'food_exploration'},
+    'motorsport.sim_racing': {archetype:'digital_play', visual_variant:'desktop_focus'},
+    'arts.bird_photography': {archetype:'lens_perspective'},
+    'arts.lion_dance': {archetype:'performance'},
+    'career.nursing': {archetype:'professional_world'},
+    'pets.dog_agility': {archetype:'companion_bond'},
+    'learning.archaeology': {archetype:'learning_exploration'},
+    'books.reading': {archetype:'reading_world', difficulty:'hard_case'},
+    'wellness.mindfulness': {archetype:'calm_wellness', difficulty:'hard_case'},
+    'fashion.streetwear': {archetype:'urban_discovery', difficulty:'hard_case'},
+    'technology.python': {archetype:'tech_workspace', difficulty:'hard_case'},
+  };
+  for (const [id, expected] of Object.entries(expectedRoutes)) {
+    const row = bridge.eligible.find(item => item.canonical_interest_id === id);
+    if (!row) fail(`route sentinel missing from eligible bridge: ${id}`);
+    for (const [key, value] of Object.entries(expected)) {
+      if (row.recipe[key] !== value) {
+        fail(`route sentinel mismatch for ${id}: expected ${key}=${value}, got ${row.recipe[key]}`);
+      }
+    }
+  }
+
   const summary = {
     total: bridge.counts.total,
     baselineEligible: bridge.counts.baselineEligible,
