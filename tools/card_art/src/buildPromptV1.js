@@ -33,9 +33,13 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
   if (effective.subcategory && !subcategory) throw new Error(`Unknown subcategory "${effective.subcategory}" for hobby "${effective.id}"`);
   const pool = variants.archetypes[effective.archetype] || [];
   if (!pool.length) throw new Error(`No visual variants for archetype "${effective.archetype}"`);
+  const genericPool = pool.filter(v => v.generic_eligible !== false);
+  if (!genericPool.length) {
+    throw new Error(`No generic-eligible visual variants for archetype "${effective.archetype}"`);
+  }
   const variant = effective.visual_variant
     ? pool.find(v => v.id === effective.visual_variant)
-    : pool[stableIndex(effective.id, pool.length)];
+    : genericPool[stableIndex(effective.id, genericPool.length)];
   if (!variant) throw new Error(`Unknown visual_variant "${effective.visual_variant}" for hobby "${effective.id}"`);
 
   const sections = [];
