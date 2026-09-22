@@ -126,4 +126,4 @@ business.crypto|business|business|828|Cryptocurrency|加密貨幣|加密货币|�
 business.product_management|business|business|829|Product Management|產品管理|产品管理|產品管理;产品管理
 business.design_thinking|business|business|830|Design Thinking|設計思維|设计思维|設計思維;设计思维
 business.networking|business|business|831|Professional Networking|商務社交|商务社交|商務交流;商务社交
-business.public_speaking|business|business|832|Public Speaking|公開演講|公开演讲|演講;演讲''');
+business.public_speaking|business|business|832|Public Speaking|公開演講|公开演讲|演講;演讲;public speaking club''');
