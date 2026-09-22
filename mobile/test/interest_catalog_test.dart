@@ -268,6 +268,15 @@ void main() {
     expect(InterestCatalog.categories, contains('career'));
   });
 
+  test('quick start represents every top-level world before popularity fill', () {
+    final quick = InterestCatalog.quickStart(limit: 24);
+    expect(quick, hasLength(24));
+
+    final represented = quick.map((item) => item.category).toSet();
+    expect(represented, containsAll(InterestCatalog.categories));
+    expect(represented.length, InterestCatalog.categories.length);
+  });
+
   test('category discovery remains bounded even with the deep catalog', () {
     expect(InterestCatalog.categories.length, greaterThanOrEqualTo(15));
     expect(InterestCatalog.popular(limit: 36), hasLength(36));
