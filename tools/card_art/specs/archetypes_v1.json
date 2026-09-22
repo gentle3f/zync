@@ -459,6 +459,57 @@
         "readable restaurant branding or menu text",
         "unrelated dishes overwhelming the experience"
       ]
+    },
+    "campus_activity": {
+      "feeling": [
+        "participation",
+        "curiosity",
+        "teamwork",
+        "achievement"
+      ],
+      "composition": "Students actively participate in a recognisable campus, club, competition, media, exchange, or academic activity. The defining action and student context must read without text.",
+      "camera": "Human-height medium or medium-wide documentary-style campus framing.",
+      "recognition": "Student participants plus one concrete activity-specific cue such as debate layout, media equipment, challenge materials, club interaction, or campus event context.",
+      "avoid": [
+        "generic classroom lecture",
+        "readable school logos or documents",
+        "empty campus architecture",
+        "activity identity carried only by text"
+      ]
+    },
+    "community_gathering": {
+      "feeling": [
+        "belonging",
+        "conversation",
+        "discovery",
+        "shared purpose"
+      ],
+      "composition": "A small group actively connects through one clear meetup, exchange, swap, workshop, networking, or community activity. Interaction and the shared purpose must both be visible.",
+      "camera": "Warm eye-level medium social framing.",
+      "recognition": "Multiple engaged people plus one tangible shared activity, exchange object, workshop cue, or event interaction.",
+      "avoid": [
+        "generic cocktail-networking stock photo",
+        "crowd with no shared activity",
+        "readable event branding",
+        "staged corporate handshake"
+      ]
+    },
+    "wellness_experience": {
+      "feeling": [
+        "reset",
+        "sensation",
+        "recovery",
+        "calm"
+      ],
+      "composition": "Show a specific wellness venue or sensory ritual in progress, with body position, water/heat/treatment/sound context, and environment coherently identifying the experience.",
+      "camera": "Calm medium or medium-wide experiential framing.",
+      "recognition": "Person plus unmistakable wellness-experience environment or equipment.",
+      "avoid": [
+        "medical procedure imagery",
+        "generic spa-stock portrait",
+        "unsafe heat/cold behavior",
+        "brand signage or product labels"
+      ]
     }
   }
 }
