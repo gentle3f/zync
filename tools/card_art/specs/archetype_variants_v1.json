@@ -207,7 +207,8 @@
         "id": "over_shoulder_generation",
         "composition": "Look over the creator's shoulder at one primary display where an input is visibly transforming into multiple coherent generated outputs; secondary screens stay subordinate.",
         "camera": "Over-shoulder medium shot.",
-        "lighting": "Cool screen light balanced by warm human/environment accents."
+        "lighting": "Cool screen light balanced by warm human/environment accents.",
+        "generic_eligible": false
       },
       {
         "id": "creator_interface",
@@ -227,7 +228,8 @@
         "id": "hands_build",
         "composition": "Hands actively build or arrange one clearly readable collectible/object system; a single hero element sits in sharp foreground focus.",
         "camera": "Close-medium elevated three-quarter angle.",
-        "lighting": "Bright premium tabletop light with tactile detail."
+        "lighting": "Bright premium tabletop light with tactile detail.",
+        "generic_eligible": false
       },
       {
         "id": "shelf_hero",
@@ -267,7 +269,8 @@
         "id": "warm_camp_anchor",
         "composition": "A warm activity anchor such as fire, tent, fishing setup, or telescope dominates the foreground/midground while nature supports it.",
         "camera": "Medium-wide human-height view.",
-        "lighting": "Strong warm/cool contrast between activity light and environment."
+        "lighting": "Strong warm/cool contrast between activity light and environment.",
+        "generic_eligible": false
       },
       {
         "id": "trail_approach",
@@ -489,7 +492,8 @@
         "id": "arcade_interaction",
         "composition": "A player physically interacts with one generic arcade or claw-style machine; hands, controls, and machine mechanism remain readable without logos.",
         "camera": "Human-height three-quarter medium-wide view.",
-        "lighting": "Colorful venue light kept controlled enough to preserve machine/action clarity."
+        "lighting": "Colorful venue light kept controlled enough to preserve machine/action clarity.",
+        "generic_eligible": false
       }
     ],
     "fitness_training": [
@@ -506,10 +510,10 @@
         "lighting": "Clean natural or studio training light."
       },
       {
-        "id": "floor_training",
-        "composition": "For mat/bodyweight training, keep the whole body and contact points visible with a simple studio or gym context.",
-        "camera": "Slightly elevated medium-wide view.",
-        "lighting": "Soft but crisp studio light with uncluttered background."
+        "id": "technique_focus",
+        "composition": "Frame the exercise so body mechanics and the relevant mat, machine, weight, bike, rope, or studio equipment are easy to read without forcing every activity into a floor pose.",
+        "camera": "Human-height or slightly elevated medium-wide technique view.",
+        "lighting": "Soft but crisp training light with uncluttered background."
       }
     ],
     "water_outdoors": [
@@ -523,13 +527,15 @@
         "id": "vessel_interaction",
         "composition": "The person and relevant board/boat/kayak/canoe or other vessel form the central action cluster with route/water context behind.",
         "camera": "Side or rear three-quarter medium-wide view.",
-        "lighting": "Natural outdoor light with readable vessel shape and water texture."
+        "lighting": "Natural outdoor light with readable vessel shape and water texture.",
+        "generic_eligible": false
       },
       {
         "id": "water_ritual",
         "composition": "For slower water hobbies, show hands, line, mask, observation gear, catch, or preparation interacting directly with the water activity.",
         "camera": "Close-medium tactile activity view.",
-        "lighting": "Natural dawn/daylight with strong gear and hand detail."
+        "lighting": "Natural dawn/daylight with strong gear and hand detail.",
+        "generic_eligible": false
       }
     ],
     "outdoor_motion": [
@@ -566,18 +572,18 @@
         "lighting": "Soft warm domestic practical light."
       },
       {
-        "id": "plant_garden_care",
-        "composition": "The person actively tends plants, soil, balcony/garden elements, or a home-growing system; care action remains obvious.",
-        "camera": "Medium close-to-environmental view.",
-        "lighting": "Fresh natural daylight with crisp plant and hand detail."
+        "id": "focused_home_care",
+        "composition": "Bring the defining home object, plant, tool, furniture detail, storage system, or care task into the foreground while the person actively tends, adjusts, organizes, or improves it.",
+        "camera": "Close-medium detail-to-environment view.",
+        "lighting": "Warm natural light with crisp hand, object, material, or plant detail."
       }
     ],
     "food_exploration": [
       {
-        "id": "market_discovery",
-        "composition": "A person actively chooses or tastes one clear food item at a market or stall while the surrounding food scene stays coherent and secondary.",
+        "id": "venue_discovery",
+        "composition": "A person actively discovers, chooses, receives, or tastes food in a coherent market, stall, café, restaurant, tea-house, or communal venue; the food cue remains visible and specific.",
         "camera": "Human-height three-quarter medium view.",
-        "lighting": "Warm market light with appetising food highlights."
+        "lighting": "Warm experiential light with appetising food highlights and clean human/venue separation."
       },
       {
         "id": "shared_table",
