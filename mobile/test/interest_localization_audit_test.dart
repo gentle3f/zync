@@ -84,7 +84,7 @@ void main() {
         .toList(growable: false);
     final audit = InterestLocalizationAudit.run(catalog: batch);
 
-    expect(batch, hasLength(119));
+    expect(batch, hasLength(118));
     expect(audit.fullLocaleComplete, isTrue);
     for (final locale in InterestLocaleRegistry.supportedLocales) {
       expect(
@@ -116,16 +116,16 @@ void main() {
   });
 
 
-  test('staged bulk localization covers 2831 rows across all eight locales', () {
+  test('staged bulk localization covers 3361 rows across all eight locales', () {
     final audit = InterestLocalizationAudit.run();
 
-    expect(audit.total, 4054);
+    expect(audit.total, 4053);
     expect(audit.missingForLocale('zh-Hant'), isEmpty);
     expect(audit.missingForLocale('zh-Hans'), isEmpty);
     for (final locale in const ['es', 'fr', 'pt', 'ja', 'ko']) {
       expect(
         audit.missingForLocale(locale),
-        hasLength(1223),
+        hasLength(692),
         reason: 'unexpected staged debt for $locale',
       );
     }
@@ -135,7 +135,7 @@ void main() {
         (locale) => (item.labels[locale]?.trim() ?? '').isNotEmpty,
       ),
     );
-    expect(fullyLocalized, hasLength(2831));
+    expect(fullyLocalized, hasLength(3361));
   });
 
   test('legacy launch interests resolve in the five newly localized languages', () {
@@ -150,6 +150,11 @@ void main() {
       ('Café de especialidade', 'pt', 'food.specialty_coffee'),
       ('おまかせ', 'ja', 'food.omakase'),
       ('마라샹궈', 'ko', 'food.dish.mala_xiang_guo'),
+      ('Musique classique', 'fr', 'music.classical'),
+      ('シューゲイザー', 'ja', 'music.style.shoegaze'),
+      ('K-팝', 'ko', 'music.k_pop'),
+      ('Juegos de estrategia', 'es', 'gaming.strategy'),
+      ('라이프 시뮬레이션', 'ko', 'gaming.subgenre.life_sim'),
     ];
     for (final row in cases) {
       expect(

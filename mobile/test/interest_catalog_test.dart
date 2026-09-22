@@ -7,7 +7,7 @@ import 'package:zync/core/models.dart';
 
 void main() {
   test('bundled catalog reaches deep V1 coverage, stays unique, and preserves legacy IDs', () {
-    expect(InterestCatalog.count, 4054);
+    expect(InterestCatalog.count, 4053);
     expect(InterestCatalog.seed.map((item) => item.id).toSet(), hasLength(InterestCatalog.count));
 
     for (final legacyId in const [
@@ -236,6 +236,10 @@ void main() {
     expect(() => InterestCatalog.instantSelection('Persona'), throwsFormatException);
 
     expect(InterestCatalog.exact('Badminton')!.id, 'sports.badminton');
+    expect(
+      InterestCatalog.exact('City-Building Games')!.id,
+      'gaming.subgenre.city_builder',
+    );
   });
 
   test('known labels and aliases instantly resolve to canonical IDs instead of custom IDs', () {
@@ -299,7 +303,7 @@ void main() {
   });
 
   test('Part 16 carries explicit labels for all eight supported locales', () {
-    expect(kInterestCatalogPart16Ids, hasLength(119));
+    expect(kInterestCatalogPart16Ids, hasLength(118));
     for (final id in kInterestCatalogPart16Ids) {
       final item = InterestCatalog.byId(id);
       expect(item, isNotNull, reason: 'Part 16 ID missing: $id');

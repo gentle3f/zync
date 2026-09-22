@@ -5,6 +5,11 @@ import 'interest_locale_generic_launch_v2.dart';
 import 'interest_locale_generic_launch_v3.dart';
 import 'interest_locale_food_a.dart';
 import 'interest_locale_food_b.dart';
+import 'interest_locale_music_a.dart';
+import 'interest_locale_music_b.dart';
+import 'interest_locale_gaming_a.dart';
+import 'interest_locale_gaming_b.dart';
+import 'interest_locale_gaming_c.dart';
 import 'models.dart';
 
 class InterestLocaleRegistry {
@@ -34,6 +39,7 @@ class InterestLocaleRegistry {
     'lifestyle.gardening': ['Backyard Gardening'],
     'transport.car_detailing': ['Auto Detailing'],
     'gaming.subgenre.life_sim': ['Life Simulation Games'],
+    'gaming.subgenre.city_builder': ['City-Building Games'],
   };
 
   static String canonicalLocale(String locale) {
@@ -132,6 +138,11 @@ class InterestLocaleRegistry {
     addGeneric(kInterestLocaleGenericLaunchV3Raw);
     addGeneric(kInterestLocaleFoodARaw);
     addGeneric(kInterestLocaleFoodBRaw);
+    addGeneric(kInterestLocaleMusicARaw);
+    addGeneric(kInterestLocaleMusicBRaw);
+    addGeneric(kInterestLocaleGamingARaw);
+    addGeneric(kInterestLocaleGamingBRaw);
+    addGeneric(kInterestLocaleGamingCRaw);
 
     return Map.unmodifiable({
       for (final entry in result.entries)

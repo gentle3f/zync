@@ -112,7 +112,6 @@ lifestyle.slow_living|lifestyle|home|812|Slow Living|||
 lifestyle.alcohol_free_socials|lifestyle|social|828|Alcohol-Free Socials|||
 entertainment.film_festivals|entertainment|screen|844|Film Festivals|||
 entertainment.anime_conventions|entertainment|anime_manga|860|Anime Conventions|||
-gaming.city_building_games|gaming|gaming/subgenres|876|City-Building Games|||
 arts.visual_arts|arts|visual_art|900|Visual Arts|||Art Club
 arts.dance|arts|dance|910|Dance|||Dance Team
 lifestyle.study_cafes|lifestyle|social|900|Study Cafes|||Cafe Studying;Study Cafe

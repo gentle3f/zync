@@ -112,7 +112,6 @@ lifestyle.slow_living|慢活|慢生活|Vida lenta|Slow life|Slow living|スロ�
 lifestyle.alcohol_free_socials|無酒精社交|无酒精社交|Planes sociales sin alcohol|Sorties sans alcool|Convívios sem álcool|ノンアル交流|무알코올 모임
 entertainment.film_festivals|電影節|电影节|Festivales de cine|Festivals de cinéma|Festivais de cinema|映画祭|영화제
 entertainment.anime_conventions|動漫展|动漫展|Convenciones de anime|Conventions anime|Convenções de anime|アニメイベント|애니메이션 컨벤션
-gaming.city_building_games|城市建造遊戲|城市建造游戏|Juegos de construcción de ciudades|Jeux de construction de villes|Jogos de construção de cidades|都市建設ゲーム|도시 건설 게임
 arts.visual_arts|視覺藝術|视觉艺术|Artes visuales|Arts visuels|Artes visuais|ビジュアルアート|시각예술
 arts.dance|舞蹈|舞蹈|Baile|Danse|Dança|ダンス|댄스
 lifestyle.study_cafes|自修 Cafe|自习咖啡馆|Cafés para estudiar|Cafés pour étudier|Cafés para estudar|勉強カフェ|스터디 카페
