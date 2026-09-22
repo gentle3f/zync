@@ -301,6 +301,86 @@
         "camera": "Human-height medium-wide reveal.",
         "lighting": "Dramatic venue light with a clear focal source."
       }
+    ],
+    "learning_exploration": [
+      {
+        "id": "hands_on_discovery",
+        "composition": "Hands and one concrete object, specimen, source, map-like non-text visual, or instrument anchor the act of discovery while the learner remains visibly engaged.",
+        "camera": "Close-medium three-quarter learning-process view.",
+        "lighting": "Clean directional window or field light with crisp object detail."
+      },
+      {
+        "id": "discussion_object",
+        "composition": "Two people discuss or compare one physical source, object, specimen, model, or place cue that makes the subject visually specific.",
+        "camera": "Intimate eye-level medium shot.",
+        "lighting": "Warm collaborative light with the subject anchor brighter than the background."
+      },
+      {
+        "id": "field_observation",
+        "composition": "A learner actively observes or documents a real-world subject in its natural, historical, museum, workshop, or scientific context.",
+        "camera": "Rear or side three-quarter environmental medium-wide view.",
+        "lighting": "Natural contextual light with strong subject separation."
+      }
+    ],
+    "companion_bond": [
+      {
+        "id": "eye_level_bond",
+        "composition": "Human and animal share one natural interaction at eye level; the animal remains large enough to identify immediately.",
+        "camera": "Warm eye-level medium shot.",
+        "lighting": "Soft natural light with expressive face and fur/feather/scale detail."
+      },
+      {
+        "id": "care_action",
+        "composition": "Hands perform one clear species-appropriate care, grooming, training, habitat, or enrichment action.",
+        "camera": "Close-medium tactile care perspective.",
+        "lighting": "Clean warm practical light with crisp action detail."
+      },
+      {
+        "id": "habitat_context",
+        "composition": "The animal is shown with one unmistakable habitat, equipment, or observation cue while a person engages from a safe natural distance.",
+        "camera": "Layered medium-wide environmental view.",
+        "lighting": "Natural habitat light with the animal as the clear focal point."
+      }
+    ],
+    "professional_world": [
+      {
+        "id": "tool_in_action",
+        "composition": "One professional actively uses a field-specific physical tool, instrument, object, or workspace process; the action dominates over office décor.",
+        "camera": "Three-quarter medium environmental action shot.",
+        "lighting": "Polished realistic workplace light with cinematic separation."
+      },
+      {
+        "id": "collaboration_case",
+        "composition": "Two or three professionals collaborate around a concrete field-specific object, specimen, model, plan without readable text, instrument, or process.",
+        "camera": "Eye-level collaborative medium shot.",
+        "lighting": "Warm focused team light with restrained background detail."
+      },
+      {
+        "id": "environmental_role",
+        "composition": "The professional is embedded in a recognisable work environment and caught in a purposeful task rather than posing for a portrait.",
+        "camera": "Human-height medium-wide environmental frame.",
+        "lighting": "Naturalistic workplace light enhanced with premium illustration contrast."
+      }
+    ],
+    "journey_machine": [
+      {
+        "id": "route_motion",
+        "composition": "One generic unbranded machine or vehicle moves through a strong route or terrain line, with enough environmental context to explain the enthusiast activity.",
+        "camera": "Dynamic three-quarter medium-wide tracking view.",
+        "lighting": "Directional outdoor light with clean machine silhouette and motion depth."
+      },
+      {
+        "id": "workshop_hands",
+        "composition": "Hands actively maintain, build, tune, or inspect one machine component while the larger generic vehicle remains readable nearby.",
+        "camera": "Close-medium workshop perspective.",
+        "lighting": "Warm workshop key light with crisp mechanical texture."
+      },
+      {
+        "id": "owner_machine",
+        "composition": "A person interacts with one unbranded vehicle or machine before, during, or after a journey; posture and setting show enthusiasm rather than sales.",
+        "camera": "Human-height three-quarter medium frame.",
+        "lighting": "Cinematic natural or garage light without glossy advertisement treatment."
+      }
     ]
   }
 }
