@@ -262,6 +262,12 @@ void main() {
     expect(match.onlyTheirs.single.id, 'sports.tennis');
   });
 
+  test('every seeded top-level category remains browsable', () {
+    final seeded = InterestCatalog.seed.map((item) => item.category).toSet();
+    expect(InterestCatalog.categories.toSet(), seeded);
+    expect(InterestCatalog.categories, contains('career'));
+  });
+
   test('category discovery remains bounded even with the deep catalog', () {
     expect(InterestCatalog.categories.length, greaterThanOrEqualTo(15));
     expect(InterestCatalog.popular(limit: 36), hasLength(36));
