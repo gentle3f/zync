@@ -83,7 +83,7 @@
     },
     "gaming": {
       "art_category": "gaming",
-      "archetype": "group_play",
+      "archetype": "digital_play",
       "subject_template": "People actively enjoying ${title}, visibly reacting to the shared play or challenge",
       "environment_template": "A warm believable play setting where the interaction and game activity are easy to read",
       "emotion": [
@@ -535,6 +535,76 @@
     }
   },
   "profile_rules": [
+    {
+      "match": {
+        "category": "sports",
+        "cluster": "mind_sports"
+      },
+      "patch": {
+        "art_category": "gaming",
+        "archetype": "strategy_table"
+      }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "cluster": "cycling"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "outdoor_motion"
+      }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "cluster": "water"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "water_outdoors"
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "cluster": "fitness"
+      },
+      "patch": {
+        "art_category": "sports",
+        "archetype": "fitness_training"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "cluster": "water"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "water_outdoors"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "cluster": "winter"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "outdoor_motion"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "cluster": "cycling"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "outdoor_motion"
+      }
+    },
     {
       "match": {
         "category": "arts",
