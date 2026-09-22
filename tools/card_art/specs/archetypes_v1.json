@@ -237,6 +237,74 @@
         "concert/cinema confusion",
         "generic scenic image"
       ]
+    },
+    "learning_exploration": {
+      "feeling": [
+        "curiosity",
+        "discovery",
+        "understanding",
+        "wonder"
+      ],
+      "composition": "A person actively investigates, studies, compares, observes, or discusses the subject while one concrete source, specimen, object, diagram-free tool, or place anchors what is being learned.",
+      "camera": "Human-height medium or medium-close observational framing.",
+      "recognition": "The learning subject must read from real objects, tools, source material, field context, or human action rather than floating symbols.",
+      "avoid": [
+        "generic classroom stock photo",
+        "floating icons",
+        "text-heavy diagrams",
+        "subject identity carried only by readable text"
+      ]
+    },
+    "companion_bond": {
+      "feeling": [
+        "connection",
+        "care",
+        "affection",
+        "trust"
+      ],
+      "composition": "One clear animal or small group of animals interacts naturally with a caring human or a species-specific habitat/activity cue.",
+      "camera": "Warm eye-level medium framing close enough to read the animal and interaction.",
+      "recognition": "Species plus care, training, habitat, observation, or companionship action must make the interest clear.",
+      "avoid": [
+        "unsafe animal handling",
+        "costume-like anthropomorphism",
+        "generic pet portrait with no activity cue",
+        "multiple unrelated animal species"
+      ]
+    },
+    "professional_world": {
+      "feeling": [
+        "purpose",
+        "mastery",
+        "collaboration",
+        "ambition"
+      ],
+      "composition": "A professional is actively doing field-specific work with one unmistakable tool, environment, object, or collaboration cue; the profession must read without text.",
+      "camera": "Confident human-height medium environmental portrait in action, not a posed headshot.",
+      "recognition": "Profession-specific action plus physical work context or tool.",
+      "avoid": [
+        "generic laptop office",
+        "corporate handshake stock photo",
+        "readable documents or screens",
+        "profession signaled only by text"
+      ]
+    },
+    "journey_machine": {
+      "feeling": [
+        "motion",
+        "craft",
+        "freedom",
+        "enthusiasm"
+      ],
+      "composition": "One generic unbranded vehicle or machine is actively used, maintained, built, or followed through a coherent route/environment with a human enthusiast context.",
+      "camera": "Dynamic three-quarter medium-wide or tactile workshop perspective depending on the interest.",
+      "recognition": "Vehicle/machine type plus use, route, maintenance, or enthusiast action.",
+      "avoid": [
+        "brand badge or logo",
+        "showroom advertisement",
+        "impossible vehicle anatomy",
+        "generic parked vehicle with no hobby story"
+      ]
     }
   }
 }
