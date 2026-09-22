@@ -23,7 +23,7 @@ food.mediterranean|food|cuisines|452|Mediterranean Food|地中海菜|地中海�
 food.middle_eastern|food|cuisines|453|Middle Eastern Food|中東菜|中东菜|中東菜;中东菜
 food.spanish|food|cuisines|454|Spanish Food|西班牙菜|西班牙菜|西班牙菜
 food.taiwanese|food|cuisines|455|Taiwanese Food|台灣菜|台湾菜|台灣菜;台湾菜
-food.hong_kong|food|cuisines|456|Hong Kong Food|港式美食|港式美食|港式美食;茶餐廳
+food.hong_kong|food|cuisines|456|Hong Kong Food|港式美食|港式美食|港式美食;茶餐廳;茶餐厅;cha chaan teng;hong kong cafe;茶記
 food.singaporean|food|cuisines|457|Singaporean Food|新加坡菜|新加坡菜|新加坡菜
 food.malaysian|food|cuisines|458|Malaysian Food|馬來西亞菜|马来西亚菜|馬來西亞菜;马来西亚菜
 food.vegetarian|food|cuisines|459|Vegetarian Food|素食|素食|素食
