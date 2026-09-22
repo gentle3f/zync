@@ -537,6 +537,135 @@
   "profile_rules": [
     {
       "match": {
+        "category": "lifestyle",
+        "cluster": "home"
+      },
+      "patch": {
+        "archetype": "home_lifestyle"
+      }
+    },
+    {
+      "match": {
+        "category": "lifestyle",
+        "cluster": "family"
+      },
+      "patch": {
+        "archetype": "home_lifestyle"
+      }
+    },
+    {
+      "match": {
+        "category": "food",
+        "cluster": "dining"
+      },
+      "patch": {
+        "archetype": "food_exploration"
+      }
+    },
+    {
+      "match": {
+        "category": "food",
+        "cluster": "food/dining"
+      },
+      "patch": {
+        "archetype": "food_exploration"
+      }
+    },
+    {
+      "match": {
+        "category": "gaming",
+        "id": "gaming.claw_machines"
+      },
+      "patch": {
+        "archetype": "digital_play",
+        "visual_variant": "arcade_interaction"
+      }
+    },
+    {
+      "match": {
+        "category": "motorsport",
+        "id": "motorsport.sim_racing"
+      },
+      "patch": {
+        "art_category": "gaming",
+        "archetype": "digital_play",
+        "visual_variant": "desktop_focus"
+      }
+    },
+    {
+      "match": {
+        "category": "wellness",
+        "id_in": [
+          "wellness.yoga",
+          "wellness.pilates",
+          "wellness.stretching",
+          "wellness.mobility"
+        ]
+      },
+      "patch": {
+        "art_category": "wellness",
+        "archetype": "calm_wellness"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "cluster": "water"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "water_outdoors",
+        "visual_variant": "water_action"
+      }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "cluster": "water"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "water_outdoors",
+        "visual_variant": "water_action"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "id_contains": "fishing"
+      },
+      "patch": {
+        "visual_variant": "water_ritual"
+      }
+    },
+    {
+      "match": {
+        "category": "outdoors",
+        "id_in": [
+          "outdoors.kayaking",
+          "outdoors.canoeing",
+          "outdoors.sailing",
+          "outdoors.stand_up_paddleboarding",
+          "outdoors.rowing",
+          "outdoors.dragon_boat",
+          "outdoors.kayak_touring"
+        ]
+      },
+      "patch": {
+        "visual_variant": "vessel_interaction"
+      }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "id": "sports.dragon_boat_racing"
+      },
+      "patch": {
+        "visual_variant": "vessel_interaction"
+      }
+    },
+    {
+      "match": {
         "category": "sports",
         "cluster": "mind_sports"
       },
@@ -753,7 +882,15 @@
     "history.general",
     "learning.philosophy",
     "learning.philosophy_discussions",
-    "wellness.mindfulness"
+    "wellness.mindfulness",
+    "business.value_investing",
+    "business.dividend_investing",
+    "business.index_investing",
+    "business.real_estate_investing",
+    "business.budgeting",
+    "business.saving_money",
+    "business.financial_independence",
+    "business.fire_movement"
   ],
   "hard_case_categories": [
     "fashion"
