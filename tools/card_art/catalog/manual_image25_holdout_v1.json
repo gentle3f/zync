@@ -556,5 +556,9 @@
         "gaming.game_streaming"
       ]
     }
-  ]
+  ],
+  "status": "superseded_as_catalog_split",
+  "production_ready": false,
+  "superseded_by": "AI_STATE/HANDOFF_20260923_CARD_ART_BULK_FIRST_100_RESULTS.md",
+  "warning": "Do not treat this as the authoritative non-bulk partition while semantic-anchor architecture is being rebuilt. Manual Image 2.5 remains manual-only and never via fal.ai."
 }
