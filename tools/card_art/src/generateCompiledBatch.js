@@ -35,7 +35,10 @@ const MANIFEST_PATH = path.join(OUTPUT_DIR, 'manifest.json');
 const COST_USD = {
   'flux-2': 0.0125,
   'flux-2/edit': 0.025,
+  'gemini-25-flash-image': 0.039,
   'gemini-25-flash-image/edit': 0.039,
+  // fal prices Klein 9B Base at $0.011/MP. 832x1248 is ~1.038 MP.
+  'flux-2/klein/9b/base': 0.0114,
   'nano-banana-pro/edit': 0.15,
 };
 
@@ -67,6 +70,8 @@ function resolveModel(name, globalStyle) {
     default: 'flux-2',
     text: 'flux-2',
     edit: 'flux-2/edit',
+    geminiText: 'gemini-25-flash-image',
+    kleinNegative: 'flux-2/klein/9b/base',
     fallback: globalStyle.fallback_model,
     premium: globalStyle.premium_model,
   };
@@ -115,10 +120,36 @@ function promptForModel(prompt, model) {
     .join('\n\n');
 }
 
-function modelInput(model, prompt, referenceUrl) {
+function negativePromptFor(row) {
+  return [...new Set(row.negative_constraints || [])]
+    .filter(Boolean)
+    .join(', ');
+}
+
+function modelInput(model, prompt, referenceUrl, row) {
   if (model === 'flux-2') {
     return {
       prompt,
+      image_size: { width: 832, height: 1248 },
+      num_images: 1,
+      output_format: 'png',
+    };
+  }
+
+  if (model === 'gemini-25-flash-image') {
+    return {
+      prompt,
+      aspect_ratio: '2:3',
+      num_images: 1,
+      output_format: 'png',
+      limit_generations: true,
+    };
+  }
+
+  if (model === 'flux-2/klein/9b/base') {
+    return {
+      prompt,
+      negative_prompt: negativePromptFor(row),
       image_size: { width: 832, height: 1248 },
       num_images: 1,
       output_format: 'png',
@@ -217,7 +248,7 @@ function compileRows(ids) {
 async function generateOne({ row, model, referenceUrl, attempt }) {
   const finalPrompt = promptForModel(row.prompt, model);
   const result = await fal.subscribe(falModel(model), {
-    input: modelInput(model, finalPrompt, referenceUrl),
+    input: modelInput(model, finalPrompt, referenceUrl, row),
     logs: false,
   });
   const image = result?.data?.images?.[0];
@@ -250,6 +281,8 @@ async function generateOne({ row, model, referenceUrl, attempt }) {
     attempt,
     final_prompt: finalPrompt,
     negative_constraints: row.negative_constraints,
+    api_negative_prompt:
+      model === 'flux-2/klein/9b/base' ? negativePromptFor(row) : null,
     conditioning_mode: needsReference(model) ? 'reference_edit' : 'text_only',
     reference_style_path: needsReference(model)
       ? 'references/zync-card-style-reference.png'
@@ -275,9 +308,11 @@ async function main() {
   const model = resolveModel(args.model, globalStyle);
   for (const row of rows) delete row.global_style;
 
-  const cost = COST_USD[model] * rows.length;
+  const unitCost = COST_USD[model];
+  const cost = unitCost == null ? null : unitCost * rows.length;
   if (args.dryRun) {
-    console.log(`Dry run: ${rows.length} rights-safe compiled prompts; model=${model}; estimated first-pass cost=$${cost.toFixed(3)}`);
+    const costText = cost == null ? 'pricing not pinned in runner' : `estimated first-pass cost=${cost.toFixed(3)}`;
+    console.log(`Dry run: ${rows.length} rights-safe compiled prompts; model=${model}; ${costText}`);
     for (const row of rows) {
       console.log(
         `\n--- ${row.title} [${row.canonical_interest_id}] / ${row.archetype} / ${row.visual_variant} / ${row.recipe_source} / ${row.difficulty} ---\n${promptForModel(row.prompt, model)}`,
@@ -316,7 +351,7 @@ async function main() {
       const entry = await generateOne({ row, model, referenceUrl, attempt });
       manifest.entries.push(entry);
       calls += 1;
-      runCost += entry.estimated_cost_usd;
+      if (entry.estimated_cost_usd != null) runCost += entry.estimated_cost_usd;
       saveManifest(manifest);
       console.log(`  -> ${entry.local_image_path}`);
     } catch (error) {
@@ -327,7 +362,7 @@ async function main() {
   manifest.generated_at = new Date().toISOString();
   saveManifest(manifest);
   console.log(
-    `Done. API calls=${calls}; estimated run cost=$${runCost.toFixed(3)}; manifest entries=${manifest.entries.length}.`,
+    `Done. API calls=${calls}; estimated known-cost total=${runCost.toFixed(3)}; manifest entries=${manifest.entries.length}.`,
   );
 }
 

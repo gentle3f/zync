@@ -13,7 +13,11 @@
     "generate-compiled-batch": "node src/generateCompiledBatch.js",
     "audit-launch-image-batch": "node src/generateCompiledBatch.js --dry-run",
     "audit-reference-free-v1": "node src/generateCompiledBatch.js --dry-run --model=text --only=crafts.diy,lifestyle.game_nights,fashion.streetwear,technology.ai",
-    "generate-reference-free-v1": "node src/generateCompiledBatch.js --model=text --only=crafts.diy,lifestyle.game_nights,fashion.streetwear,technology.ai"
+    "generate-reference-free-v1": "node src/generateCompiledBatch.js --model=text --only=crafts.diy,lifestyle.game_nights,fashion.streetwear,technology.ai",
+    "audit-model-ab-v1-gemini": "node src/generateCompiledBatch.js --dry-run --model=geminiText --only=lifestyle.game_nights,fashion.streetwear",
+    "audit-model-ab-v1-klein": "node src/generateCompiledBatch.js --dry-run --model=kleinNegative --only=lifestyle.game_nights,fashion.streetwear",
+    "generate-model-ab-v1-gemini": "node src/generateCompiledBatch.js --model=geminiText --only=lifestyle.game_nights,fashion.streetwear",
+    "generate-model-ab-v1-klein": "node src/generateCompiledBatch.js --model=kleinNegative --only=lifestyle.game_nights,fashion.streetwear"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",
