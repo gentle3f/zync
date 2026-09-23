@@ -1,0 +1,583 @@
+{
+  "name": "batches/8q88jik2g3lf0tomqoh81ny1rwyw7uou4fhl",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-style-calibration-d4-6-v1",
+    "output": {
+      "inlinedResponses": {
+        "inlinedResponses": [
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1120536]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1514404]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1921,
+                "candidatesTokenCount": 1536,
+                "totalTokenCount": 3457,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1921
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "_Bu0aoChKb2NmtkPj8iE6Aw"
+            },
+            "metadata": {
+              "key": "business.coworking__D4",
+              "index": 0
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1010504]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1422812]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1692,
+                "candidatesTokenCount": 1589,
+                "totalTokenCount": 3281,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1692
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "_Bu0auajKeyl6dkPzIGk6AE"
+            },
+            "metadata": {
+              "key": "entertainment.movie_subgenre.legal_thriller__D4",
+              "index": 1
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1181452]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1600912]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1940,
+                "candidatesTokenCount": 1585,
+                "totalTokenCount": 3525,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1940
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "_Bu0aqi1KZyz_PUPiuSu0AE"
+            },
+            "metadata": {
+              "index": 2,
+              "key": "fashion.streetwear__D4"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1156432]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1563896]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1737,
+                "candidatesTokenCount": 1566,
+                "totalTokenCount": 3303,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1737
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "_Bu0ap_tKOGL6dkPu-2n8Aw"
+            },
+            "metadata": {
+              "index": 3,
+              "key": "food.dish.bun_cha__D4"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1236388]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1656616]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1767,
+                "candidatesTokenCount": 1610,
+                "totalTokenCount": 3377,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1767
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "_Bu0au6XKbfE_PUP7IuAyAc"
+            },
+            "metadata": {
+              "index": 4,
+              "key": "gaming.board__D4"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1093512]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1490260]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1751,
+                "candidatesTokenCount": 1686,
+                "totalTokenCount": 3437,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1751
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "_Bu0auT_KaO1_PUPsJKu6Qs"
+            },
+            "metadata": {
+              "index": 5,
+              "key": "learning.philosophy__D4"
+            }
+          }
+        ]
+      }
+    },
+    "createTime": "2026-09-23T18:34:10.442062001Z",
+    "endTime": "2026-09-23T18:41:41.614394350Z",
+    "updateTime": "2026-09-23T18:41:41.614394370Z",
+    "batchStats": {
+      "requestCount": "6",
+      "successfulRequestCount": "6"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/8q88jik2g3lf0tomqoh81ny1rwyw7uou4fhl"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput",
+    "inlinedResponses": {
+      "inlinedResponses": [
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1120536]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1514404]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1921,
+              "candidatesTokenCount": 1536,
+              "totalTokenCount": 3457,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1921
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "_Bu0aoChKb2NmtkPj8iE6Aw"
+          },
+          "metadata": {
+            "key": "business.coworking__D4",
+            "index": 0
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1010504]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1422812]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1692,
+              "candidatesTokenCount": 1589,
+              "totalTokenCount": 3281,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1692
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "_Bu0auajKeyl6dkPzIGk6AE"
+          },
+          "metadata": {
+            "key": "entertainment.movie_subgenre.legal_thriller__D4",
+            "index": 1
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1181452]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1600912]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1940,
+              "candidatesTokenCount": 1585,
+              "totalTokenCount": 3525,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1940
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "_Bu0aqi1KZyz_PUPiuSu0AE"
+          },
+          "metadata": {
+            "index": 2,
+            "key": "fashion.streetwear__D4"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1156432]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1563896]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1737,
+              "candidatesTokenCount": 1566,
+              "totalTokenCount": 3303,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1737
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "_Bu0ap_tKOGL6dkPu-2n8Aw"
+          },
+          "metadata": {
+            "index": 3,
+            "key": "food.dish.bun_cha__D4"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1236388]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1656616]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1767,
+              "candidatesTokenCount": 1610,
+              "totalTokenCount": 3377,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1767
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "_Bu0au6XKbfE_PUP7IuAyAc"
+          },
+          "metadata": {
+            "index": 4,
+            "key": "gaming.board__D4"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1093512]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1490260]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1751,
+              "candidatesTokenCount": 1686,
+              "totalTokenCount": 3437,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1751
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "_Bu0auT_KaO1_PUPsJKu6Qs"
+          },
+          "metadata": {
+            "index": 5,
+            "key": "learning.philosophy__D4"
+          }
+        }
+      ]
+    }
+  }
+}

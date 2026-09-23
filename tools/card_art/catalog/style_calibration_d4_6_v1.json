@@ -1,0 +1,36 @@
+{
+  "version": "v1",
+  "purpose": "D4 successor calibration: same 6 canonical interests, single D4 (Japanese special-illustration/full-art) global-style candidate = 6 images. Semantic hobby content must be byte-identical to prior D1/D2/D3 rounds for the same hobby; only the top-level global_style prompt block differs. Test-only override, does not touch production global_style_v1.json.",
+  "style_blocks_source": "catalog/style_calibration_d4_block_v1.json",
+  "prior_rounds": [
+    "catalog/style_calibration_18_v1.json (A/B/C, none selected)",
+    "catalog/style_calibration_d_18_v1.json (D1/D2/D3, D3 strongest but not yet special-illustration)"
+  ],
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "ids": [
+    "business.coworking",
+    "entertainment.movie_subgenre.legal_thriller",
+    "fashion.streetwear",
+    "food.dish.bun_cha",
+    "gaming.board",
+    "learning.philosophy"
+  ],
+  "style_versions": ["D4"],
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 6,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.1008,
+    "note": "Input text token charges are additional but small relative to image output cost."
+  },
+  "decision_gate": {
+    "diagnostic": "Does D4 finally feel like a Japanese special full-art collectible illustration rather than merely a nice anime lifestyle scene (D3's limitation)? Score per the extended 13-dimension rubric including the new SPECIAL-ILLUSTRATION FEEL and HERO FOCUS metrics.",
+    "fallback": "If D4 still feels like ordinary anime lifestyle illustration, stop text-only style calibration and recommend gemini-3.1-flash-image with style-reference image(s) as the next experiment, but do not run it automatically.",
+    "no_auto_scale": true
+  }
+}
