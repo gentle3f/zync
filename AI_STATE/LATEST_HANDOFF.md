@@ -7,7 +7,10 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260923_CARD_ART_LAUNCH_BATCH_READY.md`
+`AI_STATE/HANDOFF_20260923_CARD_ART_LAUNCH_BATCH_QA_RESULTS.md`
+
+(previous checkpoint, still useful for batch/runner context:
+`AI_STATE/HANDOFF_20260923_CARD_ART_LAUNCH_BATCH_READY.md`)
 
 Branch:
 
@@ -15,4 +18,4 @@ Branch:
 
 Current state:
 
-> **Interest/hobby work is frozen for the launch phase. Runtime has 4,053 interests and current rights partition is 2,210 baseline-art eligible / 1,843 blocked. A new rights-safe structured generation runner and 16-card USA/HK launch batch are ready. Prompt-only preflight found and fixed American Football, Hiking, Game Nights and Car Meets routing before image spend. Default first-pass model is FLUX.2 edit (~US$0.40 for the 16-card batch). Keep Vercel, GitHub Actions, Production and Play closed. Actual fal.ai generation may proceed only through the rights-safe runner with FAL_KEY kept out of git.**
+> **The 16-card launch batch has been generated and QA'd. BLOCKING FINDING: FLUX.2 edit contaminated 7/16 (44%) first-pass cards with a copied Zync card mockup (logo/rarity/frame/garbled text) from the reference image, plus 2 more with lighter text/collage leaks — root cause is `references/zync-card-style-reference.png` itself being a full 10-card mockup (including an actual "Board Games" card) rather than a style-only image. Gemini 2.5 Flash Image edit fallback fixed 7 of 9 flagged cards cleanly; `fashion.streetwear` and `technology.ai` still fail on both models. Do NOT run this pipeline at catalog scale (2,210 eligible interests) until the reference image is replaced with a text/logo-free style asset — the current contamination rate is not survivable at that scale. Total spend this session: $0.751. Keep Vercel, GitHub Actions, Production and Play closed.**
