@@ -5,7 +5,7 @@
   "premium_model": "nano-banana-pro/edit",
   "aspect_ratio": "2:3",
   "baseline_resolution": "832x1248",
-  "prompt": "Create a premium collectible hobby illustration. The artwork should feel cinematic, aspirational, emotionally warm, commercially polished, and immediately readable on a small mobile card. Use a strong focal subject, crisp subject separation, rich but controlled colour, atmospheric depth, premium lighting, and clear visual storytelling. Sell the emotional fantasy of doing the hobby rather than merely depicting an object. Aim for the feel of a miniature lifestyle poster or hero illustration inside one coherent collectible-art universe. Keep edges and subject readability cleaner than soft editorial painting. No text, no logo, no typography, no card border, no rarity badge, no watermark, no UI.",
+  "prompt": "Create a premium collectible hobby illustration. The artwork should feel cinematic, aspirational, emotionally warm, commercially polished, and immediately readable on a small mobile card. Use a strong focal subject, crisp subject separation, rich but controlled colour, atmospheric depth, premium lighting, and clear visual storytelling. Sell the emotional fantasy of doing the hobby rather than merely depicting an object. Aim for the feel of a miniature lifestyle hero illustration inside one coherent collectible-art universe, not a poster, advertisement, editorial cover, card face, or designed page. Keep edges and subject readability cleaner than soft editorial painting. No text, no logo, no typography, no card border, no rarity badge, no watermark, no UI.",
   "global_negatives": [
     "text",
     "logos",
@@ -26,8 +26,13 @@
     "readable real-world brand names, logos, or trademarks",
     "recognisable copyrighted film/game/cartoon characters or franchise costumes",
     "collage, split-screen, comic-panel, or multi-panel layouts",
-    "photoreal stock-photo rendering unless explicitly requested by the hobby recipe"
+    "photoreal stock-photo rendering unless explicitly requested by the hobby recipe",
+    "the hobby or interest name rendered anywhere in the image",
+    "title, subtitle, caption, heading, label, footer, explanatory copy, poster copy, or body copy",
+    "poster, advertisement, magazine-cover, card-face, or editorial-page layout",
+    "text boxes, caption bands, lower-thirds, or deliberate blank space reserved for typography"
   ],
   "style_reference_path": "references/zync-card-style-reference.png",
-  "reference_instruction": "Use the supplied reference image only as a visual-style guide. Match its commercial-cinematic illustration language, crisp hero framing, rich atmospheric lighting, polished color grading, and collectible desirability. Do not copy its subjects, exact compositions, card frames, typography, handwritten slogans, logos, rarity labels, or UI."
+  "reference_instruction": "Use the supplied reference image only as a visual-style guide. Match its commercial-cinematic illustration language, crisp hero framing, rich atmospheric lighting, polished color grading, and collectible desirability. Do not copy its subjects, exact compositions, card frames, typography, handwritten slogans, logos, rarity labels, or UI.",
+  "global_text_policy": "The hobby or interest name is semantic context only and must never appear visually. Never render the hobby name, title, subtitle, caption, heading, label, footer, explanatory copy, poster copy, body copy, text box, lower-third, or typography-like decoration. Do not reserve blank layout space for text and do not turn the composition into a poster, advertisement, magazine cover, card face, or editorial page. Any incidental real-world surface that could carry writing must be blank, abstract, cropped away, turned away, or too indistinct to read."
 }

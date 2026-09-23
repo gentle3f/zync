@@ -1595,6 +1595,94 @@
           "multiple footballs"
         ]
       }
+    },
+    {
+      "match": {
+        "id": "business.coworking"
+      },
+      "patch": {
+        "art_category": "career",
+        "archetype": "professional_world",
+        "visual_variant": "environmental_role",
+        "subject_template": "Several unrelated professionals independently working side by side at one shared communal desk in a coworking space, with distinct notebooks, generic work materials, headphones, mugs, and one natural neighbour interaction; laptops may be present only with blank, turned-away, or completely unreadable screens",
+        "environment_template": "A believable open coworking workspace with communal desks, varied seating, shared amenities, plants or shelves, and multiple independent workers; it must read as a shared workspace rather than a laboratory, workshop, startup prototype bench, or corporate boardroom",
+        "recognition_anchors": [
+          "multiple unrelated professionals working side by side",
+          "communal shared desk or shared workspace seating",
+          "distinct individual work setups with one natural neighbour interaction"
+        ],
+        "must_include": [
+          "at least three independent workers",
+          "one obvious communal coworking-space feature",
+          "blank, turned-away, or unreadable screens"
+        ],
+        "avoid": [
+          "laboratory or makerspace scene",
+          "hardware or product prototyping",
+          "jewelry-making or craft workshop",
+          "formal corporate boardroom",
+          "presentation slides",
+          "readable screen, document, wall sign, company name, or logo"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "business.marketing"
+      },
+      "patch": {
+        "art_category": "career",
+        "archetype": "professional_world",
+        "visual_variant": "collaboration_case",
+        "subject_template": "Two or three marketers actively arranging and comparing a physical campaign concept around one generic product sample, blank packaging mockups, image cards, unlabeled colour swatches, and blank poster rectangles; hands should visibly move, compare, point to, and refine the visual layout",
+        "environment_template": "A believable creative marketing studio or campaign-planning table with tactile mockups and visual materials, with no readable copy, brand names, slogans, charts, screens, or presentation slides",
+        "recognition_anchors": [
+          "physical campaign-planning layout",
+          "generic product sample with blank packaging mockups",
+          "image cards and unlabeled colour or material swatches being compared"
+        ],
+        "must_include": [
+          "two or three people actively refining a campaign concept",
+          "blank product or packaging mockup",
+          "non-textual visual layout materials"
+        ],
+        "avoid": [
+          "generic laboratory or workshop",
+          "hardware prototyping",
+          "jewelry-making or craft fabrication",
+          "manufacturing scene",
+          "readable advertising copy or slogan",
+          "brand logo or company name",
+          "readable screen, chart, document, poster, or presentation slide"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "learning.book_genre.booktube"
+      },
+      "patch": {
+        "art_category": "culture",
+        "archetype": "reading_world",
+        "visual_variant": "close_reading",
+        "subject_template": "A book creator actively discussing one plain unbranded book while recording a book-focused video, with expressive speaking gestures and a small generic camera or phone on a tripod clearly aimed at the creator",
+        "environment_template": "A warm home reading or creator corner with plain unbranded books, one generic camera or phone-on-tripod, and optionally a small microphone; no platform interface, logos, signs, or readable book text",
+        "recognition_anchors": [
+          "creator speaking about a plain book",
+          "generic camera or phone on tripod aimed at the creator",
+          "book-focused recording setup without platform branding"
+        ],
+        "must_include": [
+          "one plain unbranded book",
+          "one visible generic recording device",
+          "active speaking or presenting gesture"
+        ],
+        "avoid": [
+          "plain silent reading with no recording cue",
+          "platform logo or video UI",
+          "readable book cover, spine, page, caption, or channel text"
+        ]
+      }
     }
   ],
   "hard_case_ids": [

@@ -25,7 +25,9 @@
     "audit-scale-100-v1": "node src/runScale100Batch.js --dry-run",
     "generate-scale-100-v1": "node src/runScale100Batch.js",
     "audit-archetype-fix-v1": "node src/runArchetypeFixValidation.js --dry-run",
-    "generate-archetype-fix-v1": "node src/runArchetypeFixValidation.js"
+    "generate-archetype-fix-v1": "node src/runArchetypeFixValidation.js",
+    "audit-caption-remediation-v1": "node src/runCaptionRemediationValidation.js --dry-run",
+    "generate-caption-remediation-v1": "node src/runCaptionRemediationValidation.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

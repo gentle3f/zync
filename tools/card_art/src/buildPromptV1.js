@@ -47,6 +47,7 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
   // as visible captions (for example HEAT ROOM / IMMERSION_RITUAL).
   const sections = [];
   sections.push(globalStyle.prompt);
+  if (globalStyle.global_text_policy) sections.push(globalStyle.global_text_policy);
   sections.push(
     `Use this overall composition approach: ${archetype.composition} ${archetype.camera} ` +
     `The emotional feeling should be ${list(archetype.feeling)}. ` +

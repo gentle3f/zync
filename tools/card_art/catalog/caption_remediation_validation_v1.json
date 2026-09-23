@@ -1,0 +1,67 @@
+{
+  "version": "v1",
+  "purpose": "8-card targeted re-validation after global hobby-title/caption suppression plus exact coworking/marketing recognition fixes and a small BookTube creator-cue fix.",
+  "output_tag": "caption_remediation_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "career.legal_profession",
+        "technology.generative_ai",
+        "travel.general",
+        "business.coworking",
+        "business.marketing",
+        "travel.japan",
+        "technology.electronics"
+      ]
+    },
+    {
+      "name": "klein",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": [
+        "learning.book_genre.booktube"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 8,
+    "standard_cards": 7,
+    "klein_cards": 1,
+    "estimated_total_cost_usd": 0.0989
+  },
+  "qa_groups": {
+    "global_title_caption": [
+      "career.legal_profession",
+      "technology.generative_ai",
+      "travel.general"
+    ],
+    "professional_recognition": [
+      "business.coworking",
+      "business.marketing"
+    ],
+    "travel_followup": [
+      "travel.japan"
+    ],
+    "reading_recognition": [
+      "learning.book_genre.booktube"
+    ],
+    "clean_control": [
+      "technology.electronics"
+    ]
+  },
+  "qa_focus": [
+    "zero hobby-name/title/caption/heading/body-copy rendering across unrelated archetypes",
+    "no poster/card/ad/editorial layout or typography-reserved whitespace",
+    "coworking reads as a shared workspace rather than a workshop or prototype bench",
+    "marketing reads as campaign planning rather than a generic workshop",
+    "Japan identity should not depend on readable signage",
+    "BookTube should read as recorded book discussion rather than plain reading",
+    "known-clean technology.electronics remains clean",
+    "Klein style drift remains separately noted and is not considered solved by this test"
+  ]
+}
