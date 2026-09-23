@@ -1,0 +1,53 @@
+{
+  "version": "v1",
+  "description": "Experiment-only dedicated PC Gaming route. Normal production routing remains unchanged unless passed via --experiment-overrides.",
+  "overrides": {
+    "gaming.pc_gaming": {
+      "archetype": "screenless_pc_play",
+      "visual_variant": "tower_input_play",
+      "subject": "A focused PC gamer wearing plain headphones actively plays using a generic full-size keyboard and mouse beside one visible unbranded desktop tower, with hands, seated posture, and reaction communicating active computer gaming while the entire monitor zone stays outside the frame",
+      "environment": "A believable home PC-gaming corner with a seated player, generic desktop tower, full-size keyboard, mouse, mouse mat, headphones, chair, and simple room details; no monitor, television, laptop, tablet, phone, projector, display panel, gameplay screen, or other screen-bearing device anywhere",
+      "composition": "The dedicated PC-play scene must be carried by the player, desktop tower, keyboard, mouse, headphones, active hands, seated posture, and focused gaming reaction. Do not depict building, repairing, assembling, coding, streaming, or presenting an object. Crop before the monitor zone.",
+      "camera": "Low side three-quarter medium shot showing player, keyboard, mouse, headphones, and desktop tower together while excluding the entire display area.",
+      "recognition_anchors_add": [
+        "generic desktop computer tower",
+        "full-size keyboard and mouse actively used for play",
+        "plain headphones",
+        "focused seated gaming posture and reaction"
+      ],
+      "must_include_add": [
+        "one generic unbranded desktop tower",
+        "active hands on keyboard and mouse",
+        "plain headphones",
+        "seated player reaction",
+        "zero screen-bearing devices anywhere in frame"
+      ],
+      "avoid_add": [
+        "monitor",
+        "television",
+        "laptop",
+        "tablet",
+        "phone",
+        "projector",
+        "display panel",
+        "game screen",
+        "game HUD",
+        "code",
+        "IDE",
+        "terminal",
+        "waveform",
+        "chat window",
+        "streaming interface",
+        "screen glow",
+        "building or repairing a gadget",
+        "object assembly",
+        "steampunk device",
+        "brand logo",
+        "manufacturer badge"
+      ],
+      "override_prompt_additions": [
+        "This is a dedicated screenless PC-gaming scene, not a collectible-object build and not streaming. The player is already gaming. Do not place any gadget in the player's hands other than normal keyboard/mouse interaction, and do not invent a screen."
+      ]
+    }
+  }
+}
