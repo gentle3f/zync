@@ -1,0 +1,33 @@
+{
+  "version": "v1",
+  "purpose": "Japanese collectible-anime house-style calibration D1/D2/D3: same 6 canonical interests as the A/B/C round x 3 isolated anime-intensity global-style-block candidates = 18 images. Semantic hobby content must be byte-identical across D1/D2/D3 for the same hobby; only the top-level global_style prompt block differs. Test-only override, does not touch production global_style_v1.json.",
+  "style_blocks_source": "catalog/style_calibration_d_blocks_v1.json",
+  "prior_round": "catalog/style_calibration_18_v1.json (A/B/C, none selected as final)",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "ids": [
+    "business.coworking",
+    "entertainment.movie_subgenre.legal_thriller",
+    "fashion.streetwear",
+    "food.dish.bun_cha",
+    "gaming.board",
+    "learning.philosophy"
+  ],
+  "style_versions": ["D1", "D2", "D3"],
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 18,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.3024,
+    "note": "Input text token charges are additional but small relative to image output cost."
+  },
+  "decision_gate": {
+    "diagnostic": "Which D1/D2/D3 anime/lifestyle balance best achieves joyful Japanese commercial-anime collectible energy while preserving semantic precision, without drifting into Western editorial/concept-art, fantasy, or childish/chibi territory? Score per the extended 11-dimension rubric (semantic PASS/MINOR/FAIL, Japanese anime feel, joy/emotional energy, collectible appeal, Zync distinctiveness, photographicness, Western editorial drift, fantasy drift, border/chrome defect, maturity/premium, scalability).",
+    "fallback": "If none of D1/D2/D3 genuinely achieves the intended Japanese collectible feeling, do not force a winner. Recommend gemini-3.1-flash-image with style-reference image(s) as the next experiment, but do not run it automatically.",
+    "no_auto_scale": true
+  }
+}
