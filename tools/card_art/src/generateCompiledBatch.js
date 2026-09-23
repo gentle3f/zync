@@ -280,7 +280,7 @@ async function main() {
     console.log(`Dry run: ${rows.length} rights-safe compiled prompts; model=${model}; estimated first-pass cost=$${cost.toFixed(3)}`);
     for (const row of rows) {
       console.log(
-        `\n--- ${row.title} [${row.canonical_interest_id}] / ${row.archetype} / ${row.visual_variant} / ${row.recipe_source} / ${row.difficulty} ---\n${row.prompt}`,
+        `\n--- ${row.title} [${row.canonical_interest_id}] / ${row.archetype} / ${row.visual_variant} / ${row.recipe_source} / ${row.difficulty} ---\n${promptForModel(row.prompt, model)}`,
       );
     }
     return;
