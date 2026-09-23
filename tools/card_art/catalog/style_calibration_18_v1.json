@@ -1,0 +1,32 @@
+{
+  "version": "v1",
+  "purpose": "House-style A/B/C calibration: same 6 canonical interests x 3 isolated global-style-block candidates = 18 images. Semantic hobby content must be byte-identical across A/B/C for the same hobby; only the top-level global_style prompt block differs. Test-only override, does not touch production global_style_v1.json.",
+  "style_blocks_source": "catalog/style_calibration_blocks_v1.json",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "ids": [
+    "business.coworking",
+    "entertainment.movie_subgenre.legal_thriller",
+    "fashion.streetwear",
+    "food.dish.bun_cha",
+    "gaming.board",
+    "learning.philosophy"
+  ],
+  "style_versions": ["A", "B", "C"],
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 18,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.3024,
+    "note": "Input text token charges are additional but small relative to image output cost."
+  },
+  "decision_gate": {
+    "diagnostic": "Does text-only style control make gemini-3.1-flash-lite-image produce a distinctive, non-photographic Zync collectible-illustration look? Score PHOTOGRAPHICNESS, COLLECTIBLE APPEAL, ZYNC DISTINCTIVENESS, MATURITY/PREMIUM FEEL, and SCALABILITY for each image, plus a separate semantic-correctness PASS/MINOR/FAIL.",
+    "fallback": "If all three variants remain predominantly photographic, stop text-only style tweaking and recommend gemini-3.1-flash-image with reference-image conditioning as the next test, not another text-only round.",
+    "no_auto_scale": true
+  }
+}
