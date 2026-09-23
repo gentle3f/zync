@@ -840,6 +840,14 @@
         "camera": "Three-quarter medium creator-and-camera view with controller and microphone prominent, plain wall or acoustic background behind.",
         "lighting": "Warm creator-studio key light with clean subject separation and no screen glow."
       }
+    ],
+    "screenless_pc_play": [
+      {
+        "id": "tower_input_play",
+        "composition": "A focused player wears plain headphones and actively uses a generic full-size keyboard and mouse beside one visible unbranded desktop tower. Hands, posture, and reaction communicate active PC play. The physical monitor position is completely outside the composition, and no substitute display device appears.",
+        "camera": "Low side three-quarter medium shot including face/reaction, hands, keyboard, mouse, headphones, and desktop tower, with the view cropped before any monitor area.",
+        "lighting": "Painterly cinematic room light with controlled practical accents; no monitor glow and no neon cyberpunk treatment."
+      }
     ]
   }
 }
