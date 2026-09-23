@@ -687,6 +687,39 @@
         "card border",
         "rounded card frame"
       ]
+    },
+    "screenless_pc_play": {
+      "feeling": [
+        "focus",
+        "challenge",
+        "enthusiasm",
+        "hands-on play"
+      ],
+      "composition": "Show a seated PC gamer actively playing through physical desktop-gaming hardware while every display surface is physically absent. The generic desktop tower, full-size keyboard, mouse, mouse mat, headphones, hand positions, seated posture, and focused reaction must carry the entire concept. This is play, not building, repairing, coding, streaming, or office work.",
+      "camera": "Side or rear-three-quarter medium framing that clearly shows the player, hands on keyboard and mouse, headphones, and generic desktop tower while cropping the entire forward display zone outside the image.",
+      "recognition": "PC gaming is identified by the combined physical language of a desktop tower, keyboard, mouse, headphones, active seated posture, and gaming reaction, never by gameplay imagery or a visible screen.",
+      "avoid": [
+        "monitor",
+        "television",
+        "laptop",
+        "tablet",
+        "phone",
+        "projector screen",
+        "display panel",
+        "game HUD",
+        "code",
+        "IDE",
+        "terminal",
+        "waveform",
+        "chat window",
+        "streaming UI",
+        "building or repairing a gadget",
+        "steampunk device",
+        "object assembly",
+        "office-work posture",
+        "RGB brand logo",
+        "recognisable manufacturer badge"
+      ]
     }
   }
 }
