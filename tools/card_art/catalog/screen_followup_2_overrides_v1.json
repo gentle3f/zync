@@ -1,0 +1,97 @@
+{
+  "version": "v1",
+  "description": "Two-call experiment-only overrides. Production routing is unchanged unless explicitly loaded via --experiment-overrides.",
+  "overrides": {
+    "technology.robotics": {
+      "archetype": "physical_prototype",
+      "visual_variant": "field_robot_test",
+      "subject": "An engineer physically tests and adjusts one generic wheeled or articulated robot on an open indoor test floor, touching a joint or sensor while the robot moves through simple cones or floor markers",
+      "environment": "A bright open robotics test floor with mechanical parts, cones, floor tape, robot wheels, joints and sensors, plus optionally one simple screenless handheld remote controller; no desk, monitor, laptop, tablet, phone, television, desktop computer, terminal, code display, or digital panel anywhere",
+      "composition": "Make the robot body, engineer's hands, joints, wheels, sensors, and physical test movement fill the storytelling area. The scene contains zero objects with a display surface.",
+      "camera": "Low three-quarter medium-wide field-test view with open floor behind the robot; avoid all desk and workstation framing.",
+      "recognition_anchors_add": [
+        "generic robot body with wheels or articulated joints",
+        "hands-on adjustment of a physical sensor or joint",
+        "open physical test course with cones or floor markers"
+      ],
+      "must_include_add": [
+        "one real physical generic robot",
+        "hands-on mechanical or sensor adjustment",
+        "zero screen-bearing devices anywhere in frame",
+        "painterly cinematic illustrated rendering with visible crafted texture"
+      ],
+      "avoid_add": [
+        "monitor",
+        "laptop",
+        "tablet",
+        "phone",
+        "television",
+        "desktop computer",
+        "computer desk",
+        "workstation",
+        "display panel",
+        "screen glow",
+        "code",
+        "syntax highlighting",
+        "IDE",
+        "terminal",
+        "dashboard",
+        "waveform",
+        "editing interface",
+        "photograph",
+        "photorealistic rendering",
+        "macro product photography",
+        "stock photo",
+        "DSLR photo",
+        "product photography",
+        "hyperreal commercial photo"
+      ],
+      "override_prompt_additions": [
+        "Keep the same screen-free physical robotics field-test semantics used in the previous discriminator.",
+        "STYLE IS A HARD REQUIREMENT: use a premium painterly cinematic illustration with crafted brush-like texture, controlled stylization, rich atmospheric colour, and illustrated collectible-art language. Do not render this as a photograph, macro product photograph, DSLR image, stock photo, or photoreal commercial product shot."
+      ]
+    },
+    "gaming.pc_gaming": {
+      "archetype": "collection_object_hero",
+      "visual_variant": "hands_build",
+      "subject": "A focused PC gamer wearing plain headphones actively plays using a generic full-size keyboard and mouse beside one visible unbranded desktop tower, with hands, seated posture, and reaction communicating active computer gaming while the monitor area is completely outside the image",
+      "environment": "A believable home PC-gaming corner containing the seated player, generic desktop tower, full-size keyboard, mouse, mouse mat, headphones, chair, and simple room details; no monitor, television, laptop, tablet, phone, projector, display panel, gameplay screen, or other screen-bearing device anywhere",
+      "composition": "The physical desktop tower, keyboard, mouse, headphones, active hands, seated gaming posture, and focused reaction must carry recognition. Crop the composition before any monitor area.",
+      "camera": "Low side three-quarter medium shot showing player, keyboard, mouse, headphones, and desktop tower together while excluding the entire display zone.",
+      "recognition_anchors_add": [
+        "generic desktop computer tower",
+        "full-size keyboard and mouse used actively",
+        "headphones plus focused seated gaming posture and reaction"
+      ],
+      "must_include_add": [
+        "one generic unbranded desktop tower",
+        "active hands on keyboard and mouse",
+        "plain headphones",
+        "zero screen-bearing devices anywhere in frame"
+      ],
+      "avoid_add": [
+        "monitor",
+        "television",
+        "laptop",
+        "tablet",
+        "phone",
+        "projector",
+        "display panel",
+        "game screen",
+        "game HUD",
+        "code",
+        "IDE",
+        "terminal",
+        "waveform",
+        "chat window",
+        "streaming interface",
+        "screen glow",
+        "brand logo",
+        "manufacturer badge"
+      ],
+      "override_prompt_additions": [
+        "This is a screenless PC-gaming recognition experiment. Do not add a monitor or substitute display. PC gaming must be recognizable only from the desktop tower, keyboard, mouse, headphones, seated player posture, hand positions, and focused reaction."
+      ]
+    }
+  }
+}
