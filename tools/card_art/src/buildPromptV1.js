@@ -113,12 +113,21 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
     throw new Error(`Prompt-format regression for hobby "${effective.id}": title-like compiler header leaked into model-facing text`);
   }
 
+  // Check against every known archetype/variant/subcategory id, not just the
+  // current hobby's own — a spec's "avoid" text can reference another
+  // archetype by raw id (e.g. lens_perspective's avoid list once said
+  // "composition too similar to travel_vista"), which the current-hobby-only
+  // check would miss.
+  const allVariantIds = Object.values(variants.archetypes || {}).flat().map(v => v.id);
   const internalIds = [
     effective.archetype,
     variant.id,
     effective.subcategory,
+    ...Object.keys(archetypes.archetypes || {}),
+    ...allVariantIds,
+    ...Object.keys(subcategories.subcategories || {}),
   ].filter(value => value && /[_./]/.test(value));
-  for (const id of internalIds) {
+  for (const id of new Set(internalIds)) {
     if (compiledPrompt.includes(id)) {
       throw new Error(
         `Prompt-format regression for hobby "${effective.id}": internal identifier "${id}" leaked into model-facing text`,
