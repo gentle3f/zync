@@ -1,0 +1,36 @@
+{
+  "version": "v1",
+  "purpose": "Single-call validation of the dedicated screenless_pc_play route for gaming.pc_gaming after the collection_object_hero mismatch failure.",
+  "output_tag": "pc_gaming_dedicated_retry_v1",
+  "experiment_overrides": "catalog/pc_gaming_dedicated_retry_overrides_v1.json",
+  "routes": [
+    {
+      "name": "pc_gaming_standard_dedicated",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "gaming.pc_gaming"
+      ]
+    }
+  ],
+  "expected": {
+    "api_calls": 1,
+    "standard_calls": 1,
+    "klein_calls": 0,
+    "estimated_total_cost_usd": 0.0125
+  },
+  "qa_focus": [
+    "gaming.pc_gaming compiles to screenless_pc_play / tower_input_play",
+    "no inherited collectible-object build semantics",
+    "no monitor or other screen-bearing device",
+    "recognition comes from desktop tower + keyboard + mouse + headphones + seated player reaction",
+    "no coding, streaming, office-work, steampunk-gadget, or repair/build scene",
+    "normal production route remains unchanged without the experiment override"
+  ],
+  "decision_gate": {
+    "pass": "PASS only if screen-free, unmistakably PC gaming, no readable code/UI, no brand/IP leak, and house style remains consistent.",
+    "fail": "If a screen still appears or gaming identity is lost again, stop prompt iteration on Standard and move PC Gaming to a different model/visual strategy rather than another wording pass.",
+    "scale": "Do not generalize or start any broader batch automatically."
+  }
+}
