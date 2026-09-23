@@ -593,9 +593,9 @@
         "judgment",
         "professional focus"
       ],
-      "composition": "Show an adult legal professional performing a recognizably legal action in a generic courtroom or formal client-consultation setting. Prefer courtroom architecture such as counsel table, judge bench, witness stand, gallery rail, or a formal consultation table with closed blank folders. The legal setting and adult advocacy/consultation action must carry recognition. Do not use workshops, craft benches, hand tools, microscopes, machinery, apprentices, or children.",
+      "composition": "Show an adult legal professional or adult participant in a formal legal simulation performing a recognizably legal advocacy, argument, or consultation action in a generic courtroom or formal legal setting. Prefer courtroom architecture such as counsel table, judge bench, witness stand, gallery rail, or a formal consultation table with closed blank folders. The legal setting and advocacy/consultation action must carry recognition. Do not use workshops, craft benches, hand tools, microscopes, machinery, apprentices, or children.",
       "camera": "Human-height medium or medium-wide professional frame that clearly shows the adult legal professional and courtroom/consultation architecture.",
-      "recognition": "Legal practice must be identifiable from courtroom architecture, advocacy posture, counsel-table interaction, formal adult client consultation, or other non-textual legal-environment cues without readable documents, signs, or captions.",
+      "recognition": "Legal advocacy or practice must be identifiable from courtroom architecture, advocacy posture, counsel-table interaction, formal adult client consultation, or other non-textual legal-environment cues without readable documents, signs, or captions.",
       "avoid": [
         "craft workshop or artisan scene",
         "watchmaking, jewelry making, or machine repair",

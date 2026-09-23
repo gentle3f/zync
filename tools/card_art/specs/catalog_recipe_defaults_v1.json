@@ -1714,6 +1714,118 @@
           "hobby-title caption or poster layout"
         ]
       }
+    },
+    {
+      "match": {
+        "id": "business.branding"
+      },
+      "patch": {
+        "art_category": "career",
+        "archetype": "campaign_planning",
+        "visual_variant": "mockup_table",
+        "subject_template": "Two or three adult brand strategists actively comparing and arranging a generic unbranded identity concept using blank packaging mockups, abstract image cards, unlabeled colour/material swatches, and simple non-textual visual motifs",
+        "environment_template": "A clean creative brand-planning studio centered on a physical mockup table; no readable brand name, slogan, logo, presentation text, workshop machinery, jewelry tools, or manufacturing equipment",
+        "recognition_anchors": [
+          "blank packaging and product mockups",
+          "abstract image cards and unlabeled colour/material swatches",
+          "active comparison and refinement of a visual identity concept"
+        ],
+        "must_include": [
+          "two or three adult collaborators",
+          "blank packaging or product mockups",
+          "non-textual visual identity materials"
+        ],
+        "avoid": [
+          "readable logo, brand name, slogan, or advertising copy",
+          "craft workshop or jewelry bench",
+          "hardware prototyping or manufacturing",
+          "presentation slide or text-heavy moodboard"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "career.digital_marketing"
+      },
+      "patch": {
+        "art_category": "career",
+        "archetype": "campaign_planning",
+        "visual_variant": "campaign_wall_table",
+        "subject_template": "Two or three adult digital marketers actively planning a campaign using a physical table of blank product mockups, image cards and colour swatches, supported by one simple screen or wall panel showing only abstract image thumbnails and unlabeled layout blocks",
+        "environment_template": "A modern campaign-planning studio with tactile mockups and sparse non-textual digital preview cues; no readable dashboards, copy, analytics labels, company names, logos, workshop tools, machinery, or manufacturing equipment",
+        "recognition_anchors": [
+          "campaign-planning table with blank mockups",
+          "abstract digital preview or image-thumbnail cue",
+          "active comparison of imagery, layout, and colour choices"
+        ],
+        "must_include": [
+          "two or three adult collaborators",
+          "blank campaign/product mockups",
+          "one sparse non-textual digital preview cue"
+        ],
+        "avoid": [
+          "readable dashboard, code, metrics, labels, or advertising copy",
+          "generic laptop meeting with no campaign materials",
+          "craft workshop or jewelry bench",
+          "hardware prototyping or manufacturing"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "learning.mock_trial"
+      },
+      "patch": {
+        "art_category": "learning",
+        "archetype": "legal_practice",
+        "visual_variant": "student_advocacy",
+        "subject_template": "Adult students actively conducting a mock trial in a generic courtroom, with one advocate presenting from beside a counsel table while teammates and a neutral judge or judging panel participate",
+        "environment_template": "A generic educational courtroom or mock-trial room with counsel tables, judge bench or judging panel, blank folders, and no readable case names, placards, certificates, or signs",
+        "recognition_anchors": [
+          "adult student advocate presenting",
+          "counsel table plus judge or judging panel",
+          "formal mock-trial courtroom interaction"
+        ],
+        "must_include": [
+          "adult student participants",
+          "one standing advocate",
+          "generic courtroom architecture"
+        ],
+        "avoid": [
+          "real law-office consultation",
+          "craft workshop or laboratory",
+          "children or apprentice scene",
+          "readable case names, signs, certificates, or documents"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "learning.moot_court"
+      },
+      "patch": {
+        "art_category": "learning",
+        "archetype": "legal_practice",
+        "visual_variant": "student_advocacy",
+        "subject_template": "Adult law students actively presenting a moot-court argument before a neutral judge or judging panel, with formal advocacy posture, counsel table, and blank case folders",
+        "environment_template": "A generic moot-court or educational courtroom with judge bench or judging panel, counsel tables, neutral architecture, and no readable case names, placards, certificates, or signs",
+        "recognition_anchors": [
+          "adult law-student advocate arguing before a judge or panel",
+          "counsel table and courtroom architecture",
+          "formal advocacy simulation"
+        ],
+        "must_include": [
+          "adult student participants",
+          "one standing oral advocate",
+          "judge or judging panel"
+        ],
+        "avoid": [
+          "craft workshop or laboratory",
+          "children or apprentice scene",
+          "readable case names, signs, certificates, or documents",
+          "generic classroom with no courtroom cue"
+        ]
+      }
     }
   ],
   "hard_case_ids": [

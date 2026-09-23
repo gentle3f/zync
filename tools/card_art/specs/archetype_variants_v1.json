@@ -801,6 +801,13 @@
         "composition": "An adult legal professional and adult client confer across a formal table with closed blank folders and a simple neutral office/court-adjacent setting. Body language shows advice and review without relying on visible document text.",
         "camera": "Eye-level intimate professional medium shot.",
         "lighting": "Warm restrained office light with serious, trustworthy tone."
+      },
+      {
+        "id": "student_advocacy",
+        "generic_eligible": false,
+        "composition": "Two or three adult students or young adults conduct a formal mock-trial or moot-court argument in a generic courtroom. One advocate stands and presents while teammates sit at a counsel table; a neutral judge or judging panel is visible. Use blank folders only and no readable case names, placards, certificates, or text.",
+        "camera": "Eye-level medium-wide courtroom frame showing advocate, counsel table, and judge or judging panel.",
+        "lighting": "Clean institutional courtroom light with warm professional subject separation."
       }
     ]
   }

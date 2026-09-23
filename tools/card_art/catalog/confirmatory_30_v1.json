@@ -1,0 +1,105 @@
+{
+  "version": "v1",
+  "purpose": "30-card confirmatory batch after structural scene-prior remediation: test generalisation of the new structural routes, attempt Standard-FLUX migration of four formerly Klein-sensitive sentinels, and probe 17 previously ungenerated fresh concepts across diverse archetypes.",
+  "output_tag": "confirmatory_30_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "business.branding",
+        "career.digital_marketing",
+        "learning.mock_trial",
+        "learning.moot_court",
+        "arts.vlogging",
+        "arts.content_creation",
+        "arts.podcasting",
+        "arts.online_video_creation",
+        "business.coworking",
+        "sports.american_football",
+        "sports.football",
+        "food.yum_cha",
+        "food.food_markets",
+        "sports.archery",
+        "sports.fencing",
+        "wellness.pilates",
+        "wellness.breathwork",
+        "outdoors.birdwatching",
+        "outdoors.skiing",
+        "music.guitar",
+        "music.vinyl",
+        "food.pizza",
+        "food.tea",
+        "arts.watercolor",
+        "arts.ceramics",
+        "crafts.woodworking",
+        "technology.robotics",
+        "science.chemistry",
+        "learning.book_clubs",
+        "transport.aviation"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 30,
+    "standard_cards": 30,
+    "klein_cards": 0,
+    "estimated_total_cost_usd": 0.375
+  },
+  "qa_groups": {
+    "structural_generalisation_and_stability": [
+      "business.branding",
+      "career.digital_marketing",
+      "learning.mock_trial",
+      "learning.moot_court",
+      "arts.vlogging",
+      "arts.content_creation",
+      "arts.podcasting",
+      "arts.online_video_creation",
+      "business.coworking"
+    ],
+    "standard_migration_from_klein": [
+      "sports.american_football",
+      "sports.football",
+      "food.yum_cha",
+      "food.food_markets"
+    ],
+    "fresh_stratified_discovery": [
+      "sports.archery",
+      "sports.fencing",
+      "wellness.pilates",
+      "wellness.breathwork",
+      "outdoors.birdwatching",
+      "outdoors.skiing",
+      "music.guitar",
+      "music.vinyl",
+      "food.pizza",
+      "food.tea",
+      "arts.watercolor",
+      "arts.ceramics",
+      "crafts.woodworking",
+      "technology.robotics",
+      "science.chemistry",
+      "learning.book_clubs",
+      "transport.aviation"
+    ]
+  },
+  "qa_focus": [
+    "global hobby-title/caption suppression must remain intact across all 30 cards",
+    "no raw compiler-id or title-like compiler header leakage",
+    "new structural routes must generalise without workshop/jewelry/apprentice collapse",
+    "creator_workflow must preserve clear creator-tool recognition without platform UI/text",
+    "American Football, Football, Yum Cha, and Food Markets are intentionally re-tested on Standard FLUX to see whether Klein can be retired for these structurally-fixed classes",
+    "fresh concepts should be immediately recognisable without brand/logo/text dependence",
+    "card chrome, borders, pseudo-text, readable UI, anatomy/key-object integrity, and house-style consistency",
+    "record failures by archetype/variant to detect any new model semantic prior"
+  ],
+  "decision_gate": {
+    "structural_group": "No repeated systemic scene-prior recurrence. At least 8 of 9 should be PASS or MINOR, with no common workshop/jewelry/apprentice collapse.",
+    "standard_migration_group": "Treat Klein retirement for these classes as proven only if all 4 Standard-FLUX migration controls PASS without text/logo/signage regression.",
+    "fresh_group": "Fresh 17 should have at least 70% PASS and no single archetype/variant should show a repeated systemic failure pattern.",
+    "overall": "Do not scale beyond 50 until systemic failures are absent. One-off MINOR defects are acceptable; repeated defect classes require another targeted structural repair."
+  }
+}
