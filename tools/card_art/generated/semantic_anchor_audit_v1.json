@@ -1,0 +1,3105 @@
+{
+  "version": "v1",
+  "purpose": "Static semantic-anchor coverage audit after the 100-card bulk validation failure.",
+  "counts": {
+    "eligible": 2210,
+    "manual": 14,
+    "derived_covered": 1892,
+    "derived_uncovered": 304
+  },
+  "by_archetype": {
+    "solo_action": {
+      "total": 97,
+      "manual": 2,
+      "covered": 95,
+      "uncovered": 0
+    },
+    "nature_immersion": {
+      "total": 37,
+      "manual": 1,
+      "covered": 34,
+      "uncovered": 2
+    },
+    "fitness_training": {
+      "total": 17,
+      "manual": 0,
+      "covered": 17,
+      "uncovered": 0
+    },
+    "outdoor_motion": {
+      "total": 15,
+      "manual": 0,
+      "covered": 15,
+      "uncovered": 0
+    },
+    "strategy_table": {
+      "total": 9,
+      "manual": 0,
+      "covered": 9,
+      "uncovered": 0
+    },
+    "vertical_adventure": {
+      "total": 4,
+      "manual": 1,
+      "covered": 3,
+      "uncovered": 0
+    },
+    "water_outdoors": {
+      "total": 38,
+      "manual": 0,
+      "covered": 38,
+      "uncovered": 0
+    },
+    "calm_wellness": {
+      "total": 20,
+      "manual": 0,
+      "covered": 20,
+      "uncovered": 0
+    },
+    "wellness_experience": {
+      "total": 6,
+      "manual": 0,
+      "covered": 6,
+      "uncovered": 0
+    },
+    "digital_play": {
+      "total": 172,
+      "manual": 0,
+      "covered": 0,
+      "uncovered": 172
+    },
+    "group_play": {
+      "total": 64,
+      "manual": 1,
+      "covered": 63,
+      "uncovered": 0
+    },
+    "story_culture": {
+      "total": 188,
+      "manual": 1,
+      "covered": 187,
+      "uncovered": 0
+    },
+    "music_listening": {
+      "total": 272,
+      "manual": 0,
+      "covered": 272,
+      "uncovered": 0
+    },
+    "performance": {
+      "total": 49,
+      "manual": 1,
+      "covered": 48,
+      "uncovered": 0
+    },
+    "travel_vista": {
+      "total": 183,
+      "manual": 2,
+      "covered": 181,
+      "uncovered": 0
+    },
+    "food_hero": {
+      "total": 255,
+      "manual": 1,
+      "covered": 254,
+      "uncovered": 0
+    },
+    "drink_ritual": {
+      "total": 65,
+      "manual": 1,
+      "covered": 64,
+      "uncovered": 0
+    },
+    "tech_workspace": {
+      "total": 54,
+      "manual": 1,
+      "covered": 0,
+      "uncovered": 53
+    },
+    "lens_perspective": {
+      "total": 16,
+      "manual": 1,
+      "covered": 15,
+      "uncovered": 0
+    },
+    "creative_studio": {
+      "total": 78,
+      "manual": 1,
+      "covered": 77,
+      "uncovered": 0
+    },
+    "learning_exploration": {
+      "total": 67,
+      "manual": 0,
+      "covered": 67,
+      "uncovered": 0
+    },
+    "journey_machine": {
+      "total": 31,
+      "manual": 0,
+      "covered": 31,
+      "uncovered": 0
+    },
+    "reading_world": {
+      "total": 142,
+      "manual": 0,
+      "covered": 142,
+      "uncovered": 0
+    },
+    "collection_object_hero": {
+      "total": 33,
+      "manual": 0,
+      "covered": 33,
+      "uncovered": 0
+    },
+    "aviation_world": {
+      "total": 1,
+      "manual": 0,
+      "covered": 0,
+      "uncovered": 1
+    },
+    "urban_discovery": {
+      "total": 93,
+      "manual": 0,
+      "covered": 93,
+      "uncovered": 0
+    },
+    "home_lifestyle": {
+      "total": 38,
+      "manual": 0,
+      "covered": 38,
+      "uncovered": 0
+    },
+    "companion_bond": {
+      "total": 29,
+      "manual": 0,
+      "covered": 29,
+      "uncovered": 0
+    },
+    "professional_world": {
+      "total": 70,
+      "manual": 0,
+      "covered": 0,
+      "uncovered": 70
+    },
+    "campaign_planning": {
+      "total": 3,
+      "manual": 0,
+      "covered": 0,
+      "uncovered": 3
+    },
+    "creator_workflow": {
+      "total": 19,
+      "manual": 0,
+      "covered": 19,
+      "uncovered": 0
+    },
+    "shared_workspace": {
+      "total": 1,
+      "manual": 0,
+      "covered": 1,
+      "uncovered": 0
+    },
+    "food_exploration": {
+      "total": 12,
+      "manual": 0,
+      "covered": 12,
+      "uncovered": 0
+    },
+    "community_gathering": {
+      "total": 8,
+      "manual": 0,
+      "covered": 8,
+      "uncovered": 0
+    },
+    "campus_activity": {
+      "total": 21,
+      "manual": 0,
+      "covered": 21,
+      "uncovered": 0
+    },
+    "legal_practice": {
+      "total": 3,
+      "manual": 0,
+      "covered": 0,
+      "uncovered": 3
+    }
+  },
+  "by_runtime_category": {
+    "sports": {
+      "total": 110,
+      "manual": 2,
+      "covered": 108,
+      "uncovered": 0
+    },
+    "wellness": {
+      "total": 43,
+      "manual": 0,
+      "covered": 43,
+      "uncovered": 0
+    },
+    "outdoors": {
+      "total": 90,
+      "manual": 2,
+      "covered": 86,
+      "uncovered": 2
+    },
+    "gaming": {
+      "total": 237,
+      "manual": 1,
+      "covered": 64,
+      "uncovered": 172
+    },
+    "entertainment": {
+      "total": 187,
+      "manual": 1,
+      "covered": 186,
+      "uncovered": 0
+    },
+    "music": {
+      "total": 294,
+      "manual": 1,
+      "covered": 293,
+      "uncovered": 0
+    },
+    "travel": {
+      "total": 183,
+      "manual": 2,
+      "covered": 181,
+      "uncovered": 0
+    },
+    "food": {
+      "total": 332,
+      "manual": 2,
+      "covered": 330,
+      "uncovered": 0
+    },
+    "technology": {
+      "total": 53,
+      "manual": 1,
+      "covered": 0,
+      "uncovered": 52
+    },
+    "arts": {
+      "total": 91,
+      "manual": 2,
+      "covered": 89,
+      "uncovered": 0
+    },
+    "crafts": {
+      "total": 47,
+      "manual": 0,
+      "covered": 47,
+      "uncovered": 0
+    },
+    "science": {
+      "total": 19,
+      "manual": 0,
+      "covered": 19,
+      "uncovered": 0
+    },
+    "transport": {
+      "total": 29,
+      "manual": 0,
+      "covered": 28,
+      "uncovered": 1
+    },
+    "learning": {
+      "total": 214,
+      "manual": 0,
+      "covered": 212,
+      "uncovered": 2
+    },
+    "collecting": {
+      "total": 33,
+      "manual": 0,
+      "covered": 33,
+      "uncovered": 0
+    },
+    "motorsport": {
+      "total": 5,
+      "manual": 0,
+      "covered": 4,
+      "uncovered": 1
+    },
+    "fashion": {
+      "total": 22,
+      "manual": 0,
+      "covered": 22,
+      "uncovered": 0
+    },
+    "lifestyle": {
+      "total": 113,
+      "manual": 0,
+      "covered": 113,
+      "uncovered": 0
+    },
+    "pets": {
+      "total": 29,
+      "manual": 0,
+      "covered": 29,
+      "uncovered": 0
+    },
+    "business": {
+      "total": 40,
+      "manual": 0,
+      "covered": 5,
+      "uncovered": 35
+    },
+    "career": {
+      "total": 39,
+      "manual": 0,
+      "covered": 0,
+      "uncovered": 39
+    }
+  },
+  "uncovered": [
+    {
+      "id": "outdoors.glamping",
+      "runtime_category": "outdoors",
+      "runtime_cluster": "camping",
+      "archetype": "nature_immersion",
+      "title": "Glamping",
+      "subject": "A person actively engaged in Glamping, with the defining outdoor action or gear large enough to read immediately",
+      "environment": "A believable natural or outdoor environment specifically supporting Glamping"
+    },
+    {
+      "id": "outdoors.bushcraft",
+      "runtime_category": "outdoors",
+      "runtime_cluster": "camping",
+      "archetype": "nature_immersion",
+      "title": "Bushcraft",
+      "subject": "A person actively engaged in Bushcraft, with the defining outdoor action or gear large enough to read immediately",
+      "environment": "A believable natural or outdoor environment specifically supporting Bushcraft"
+    },
+    {
+      "id": "gaming.video",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Video Games",
+      "subject": "People actively enjoying Video Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.pc_gaming",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "PC Gaming",
+      "subject": "People actively enjoying PC Gaming, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.console_gaming",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Console Gaming",
+      "subject": "People actively enjoying Console Gaming, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.mobile_gaming",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Mobile Gaming",
+      "subject": "People actively enjoying Mobile Gaming, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.retro_gaming",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Retro Gaming",
+      "subject": "People actively enjoying Retro Gaming, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.indie_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Indie Games",
+      "subject": "People actively enjoying Indie Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.vr_gaming",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "VR Gaming",
+      "subject": "People actively enjoying VR Gaming, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.game_development",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Game Development",
+      "subject": "People actively enjoying Game Development, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.esports",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Esports",
+      "subject": "People actively enjoying Esports, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.rpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "RPGs",
+      "subject": "People actively enjoying RPGs, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.jrpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "JRPGs",
+      "subject": "People actively enjoying JRPGs, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.fps",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "FPS Games",
+      "subject": "People actively enjoying FPS Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.strategy",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Strategy Games",
+      "subject": "People actively enjoying Strategy Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.simulation",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Simulation Games",
+      "subject": "People actively enjoying Simulation Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.racing_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Racing Games",
+      "subject": "People actively enjoying Racing Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.fighting_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Fighting Games",
+      "subject": "People actively enjoying Fighting Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.sports_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Sports Games",
+      "subject": "People actively enjoying Sports Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.puzzle_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Puzzle Games",
+      "subject": "People actively enjoying Puzzle Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.horror_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Horror Games",
+      "subject": "People actively enjoying Horror Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.survival_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Survival Games",
+      "subject": "People actively enjoying Survival Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.sandbox_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Sandbox Games",
+      "subject": "People actively enjoying Sandbox Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.roguelikes",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Roguelikes",
+      "subject": "People actively enjoying Roguelikes, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.visual_novels",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Visual Novels",
+      "subject": "People actively enjoying Visual Novels, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.rhythm_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "game_genres",
+      "archetype": "digital_play",
+      "title": "Rhythm Games",
+      "subject": "People actively enjoying Rhythm Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "technology.gadgets",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Technology & Gadgets",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Technology & Gadgets, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Technology & Gadgets"
+    },
+    {
+      "id": "technology.generative_ai",
+      "runtime_category": "technology",
+      "runtime_cluster": "ai",
+      "archetype": "tech_workspace",
+      "title": "Generative AI",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Generative AI, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Generative AI"
+    },
+    {
+      "id": "technology.machine_learning",
+      "runtime_category": "technology",
+      "runtime_cluster": "ai",
+      "archetype": "tech_workspace",
+      "title": "Machine Learning",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Machine Learning, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Machine Learning"
+    },
+    {
+      "id": "technology.robotics",
+      "runtime_category": "technology",
+      "runtime_cluster": "ai",
+      "archetype": "tech_workspace",
+      "title": "Robotics",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Robotics, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Robotics"
+    },
+    {
+      "id": "technology.computer_vision",
+      "runtime_category": "technology",
+      "runtime_cluster": "ai",
+      "archetype": "tech_workspace",
+      "title": "Computer Vision",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Computer Vision, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Computer Vision"
+    },
+    {
+      "id": "technology.programming",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Programming",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Programming, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Programming"
+    },
+    {
+      "id": "technology.web_development",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Web Development",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Web Development, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Web Development"
+    },
+    {
+      "id": "technology.app_development",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "App Development",
+      "subject": "A person actively building, configuring, experimenting with, or creating through App Development, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to App Development"
+    },
+    {
+      "id": "technology.python",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Python",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Python, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Python"
+    },
+    {
+      "id": "technology.javascript",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "JavaScript",
+      "subject": "A person actively building, configuring, experimenting with, or creating through JavaScript, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to JavaScript"
+    },
+    {
+      "id": "technology.open_source",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Open Source",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Open Source, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Open Source"
+    },
+    {
+      "id": "technology.cybersecurity",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Cybersecurity",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Cybersecurity, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Cybersecurity"
+    },
+    {
+      "id": "technology.linux",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Linux",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Linux, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Linux"
+    },
+    {
+      "id": "technology.cloud_computing",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Cloud Computing",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Cloud Computing, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Cloud Computing"
+    },
+    {
+      "id": "technology.data_science",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Data Science",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Data Science, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Data Science"
+    },
+    {
+      "id": "technology.smartphones",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Smartphones",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Smartphones, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Smartphones"
+    },
+    {
+      "id": "technology.smart_home",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Smart Home",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Smart Home, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Smart Home"
+    },
+    {
+      "id": "technology.drones",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Drones",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Drones, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Drones"
+    },
+    {
+      "id": "technology.3d_printing",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "3D Printing",
+      "subject": "A person actively building, configuring, experimenting with, or creating through 3D Printing, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to 3D Printing"
+    },
+    {
+      "id": "technology.mechanical_keyboards",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Mechanical Keyboards",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Mechanical Keyboards, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Mechanical Keyboards"
+    },
+    {
+      "id": "technology.headphones",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Headphones & Audio Gear",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Headphones & Audio Gear, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Headphones & Audio Gear"
+    },
+    {
+      "id": "technology.cameras",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Cameras",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Cameras, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Cameras"
+    },
+    {
+      "id": "technology.wearables",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Wearable Tech",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Wearable Tech, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Wearable Tech"
+    },
+    {
+      "id": "transport.aviation",
+      "runtime_category": "transport",
+      "runtime_cluster": "cars",
+      "archetype": "aviation_world",
+      "title": "Aviation",
+      "subject": "One or two adults actively inspecting, preparing, boarding, or admiring one generic unbranded full-size aircraft; the aircraft is the unmistakable dominant object and occupies the primary visual attention",
+      "environment": "A believable generic airfield, hangar, or airport apron with the full-size aircraft clearly dominant; ground-support objects may be small and secondary, but no car or truck may become the hero object"
+    },
+    {
+      "id": "motorsport.sim_racing",
+      "runtime_category": "motorsport",
+      "runtime_cluster": "motorsport",
+      "archetype": "digital_play",
+      "title": "Sim Racing",
+      "subject": "A sim-racing driver actively controlling a generic unbranded steering wheel and pedals, focused on a non-branded racing simulation",
+      "environment": "A believable home or simulator rig with seat, wheel, pedals, and generic racing feedback but no series/team branding"
+    },
+    {
+      "id": "business.startups",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Startups",
+      "subject": "People actively practicing Startups through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Startups"
+    },
+    {
+      "id": "business.marketing",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "campaign_planning",
+      "title": "Marketing",
+      "subject": "Two or three adult marketers actively arranging and comparing a physical campaign concept around one generic unbranded product sample, blank packaging mockups, image cards, and unlabeled color/material swatches",
+      "environment": "A clean creative campaign-planning studio centered on one tabletop of non-textual marketing materials; no workshop equipment, machinery, jewelry tools, manufacturing, or readable advertising copy"
+    },
+    {
+      "id": "business.branding",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "campaign_planning",
+      "title": "Branding",
+      "subject": "Two or three adult brand strategists actively comparing and arranging a generic unbranded identity concept using blank packaging mockups, abstract image cards, unlabeled colour/material swatches, and simple non-textual visual motifs",
+      "environment": "A clean creative brand-planning studio centered on a physical mockup table; no readable brand name, slogan, logo, presentation text, workshop machinery, jewelry tools, or manufacturing equipment"
+    },
+    {
+      "id": "business.sales",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Sales",
+      "subject": "People actively practicing Sales through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Sales"
+    },
+    {
+      "id": "business.ecommerce",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "E-commerce",
+      "subject": "People actively practicing E-commerce through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to E-commerce"
+    },
+    {
+      "id": "business.real_estate",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Real Estate",
+      "subject": "People actively practicing Real Estate through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Real Estate"
+    },
+    {
+      "id": "business.finance",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Finance",
+      "subject": "People actively practicing Finance through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Finance"
+    },
+    {
+      "id": "business.stock_market",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Stock Market",
+      "subject": "People actively practicing Stock Market through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Stock Market"
+    },
+    {
+      "id": "business.crypto",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Cryptocurrency",
+      "subject": "People actively practicing Cryptocurrency through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Cryptocurrency"
+    },
+    {
+      "id": "business.product_management",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Product Management",
+      "subject": "People actively practicing Product Management through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Product Management"
+    },
+    {
+      "id": "business.design_thinking",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Design Thinking",
+      "subject": "People actively practicing Design Thinking through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Design Thinking"
+    },
+    {
+      "id": "business.networking",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Professional Networking",
+      "subject": "People actively practicing Professional Networking through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Professional Networking"
+    },
+    {
+      "id": "business.public_speaking",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Public Speaking",
+      "subject": "People actively practicing Public Speaking through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Public Speaking"
+    },
+    {
+      "id": "gaming.subgenre.action_rpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Action RPG",
+      "subject": "People actively enjoying Action RPG, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.action_roguelike",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Action Roguelike",
+      "subject": "People actively enjoying Action Roguelike, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.action_rts",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Action RTS",
+      "subject": "People actively enjoying Action RTS, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.action_adventure_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Action-Adventure Games",
+      "subject": "People actively enjoying Action-Adventure Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.arena_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Arena Shooter",
+      "subject": "People actively enjoying Arena Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.auto_battler",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Auto Battler",
+      "subject": "People actively enjoying Auto Battler, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.automation_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Automation Games",
+      "subject": "People actively enjoying Automation Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.base_building_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Base Building Games",
+      "subject": "People actively enjoying Base Building Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.battle_royale",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Battle Royale",
+      "subject": "People actively enjoying Battle Royale, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.beat_em_up",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Beat 'em Up",
+      "subject": "People actively enjoying Beat 'em Up, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.boomer_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Boomer Shooter",
+      "subject": "People actively enjoying Boomer Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.bullet_hell",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Bullet Hell",
+      "subject": "People actively enjoying Bullet Hell, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.bullet_heaven",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Bullet Heaven",
+      "subject": "People actively enjoying Bullet Heaven, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.card_battler",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Card Battler",
+      "subject": "People actively enjoying Card Battler, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.character_action_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Character Action Games",
+      "subject": "People actively enjoying Character Action Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.city_builder",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "City Builder",
+      "subject": "People actively enjoying City Builder, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.co_op_campaign_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Co-op Campaign Games",
+      "subject": "People actively enjoying Co-op Campaign Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.colony_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Colony Sim",
+      "subject": "People actively enjoying Colony Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.combat_racing",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Combat Racing",
+      "subject": "People actively enjoying Combat Racing, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.creature_collector",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Creature Collector",
+      "subject": "People actively enjoying Creature Collector, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.crpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "CRPG",
+      "subject": "People actively enjoying CRPG, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.deckbuilding_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Deckbuilding Games",
+      "subject": "People actively enjoying Deckbuilding Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.detective_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Detective Games",
+      "subject": "People actively enjoying Detective Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.dungeon_crawler",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Dungeon Crawler",
+      "subject": "People actively enjoying Dungeon Crawler, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.extraction_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Extraction Shooter",
+      "subject": "People actively enjoying Extraction Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.farming_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Farming Sim",
+      "subject": "People actively enjoying Farming Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.first_person_adventure",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "First-Person Adventure",
+      "subject": "People actively enjoying First-Person Adventure, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.grand_strategy",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Grand Strategy",
+      "subject": "People actively enjoying Grand Strategy, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.hack_and_slash",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Hack and Slash",
+      "subject": "People actively enjoying Hack and Slash, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.hero_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Hero Shooter",
+      "subject": "People actively enjoying Hero Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.hidden_object_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Hidden Object Games",
+      "subject": "People actively enjoying Hidden Object Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.immersive_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Immersive Sim",
+      "subject": "People actively enjoying Immersive Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.interactive_fiction",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Interactive Fiction",
+      "subject": "People actively enjoying Interactive Fiction, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.life_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Life Sim",
+      "subject": "People actively enjoying Life Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.looter_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Looter Shooter",
+      "subject": "People actively enjoying Looter Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.management_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Management Games",
+      "subject": "People actively enjoying Management Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.match_3_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Match-3 Games",
+      "subject": "People actively enjoying Match-3 Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.metroidvania",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Metroidvania",
+      "subject": "People actively enjoying Metroidvania, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.military_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Military Games",
+      "subject": "People actively enjoying Military Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.mmorpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "MMORPG",
+      "subject": "People actively enjoying MMORPG, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.moba",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "MOBA",
+      "subject": "People actively enjoying MOBA, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.mystery_dungeon",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Mystery Dungeon",
+      "subject": "People actively enjoying Mystery Dungeon, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.open_world_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Open World Games",
+      "subject": "People actively enjoying Open World Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.open_world_survival_craft",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Open World Survival Craft",
+      "subject": "People actively enjoying Open World Survival Craft, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.party_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Party Games",
+      "subject": "People actively enjoying Party Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.party_based_rpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Party-Based RPG",
+      "subject": "People actively enjoying Party-Based RPG, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.platformers",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Platformers",
+      "subject": "People actively enjoying Platformers, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.point_and_click_adventure",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Point-and-Click Adventure",
+      "subject": "People actively enjoying Point-and-Click Adventure, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.precision_platformer",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Precision Platformer",
+      "subject": "People actively enjoying Precision Platformer, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.programming_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Programming Games",
+      "subject": "People actively enjoying Programming Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.puzzle_platformer",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Puzzle Platformer",
+      "subject": "People actively enjoying Puzzle Platformer, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.real_time_tactics",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Real-Time Tactics",
+      "subject": "People actively enjoying Real-Time Tactics, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.rhythm_action_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Rhythm Action Games",
+      "subject": "People actively enjoying Rhythm Action Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.roguelite",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Roguelite",
+      "subject": "People actively enjoying Roguelite, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.roguelike_deckbuilder",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Roguelike Deckbuilder",
+      "subject": "People actively enjoying Roguelike Deckbuilder, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.rts",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "RTS",
+      "subject": "People actively enjoying RTS, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.shoot_em_up",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Shoot 'Em Up",
+      "subject": "People actively enjoying Shoot 'Em Up, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.social_deduction_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Social Deduction Games",
+      "subject": "People actively enjoying Social Deduction Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.soulslike",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Soulslike",
+      "subject": "People actively enjoying Soulslike, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.space_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Space Sim",
+      "subject": "People actively enjoying Space Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.stealth_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Stealth Games",
+      "subject": "People actively enjoying Stealth Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.strategy_rpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Strategy RPG",
+      "subject": "People actively enjoying Strategy RPG, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.survival_horror",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Survival Horror",
+      "subject": "People actively enjoying Survival Horror, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.tactical_rpg",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Tactical RPG",
+      "subject": "People actively enjoying Tactical RPG, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.third_person_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Third-Person Shooter",
+      "subject": "People actively enjoying Third-Person Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.tower_defense",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Tower Defense",
+      "subject": "People actively enjoying Tower Defense, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.traditional_roguelike",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Traditional Roguelike",
+      "subject": "People actively enjoying Traditional Roguelike, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.turn_based_combat",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Turn-Based Combat",
+      "subject": "People actively enjoying Turn-Based Combat, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.turn_based_strategy",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Turn-Based Strategy",
+      "subject": "People actively enjoying Turn-Based Strategy, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.turn_based_tactics",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Turn-Based Tactics",
+      "subject": "People actively enjoying Turn-Based Tactics, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.twin_stick_shooter",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Twin-Stick Shooter",
+      "subject": "People actively enjoying Twin-Stick Shooter, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.walking_simulator",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Walking Simulator",
+      "subject": "People actively enjoying Walking Simulator, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.4x_strategy",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "4X Strategy",
+      "subject": "People actively enjoying 4X Strategy, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.cozy_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Cozy Games",
+      "subject": "People actively enjoying Cozy Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.story_rich_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Story-Rich Games",
+      "subject": "People actively enjoying Story-Rich Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.choices_matter_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Choices-Matter Games",
+      "subject": "People actively enjoying Choices-Matter Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.multiple_ending_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Multiple-Ending Games",
+      "subject": "People actively enjoying Multiple-Ending Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.lore_rich_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Lore-Rich Games",
+      "subject": "People actively enjoying Lore-Rich Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.narrative_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Narrative Games",
+      "subject": "People actively enjoying Narrative Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.exploration_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Exploration Games",
+      "subject": "People actively enjoying Exploration Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.crafting_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Crafting Games",
+      "subject": "People actively enjoying Crafting Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.resource_management_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Resource Management Games",
+      "subject": "People actively enjoying Resource Management Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.economy_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Economy Games",
+      "subject": "People actively enjoying Economy Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.political_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Political Sim",
+      "subject": "People actively enjoying Political Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.god_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "God Games",
+      "subject": "People actively enjoying God Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.job_simulators",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Job Simulators",
+      "subject": "People actively enjoying Job Simulators, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.shopkeeper_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Shopkeeper Games",
+      "subject": "People actively enjoying Shopkeeper Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.medical_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Medical Sim",
+      "subject": "People actively enjoying Medical Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.train_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Train Sim",
+      "subject": "People actively enjoying Train Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.flight_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Flight Sim",
+      "subject": "People actively enjoying Flight Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.automobile_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Automobile Sim",
+      "subject": "People actively enjoying Automobile Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.truck_sim",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Truck Sim",
+      "subject": "People actively enjoying Truck Sim, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.hunting_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Hunting Games",
+      "subject": "People actively enjoying Hunting Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.fishing_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Fishing Games",
+      "subject": "People actively enjoying Fishing Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.skateboarding_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Skateboarding Games",
+      "subject": "People actively enjoying Skateboarding Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.snowboarding_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Snowboarding Games",
+      "subject": "People actively enjoying Snowboarding Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.skiing_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Skiing Games",
+      "subject": "People actively enjoying Skiing Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.golf_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Golf Games",
+      "subject": "People actively enjoying Golf Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.tennis_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Tennis Games",
+      "subject": "People actively enjoying Tennis Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.boxing_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Boxing Games",
+      "subject": "People actively enjoying Boxing Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.wrestling_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Wrestling Games",
+      "subject": "People actively enjoying Wrestling Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.football_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Football Games",
+      "subject": "People actively enjoying Football Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.basketball_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Basketball Games",
+      "subject": "People actively enjoying Basketball Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.baseball_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Baseball Games",
+      "subject": "People actively enjoying Baseball Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.motorsport_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Motorsport Games",
+      "subject": "People actively enjoying Motorsport Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.naval_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Naval Games",
+      "subject": "People actively enjoying Naval Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.tank_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Tank Games",
+      "subject": "People actively enjoying Tank Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.mech_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Mech Games",
+      "subject": "People actively enjoying Mech Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.space_combat_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Space Combat Games",
+      "subject": "People actively enjoying Space Combat Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.pirate_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Pirate Games",
+      "subject": "People actively enjoying Pirate Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.ninja_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Ninja Games",
+      "subject": "People actively enjoying Ninja Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.samurai_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Samurai Games",
+      "subject": "People actively enjoying Samurai Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.martial_arts_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Martial Arts Games",
+      "subject": "People actively enjoying Martial Arts Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.cyberpunk_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Cyberpunk Games",
+      "subject": "People actively enjoying Cyberpunk Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.post_apocalyptic_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Post-Apocalyptic Games",
+      "subject": "People actively enjoying Post-Apocalyptic Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.lovecraftian_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Lovecraftian Games",
+      "subject": "People actively enjoying Lovecraftian Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.vampire_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Vampire Games",
+      "subject": "People actively enjoying Vampire Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.zombie_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Zombie Games",
+      "subject": "People actively enjoying Zombie Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.dinosaur_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Dinosaur Games",
+      "subject": "People actively enjoying Dinosaur Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.mythology_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Mythology Games",
+      "subject": "People actively enjoying Mythology Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.historical_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Historical Games",
+      "subject": "People actively enjoying Historical Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.alternate_history_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Alternate-History Games",
+      "subject": "People actively enjoying Alternate-History Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.world_war_ii_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "World War II Games",
+      "subject": "People actively enjoying World War II Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.cold_war_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Cold War Games",
+      "subject": "People actively enjoying Cold War Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.medieval_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Medieval Games",
+      "subject": "People actively enjoying Medieval Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.western_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Western Games",
+      "subject": "People actively enjoying Western Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.superhero_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Superhero Games",
+      "subject": "People actively enjoying Superhero Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.anime_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Anime Games",
+      "subject": "People actively enjoying Anime Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.otome_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Otome Games",
+      "subject": "People actively enjoying Otome Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.dating_sims",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Dating Sims",
+      "subject": "People actively enjoying Dating Sims, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.visual_novel_mystery",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Visual Novel Mystery",
+      "subject": "People actively enjoying Visual Novel Mystery, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.escape_room_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Escape-Room Games",
+      "subject": "People actively enjoying Escape-Room Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.trivia_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Trivia Games",
+      "subject": "People actively enjoying Trivia Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.word_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Word Games",
+      "subject": "People actively enjoying Word Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.typing_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Typing Games",
+      "subject": "People actively enjoying Typing Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.chess_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Chess Games",
+      "subject": "People actively enjoying Chess Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.mahjong_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Mahjong Games",
+      "subject": "People actively enjoying Mahjong Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.poker_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Poker Games",
+      "subject": "People actively enjoying Poker Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.pinball_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Pinball Games",
+      "subject": "People actively enjoying Pinball Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.incremental_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Incremental Games",
+      "subject": "People actively enjoying Incremental Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.idle_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Idle Games",
+      "subject": "People actively enjoying Idle Games, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.collectathons",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Collectathons",
+      "subject": "People actively enjoying Collectathons, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.speedrunning",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Speedrunning",
+      "subject": "People actively enjoying Speedrunning, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.modding_games",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "tech_workspace",
+      "title": "Modding Games",
+      "subject": "A game modder actively altering or building generic game content through a non-readable editor, assets, scripting, or level-design workflow",
+      "environment": "A believable unbranded PC creator workspace with generic game-development/modding tools and no copyrighted game assets"
+    },
+    {
+      "id": "gaming.subgenre.level_editors",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Level Editors",
+      "subject": "People actively enjoying Level Editors, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "gaming.subgenre.game_creation_tools",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming/subgenres",
+      "archetype": "digital_play",
+      "title": "Game Creation Tools",
+      "subject": "People actively enjoying Game Creation Tools, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "technology.pc_building",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "PC Building",
+      "subject": "A person actively building, configuring, experimenting with, or creating through PC Building, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to PC Building"
+    },
+    {
+      "id": "technology.electronics",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Electronics",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Electronics, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Electronics"
+    },
+    {
+      "id": "technology.soldering",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Soldering",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Soldering, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Soldering"
+    },
+    {
+      "id": "technology.microcontrollers",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Microcontrollers",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Microcontrollers, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Microcontrollers"
+    },
+    {
+      "id": "technology.home_automation",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "Home Automation",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Home Automation, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Home Automation"
+    },
+    {
+      "id": "technology.internet_of_things",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Internet of Things",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Internet of Things, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Internet of Things"
+    },
+    {
+      "id": "technology.homelab",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Homelab",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Homelab, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Homelab"
+    },
+    {
+      "id": "technology.self_hosting",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Self Hosting",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Self Hosting, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Self Hosting"
+    },
+    {
+      "id": "technology.devops",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "DevOps",
+      "subject": "A person actively building, configuring, experimenting with, or creating through DevOps, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to DevOps"
+    },
+    {
+      "id": "technology.data_visualization",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Data Visualization",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Data Visualization, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Data Visualization"
+    },
+    {
+      "id": "technology.databases",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Databases",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Databases, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Databases"
+    },
+    {
+      "id": "technology.sql",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "SQL",
+      "subject": "A person actively building, configuring, experimenting with, or creating through SQL, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to SQL"
+    },
+    {
+      "id": "technology.ux_design",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "UX Design",
+      "subject": "A person actively building, configuring, experimenting with, or creating through UX Design, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to UX Design"
+    },
+    {
+      "id": "technology.ui_design",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "UI Design",
+      "subject": "A person actively building, configuring, experimenting with, or creating through UI Design, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to UI Design"
+    },
+    {
+      "id": "technology.3d_modeling",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "3D Modeling",
+      "subject": "A person actively building, configuring, experimenting with, or creating through 3D Modeling, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to 3D Modeling"
+    },
+    {
+      "id": "technology.laser_cutting",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Laser Cutting",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Laser Cutting, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Laser Cutting"
+    },
+    {
+      "id": "technology.cnc_machining",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "CNC Machining",
+      "subject": "A person actively building, configuring, experimenting with, or creating through CNC Machining, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to CNC Machining"
+    },
+    {
+      "id": "technology.fpv_drones",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "FPV Drones",
+      "subject": "A person actively building, configuring, experimenting with, or creating through FPV Drones, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to FPV Drones"
+    },
+    {
+      "id": "technology.amateur_radio",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Amateur Radio",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Amateur Radio, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Amateur Radio"
+    },
+    {
+      "id": "technology.software_defined_radio",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Software Defined Radio",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Software Defined Radio, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Software Defined Radio"
+    },
+    {
+      "id": "technology.retro_computing",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Retro Computing",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Retro Computing, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Retro Computing"
+    },
+    {
+      "id": "business.freelancing",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Freelancing",
+      "subject": "People actively practicing Freelancing through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Freelancing"
+    },
+    {
+      "id": "business.remote_work",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Remote Work",
+      "subject": "People actively practicing Remote Work through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Remote Work"
+    },
+    {
+      "id": "business.side_hustles",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Side Hustles",
+      "subject": "People actively practicing Side Hustles through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Side Hustles"
+    },
+    {
+      "id": "business.creator_economy",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Creator Economy",
+      "subject": "People actively practicing Creator Economy through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Creator Economy"
+    },
+    {
+      "id": "business.personal_branding",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Personal Branding",
+      "subject": "People actively practicing Personal Branding through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Personal Branding"
+    },
+    {
+      "id": "business.career_development",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Career Development",
+      "subject": "People actively practicing Career Development through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Career Development"
+    },
+    {
+      "id": "business.career_switching",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Career Switching",
+      "subject": "People actively practicing Career Switching through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Career Switching"
+    },
+    {
+      "id": "business.consulting",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Consulting",
+      "subject": "People actively practicing Consulting through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Consulting"
+    },
+    {
+      "id": "business.project_management",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Project Management",
+      "subject": "People actively practicing Project Management through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Project Management"
+    },
+    {
+      "id": "business.no_code",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "No-Code",
+      "subject": "People actively practicing No-Code through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to No-Code"
+    },
+    {
+      "id": "business.small_business",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Small Business",
+      "subject": "People actively practicing Small Business through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Small Business"
+    },
+    {
+      "id": "business.family_business",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Family Business",
+      "subject": "People actively practicing Family Business through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Family Business"
+    },
+    {
+      "id": "gaming.lan_parties",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "LAN Parties",
+      "subject": "People actively enjoying LAN Parties, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "technology.makerspaces",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Makerspaces",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Makerspaces, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Makerspaces"
+    },
+    {
+      "id": "business.value_investing",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Value Investing",
+      "subject": "People actively practicing Value Investing through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Value Investing"
+    },
+    {
+      "id": "business.dividend_investing",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Dividend Investing",
+      "subject": "People actively practicing Dividend Investing through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Dividend Investing"
+    },
+    {
+      "id": "business.index_investing",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Index Investing",
+      "subject": "People actively practicing Index Investing through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Index Investing"
+    },
+    {
+      "id": "business.real_estate_investing",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Real Estate Investing",
+      "subject": "People actively practicing Real Estate Investing through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Real Estate Investing"
+    },
+    {
+      "id": "business.budgeting",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Budgeting",
+      "subject": "People actively practicing Budgeting through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Budgeting"
+    },
+    {
+      "id": "business.saving_money",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Saving Money",
+      "subject": "People actively practicing Saving Money through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Saving Money"
+    },
+    {
+      "id": "business.financial_independence",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Financial Independence",
+      "subject": "People actively practicing Financial Independence through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to Financial Independence"
+    },
+    {
+      "id": "business.fire_movement",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "FIRE Movement",
+      "subject": "People actively practicing FIRE Movement through a concrete business, financial, entrepreneurial, or collaborative task",
+      "environment": "A believable work, shop, studio, meeting, market, or planning setting appropriate to FIRE Movement"
+    },
+    {
+      "id": "gaming.claw_machines",
+      "runtime_category": "gaming",
+      "runtime_cluster": "gaming_general",
+      "archetype": "digital_play",
+      "title": "Claw Machines",
+      "subject": "People actively enjoying Claw Machines, visibly reacting to the shared play or challenge",
+      "environment": "A warm believable play setting where the interaction and game activity are easy to read"
+    },
+    {
+      "id": "technology.hackathons",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "Hackathons",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Hackathons, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Hackathons"
+    },
+    {
+      "id": "business.case_competitions",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Case Competitions",
+      "subject": "A student or young-professional team actively preparing, presenting, or reacting during Case Competitions, with a concrete case/pitch collaboration visible and no readable slides",
+      "environment": "A believable competition, classroom, event-room, or pitch setting with generic presentation materials"
+    },
+    {
+      "id": "business.startup_competitions",
+      "runtime_category": "business",
+      "runtime_cluster": "business",
+      "archetype": "professional_world",
+      "title": "Startup Competitions",
+      "subject": "A student or young-professional team actively preparing, presenting, or reacting during Startup Competitions, with a concrete case/pitch collaboration visible and no readable slides",
+      "environment": "A believable competition, classroom, event-room, or pitch setting with generic presentation materials"
+    },
+    {
+      "id": "learning.mock_trial",
+      "runtime_category": "learning",
+      "runtime_cluster": "campus",
+      "archetype": "legal_practice",
+      "title": "Mock Trial",
+      "subject": "Adult students actively conducting a mock trial in a generic courtroom, with one advocate presenting from beside a counsel table while teammates and a neutral judge or judging panel participate",
+      "environment": "A generic educational courtroom or mock-trial room with counsel tables, judge bench or judging panel, blank folders, and no readable case names, placards, certificates, or signs"
+    },
+    {
+      "id": "learning.moot_court",
+      "runtime_category": "learning",
+      "runtime_cluster": "campus",
+      "archetype": "legal_practice",
+      "title": "Moot Court",
+      "subject": "Adult law students actively presenting a moot-court argument before a neutral judge or judging panel, with formal advocacy posture, counsel table, and blank case folders",
+      "environment": "A generic moot-court or educational courtroom with judge bench or judging panel, counsel tables, neutral architecture, and no readable case names, placards, certificates, or signs"
+    },
+    {
+      "id": "career.legal_profession",
+      "runtime_category": "career",
+      "runtime_cluster": "legal",
+      "archetype": "legal_practice",
+      "title": "Legal Profession",
+      "subject": "An adult legal advocate actively addressing a generic courtroom from beside a counsel table, using professional gesture and courtroom interaction rather than text to communicate the legal role",
+      "environment": "A generic unbranded courtroom with counsel table, judge bench or witness area, neutral railings and closed blank folders; no signs, certificates, readable law books, workshop tools, machinery, or children"
+    },
+    {
+      "id": "career.legal_tech",
+      "runtime_category": "career",
+      "runtime_cluster": "legal",
+      "archetype": "professional_world",
+      "title": "Legal Tech",
+      "subject": "A professional actively doing Legal Tech, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Legal Tech"
+    },
+    {
+      "id": "career.healthcare",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Healthcare Careers",
+      "subject": "A professional actively doing Healthcare Careers, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Healthcare Careers"
+    },
+    {
+      "id": "career.nursing",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Nursing",
+      "subject": "A professional actively doing Nursing, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Nursing"
+    },
+    {
+      "id": "career.dentistry",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Dentistry",
+      "subject": "A professional actively doing Dentistry, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Dentistry"
+    },
+    {
+      "id": "career.pharmacy",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Pharmacy",
+      "subject": "A professional actively doing Pharmacy, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Pharmacy"
+    },
+    {
+      "id": "career.counselling",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Counselling",
+      "subject": "A professional actively doing Counselling, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Counselling"
+    },
+    {
+      "id": "career.teaching",
+      "runtime_category": "career",
+      "runtime_cluster": "education",
+      "archetype": "professional_world",
+      "title": "Teaching",
+      "subject": "A professional actively doing Teaching, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Teaching"
+    },
+    {
+      "id": "career.engineering",
+      "runtime_category": "career",
+      "runtime_cluster": "engineering",
+      "archetype": "professional_world",
+      "title": "Engineering",
+      "subject": "A professional actively doing Engineering, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Engineering"
+    },
+    {
+      "id": "career.architecture",
+      "runtime_category": "career",
+      "runtime_cluster": "engineering",
+      "archetype": "professional_world",
+      "title": "Architecture Profession",
+      "subject": "A professional actively doing Architecture Profession, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Architecture Profession"
+    },
+    {
+      "id": "career.accounting",
+      "runtime_category": "career",
+      "runtime_cluster": "finance",
+      "archetype": "professional_world",
+      "title": "Accounting",
+      "subject": "A professional actively doing Accounting, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Accounting"
+    },
+    {
+      "id": "career.audit",
+      "runtime_category": "career",
+      "runtime_cluster": "finance",
+      "archetype": "professional_world",
+      "title": "Audit",
+      "subject": "A professional actively doing Audit, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Audit"
+    },
+    {
+      "id": "career.banking",
+      "runtime_category": "career",
+      "runtime_cluster": "finance",
+      "archetype": "professional_world",
+      "title": "Banking",
+      "subject": "A professional actively doing Banking, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Banking"
+    },
+    {
+      "id": "career.insurance",
+      "runtime_category": "career",
+      "runtime_cluster": "finance",
+      "archetype": "professional_world",
+      "title": "Insurance",
+      "subject": "A professional actively doing Insurance, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Insurance"
+    },
+    {
+      "id": "career.fintech",
+      "runtime_category": "career",
+      "runtime_cluster": "finance",
+      "archetype": "professional_world",
+      "title": "Fintech",
+      "subject": "A professional actively doing Fintech, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Fintech"
+    },
+    {
+      "id": "career.digital_marketing",
+      "runtime_category": "career",
+      "runtime_cluster": "marketing",
+      "archetype": "campaign_planning",
+      "title": "Digital Marketing",
+      "subject": "Two or three adult digital marketers actively planning a campaign using a physical table of blank product mockups, image cards, colour/material swatches, and a secondary wall of blank image/layout blocks; use no visible monitor or digital dashboard",
+      "environment": "A modern campaign-planning studio built around tactile mockups and non-textual physical preview materials; no monitor, readable dashboard, copy, analytics labels, company names, logos, workshop tools, machinery, or manufacturing equipment"
+    },
+    {
+      "id": "career.human_resources",
+      "runtime_category": "career",
+      "runtime_cluster": "people",
+      "archetype": "professional_world",
+      "title": "Human Resources",
+      "subject": "A professional actively doing Human Resources, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Human Resources"
+    },
+    {
+      "id": "career.recruiting",
+      "runtime_category": "career",
+      "runtime_cluster": "people",
+      "archetype": "professional_world",
+      "title": "Recruiting",
+      "subject": "A professional actively doing Recruiting, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Recruiting"
+    },
+    {
+      "id": "career.operations",
+      "runtime_category": "career",
+      "runtime_cluster": "operations",
+      "archetype": "professional_world",
+      "title": "Operations",
+      "subject": "A professional actively doing Operations, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Operations"
+    },
+    {
+      "id": "career.supply_chain",
+      "runtime_category": "career",
+      "runtime_cluster": "operations",
+      "archetype": "professional_world",
+      "title": "Supply Chain",
+      "subject": "A professional actively doing Supply Chain, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Supply Chain"
+    },
+    {
+      "id": "career.logistics",
+      "runtime_category": "career",
+      "runtime_cluster": "operations",
+      "archetype": "professional_world",
+      "title": "Logistics",
+      "subject": "A professional actively doing Logistics, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Logistics"
+    },
+    {
+      "id": "career.procurement",
+      "runtime_category": "career",
+      "runtime_cluster": "operations",
+      "archetype": "professional_world",
+      "title": "Procurement",
+      "subject": "A professional actively doing Procurement, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Procurement"
+    },
+    {
+      "id": "career.cloud_engineering",
+      "runtime_category": "career",
+      "runtime_cluster": "technology_careers",
+      "archetype": "professional_world",
+      "title": "Cloud Engineering",
+      "subject": "A professional actively doing Cloud Engineering, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Cloud Engineering"
+    },
+    {
+      "id": "career.data_engineering",
+      "runtime_category": "career",
+      "runtime_cluster": "technology_careers",
+      "archetype": "professional_world",
+      "title": "Data Engineering",
+      "subject": "A professional actively doing Data Engineering, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Data Engineering"
+    },
+    {
+      "id": "career.biotechnology",
+      "runtime_category": "career",
+      "runtime_cluster": "science_careers",
+      "archetype": "professional_world",
+      "title": "Biotechnology",
+      "subject": "A professional actively doing Biotechnology, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Biotechnology"
+    },
+    {
+      "id": "career.climate_tech",
+      "runtime_category": "career",
+      "runtime_cluster": "science_careers",
+      "archetype": "professional_world",
+      "title": "Climate Tech",
+      "subject": "A professional actively doing Climate Tech, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Climate Tech"
+    },
+    {
+      "id": "career.sustainability",
+      "runtime_category": "career",
+      "runtime_cluster": "science_careers",
+      "archetype": "professional_world",
+      "title": "Sustainability",
+      "subject": "A professional actively doing Sustainability, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Sustainability"
+    },
+    {
+      "id": "career.research",
+      "runtime_category": "career",
+      "runtime_cluster": "research",
+      "archetype": "professional_world",
+      "title": "Research",
+      "subject": "A professional actively doing Research, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Research"
+    },
+    {
+      "id": "career.academia",
+      "runtime_category": "career",
+      "runtime_cluster": "research",
+      "archetype": "professional_world",
+      "title": "Academia",
+      "subject": "A professional actively doing Academia, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Academia"
+    },
+    {
+      "id": "technology.rc_cars",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "RC Cars",
+      "subject": "A person actively building, configuring, experimenting with, or creating through RC Cars, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to RC Cars"
+    },
+    {
+      "id": "technology.rc_planes",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "RC Planes",
+      "subject": "A person actively building, configuring, experimenting with, or creating through RC Planes, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to RC Planes"
+    },
+    {
+      "id": "technology.rc_boats",
+      "runtime_category": "technology",
+      "runtime_cluster": "gadgets",
+      "archetype": "tech_workspace",
+      "title": "RC Boats",
+      "subject": "A person actively building, configuring, experimenting with, or creating through RC Boats, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to RC Boats"
+    },
+    {
+      "id": "technology.drone_building",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Drone Building",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Drone Building, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Drone Building"
+    },
+    {
+      "id": "technology.keyboard_building",
+      "runtime_category": "technology",
+      "runtime_cluster": "hardware",
+      "archetype": "tech_workspace",
+      "title": "Keyboard Building",
+      "subject": "A person actively building, configuring, experimenting with, or creating through Keyboard Building, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to Keyboard Building"
+    },
+    {
+      "id": "technology.cad",
+      "runtime_category": "technology",
+      "runtime_cluster": "software",
+      "archetype": "tech_workspace",
+      "title": "CAD",
+      "subject": "A person actively building, configuring, experimenting with, or creating through CAD, with the subfield-specific interaction clearly visible",
+      "environment": "A modern but believable workspace, lab, maker bench, or home setup appropriate to CAD"
+    },
+    {
+      "id": "career.software_engineering",
+      "runtime_category": "career",
+      "runtime_cluster": "technology_careers",
+      "archetype": "professional_world",
+      "title": "Software Engineering",
+      "subject": "A professional actively doing Software Engineering, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Software Engineering"
+    },
+    {
+      "id": "career.journalism",
+      "runtime_category": "career",
+      "runtime_cluster": "media",
+      "archetype": "professional_world",
+      "title": "Journalism",
+      "subject": "A professional actively doing Journalism, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Journalism"
+    },
+    {
+      "id": "career.hospitality",
+      "runtime_category": "career",
+      "runtime_cluster": "hospitality",
+      "archetype": "professional_world",
+      "title": "Hospitality",
+      "subject": "A professional actively doing Hospitality, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Hospitality"
+    },
+    {
+      "id": "career.construction",
+      "runtime_category": "career",
+      "runtime_cluster": "trades",
+      "archetype": "professional_world",
+      "title": "Construction",
+      "subject": "A professional actively doing Construction, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Construction"
+    },
+    {
+      "id": "career.skilled_trades",
+      "runtime_category": "career",
+      "runtime_cluster": "trades",
+      "archetype": "professional_world",
+      "title": "Skilled Trades",
+      "subject": "A professional actively doing Skilled Trades, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Skilled Trades"
+    },
+    {
+      "id": "career.social_work",
+      "runtime_category": "career",
+      "runtime_cluster": "social_services",
+      "archetype": "professional_world",
+      "title": "Social Work",
+      "subject": "A professional actively doing Social Work, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Social Work"
+    },
+    {
+      "id": "career.physiotherapy",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Physiotherapy",
+      "subject": "A professional actively doing Physiotherapy, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Physiotherapy"
+    },
+    {
+      "id": "career.veterinary_medicine",
+      "runtime_category": "career",
+      "runtime_cluster": "healthcare",
+      "archetype": "professional_world",
+      "title": "Veterinary Medicine",
+      "subject": "A professional actively doing Veterinary Medicine, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Veterinary Medicine"
+    },
+    {
+      "id": "career.ai_and_machine_learning_engineering",
+      "runtime_category": "career",
+      "runtime_cluster": "technology_careers",
+      "archetype": "professional_world",
+      "title": "AI & Machine Learning Engineering",
+      "subject": "A professional actively doing AI & Machine Learning Engineering, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to AI & Machine Learning Engineering"
+    },
+    {
+      "id": "career.culinary_profession",
+      "runtime_category": "career",
+      "runtime_cluster": "hospitality",
+      "archetype": "professional_world",
+      "title": "Culinary Profession",
+      "subject": "A professional actively doing Culinary Profession, using a field-specific tool, object, environment, or collaboration cue",
+      "environment": "A believable real-world workplace or field setting specific to Culinary Profession"
+    }
+  ],
+  "safety_checks": {
+    "required_wellness_ids": [
+      "wellness.sauna",
+      "wellness.hot_springs",
+      "wellness.cold_plunge"
+    ],
+    "missing_safety_anchor_ids": [],
+    "global_positive_card_framing_terms_found": [],
+    "old_bulk_queue_production_ready": false,
+    "old_bulk_queue_status": "superseded_after_100_card_validation_failure"
+  }
+}
