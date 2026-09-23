@@ -17,7 +17,9 @@
     "audit-model-ab-v1-gemini": "node src/generateCompiledBatch.js --dry-run --model=geminiText --only=lifestyle.game_nights,fashion.streetwear",
     "audit-model-ab-v1-klein": "node src/generateCompiledBatch.js --dry-run --model=kleinNegative --only=lifestyle.game_nights,fashion.streetwear",
     "generate-model-ab-v1-gemini": "node src/generateCompiledBatch.js --model=geminiText --only=lifestyle.game_nights,fashion.streetwear",
-    "generate-model-ab-v1-klein": "node src/generateCompiledBatch.js --model=kleinNegative --only=lifestyle.game_nights,fashion.streetwear"
+    "generate-model-ab-v1-klein": "node src/generateCompiledBatch.js --model=kleinNegative --only=lifestyle.game_nights,fashion.streetwear",
+    "audit-stratified-v1": "node src/runStratifiedBatch.js --dry-run",
+    "generate-stratified-v1": "node src/runStratifiedBatch.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

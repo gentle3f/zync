@@ -28,7 +28,8 @@ const REPO_ROOT = path.resolve(ROOT, '..', '..');
 
 const BATCH_PATH = path.join(ROOT, 'catalog', 'launch_image_batch_v1.json');
 const REFERENCE_PATH = path.join(REPO_ROOT, 'references', 'zync-card-style-reference.png');
-const OUTPUT_DIR = path.join(ROOT, 'output', 'launch_v1');
+const OUTPUT_TAG = process.env.ZYNC_CARD_ART_OUTPUT_TAG || 'launch_v1';
+const OUTPUT_DIR = path.join(ROOT, 'output', OUTPUT_TAG);
 const IMAGES_DIR = path.join(OUTPUT_DIR, 'images');
 const MANIFEST_PATH = path.join(OUTPUT_DIR, 'manifest.json');
 
@@ -87,7 +88,7 @@ function resolveModel(name, globalStyle) {
 function loadManifest() {
   if (!fs.existsSync(MANIFEST_PATH)) {
     return {
-      version: 'launch_v1',
+      version: OUTPUT_TAG,
       generated_at: null,
       reference_style_path: 'references/zync-card-style-reference.png',
       entries: [],

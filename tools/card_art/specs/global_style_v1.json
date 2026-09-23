@@ -1,11 +1,11 @@
 {
   "version": "v1",
-  "default_model": "flux-2/edit",
-  "fallback_model": "gemini-25-flash-image/edit",
+  "default_model": "flux-2",
+  "fallback_model": "flux-2/klein/9b/base",
   "premium_model": "nano-banana-pro/edit",
   "aspect_ratio": "2:3",
   "baseline_resolution": "832x1248",
-  "prompt": "Create a premium collectible illustration for a Zync hobby card. The artwork should feel cinematic, aspirational, emotionally warm, commercially polished, and immediately readable on a small mobile card. Use a strong focal subject, crisp subject separation, rich but controlled colour, atmospheric depth, premium lighting, and clear visual storytelling. Sell the emotional fantasy of doing the hobby rather than merely depicting an object. Aim for the feel of a miniature lifestyle poster or hero illustration inside one coherent Zync collectible universe. Keep edges and subject readability cleaner than soft editorial painting. No text, no logo, no typography, no card border, no rarity badge, no watermark, no UI.",
+  "prompt": "Create a premium collectible hobby illustration. The artwork should feel cinematic, aspirational, emotionally warm, commercially polished, and immediately readable on a small mobile card. Use a strong focal subject, crisp subject separation, rich but controlled colour, atmospheric depth, premium lighting, and clear visual storytelling. Sell the emotional fantasy of doing the hobby rather than merely depicting an object. Aim for the feel of a miniature lifestyle poster or hero illustration inside one coherent collectible-art universe. Keep edges and subject readability cleaner than soft editorial painting. No text, no logo, no typography, no card border, no rarity badge, no watermark, no UI.",
   "global_negatives": [
     "text",
     "logos",
@@ -29,5 +29,5 @@
     "photoreal stock-photo rendering unless explicitly requested by the hobby recipe"
   ],
   "style_reference_path": "references/zync-card-style-reference.png",
-  "reference_instruction": "Use the supplied Zync reference image only as a visual-style guide. Match its commercial-cinematic illustration language, crisp hero framing, rich atmospheric lighting, polished color grading, and collectible desirability. Do not copy its subjects, exact compositions, card frames, typography, handwritten slogans, logos, rarity labels, or UI."
+  "reference_instruction": "Use the supplied reference image only as a visual-style guide. Match its commercial-cinematic illustration language, crisp hero framing, rich atmospheric lighting, polished color grading, and collectible desirability. Do not copy its subjects, exact compositions, card frames, typography, handwritten slogans, logos, rarity labels, or UI."
 }

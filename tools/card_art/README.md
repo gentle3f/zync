@@ -205,3 +205,41 @@ See `src/buildPromptV1.js` for final prompt assembly. Catalog-scale output recor
 canonical hobby ID, runtime category/cluster, art policy, recipe source, tier,
 default/fallback/premium model, archetype, category, compiled prompt, negative constraints,
 fallback hint, and QA notes.
+
+
+## 48-card stratified validation
+
+After the launch pilot and the Game Nights / Streetwear model A/B, the next
+validation stage is a routed 48-card sample:
+
+- batch: `catalog/stratified_image_batch_v1.json`
+- orchestration: `src/runStratifiedBatch.js`
+- output: `output/stratified_v1/`
+- standard route: 32 cards via reference-free `flux-2`
+- suppression-sensitive route: 16 cards via
+  `flux-2/klein/9b/base` with a real API `negative_prompt`
+- estimated first-pass cost: about **US$0.5824**
+
+Run zero-credit compilation/rights preflight first:
+
+```bash
+npm run audit-stratified-v1
+```
+
+Only if that passes:
+
+```bash
+npm run generate-stratified-v1
+```
+
+The 48-card set is based on the existing stratified prompt-audit sample plus
+three style-control cards. It intentionally spans repaired route families,
+hard cases, abstract-only interests, manual/derived recipes, USA/HK launch
+concepts, social/screen/text-prone scenes, and ordinary low-risk scenes.
+
+QA must be reported separately by model route. In addition to normal
+recognition/text/logo/anatomy checks, explicitly measure whether Klein's
+suppression benefit creates unacceptable photoreal or stock-photo style drift.
+
+Do not expand from this validation directly to all baseline-art-eligible
+canonicals unless the failure rates and style consistency are reviewed first.

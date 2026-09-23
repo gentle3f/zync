@@ -1,0 +1,89 @@
+{
+  "version": "v1",
+  "purpose": "48-card stratified card-art validation across repaired routes, hard cases, abstract-only interests, manual/derived recipes, USA/HK launch concepts, and suppression-sensitive classes.",
+  "output_tag": "stratified_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "rationale": "Default reference-free first-pass path for ordinary cards.",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "sports.american_football",
+        "sports.hiking",
+        "transport.car_meets",
+        "sports.badminton",
+        "gaming.chess",
+        "wellness.weightlifting",
+        "wellness.yoga",
+        "outdoors.surfing",
+        "outdoors.kayaking",
+        "sports.gravel_cycling",
+        "lifestyle.gardening",
+        "food.yum_cha",
+        "arts.lion_dance",
+        "career.nursing",
+        "pets.dog_agility",
+        "learning.archaeology",
+        "books.reading",
+        "history.general",
+        "learning.philosophy",
+        "wellness.mindfulness",
+        "collecting.stamps",
+        "transport.railways",
+        "learning.math_olympiad",
+        "learning.study_abroad",
+        "wellness.hot_springs",
+        "wellness.sauna",
+        "lifestyle.repair_workshops",
+        "arts.podcasting",
+        "gaming.escape_room_design",
+        "food.coffee",
+        "travel.roadtrip",
+        "photography.general"
+      ]
+    },
+    {
+      "name": "suppression_sensitive",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "rationale": "Real negative_prompt route for proven or deliberately sampled text/logo/trade-dress-sensitive scenes.",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": [
+        "lifestyle.game_nights",
+        "motorsport.sim_racing",
+        "fashion.streetwear",
+        "learning.model_united_nations",
+        "learning.campus_radio",
+        "business.case_competitions",
+        "business.founder_meetups",
+        "lifestyle.book_swaps",
+        "arts.video_editing",
+        "arts.vlogging",
+        "arts.animation_production",
+        "arts.blogging",
+        "gaming.game_streaming",
+        "technology.python",
+        "learning.book_genre.booktok",
+        "travel.style_deep.unesco_heritage_travel"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 48,
+    "standard_cards": 32,
+    "klein_cards": 16,
+    "estimated_total_cost_usd": 0.5824
+  },
+  "qa_watch": [
+    "hobby recognizability",
+    "readable or gibberish text",
+    "logos, trademarks, trade dress, branded silhouettes",
+    "anatomy and key object integrity",
+    "copyright/IP leakage",
+    "collage or card-chrome contamination",
+    "house-style consistency",
+    "Klein photoreal/stock-photo style drift"
+  ]
+}

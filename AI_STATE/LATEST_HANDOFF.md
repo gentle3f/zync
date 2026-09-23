@@ -7,10 +7,7 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260923_CARD_ART_MODEL_AB_RESULTS.md`
-
-(previous checkpoint, still useful for A/B setup context:
-`AI_STATE/HANDOFF_20260923_CARD_ART_MODEL_AB_READY.md`)
+`AI_STATE/HANDOFF_20260923_CARD_ART_STRATIFIED_48_READY.md`
 
 Branch:
 
@@ -18,4 +15,4 @@ Branch:
 
 Current state:
 
-> **The Game Nights/Streetwear model A/B is done (4/4 API calls, $0.101). Klein 9B Base + a real API negative_prompt (`kleinNegative`) passes BOTH cards cleanly — no caption, no text, no branded shoe silhouette. Gemini text-to-image (`geminiText`) passes Streetwear but FAILS Game Nights on a new defect: it rendered the literal word "Zync" (from the shared GLOBAL STYLE prompt text used on every card) as a visible logo wordmark. This is a systemic risk for Gemini on any hobby, not a one-off. Decision: Klein + negative_prompt is the recommended route for suppression-sensitive cards (group_play/social-scene archetypes prone to captions; fashion/footwear-heavy archetypes prone to brand silhouettes); standard reference-free `flux-2` remains the default for ordinary cards; do not use Gemini text-to-image as the sensitive-card route unless the "Zync" mention in global_style_v1.json's prompt is first removed and re-validated. All 4 originally-blocking cards (crafts.diy, technology.ai, lifestyle.game_nights, fashion.streetwear) now have a passing generation path. The ~48-card stratified validation batch can proceed next, routing group_play and footwear-heavy/urban_discovery cards through kleinNegative by default and everything else through standard flux-2. Keep Vercel, GitHub Actions, Production and Play closed.**
+> **The next card-art stage is a 48-card stratified validation: 32 reference-free standard FLUX cards + 16 FLUX.2 Klein 9B Base cards using a real negative_prompt, estimated first-pass cost US$0.5824. Outputs are isolated under output/stratified_v1. Shared GLOBAL STYLE prompt text no longer contains the word Zync, and model metadata now defaults to flux-2 with Klein fallback. Run audit-stratified-v1 first; only then generate-stratified-v1. QA must separately measure standard-vs-Klein failure rates and Klein photoreal/style drift. Do not auto-reroll failures and do not jump directly to all eligible cards. Keep Vercel, GitHub Actions, Production and Play closed.**
