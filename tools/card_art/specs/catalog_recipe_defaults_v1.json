@@ -1602,26 +1602,27 @@
       },
       "patch": {
         "art_category": "career",
-        "archetype": "professional_world",
-        "visual_variant": "environmental_role",
-        "subject_template": "Several unrelated professionals independently working side by side at one shared communal desk in a coworking space, with distinct notebooks, generic work materials, headphones, mugs, and one natural neighbour interaction; laptops may be present only with blank, turned-away, or completely unreadable screens",
-        "environment_template": "A believable open coworking workspace with communal desks, varied seating, shared amenities, plants or shelves, and multiple independent workers; it must read as a shared workspace rather than a laboratory, workshop, startup prototype bench, or corporate boardroom",
+        "archetype": "shared_workspace",
+        "visual_variant": "communal_desks",
+        "subject_template": "Three to five unrelated adult professionals independently working side by side in a real coworking office, each with a distinct simple work setup; one pair may briefly exchange an idea while others continue working",
+        "environment_template": "A bright flexible shared office with communal desks, varied seating, laptops or notebooks, headphones, mugs, plants, and shared amenities; no workshop bench, laboratory, makerspace, tools, machinery, jewelry, or apprentice scene",
         "recognition_anchors": [
-          "multiple unrelated professionals working side by side",
-          "communal shared desk or shared workspace seating",
-          "distinct individual work setups with one natural neighbour interaction"
+          "multiple unrelated adult professionals working independently in one shared office",
+          "communal desks and separate individual work setups",
+          "shared office amenities and one natural neighbour interaction"
         ],
         "must_include": [
-          "at least three independent workers",
-          "one obvious communal coworking-space feature",
-          "blank, turned-away, or unreadable screens"
+          "three to five adult workers",
+          "obvious communal coworking desk layout",
+          "separate work setups with blank, turned-away, abstract, or unreadable screens"
         ],
         "avoid": [
-          "laboratory or makerspace scene",
+          "craft workshop or artisan studio",
+          "laboratory or makerspace",
+          "watchmaking or jewelry bench",
           "hardware or product prototyping",
-          "jewelry-making or craft workshop",
-          "formal corporate boardroom",
-          "presentation slides",
+          "child apprentices or classroom",
+          "formal boardroom",
           "readable screen, document, wall sign, company name, or logo"
         ]
       }
@@ -1632,28 +1633,28 @@
       },
       "patch": {
         "art_category": "career",
-        "archetype": "professional_world",
-        "visual_variant": "collaboration_case",
-        "subject_template": "Two or three marketers actively arranging and comparing a physical campaign concept around one generic product sample, blank packaging mockups, image cards, unlabeled colour swatches, and blank poster rectangles; hands should visibly move, compare, point to, and refine the visual layout",
-        "environment_template": "A believable creative marketing studio or campaign-planning table with tactile mockups and visual materials, with no readable copy, brand names, slogans, charts, screens, or presentation slides",
+        "archetype": "campaign_planning",
+        "visual_variant": "mockup_table",
+        "subject_template": "Two or three adult marketers actively arranging and comparing a physical campaign concept around one generic unbranded product sample, blank packaging mockups, image cards, and unlabeled color/material swatches",
+        "environment_template": "A clean creative campaign-planning studio centered on one tabletop of non-textual marketing materials; no workshop equipment, machinery, jewelry tools, manufacturing, or readable advertising copy",
         "recognition_anchors": [
-          "physical campaign-planning layout",
           "generic product sample with blank packaging mockups",
-          "image cards and unlabeled colour or material swatches being compared"
+          "image cards and unlabeled color/material swatches",
+          "adults actively comparing and refining a campaign layout"
         ],
         "must_include": [
-          "two or three people actively refining a campaign concept",
-          "blank product or packaging mockup",
-          "non-textual visual layout materials"
+          "two or three adult collaborators",
+          "one generic unbranded product sample",
+          "blank packaging mockups plus non-textual image and color/material choices"
         ],
         "avoid": [
-          "generic laboratory or workshop",
-          "hardware prototyping",
-          "jewelry-making or craft fabrication",
+          "craft workshop or artisan bench",
+          "laboratory or hardware prototyping",
+          "watchmaking or jewelry making",
           "manufacturing scene",
-          "readable advertising copy or slogan",
-          "brand logo or company name",
-          "readable screen, chart, document, poster, or presentation slide"
+          "child apprentices",
+          "readable advertising copy, slogan, chart, poster, or presentation slide",
+          "brand logo or company name"
         ]
       }
     },
@@ -1663,24 +1664,54 @@
       },
       "patch": {
         "art_category": "culture",
-        "archetype": "reading_world",
-        "visual_variant": "close_reading",
-        "subject_template": "A book creator actively discussing one plain unbranded book while recording a book-focused video, with expressive speaking gestures and a small generic camera or phone on a tripod clearly aimed at the creator",
-        "environment_template": "A warm home reading or creator corner with plain unbranded books, one generic camera or phone-on-tripod, and optionally a small microphone; no platform interface, logos, signs, or readable book text",
+        "archetype": "creator_workflow",
+        "visual_variant": "camera_creation",
+        "subject_template": "An adult book creator actively presenting and discussing one plain unbranded book directly to a generic camera or phone on a tripod, with expressive speaking gestures and the recording setup clearly visible",
+        "environment_template": "A warm book-creator corner with plain blank-cover books, one generic camera or phone-on-tripod aimed at the creator, and optionally a small microphone or soft light; no platform interface, logos, captions, or readable book text",
         "recognition_anchors": [
-          "creator speaking about a plain book",
+          "adult creator visibly speaking or presenting a plain book",
           "generic camera or phone on tripod aimed at the creator",
           "book-focused recording setup without platform branding"
         ],
         "must_include": [
           "one plain unbranded book",
-          "one visible generic recording device",
+          "one clearly visible generic recording device aimed at the creator",
           "active speaking or presenting gesture"
         ],
         "avoid": [
           "plain silent reading with no recording cue",
           "platform logo or video UI",
-          "readable book cover, spine, page, caption, or channel text"
+          "readable book cover, spine, page, caption, or channel text",
+          "photoreal influencer stock-photo look"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "career.legal_profession"
+      },
+      "patch": {
+        "art_category": "career",
+        "archetype": "legal_practice",
+        "visual_variant": "courtroom_advocacy",
+        "subject_template": "An adult legal advocate actively addressing a generic courtroom from beside a counsel table, using professional gesture and courtroom interaction rather than text to communicate the legal role",
+        "environment_template": "A generic unbranded courtroom with counsel table, judge bench or witness area, neutral railings and closed blank folders; no signs, certificates, readable law books, workshop tools, machinery, or children",
+        "recognition_anchors": [
+          "adult legal advocate in formal professional clothing",
+          "generic courtroom counsel table and judge-bench or witness-area architecture",
+          "active advocacy or legal consultation posture"
+        ],
+        "must_include": [
+          "adult legal professional",
+          "recognizable generic courtroom architecture",
+          "closed blank folders or neutral legal work materials only"
+        ],
+        "avoid": [
+          "craft workshop, jewelry bench, watchmaking, or machine repair",
+          "laboratory or makerspace",
+          "child apprentices or classroom",
+          "readable documents, law-book titles, certificates, signs, nameplates, or screens",
+          "hobby-title caption or poster layout"
         ]
       }
     }

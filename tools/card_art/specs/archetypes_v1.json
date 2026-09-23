@@ -546,6 +546,64 @@
         "random multi-screen cyberpunk setup",
         "finished content with no creation process"
       ]
+    },
+    "shared_workspace": {
+      "feeling": [
+        "independence",
+        "belonging",
+        "focus",
+        "productive energy"
+      ],
+      "composition": "Show a real shared office environment first: several adult professionals independently working side by side at communal desks, with distinct personal work setups and one small natural interaction. The spatial cue of shared desks, varied seating, laptops/notebooks, mugs, headphones, plants, and shared amenities must carry the concept. Do not use a craft bench, laboratory, makerspace, assembly table, hand tools, microscopes, jewelry, machine parts, or apprentice scene.",
+      "camera": "Human-height medium-wide office view that makes the communal desk layout and multiple independent workers unmistakable.",
+      "recognition": "A shared professional workspace must be identifiable from communal desks, multiple unrelated adult workers, separate work setups, and shared office amenities without relying on text, branding, or signage.",
+      "avoid": [
+        "craft workshop or artisan studio",
+        "laboratory or makerspace",
+        "watchmaking or jewelry bench",
+        "child apprentices or classroom scene",
+        "hardware prototyping",
+        "formal corporate boardroom",
+        "readable screens, wall signs, company names, or logos"
+      ]
+    },
+    "campaign_planning": {
+      "feeling": [
+        "creative strategy",
+        "collaboration",
+        "clarity",
+        "momentum"
+      ],
+      "composition": "Center a campaign-planning table where two or three adults actively compare and arrange non-textual visual materials: one generic product sample, blank packaging mockups, image cards, unlabeled color/material swatches, and blank layout blocks. Hands and the campaign arrangement must dominate. No craft tools, machinery, jewelry, workshop benches, manufacturing equipment, or apprentice scene.",
+      "camera": "Slightly elevated three-quarter or overhead-leaning medium view focused on the campaign layout and collaborating hands.",
+      "recognition": "Marketing/campaign planning must be recognizable from product mockups, image selection, color/material swatches, layout comparison, and collaborative visual decision-making without readable copy or brand identity.",
+      "avoid": [
+        "craft workshop or artisan bench",
+        "laboratory, hardware prototyping, or manufacturing",
+        "watchmaking or jewelry making",
+        "child apprentices",
+        "readable advertising copy, slogans, charts, or presentation slides",
+        "brand logos, company names, or product labels"
+      ]
+    },
+    "legal_practice": {
+      "feeling": [
+        "purpose",
+        "advocacy",
+        "judgment",
+        "professional focus"
+      ],
+      "composition": "Show an adult legal professional performing a recognizably legal action in a generic courtroom or formal client-consultation setting. Prefer courtroom architecture such as counsel table, judge bench, witness stand, gallery rail, or a formal consultation table with closed blank folders. The legal setting and adult advocacy/consultation action must carry recognition. Do not use workshops, craft benches, hand tools, microscopes, machinery, apprentices, or children.",
+      "camera": "Human-height medium or medium-wide professional frame that clearly shows the adult legal professional and courtroom/consultation architecture.",
+      "recognition": "Legal practice must be identifiable from courtroom architecture, advocacy posture, counsel-table interaction, formal adult client consultation, or other non-textual legal-environment cues without readable documents, signs, or captions.",
+      "avoid": [
+        "craft workshop or artisan scene",
+        "watchmaking, jewelry making, or machine repair",
+        "laboratory or makerspace",
+        "child apprentices or classroom",
+        "readable law-book titles, forms, certificates, nameplates, or screens",
+        "oversized symbolic scales-of-justice poster"
+      ]
     }
   }
 }

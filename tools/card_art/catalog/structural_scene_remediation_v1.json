@@ -1,0 +1,48 @@
+{
+  "version": "v1",
+  "purpose": "5-card structural scene-prior revalidation after routing coworking, marketing, and legal profession away from professional_world and BookTube away from reading_world/Klein.",
+  "output_tag": "structural_scene_remediation_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "business.coworking",
+        "business.marketing",
+        "career.legal_profession",
+        "learning.book_genre.booktube",
+        "technology.generative_ai"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 5,
+    "standard_cards": 5,
+    "klein_cards": 0,
+    "estimated_total_cost_usd": 0.0625
+  },
+  "qa_groups": {
+    "structural_professional_fix": [
+      "business.coworking",
+      "business.marketing",
+      "career.legal_profession"
+    ],
+    "creator_route_fix": [
+      "learning.book_genre.booktube"
+    ],
+    "clean_control": [
+      "technology.generative_ai"
+    ]
+  },
+  "qa_focus": [
+    "coworking must show a real communal shared office and must not collapse into workshop/craft/lab imagery",
+    "marketing must show non-textual campaign planning with blank product/packaging mockups, imagery, and color/material swatches",
+    "legal profession must show adult legal practice/courtroom cues and must not collapse into workshop/apprentice imagery",
+    "BookTube must show a visible recording device aimed at an adult creator presenting a plain book",
+    "BookTube now uses Standard FLUX to avoid known Klein MATERIAL style drift",
+    "global no-title/no-caption policy must remain effective",
+    "known-clean generative_ai control must stay clean"
+  ]
+}

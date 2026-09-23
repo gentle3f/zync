@@ -760,6 +760,48 @@
         "camera": "Three-quarter medium creator-and-rig view.",
         "lighting": "Controlled screen light with warm studio accents, no neon overload."
       }
+    ],
+    "shared_workspace": [
+      {
+        "id": "communal_desks",
+        "composition": "Arrange three to five adult professionals along one long communal desk or two adjacent shared desks. Each person has a distinct simple work setup; one pair may briefly exchange an idea while the others work independently. Keep the office furniture and shared-space layout obvious and keep all screens blank, turned away, abstract, or unreadable.",
+        "camera": "Eye-level medium-wide diagonal across the communal desks, showing multiple separate workstations and shared seating in one frame.",
+        "lighting": "Bright natural office daylight with warm practical accents and clean separation between people and desks."
+      },
+      {
+        "id": "shared_lounge_work",
+        "composition": "Show adults working independently across a mix of shared tables and casual coworking seating with laptops, notebooks, headphones, mugs, plants, and one visible communal amenity. The scene must read as a flexible shared office, not a social event or workshop.",
+        "camera": "Human-height medium-wide environmental frame showing the shared-space layout.",
+        "lighting": "Soft daylight with polished lifestyle-office contrast."
+      }
+    ],
+    "campaign_planning": [
+      {
+        "id": "mockup_table",
+        "composition": "Build the scene around one clean tabletop containing a generic unbranded product sample, two or three blank packaging mockups, several image cards, and unlabeled color/material swatches. Two or three adults point, compare, move, and refine these elements; no screens are needed.",
+        "camera": "Oblique overhead medium shot that keeps hands, product sample, blank mockups, image cards, and swatches simultaneously visible.",
+        "lighting": "Clean creative-studio daylight with crisp material detail and premium color separation."
+      },
+      {
+        "id": "campaign_wall_table",
+        "composition": "Keep the primary action on a physical planning table while a few blank image/layout blocks sit on a nearby wall with no text. Adults actively compare product mockups and imagery; the wall remains secondary and purely visual.",
+        "camera": "Three-quarter medium-wide view anchored on the table and hands.",
+        "lighting": "Warm modern studio light with a bright, non-textual planning surface."
+      }
+    ],
+    "legal_practice": [
+      {
+        "id": "courtroom_advocacy",
+        "composition": "An adult advocate in formal professional clothing stands or gestures beside a counsel table in a generic courtroom, oriented toward a judge bench or witness area. Use closed blank folders and neutral courtroom furniture only; no readable documents or signage.",
+        "camera": "Eye-level medium-wide courtroom view with advocate, counsel table, and bench architecture all readable.",
+        "lighting": "Controlled natural courtroom light with polished subject separation."
+      },
+      {
+        "id": "client_consultation",
+        "composition": "An adult legal professional and adult client confer across a formal table with closed blank folders and a simple neutral office/court-adjacent setting. Body language shows advice and review without relying on visible document text.",
+        "camera": "Eye-level intimate professional medium shot.",
+        "lighting": "Warm restrained office light with serious, trustworthy tone."
+      }
     ]
   }
 }
