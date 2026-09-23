@@ -1,0 +1,22 @@
+{
+  "model": "gemini-2.5-flash-image",
+  "provider": "Google Gemini API direct",
+  "submitted_at": "2026-09-23T14:40:55.322Z",
+  "batch_name": "batches/z8z1iuk17zqvkqm1mk15jdhcjjuxplovlr7e",
+  "raw": {
+    "name": "batches/z8z1iuk17zqvkqm1mk15jdhcjjuxplovlr7e",
+    "metadata": {
+      "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+      "model": "models/gemini-2.5-flash-image",
+      "displayName": "zync-gemini25-direct-24-v1",
+      "createTime": "2026-09-23T14:40:49.645356683Z",
+      "updateTime": "2026-09-23T14:40:49.645356683Z",
+      "batchStats": {
+        "requestCount": "24",
+        "pendingRequestCount": "24"
+      },
+      "state": "BATCH_STATE_PENDING",
+      "name": "batches/z8z1iuk17zqvkqm1mk15jdhcjjuxplovlr7e"
+    }
+  }
+}

@@ -9,6 +9,7 @@
 //
 // Requires GEMINI_API_KEY for --submit/--collect.
 
+import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -101,8 +102,8 @@ function buildBatchPayload(rows) {
               }],
               generationConfig: {
                 responseModalities: ['Image'],
-                responseFormat: {
-                  image: { aspectRatio: '2:3' },
+                imageConfig: {
+                  aspectRatio: '2:3',
                 },
               },
             },
@@ -139,6 +140,10 @@ async function jsonFetch(url, options = {}) {
 
 function findInlineResponses(status) {
   return (
+    status?.response?.inlinedResponses?.inlinedResponses ||
+    status?.response?.inlinedResponses ||
+    status?.metadata?.output?.inlinedResponses?.inlinedResponses ||
+    status?.metadata?.output?.inlinedResponses ||
     status?.dest?.inlinedResponses?.inlinedResponses ||
     status?.dest?.inlinedResponses ||
     status?.output?.inlinedResponses?.inlinedResponses ||
@@ -213,10 +218,15 @@ async function collect(rows) {
   });
   writeJson(STATUS_PATH, status);
 
-  const state = status?.state || status?.batch?.state || null;
+  const state =
+    status?.metadata?.state ||
+    status?.state ||
+    status?.batch?.state ||
+    null;
   console.log('Batch state:', state || 'unknown');
-  if (state !== 'JOB_STATE_SUCCEEDED') {
-    console.log('No images written. Re-run --collect after the batch reaches JOB_STATE_SUCCEEDED.');
+  const SUCCESS_STATES = new Set(['JOB_STATE_SUCCEEDED', 'BATCH_STATE_SUCCEEDED']);
+  if (!SUCCESS_STATES.has(state)) {
+    console.log('No images written. Re-run --collect after the batch succeeds.');
     return;
   }
 
