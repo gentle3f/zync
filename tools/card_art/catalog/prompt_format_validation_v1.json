@@ -1,0 +1,46 @@
+{
+  "version": "v1",
+  "purpose": "Targeted validation of the prompt-format root-cause fix while preserving original model routes.",
+  "output_tag": "prompt_format_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "wellness.sauna",
+        "wellness.hot_springs",
+        "learning.philosophy",
+        "sports.gravel_cycling",
+        "food.yum_cha",
+        "gaming.escape_room_design",
+        "sports.american_football"
+      ]
+    },
+    {
+      "name": "klein",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": [
+        "learning.book_genre.booktok"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 8,
+    "standard_cards": 7,
+    "klein_cards": 1,
+    "estimated_total_cost_usd": 0.0989
+  },
+  "qa_focus": [
+    "no literal compiler section labels",
+    "no raw archetype/visual-variant/subcategory identifiers rendered as text",
+    "no hobby-title captions",
+    "no poster/card chrome",
+    "no unrelated readable text",
+    "recognizable hobby",
+    "logo/trademark safety"
+  ]
+}

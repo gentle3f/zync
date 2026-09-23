@@ -243,3 +243,37 @@ suppression benefit creates unacceptable photoreal or stock-photo style drift.
 
 Do not expand from this validation directly to all baseline-art-eligible
 canonicals unless the failure rates and style consistency are reviewed first.
+
+
+## Prompt-format root-cause validation
+
+The 48-card stratified QA found that model-facing compiler headers such as
+`VISUAL VARIANT (heat_room):` and `ARCHETYPE (group_play):` were being echoed
+into generated art as literal captions.
+
+The V1 compiler now:
+- removes raw archetype / visual-variant / subcategory identifiers from
+  model-facing prompt text;
+- replaces title-like all-caps section headers with natural prose;
+- keeps internal ids only in structured compiler/manifest fields;
+- fails closed if forbidden legacy headers or underscore-style internal ids
+  reappear in model-facing prompt text;
+- keeps reference guidance out of compiled text entirely and appends it only
+  for explicit edit-model routes.
+
+Targeted validation:
+
+```bash
+npm run audit-prompt-format-v1
+npm run generate-prompt-format-v1
+```
+
+Batch:
+`catalog/prompt_format_validation_v1.json`
+
+Output:
+`output/prompt_format_v1/`
+
+The 8-card gate preserves each card's original model route so the prompt-format
+change remains the primary variable. Estimated first-pass cost is about
+**US$0.0989**.

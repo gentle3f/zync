@@ -113,12 +113,10 @@ function needsReference(model) {
   return model.endsWith('/edit');
 }
 
-function promptForModel(prompt, model) {
-  if (needsReference(model)) return prompt;
-  return prompt
-    .split('\n\n')
-    .filter(section => !section.startsWith('REFERENCE STYLE:'))
-    .join('\n\n');
+function promptForModel(prompt, model, referenceInstruction = null) {
+  if (!needsReference(model)) return prompt;
+  if (!referenceInstruction) return prompt;
+  return `${prompt}\n\n${referenceInstruction}`;
 }
 
 function negativePromptFor(row) {
@@ -240,6 +238,7 @@ function compileRows(ids) {
       visual_variant: compiled.variant.id,
       prompt: compiled.compiledPrompt,
       negative_constraints: compiled.negativeConstraints,
+      reference_instruction: globalStyle.reference_instruction,
       global_style: globalStyle,
     });
   }
@@ -247,7 +246,7 @@ function compileRows(ids) {
 }
 
 async function generateOne({ row, model, referenceUrl, attempt }) {
-  const finalPrompt = promptForModel(row.prompt, model);
+  const finalPrompt = promptForModel(row.prompt, model, row.reference_instruction);
   const result = await fal.subscribe(falModel(model), {
     input: modelInput(model, finalPrompt, referenceUrl, row),
     logs: false,
@@ -316,7 +315,7 @@ async function main() {
     console.log(`Dry run: ${rows.length} rights-safe compiled prompts; model=${model}; ${costText}`);
     for (const row of rows) {
       console.log(
-        `\n--- ${row.title} [${row.canonical_interest_id}] / ${row.archetype} / ${row.visual_variant} / ${row.recipe_source} / ${row.difficulty} ---\n${promptForModel(row.prompt, model)}`,
+        `\n--- ${row.title} [${row.canonical_interest_id}] / ${row.archetype} / ${row.visual_variant} / ${row.recipe_source} / ${row.difficulty} ---\n${promptForModel(row.prompt, model, row.reference_instruction)}`,
       );
     }
     return;

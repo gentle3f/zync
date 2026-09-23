@@ -42,38 +42,85 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
     : genericPool[stableIndex(effective.id, genericPool.length)];
   if (!variant) throw new Error(`Unknown visual_variant "${effective.visual_variant}" for hobby "${effective.id}"`);
 
+  // Keep internal compiler metadata out of the image prompt. Previous
+  // LABEL (identifier): formatting caused models to echo archetype/variant ids
+  // as visible captions (for example HEAT ROOM / IMMERSION_RITUAL).
   const sections = [];
-  sections.push(`GLOBAL STYLE: ${globalStyle.prompt}`);
-  sections.push(`REFERENCE STYLE: ${globalStyle.reference_instruction}`);
-  sections.push(`ARCHETYPE (${effective.archetype}): ${archetype.composition} ${archetype.camera} Emotional feeling: ${list(archetype.feeling)}. Recognition requirement: ${archetype.recognition}`);
-  sections.push(`VISUAL VARIANT (${variant.id}): ${variant.composition} ${variant.camera} Lighting bias: ${variant.lighting}`);
-  sections.push(`CATEGORY (${effective.category}): Palette bias — ${category.palette_bias}. ${list(category.extra_rules)}.`);
-  if (subcategory) sections.push(`SUBCATEGORY (${effective.subcategory}): Recognition anchors — ${list(subcategory.recognition_anchors)}.`);
-  sections.push(`SUBJECT: ${effective.subject}`);
-  sections.push(`ENVIRONMENT: ${effective.environment}`);
-  sections.push(`EMOTION: ${list(effective.emotion)}.`);
-  if (effective.composition) sections.push(`HOBBY COMPOSITION: ${effective.composition}`);
-  if (effective.camera) sections.push(`HOBBY CAMERA: ${effective.camera}`);
-  if (effective.lighting) sections.push(`HOBBY LIGHTING: ${effective.lighting}`);
-  if (effective.palette) sections.push(`HOBBY PALETTE: ${effective.palette}`);
-  sections.push(`HOBBY RECOGNITION ANCHORS: ${list(effective.recognition_anchors)}.`);
-  sections.push(`MUST INCLUDE: ${list(effective.must_include)}.`);
+  sections.push(globalStyle.prompt);
+  sections.push(
+    `Use this overall composition approach: ${archetype.composition} ${archetype.camera} ` +
+    `The emotional feeling should be ${list(archetype.feeling)}. ` +
+    `Make the hobby immediately recognizable through ${archetype.recognition}.`
+  );
+  sections.push(
+    `Compose the specific scene this way: ${variant.composition} ${variant.camera} ` +
+    `Use ${variant.lighting}.`
+  );
+  sections.push(
+    `Use this colour and material direction: ${category.palette_bias}. ${list(category.extra_rules)}.`
+  );
+  if (subcategory) {
+    sections.push(
+      `Make these recognition cues visually clear: ${list(subcategory.recognition_anchors)}.`
+    );
+  }
+  sections.push(`Depict this activity: ${effective.subject}`);
+  sections.push(`Place it in this believable setting: ${effective.environment}`);
+  sections.push(`The emotional tone should feel ${list(effective.emotion)}.`);
+  if (effective.composition) sections.push(`Use this activity-specific composition: ${effective.composition}`);
+  if (effective.camera) sections.push(`Use this activity-specific camera treatment: ${effective.camera}`);
+  if (effective.lighting) sections.push(`Use this activity-specific lighting: ${effective.lighting}`);
+  if (effective.palette) sections.push(`Use this activity-specific palette: ${effective.palette}`);
+  sections.push(
+    `Keep these hobby-recognition cues visible: ${list(effective.recognition_anchors)}.`
+  );
+  sections.push(`The scene must include: ${list(effective.must_include)}.`);
 
   const promptAdditions = [
     ...(override?.override_prompt_additions || []),
     ...(flagshipOverride?.override_prompt_additions || [])
   ];
-  if (promptAdditions.length) sections.push(`OVERRIDE GUIDANCE: ${promptAdditions.join(' ')}`);
+  if (promptAdditions.length) {
+    sections.push(`Follow these additional scene constraints: ${promptAdditions.join(' ')}`);
+  }
 
   const avoidList = [
     ...(effective.avoid || []),
     ...(subcategory?.avoid || []),
     ...(archetype.avoid || [])
   ];
-  sections.push(`AVOID: ${[...new Set(avoidList)].join(', ')}.`);
-  sections.push(`GLOBAL NEGATIVES: ${list(globalStyle.global_negatives)}.`);
+  sections.push(
+    `Do not depict any of the following: ${[...new Set(avoidList)].join(', ')}.`
+  );
+  sections.push(
+    `Also avoid these global failure modes: ${list(globalStyle.global_negatives)}.`
+  );
+  const compiledPrompt = sections.join('\n\n');
+
+  // Regression guard: model-facing prose must not expose compiler metadata in
+  // the old title-like LABEL (identifier): format, nor raw underscore-style
+  // archetype/variant/subcategory ids that can be echoed as captions.
+  const forbiddenHeaderPattern =
+    /\b(?:GLOBAL STYLE|REFERENCE STYLE|ARCHETYPE|VISUAL VARIANT|CATEGORY|SUBCATEGORY|SUBJECT|ENVIRONMENT|EMOTION|HOBBY COMPOSITION|HOBBY CAMERA|HOBBY LIGHTING|HOBBY PALETTE|HOBBY RECOGNITION ANCHORS|MUST INCLUDE|OVERRIDE GUIDANCE|AVOID|GLOBAL NEGATIVES)\s*(?:\([^)]*\))?\s*:/i;
+  if (forbiddenHeaderPattern.test(compiledPrompt)) {
+    throw new Error(`Prompt-format regression for hobby "${effective.id}": title-like compiler header leaked into model-facing text`);
+  }
+
+  const internalIds = [
+    effective.archetype,
+    variant.id,
+    effective.subcategory,
+  ].filter(value => value && /[_./]/.test(value));
+  for (const id of internalIds) {
+    if (compiledPrompt.includes(id)) {
+      throw new Error(
+        `Prompt-format regression for hobby "${effective.id}": internal identifier "${id}" leaked into model-facing text`,
+      );
+    }
+  }
+
   return {
-    compiledPrompt: sections.join('\n\n'),
+    compiledPrompt,
     negativeConstraints: [...new Set([...avoidList, ...globalStyle.global_negatives])],
     archetype, category, subcategory, variant, effective
   };
