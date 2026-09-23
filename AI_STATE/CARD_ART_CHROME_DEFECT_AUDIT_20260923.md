@@ -122,3 +122,27 @@ Until then, there is not enough evidence to change the global prompt.
 ## Conclusion
 
 The rounded light border/chrome is now a **real recurring defect** (2 independent observations), but it is still sparse and stochastic. No production-wide fix is justified yet.
+
+
+## 100-card validation update
+
+The later `bulk_first_100_validation_v1` run materially changes the prior frequency estimate.
+
+At least **5 additional confirmed border/chrome occurrences appeared in 100 Standard-FLUX renders (~5%)**:
+- `wellness.pilates`
+- `business.founder_meetups`
+- `business.coworking`
+- `entertainment.screenwriting`
+- `outdoors.rock_climbing`
+
+This means the earlier characterization of the defect as sparse/background noise is superseded.
+
+### Updated classification
+
+**Live moderate-frequency stochastic/upstream framing risk; trigger unresolved.**
+
+It still does not map cleanly to one model, hobby, archetype, or route. However, ~5% observed frequency in a broad sample is high enough that future bulk QA must explicitly score it.
+
+The semantic-architecture rebuild therefore also removes positive `collectible` / `card-art universe` framing language from the global positive prompt and replaces it with explicit `full-bleed edge-to-edge` scene language. This is a falsifiable systemic intervention, not proof that the old wording caused the defect.
+
+Do not auto-crop. Visual QA remains required because flat edge regions can still be legitimate scene content.
