@@ -31,7 +31,9 @@
     "audit-structural-scene-remediation-v1": "node src/runStructuralSceneRemediation.js --dry-run",
     "generate-structural-scene-remediation-v1": "node src/runStructuralSceneRemediation.js",
     "audit-confirmatory-30-v1": "node src/runConfirmatory30Batch.js --dry-run",
-    "generate-confirmatory-30-v1": "node src/runConfirmatory30Batch.js"
+    "generate-confirmatory-30-v1": "node src/runConfirmatory30Batch.js",
+    "audit-post-confirmatory-repair-v1": "node src/runPostConfirmatoryRepair.js --dry-run",
+    "generate-post-confirmatory-repair-v1": "node src/runPostConfirmatoryRepair.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

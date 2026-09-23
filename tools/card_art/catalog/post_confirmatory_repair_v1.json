@@ -1,0 +1,70 @@
+{
+  "version": "v1",
+  "purpose": "8-card targeted repair gate after Confirmatory-30: validate individual-sport brand suppression, preserve American Football on Klein, diagnose letterbox noise, and verify isolated fixes for vlogging, book clubs, and aviation.",
+  "output_tag": "post_confirmatory_repair_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "sports.archery",
+        "sports.fencing",
+        "learning.mock_trial",
+        "business.coworking",
+        "arts.vlogging",
+        "learning.book_clubs",
+        "transport.aviation"
+      ]
+    },
+    {
+      "name": "american_football_klein",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": [
+        "sports.american_football"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 8,
+    "standard_cards": 7,
+    "klein_cards": 1,
+    "estimated_total_cost_usd": 0.0989
+  },
+  "qa_groups": {
+    "individual_sports_brand_fix": [
+      "sports.archery",
+      "sports.fencing"
+    ],
+    "american_football_protected_route": [
+      "sports.american_football"
+    ],
+    "letterbox_diagnostic": [
+      "learning.mock_trial",
+      "business.coworking"
+    ],
+    "isolated_recipe_fixes": [
+      "arts.vlogging",
+      "learning.book_clubs",
+      "transport.aviation"
+    ]
+  },
+  "qa_focus": [
+    "archery and fencing must have plain unbranded apparel/footwear/equipment with no swoosh, three-stripe, manufacturer badge, chest print, or shoe mark",
+    "American Football intentionally remains on Klein and must again be logo/number/sponsor free",
+    "mock_trial and coworking prompts are unchanged for the letterbox hypothesis; inspect whether thick black padding recurs",
+    "vlogging must not render the hobby name or any on-screen title/tag/UI text",
+    "book_clubs must visibly show a real group discussion with at least three adults",
+    "aviation must make a full-size aircraft the unmistakable dominant hero object with no foreground car/truck competition",
+    "global title/caption suppression must remain intact"
+  ],
+  "decision_gate": {
+    "sports_brand": "archery + fencing + American Football must all PASS rights-safety checks",
+    "letterbox": "If neither reroll letterboxes, treat prior letterbox as stochastic FLUX noise; if either repeats, investigate generation/layout handling before scaling",
+    "isolated_fixes": "vlogging, book_clubs, and aviation must each materially improve to PASS or at worst MINOR with no repeated systemic defect",
+    "overall": "Do not scale to 50/100 until sports brand safety passes. tech_workspace remains a separate unresolved structural workstream."
+  }
+}

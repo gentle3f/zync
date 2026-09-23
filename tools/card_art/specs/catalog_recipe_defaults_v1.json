@@ -1376,6 +1376,81 @@
     },
     {
       "match": {
+        "category": "sports",
+        "cluster": "racket"
+      },
+      "patch": {
+        "subject_template": "One athlete actively doing ${title} at a decisive, unmistakable moment while wearing plain generic sport-appropriate clothing and footwear with solid unmarked surfaces; all visible equipment must be generic and completely free of manufacturer-style marks",
+        "environment_template": "A believable generic practice, training, or participation setting for ${title}, with no professional-brand presentation, sponsor signage, retail branding, or readable advertising",
+        "must_include": [
+          "one unmistakable ${title} action anchor",
+          "plain unbranded sport-appropriate clothing and footwear with no decorative manufacturer-style marks",
+          "generic unbranded equipment with blank surfaces wherever branding would normally appear"
+        ],
+        "avoid": [
+          "brand logo or readable sponsor text",
+          "swoosh-like mark",
+          "three-stripe-like mark",
+          "manufacturer badge",
+          "brand-like chest print",
+          "brand-like shoe marking",
+          "competition apparel whose recognition depends on real-world brand styling",
+          "retail or sponsor advertising"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "cluster": "combat"
+      },
+      "patch": {
+        "subject_template": "One athlete actively doing ${title} at a decisive, unmistakable moment while wearing plain generic sport-appropriate clothing and footwear with solid unmarked surfaces; all visible equipment must be generic and completely free of manufacturer-style marks",
+        "environment_template": "A believable generic practice, training, or participation setting for ${title}, with no professional-brand presentation, sponsor signage, retail branding, or readable advertising",
+        "must_include": [
+          "one unmistakable ${title} action anchor",
+          "plain unbranded sport-appropriate clothing and footwear with no decorative manufacturer-style marks",
+          "generic unbranded equipment with blank surfaces wherever branding would normally appear"
+        ],
+        "avoid": [
+          "brand logo or readable sponsor text",
+          "swoosh-like mark",
+          "three-stripe-like mark",
+          "manufacturer badge",
+          "brand-like chest print",
+          "brand-like shoe marking",
+          "competition apparel whose recognition depends on real-world brand styling",
+          "retail or sponsor advertising"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "cluster": "precision"
+      },
+      "patch": {
+        "subject_template": "One athlete actively doing ${title} at a decisive, unmistakable moment while wearing plain generic sport-appropriate clothing and footwear with solid unmarked surfaces; all visible equipment must be generic and completely free of manufacturer-style marks",
+        "environment_template": "A believable generic practice, training, or participation setting for ${title}, with no professional-brand presentation, sponsor signage, retail branding, or readable advertising",
+        "must_include": [
+          "one unmistakable ${title} action anchor",
+          "plain unbranded sport-appropriate clothing and footwear with no decorative manufacturer-style marks",
+          "generic unbranded equipment with blank surfaces wherever branding would normally appear"
+        ],
+        "avoid": [
+          "brand logo or readable sponsor text",
+          "swoosh-like mark",
+          "three-stripe-like mark",
+          "manufacturer badge",
+          "brand-like chest print",
+          "brand-like shoe marking",
+          "competition apparel whose recognition depends on real-world brand styling",
+          "retail or sponsor advertising"
+        ]
+      }
+    },
+    {
+      "match": {
         "id": "sports.american_football"
       },
       "patch": {
@@ -1824,6 +1899,90 @@
           "children or apprentice scene",
           "readable case names, signs, certificates, or documents",
           "generic classroom with no courtroom cue"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "arts.vlogging"
+      },
+      "patch": {
+        "art_category": "technology",
+        "archetype": "creator_workflow",
+        "visual_variant": "camera_creation",
+        "subject_template": "An adult video creator actively speaking to and recording with a generic camera or phone rig, using expressive presentation gestures; the recording device is visible from the side or rear so no screen text is presented to the viewer",
+        "environment_template": "A clean unbranded creator room or small studio with a generic camera/phone rig and optional soft light or microphone; no platform interface, title card, channel label, on-screen caption, number tag, or readable display",
+        "recognition_anchors": [
+          "creator actively speaking or presenting to camera",
+          "generic camera or phone rig aimed at creator",
+          "visible recording setup without platform branding"
+        ],
+        "must_include": [
+          "adult creator actively presenting",
+          "generic recording device aimed at the creator",
+          "camera/phone display turned away, blank, or showing only a non-textual framing image"
+        ],
+        "avoid": [
+          "the word vlog, vlogging, VLOGIN, or any hobby-name approximation rendered on screen",
+          "platform logo or video UI",
+          "readable title, caption, number tag, channel name, or status text",
+          "front-facing monitor full of UI"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "learning.book_clubs"
+      },
+      "patch": {
+        "art_category": "culture",
+        "archetype": "reading_world",
+        "visual_variant": "book_club",
+        "subject_template": "Three or four adults actively discussing and comparing plain unbranded books together, with visible face-to-face reactions and conversational gestures; the social exchange is the main action, not solitary reading",
+        "environment_template": "A warm home, library discussion corner, or cafe-like generic seating area with one shared table or seating cluster; all books have blank or abstract covers and unreadable pages",
+        "recognition_anchors": [
+          "three or four adults in active book discussion",
+          "multiple plain unbranded books",
+          "face-to-face conversational gestures around a shared seating/table cluster"
+        ],
+        "must_include": [
+          "at least three adult participants",
+          "at least two plain unbranded books",
+          "active group discussion rather than silent individual reading"
+        ],
+        "avoid": [
+          "single person reading alone",
+          "silent library study scene",
+          "readable book titles, spine text, page text, signs, or labels"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "transport.aviation"
+      },
+      "patch": {
+        "art_category": "transport",
+        "archetype": "aviation_world",
+        "visual_variant": "aircraft_focus",
+        "subject_template": "One or two adults actively inspecting, preparing, boarding, or admiring one generic unbranded full-size aircraft; the aircraft is the unmistakable dominant object and occupies the primary visual attention",
+        "environment_template": "A believable generic airfield, hangar, or airport apron with the full-size aircraft clearly dominant; ground-support objects may be small and secondary, but no car or truck may become the hero object",
+        "recognition_anchors": [
+          "dominant full-size aircraft with clear wings/fuselage/cockpit structure",
+          "aviation-specific human interaction",
+          "airfield, hangar, or apron context"
+        ],
+        "must_include": [
+          "one generic unbranded full-size aircraft as the dominant hero object",
+          "one or two adults interacting with the aircraft",
+          "clear aircraft structure large enough to identify immediately"
+        ],
+        "avoid": [
+          "car, truck, motorcycle, or road vehicle dominating the foreground",
+          "generic parked-car scene",
+          "airline logo or branded livery",
+          "readable tail code, registration number, airport sign, or gate text",
+          "toy or model aircraft"
         ]
       }
     }

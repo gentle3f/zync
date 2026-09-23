@@ -604,6 +604,24 @@
         "readable law-book titles, forms, certificates, nameplates, or screens",
         "oversized symbolic scales-of-justice poster"
       ]
+    },
+    "aviation_world": {
+      "feeling": [
+        "flight",
+        "engineering",
+        "freedom",
+        "awe"
+      ],
+      "composition": "Make one generic unbranded full-size aircraft or clearly recognizable aircraft cockpit the dominant hero object. Human interaction may show inspection, boarding, pre-flight preparation, observation, or piloting context, but no car, truck, motorcycle, or other ground vehicle may compete for attention. Recognition must come from unmistakable aircraft structure—wings, fuselage, cockpit, tail, landing gear, propeller or jet-engine context—not text, airline livery, logos, or airport signage.",
+      "camera": "Dynamic human-height medium-wide or cockpit-adjacent view that gives the aircraft clear visual dominance.",
+      "recognition": "A generic full-size aircraft or cockpit is unmistakably the primary subject, supported by aviation-specific human action and airport/hangar/airfield context without airline branding.",
+      "avoid": [
+        "car or truck as foreground hero",
+        "generic garage or road-trip scene",
+        "airline logo or branded livery",
+        "readable airport signage, tail code, registration number, or gate text",
+        "toy or model aircraft standing in for real aviation"
+      ]
     }
   }
 }

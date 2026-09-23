@@ -809,6 +809,21 @@
         "camera": "Eye-level medium-wide courtroom frame showing advocate, counsel table, and judge or judging panel.",
         "lighting": "Clean institutional courtroom light with warm professional subject separation."
       }
+    ],
+    "aviation_world": [
+      {
+        "id": "aircraft_focus",
+        "composition": "A generic unbranded full-size aircraft fills the main visual field in a hangar, apron, or airfield setting while one or two adults inspect, prepare, board, or admire it. The aircraft—not any ground vehicle—must dominate the frame.",
+        "camera": "Three-quarter medium-wide view emphasizing wings, fuselage/cockpit, and landing gear with people for scale.",
+        "lighting": "Clean natural or hangar light with strong aircraft silhouette and material detail."
+      },
+      {
+        "id": "cockpit_preflight",
+        "generic_eligible": false,
+        "composition": "A pilot or aviation enthusiast performs a pre-flight or cockpit interaction with a generic unbranded aircraft; controls may be visible only as non-readable shapes and instruments, with no labels or registration text.",
+        "camera": "Close-medium cockpit/doorway or wing-root perspective that keeps aircraft identity unmistakable.",
+        "lighting": "Balanced cockpit and daylight illumination with crisp mechanical detail."
+      }
     ]
   }
 }
