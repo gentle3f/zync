@@ -5,6 +5,11 @@
       "status": "quarantined",
       "reason": "No currently production-safe first-pass route: Standard FLUX leaked an unmistakable swoosh; Klein later dropped the required helmet and drifted photoreal. Isolated diagnostic only until a dedicated fix passes.",
       "allow_only_with_explicit_override": true
+    },
+    "technology.robotics": {
+      "status": "quarantined",
+      "reason": "No currently production-safe first-pass route tested: Standard FLUX repeatedly invents a readable code/screen even in a scene that structurally excludes every screen-bearing object. Klein suppresses the screen but drifts materially photoreal/macro-product-like even after an explicit hard painterly style anchor, and separately failed scene completeness (missing open test floor/cones). Isolated diagnostic only until a different model or visual strategy passes.",
+      "allow_only_with_explicit_override": true
     }
   }
 }
