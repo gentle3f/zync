@@ -228,13 +228,52 @@ function matchesRule(item, match) {
   return true;
 }
 
-function deriveRecipe(item, defaults, policy) {
+function matchesSemanticRule(item, profile, match) {
+  if (!matchesRule(item, match || {})) return false;
+  if (match?.archetype && profile.archetype !== match.archetype) return false;
+  if (match?.archetype_in && !match.archetype_in.includes(profile.archetype)) return false;
+  if (match?.id_not_in && match.id_not_in.includes(item.id)) return false;
+  return true;
+}
+
+function applySemanticAnchorRules(profile, item, semanticRules) {
+  const next = JSON.parse(JSON.stringify(profile));
+  const appliedRuleIds = [];
+  for (const rule of semanticRules?.rules || []) {
+    if (!matchesSemanticRule(item, next, rule.match || {})) continue;
+    const patch = rule.patch || {};
+    for (const forbidden of ['archetype','visual_variant','art_category']) {
+      if (Object.prototype.hasOwnProperty.call(patch, forbidden)) {
+        throw new Error(`Semantic anchor rule "${rule.id}" may not change routing field "${forbidden}"`);
+      }
+    }
+    for (const key of ['subject_template','environment_template']) {
+      if (patch[key]) next[key] = patch[key];
+    }
+    for (const [target, source] of [
+      ['emotion','emotion_add'],
+      ['recognition_anchors','recognition_anchors_add'],
+      ['must_include','must_include_add'],
+      ['avoid','avoid_add'],
+    ]) {
+      if (Array.isArray(patch[source]) && patch[source].length) {
+        next[target] = [...(next[target] || []), ...patch[source]];
+      }
+    }
+    appliedRuleIds.push(rule.id);
+  }
+  return { profile: next, appliedRuleIds };
+}
+
+function deriveRecipe(item, defaults, semanticRules, policy) {
   const base = defaults.category_defaults[item.category];
   if (!base) throw new Error(`No card-art category default for runtime category "${item.category}" (${item.id})`);
   let profile = JSON.parse(JSON.stringify(base));
   for (const rule of defaults.profile_rules || []) {
     if (matchesRule(item, rule.match || {})) profile = { ...profile, ...(rule.patch || {}) };
   }
+  const semantic = applySemanticAnchorRules(profile, item, semanticRules);
+  profile = semantic.profile;
 
   const rankMax = Number(defaults.tiering?.common_rank_max ?? 1200);
   const defaultTier = defaults.tiering?.default_tier || 'long_tail';
@@ -266,7 +305,9 @@ function deriveRecipe(item, defaults, policy) {
     recognition_anchors: (profile.recognition_anchors || []).map(x => renderTemplate(x, item)),
     must_include: (profile.must_include || []).map(x => renderTemplate(x, item)),
     avoid,
-    notes: `Derived from runtime catalog ${item.id} via catalog_recipe_defaults_v1; art policy=${policy.art_policy}.`,
+    semantic_anchor_status: semantic.appliedRuleIds.length ? 'covered' : 'uncovered',
+    semantic_anchor_rule_ids: semantic.appliedRuleIds,
+    notes: `Derived from runtime catalog ${item.id} via catalog_recipe_defaults_v1 + semantic_anchor_rules_v1; art policy=${policy.art_policy}.`,
   };
 }
 
@@ -298,6 +339,7 @@ export function buildCatalogRecipeBridge() {
   const catalogById = new Map(catalog.map(item => [item.id, item]));
   const rights = loadRightsPolicy();
   const defaults = readJson(path.join(CARD_ART_ROOT, 'specs', 'catalog_recipe_defaults_v1.json'));
+  const semanticRules = readJson(path.join(CARD_ART_ROOT, 'specs', 'semantic_anchor_rules_v1.json'));
   const manualByCanonical = validateManualRecipes(catalogById);
 
   const eligible = [];
@@ -349,7 +391,7 @@ export function buildCatalogRecipeBridge() {
     } else {
       counts.derivedEligible += 1;
       recipeSource = 'derived';
-      recipe = deriveRecipe(item, defaults, policy);
+      recipe = deriveRecipe(item, defaults, semanticRules, policy);
     }
 
     eligible.push({
