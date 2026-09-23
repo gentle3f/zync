@@ -100,8 +100,15 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
   // Regression guard: model-facing prose must not expose compiler metadata in
   // the old title-like LABEL (identifier): format, nor raw underscore-style
   // archetype/variant/subcategory ids that can be echoed as captions.
+  //
+  // Anchored to the start of a section (sections are joined by "\n\n", so
+  // each one starts a new line) and matched case-sensitively against the old
+  // ALL-CAPS header tokens only. A looser anywhere-in-text, case-insensitive
+  // match would collide with ordinary prose the new compiler intentionally
+  // emits (e.g. "The scene must include: ..." contains "must include:" and
+  // would otherwise false-positive on every single hobby).
   const forbiddenHeaderPattern =
-    /\b(?:GLOBAL STYLE|REFERENCE STYLE|ARCHETYPE|VISUAL VARIANT|CATEGORY|SUBCATEGORY|SUBJECT|ENVIRONMENT|EMOTION|HOBBY COMPOSITION|HOBBY CAMERA|HOBBY LIGHTING|HOBBY PALETTE|HOBBY RECOGNITION ANCHORS|MUST INCLUDE|OVERRIDE GUIDANCE|AVOID|GLOBAL NEGATIVES)\s*(?:\([^)]*\))?\s*:/i;
+    /^(?:GLOBAL STYLE|REFERENCE STYLE|ARCHETYPE|VISUAL VARIANT|CATEGORY|SUBCATEGORY|SUBJECT|ENVIRONMENT|EMOTION|HOBBY COMPOSITION|HOBBY CAMERA|HOBBY LIGHTING|HOBBY PALETTE|HOBBY RECOGNITION ANCHORS|MUST INCLUDE|OVERRIDE GUIDANCE|AVOID|GLOBAL NEGATIVES)\s*(?:\([^)]*\))?\s*:/m;
   if (forbiddenHeaderPattern.test(compiledPrompt)) {
     throw new Error(`Prompt-format regression for hobby "${effective.id}": title-like compiler header leaked into model-facing text`);
   }
