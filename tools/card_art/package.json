@@ -21,7 +21,9 @@
     "audit-stratified-v1": "node src/runStratifiedBatch.js --dry-run",
     "generate-stratified-v1": "node src/runStratifiedBatch.js",
     "audit-prompt-format-v1": "node src/runPromptFormatValidation.js --dry-run",
-    "generate-prompt-format-v1": "node src/runPromptFormatValidation.js"
+    "generate-prompt-format-v1": "node src/runPromptFormatValidation.js",
+    "audit-scale-100-v1": "node src/runScale100Batch.js --dry-run",
+    "generate-scale-100-v1": "node src/runScale100Batch.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

@@ -277,3 +277,42 @@ Output:
 The 8-card gate preserves each card's original model route so the prompt-format
 change remains the primary variable. Estimated first-pass cost is about
 **US$0.0989**.
+
+
+## 100-card scale validation
+
+After the prompt-format root cause was validated on the targeted 8-card gate,
+the next stage is a **100-card scale validation**:
+
+- batch: `catalog/scale_100_batch_v1.json`
+- orchestration: `src/runScale100Batch.js`
+- output: `output/scale_100_v1/`
+- standard route: 75 cards via reference-free `flux-2`
+- suppression-sensitive route: 25 cards via
+  `flux-2/klein/9b/base` with a real API `negative_prompt`
+- estimated first-pass cost: about **US$1.2225**
+
+The sample is deliberately stratified across categories, archetypes and rank
+depth. It contains 98 previously ungenerated canonicals plus two intentional
+sentinel reroutes:
+- `sports.american_football` — previous standard-FLUX jersey/logo failure
+- `food.yum_cha` — previous standard-FLUX signage failure
+
+Both sentinels are re-tested on Klein to validate the newly adopted risk-class
+routing policy.
+
+Run the zero-credit preflight first:
+
+```bash
+npm run audit-scale-100-v1
+```
+
+Only if all 100 compile and rights-check cleanly:
+
+```bash
+npm run generate-scale-100-v1
+```
+
+Do not auto-reroll during first review. QA must report failure rates by model,
+category, archetype and rank stratum, and must separately score Klein
+photoreal/stock-photo style drift.
