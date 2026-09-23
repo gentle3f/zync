@@ -1,0 +1,33 @@
+{
+  "version": "v1",
+  "purpose": "Two-call follow-up: Robotics Klein style anchoring and screenless PC Gaming on Standard FLUX.",
+  "output_tag": "screen_followup_2_v1",
+  "experiment_overrides": "catalog/screen_followup_2_overrides_v1.json",
+  "routes": [
+    {
+      "name": "robotics_klein_style_anchor",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": ["technology.robotics"]
+    },
+    {
+      "name": "pc_gaming_standard_screenless",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": ["gaming.pc_gaming"]
+    }
+  ],
+  "expected": {
+    "api_calls": 2,
+    "standard_calls": 1,
+    "klein_calls": 1,
+    "estimated_total_cost_usd": 0.0239
+  },
+  "decision_gate": {
+    "robotics": "PASS only if screen-free and painterly/cinematic house style is restored; if material photoreal drift remains, quarantine technology.robotics.",
+    "pc_gaming": "PASS only if fully screen-free and unmistakably PC gaming from physical desktop hardware/input cues.",
+    "scale": "Do not generalize or start a broader batch automatically."
+  }
+}
