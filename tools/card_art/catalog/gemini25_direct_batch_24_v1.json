@@ -1,0 +1,24 @@
+{
+  "version": "v1",
+  "purpose": "Apples-to-apples model/provider discriminator: run the exact same 24 compiled prompts that failed on Standard FLUX through the Google Gemini API directly, not fal.ai.",
+  "source_validation": "catalog/semantic_anchor_revalidation_24_v1.json",
+  "model": "gemini-2.5-flash-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "prompt_policy": "Compile from the exact same current recipe/compiler state; do not add Gemini-specific semantic wording so model is the main changed variable.",
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 24,
+    "batch_output_price_usd_per_image": 0.0195,
+    "estimated_image_output_cost_usd": 0.468,
+    "note": "Input text token charges are additional but small relative to image output cost."
+  },
+  "decision_gate": {
+    "diagnostic": "Compare directly with output/semantic_anchor_revalidation_24_v1. If Gemini follows the same prompts substantially better, the evidence shifts strongly toward a FLUX/model-route problem rather than a prompt-content problem.",
+    "pipeline_check": "Manifest must preserve canonical ID, exact final prompt, batch job name, response index/metadata key, and image filename so prompt-to-image mapping is auditable.",
+    "no_auto_scale": true
+  }
+}
