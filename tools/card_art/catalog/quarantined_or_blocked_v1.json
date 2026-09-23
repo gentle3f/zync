@@ -1,7 +1,7 @@
 {
   "version": "v1",
   "purpose": "Interests already confirmed unsafe or technically blocked in the current FLUX route. Distinct from HOLDOUT: these are not just untested, they have concrete confirmed evidence of failure or a data-integrity error.",
-  "total_count": 3,
+  "total_count": 2,
   "items": [
     {
       "canonical_interest_id": "sports.american_football",
@@ -16,13 +16,6 @@
       "category": "technology",
       "reason": "machine_guardrail",
       "detail": "No production-safe first-pass route under either tested model: Standard FLUX repeatedly invents readable code/screens even in a scene structurally excluding every screen-bearing object; Klein suppresses the screen but drifts materially photoreal even after an explicit hard style anchor, and separately failed scene completeness. Machine-quarantined in specs/generation_guardrails_v1.json."
-    },
-    {
-      "canonical_interest_id": "outdoors.ice_fishing",
-      "title": "Ice Fishing",
-      "category": "outdoors",
-      "reason": "data_integrity_error: ERROR: Unknown visual_variant \"water_ritual\" for hobby \"outdoors.ice_fishing\"",
-      "detail": "Data-integrity error, not an aesthetic judgment: compiles to visual_variant \"water_ritual\", which does not exist in archetype_variants_v1.json. Generation would throw. Needs a routing/data fix before this ID can be classified at all."
     }
   ]
 }
