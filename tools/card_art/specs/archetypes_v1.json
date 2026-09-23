@@ -171,15 +171,18 @@
         "experimentation",
         "future"
       ],
-      "composition": "Show a person actively building, testing, configuring, measuring, or creating with technology through one clear physical input and one visible non-textual output. If a display is present, it should contain only abstract geometry, image previews, graphs without labels, simple shapes, nodes, waveforms, or visual feedback—never code, words, menus, terminal text, UI labels, or dense dashboards.",
-      "camera": "Medium layered workstation or maker-bench view with hands, hardware, and physical interaction at least as prominent as any screen.",
-      "recognition": "Subfield-specific hardware, physical process, input device, prototype, experiment, or visual output should identify the technology without readable text.",
+      "composition": "Show a person actively building, testing, configuring, measuring, or creating with technology through clear physical interaction with hardware, a prototype, sensor, robot, circuit, device, camera, instrument, controller, or material object. The physical process must carry the concept. Prefer no visible screen surface. If a display is unavoidable, show only its back/edge or a small steeply-angled dark/blank/defocused surface that cannot carry interface semantics.",
+      "camera": "Medium layered workstation or maker-bench view centered on hands, face, hardware, prototype, and physical cause-and-effect; keep any display edge small, peripheral, and non-readable.",
+      "recognition": "Subfield-specific hardware, physical process, input device, prototype, experiment, indicator lights, mechanical response, or real-world output should identify the technology without relying on a screen.",
       "avoid": [
         "generic coder at desk",
+        "front-facing monitor, laptop, tablet, or phone screen",
+        "screen used as the main recognition cue",
         "screen full of code",
         "terminal windows",
-        "readable UI labels or menus",
-        "dense dashboard or spreadsheet",
+        "editing timeline, waveform UI, or dashboard",
+        "readable UI labels, menus, controls, icons, charts, or spreadsheets",
+        "dense dashboard or multi-panel interface",
         "glowing brain cliché",
         "anonymous cyberpunk screen soup"
       ]
@@ -378,15 +381,17 @@
         "challenge",
         "shared excitement"
       ],
-      "composition": "One or two people actively play a digital or arcade-style game using a clear generic controller, keyboard/mouse, handheld, simulator control, or physical arcade machine. The play interaction is the hero.",
-      "camera": "Over-shoulder or three-quarter medium framing with both player input and generic game feedback visible.",
-      "recognition": "Human play action plus a clear generic digital/arcade input device and non-IP gameplay context.",
+      "composition": "One or two people actively play a digital or arcade-style game using a clear generic controller, keyboard/mouse, handheld body, simulator control, or physical arcade controls. Player input, posture, reaction, and the physical device must carry the activity. Avoid showing a front-facing gameplay screen; if a display must exist, keep only its back/edge or a small defocused oblique glow with no interface structure.",
+      "camera": "Side, rear-three-quarter, or player-focused medium framing that clearly shows hands and input device while hiding or strongly de-emphasizing any display surface.",
+      "recognition": "Human play action plus a clear generic digital/arcade input device and physical play setup, without depending on visible game UI.",
       "avoid": [
         "recognisable copyrighted characters",
         "game logos or readable titles",
+        "front-facing gameplay screen",
+        "readable HUD, menu, score, chat, map, inventory, or interface",
         "generic person staring at a screen",
         "tabletop board-game composition",
-        "unreadable cyberpunk screen soup"
+        "cyberpunk screen soup"
       ]
     },
     "fitness_training": {
@@ -536,13 +541,16 @@
         "expression",
         "publishing momentum"
       ],
-      "composition": "A creator actively records, edits, designs, writes, streams, or assembles media. The human workflow and one concrete production tool/output must make the medium clear without readable text or platform branding.",
-      "camera": "Layered medium or close-medium creator-workspace framing.",
-      "recognition": "Human creation action plus medium-specific microphone, camera, timeline-like non-text visuals, drawing tools, audio gear, or publishing workflow.",
+      "composition": "A creator actively records, edits, designs, writes, streams, or assembles media through a physical workflow. The human action and one concrete production tool—camera body, microphone, headphones, controller, editing console, stylus, drawing surface, notebook, lighting rig, or recording setup—must make the medium clear. Prefer no visible monitor surface; when equipment includes a screen, show only the back/edge or a small steeply-angled dark/blank/defocused surface.",
+      "camera": "Layered medium or close-medium creator-workspace framing that prioritizes face, hands, camera/microphone/controller/stylus and other physical tools while excluding front-facing displays.",
+      "recognition": "Human creation action plus medium-specific physical production tools and setup; never depend on editing UI, timeline graphics, platform chrome, screen text, or a readable display.",
       "avoid": [
         "generic influencer pose",
         "platform logos",
+        "front-facing monitor or display",
+        "editing timeline or waveform interface",
         "readable UI/text",
+        "chat window, dashboard, menu, toolbar, or interface panels",
         "random multi-screen cyberpunk setup",
         "finished content with no creation process"
       ]

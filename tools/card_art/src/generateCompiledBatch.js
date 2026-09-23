@@ -16,6 +16,7 @@
 
 import 'dotenv/config';
 import { fal } from '@fal-ai/client';
+import sharp from 'sharp';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,6 +33,7 @@ const OUTPUT_TAG = process.env.ZYNC_CARD_ART_OUTPUT_TAG || 'launch_v1';
 const OUTPUT_DIR = path.join(ROOT, 'output', OUTPUT_TAG);
 const IMAGES_DIR = path.join(OUTPUT_DIR, 'images');
 const MANIFEST_PATH = path.join(OUTPUT_DIR, 'manifest.json');
+const GENERATION_GUARDRAILS_PATH = path.join(ROOT, 'specs', 'generation_guardrails_v1.json');
 
 const COST_USD = {
   'flux-2': 0.0125,
@@ -48,7 +50,7 @@ function readJson(p) {
 }
 
 function parseArgs(argv) {
-  const args = { only: null, retry: new Set(), dryRun: false, model: 'default' };
+  const args = { only: null, retry: new Set(), dryRun: false, model: 'default', allowQuarantined: new Set() };
   for (const arg of argv) {
     if (arg === '--dry-run') args.dryRun = true;
     else if (arg.startsWith('--only=')) {
@@ -57,6 +59,8 @@ function parseArgs(argv) {
       args.retry = new Set(arg.slice('--retry='.length).split(',').map(x => x.trim()).filter(Boolean));
     } else if (arg.startsWith('--model=')) {
       args.model = arg.slice('--model='.length).trim();
+    } else if (arg.startsWith('--allow-quarantined=')) {
+      args.allowQuarantined = new Set(arg.slice('--allow-quarantined='.length).split(',').map(x => x.trim()).filter(Boolean));
     }
   }
   return args;
@@ -100,6 +104,51 @@ function loadManifest() {
 function saveManifest(manifest) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
+}
+
+function contiguousEdgeBand(rowStats, fromStart = true) {
+  let count = 0;
+  const ordered = fromStart ? rowStats : [...rowStats].reverse();
+  for (const row of ordered) {
+    if (row.meanLuma <= 48 && row.darkFraction >= 0.82) count += 1;
+    else break;
+  }
+  return count;
+}
+
+async function analyzeGeneratedImage(buffer) {
+  const image = sharp(buffer, { failOn: 'none' });
+  const metadata = await image.metadata();
+  const { data, info } = await image.removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const rows = [];
+  for (let y = 0; y < info.height; y++) {
+    let total = 0;
+    let dark = 0;
+    for (let x = 0; x < info.width; x++) {
+      const i = (y * info.width + x) * info.channels;
+      const r = data[i] ?? 0;
+      const g = data[i + 1] ?? r;
+      const b = data[i + 2] ?? r;
+      const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      total += luma;
+      if (luma <= 48) dark += 1;
+    }
+    rows.push({ meanLuma: total / info.width, darkFraction: dark / info.width });
+  }
+  const topBandPx = contiguousEdgeBand(rows, true);
+  const bottomBandPx = contiguousEdgeBand(rows, false);
+  const bandFraction = (topBandPx + bottomBandPx) / info.height;
+  return {
+    format: metadata.format || null,
+    width: metadata.width || info.width,
+    height: metadata.height || info.height,
+    channels: info.channels,
+    top_dark_band_px: topBandPx,
+    bottom_dark_band_px: bottomBandPx,
+    combined_dark_band_fraction: Number(bandFraction.toFixed(4)),
+    likely_letterbox: bandFraction >= 0.06 || topBandPx >= 24 || bottomBandPx >= 24,
+    detector_note: 'Diagnostic only: contiguous top/bottom rows count as dark when mean luma <=48 and >=82% of pixels are dark.'
+  };
 }
 
 async function uploadReference() {
@@ -263,7 +312,9 @@ async function generateOne({ row, model, referenceUrl, attempt }) {
   const fileName = `${row.canonical_interest_id.replaceAll('.', '__')}__${model.replaceAll('/', '_').replaceAll('-', '_')}__attempt${attempt}.png`;
   fs.mkdirSync(IMAGES_DIR, { recursive: true });
   const localPath = path.join(IMAGES_DIR, fileName);
-  fs.writeFileSync(localPath, Buffer.from(await response.arrayBuffer()));
+  const imageBuffer = Buffer.from(await response.arrayBuffer());
+  const imageDiagnostics = await analyzeGeneratedImage(imageBuffer);
+  fs.writeFileSync(localPath, imageBuffer);
 
   return {
     canonical_interest_id: row.canonical_interest_id,
@@ -290,6 +341,7 @@ async function generateOne({ row, model, referenceUrl, attempt }) {
     fal_request_id: result?.requestId || null,
     local_image_path: path.relative(REPO_ROOT, localPath).replace(/\\/g, '/'),
     estimated_cost_usd: COST_USD[model],
+    image_diagnostics: imageDiagnostics,
     generated_at: new Date().toISOString(),
     qa_status: 'pending_human_review',
   };
@@ -302,6 +354,19 @@ async function main() {
   ids = [...new Set(ids)];
 
   if (!ids.length) throw new Error('No canonical interest IDs requested.');
+
+  const guardrails = fs.existsSync(GENERATION_GUARDRAILS_PATH)
+    ? readJson(GENERATION_GUARDRAILS_PATH)
+    : { quarantined: {} };
+  if (!args.dryRun) {
+    for (const id of ids) {
+      if (guardrails.quarantined?.[id] && !args.allowQuarantined.has(id)) {
+        throw new Error(
+          `Refusing quarantined canonical ${id}: ${guardrails.quarantined[id].reason} Use --allow-quarantined=${id} only for an isolated diagnostic.`,
+        );
+      }
+    }
+  }
 
   const rows = compileRows(ids);
   const globalStyle = rows[0]?.global_style || readJson(path.join(ROOT, 'specs', 'global_style_v1.json'));

@@ -1826,19 +1826,20 @@
         "art_category": "career",
         "archetype": "campaign_planning",
         "visual_variant": "campaign_wall_table",
-        "subject_template": "Two or three adult digital marketers actively planning a campaign using a physical table of blank product mockups, image cards and colour swatches, supported by one simple screen or wall panel showing only abstract image thumbnails and unlabeled layout blocks",
-        "environment_template": "A modern campaign-planning studio with tactile mockups and sparse non-textual digital preview cues; no readable dashboards, copy, analytics labels, company names, logos, workshop tools, machinery, or manufacturing equipment",
+        "subject_template": "Two or three adult digital marketers actively planning a campaign using a physical table of blank product mockups, image cards, colour/material swatches, and a secondary wall of blank image/layout blocks; use no visible monitor or digital dashboard",
+        "environment_template": "A modern campaign-planning studio built around tactile mockups and non-textual physical preview materials; no monitor, readable dashboard, copy, analytics labels, company names, logos, workshop tools, machinery, or manufacturing equipment",
         "recognition_anchors": [
           "campaign-planning table with blank mockups",
-          "abstract digital preview or image-thumbnail cue",
+          "physical image cards and unlabeled layout/colour swatches",
           "active comparison of imagery, layout, and colour choices"
         ],
         "must_include": [
           "two or three adult collaborators",
           "blank campaign/product mockups",
-          "one sparse non-textual digital preview cue"
+          "physical non-textual image/layout preview materials"
         ],
         "avoid": [
+          "visible monitor or laptop screen",
           "readable dashboard, code, metrics, labels, or advertising copy",
           "generic laptop meeting with no campaign materials",
           "craft workshop or jewelry bench",
@@ -1911,7 +1912,7 @@
         "archetype": "creator_workflow",
         "visual_variant": "camera_creation",
         "subject_template": "An adult video creator actively speaking to and recording with a generic camera or phone rig, using expressive presentation gestures; the recording device is visible from the side or rear so no screen text is presented to the viewer",
-        "environment_template": "A clean unbranded creator room or small studio with a generic camera/phone rig and optional soft light or microphone; no platform interface, title card, channel label, on-screen caption, number tag, or readable display",
+        "environment_template": "A clean unbranded creator room or small studio with one generic camera/phone rig, optional soft light, and optional microphone; no monitor, television, laptop screen, platform interface, title card, channel label, on-screen caption, number tag, or readable display anywhere in frame",
         "recognition_anchors": [
           "creator actively speaking or presenting to camera",
           "generic camera or phone rig aimed at creator",
@@ -1920,13 +1921,14 @@
         "must_include": [
           "adult creator actively presenting",
           "generic recording device aimed at the creator",
-          "camera/phone display turned away, blank, or showing only a non-textual framing image"
+          "recording device shown from side/rear with its display face hidden"
         ],
         "avoid": [
+          "any visible monitor, television, laptop display, or secondary screen",
           "the word vlog, vlogging, VLOGIN, or any hobby-name approximation rendered on screen",
           "platform logo or video UI",
           "readable title, caption, number tag, channel name, or status text",
-          "front-facing monitor full of UI"
+          "editing timeline, waveform, toolbar, menu, dashboard, or interface panel"
         ]
       }
     },

@@ -1,0 +1,67 @@
+{
+  "version": "v1",
+  "purpose": "10-card structural validation of the shared screen-safety remediation. Tests known tech_workspace leaks plus creator_workflow, digital_play, and campaign-planning cross-hobby cases. All use Standard FLUX to test whether physical-first / hidden-screen composition removes UI/text leakage without Klein style drift.",
+  "output_tag": "screen_structural_remediation_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "technology.robotics",
+        "technology.electronics",
+        "technology.generative_ai",
+        "technology.machine_learning",
+        "technology.javascript",
+        "arts.vlogging",
+        "arts.video_editing",
+        "gaming.pc_gaming",
+        "gaming.game_streaming",
+        "career.digital_marketing"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 10,
+    "standard_cards": 10,
+    "klein_cards": 0,
+    "estimated_total_cost_usd": 0.125
+  },
+  "qa_groups": {
+    "tech_workspace": [
+      "technology.robotics",
+      "technology.electronics",
+      "technology.generative_ai",
+      "technology.machine_learning",
+      "technology.javascript"
+    ],
+    "creator_workflow": [
+      "arts.vlogging",
+      "arts.video_editing",
+      "gaming.game_streaming"
+    ],
+    "digital_play": [
+      "gaming.pc_gaming"
+    ],
+    "physical_campaign_control": [
+      "career.digital_marketing"
+    ]
+  },
+  "qa_focus": [
+    "no front-facing monitor/laptop/tablet/phone display used as a semantic canvas",
+    "zero readable UI, code, terminal text, editing timelines, waveforms, menus, dashboards, chat, labels, icons, or text-like interface structures",
+    "recognition must survive through human action and physical tools/devices",
+    "vlogging must contain no background monitor at all",
+    "video editing and game streaming should read from physical editing/broadcast controls while monitor faces remain hidden",
+    "technology cards should read through hardware/prototype/sensor/robot/device interactions rather than screens",
+    "global title/caption suppression must remain intact",
+    "house-style consistency on Standard FLUX"
+  ],
+  "decision_gate": {
+    "systemic_screen_leakage": "At least 9/10 PASS-or-MINOR and zero repeated readable UI/text leakage across more than one archetype.",
+    "tech_workspace": "No more than one MINOR screen artifact among the five tech_workspace cards; no readable code/UI FAIL.",
+    "cross_hobby": "vlogging, video_editing, pc_gaming, game_streaming and digital_marketing must not reintroduce front-facing interface semantics.",
+    "scale": "Do not start 50/100 automatically. If screen leakage repeats, diagnose which structural route still places a display face in the composition."
+  }
+}

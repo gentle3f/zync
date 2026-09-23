@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "quarantined": {
+    "sports.american_football": {
+      "status": "quarantined",
+      "reason": "No currently production-safe first-pass route: Standard FLUX leaked an unmistakable swoosh; Klein later dropped the required helmet and drifted photoreal. Isolated diagnostic only until a dedicated fix passes.",
+      "allow_only_with_explicit_override": true
+    }
+  }
+}

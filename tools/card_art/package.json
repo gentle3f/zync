@@ -33,7 +33,10 @@
     "audit-confirmatory-30-v1": "node src/runConfirmatory30Batch.js --dry-run",
     "generate-confirmatory-30-v1": "node src/runConfirmatory30Batch.js",
     "audit-post-confirmatory-repair-v1": "node src/runPostConfirmatoryRepair.js --dry-run",
-    "generate-post-confirmatory-repair-v1": "node src/runPostConfirmatoryRepair.js"
+    "generate-post-confirmatory-repair-v1": "node src/runPostConfirmatoryRepair.js",
+    "diagnose-letterbox-v1": "node src/diagnoseLetterbox.js",
+    "audit-screen-structural-remediation-v1": "node src/runScreenStructuralRemediation.js --dry-run",
+    "generate-screen-structural-remediation-v1": "node src/runScreenStructuralRemediation.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

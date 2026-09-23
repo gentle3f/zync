@@ -48,6 +48,7 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
   const sections = [];
   sections.push(globalStyle.prompt);
   if (globalStyle.global_text_policy) sections.push(globalStyle.global_text_policy);
+  if (globalStyle.global_screen_policy) sections.push(globalStyle.global_screen_policy);
   sections.push(
     `Use this overall composition approach: ${archetype.composition} ${archetype.camera} ` +
     `The emotional feeling should be ${list(archetype.feeling)}. ` +

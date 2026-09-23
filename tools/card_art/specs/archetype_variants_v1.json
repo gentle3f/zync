@@ -205,21 +205,21 @@
     "tech_workspace": [
       {
         "id": "over_shoulder_generation",
-        "composition": "Look over the creator's shoulder at one primary display where a physical input, sketch, image, model, or object visibly transforms into multiple coherent visual outputs; all displays contain imagery and shapes only, no words, code, menus, or labels.",
-        "camera": "Over-shoulder medium shot with hands/input and visual result both readable.",
-        "lighting": "Cool screen light balanced by warm human/environment accents.",
+        "composition": "Look over the creator's shoulder toward a physical technology setup: hands manipulate a prototype, model, sensor, robot, device, camera, or material object while a real physical result or indicator-light response is visible. Do not show a readable display surface; any monitor must be back-facing, edge-on, dark, or out of frame.",
+        "camera": "Over-shoulder medium shot centered on hands, physical input, prototype, and real-world response rather than a display.",
+        "lighting": "Controlled modern light with crisp hands/hardware detail; no screen glow as the primary light source.",
         "generic_eligible": false
       },
       {
         "id": "creator_interface",
-        "composition": "The person actively manipulates hardware, controls, a prototype, stylus, camera, sensor, device, or other concrete technology input while one simple non-textual visual result supports the action. Keep screens sparse and subordinate.",
-        "camera": "Three-quarter medium workstation or maker-bench view emphasizing hands and physical interaction.",
-        "lighting": "Controlled modern light with a clear face/hands/tool focal hierarchy."
+        "composition": "The person actively manipulates hardware, controls, a prototype, stylus-on-blank-surface, camera, sensor, device, robot, circuit, or other concrete technology input. Use physical indicators, movement, materials, lights, or mechanical response instead of a visible interface. No front-facing screen.",
+        "camera": "Three-quarter medium workstation or maker-bench view emphasizing hands, physical tools, and the object being changed.",
+        "lighting": "Controlled modern light with a clear face/hands/tool focal hierarchy and minimal display glow."
       },
       {
         "id": "physical_digital_hybrid",
-        "composition": "Connect a physical object, device, component, gesture, sample, or prototype to one simple visual response made only of shapes, images, nodes, or light patterns. The physical process should remain the main story.",
-        "camera": "Medium-wide diagonal workstation or lab view with clear physical-to-digital cause and effect.",
+        "composition": "Connect a physical object, device, component, gesture, sample, or prototype to a visible real-world response such as movement, indicator lights, projected light without text, changed material state, or a second physical object. Keep monitor/display faces out of view.",
+        "camera": "Medium-wide diagonal workstation or lab view with clear physical cause-and-effect and no front-facing display.",
         "lighting": "Modern cool base with restrained luminous accents and strong material detail."
       }
     ],
@@ -480,21 +480,21 @@
     "digital_play": [
       {
         "id": "over_shoulder_input",
-        "composition": "Look past the player toward generic gameplay feedback while controller/keyboard/handheld input remains clearly visible.",
-        "camera": "Tight over-shoulder medium shot.",
-        "lighting": "Screen light balanced by warm room accents; no neon overload."
+        "composition": "Look past the player toward the back/edge of a generic display while controller/keyboard/handheld input and the player's reaction remain clearly visible. Do not reveal gameplay UI.",
+        "camera": "Tight rear-three-quarter medium shot that hides the display face.",
+        "lighting": "Warm room light with only restrained, defocused ambient device glow."
       },
       {
         "id": "shared_couch_play",
-        "composition": "Two players react naturally while using generic unbranded controllers; the screen remains secondary but visibly interactive.",
-        "camera": "Three-quarter social medium shot.",
-        "lighting": "Warm living-room light with restrained screen glow."
+        "composition": "Two players react naturally while using generic unbranded controllers. The television or monitor is seen only from the back/edge or kept out of frame; controllers and reactions carry the play story.",
+        "camera": "Three-quarter social medium shot from beside/behind the display.",
+        "lighting": "Warm living-room light with restrained ambient device glow."
       },
       {
         "id": "desktop_focus",
-        "composition": "Hands on keyboard/mouse or simulator controls and the player's focused reaction form one clear play story.",
-        "camera": "Side three-quarter workstation medium shot.",
-        "lighting": "Clean monitor key light with practical room depth."
+        "composition": "Hands on keyboard/mouse or simulator controls and the player's focused reaction form one clear play story. Keep the monitor face out of frame or turned away from the viewer.",
+        "camera": "Side three-quarter workstation medium shot that excludes the display face.",
+        "lighting": "Clean practical room light with no readable monitor content."
       },
       {
         "id": "arcade_interaction",
@@ -714,9 +714,9 @@
     "creator_workflow": [
       {
         "id": "creator_workspace",
-        "composition": "A creator actively works with one medium-specific tool while a clean generic production workspace supports the action.",
-        "camera": "Three-quarter medium workstation view.",
-        "lighting": "Warm practical creator-studio light balanced with restrained screen light."
+        "composition": "A creator actively works with one medium-specific physical tool while a clean generic production workspace supports the action. Keep monitor faces absent, turned away, or out of frame.",
+        "camera": "Three-quarter medium workstation view centered on hands and the physical production tool.",
+        "lighting": "Warm practical creator-studio light with no screen used as a dominant light source."
       },
       {
         "id": "microphone_session",
@@ -728,37 +728,37 @@
       {
         "id": "camera_creation",
         "generic_eligible": false,
-        "composition": "A creator actively records or presents to a generic camera/phone rig, with lighting or framing gear visible but no platform UI.",
-        "camera": "Behind-camera or three-quarter medium view.",
-        "lighting": "Clean creator lighting with warm human tones and controlled background."
+        "composition": "A creator actively records or presents to a generic camera/phone rig with lighting, microphone, tripod, or framing gear visible. No monitor is visible in the background. The recording device is shown from the side/rear so its display face is hidden, dark, blank, or too oblique to carry UI.",
+        "camera": "Behind-camera or three-quarter medium view that shows the creator and physical rig while hiding all display faces.",
+        "lighting": "Clean creator lighting with warm human tones and a simple screen-free background."
       },
       {
         "id": "editing_workstation",
         "generic_eligible": false,
-        "composition": "Hands and creator focus are visible while a generic non-readable editing/timeline/color/audio workflow appears on screen; the medium-specific input device remains clear.",
-        "camera": "Tight over-shoulder medium workstation view.",
-        "lighting": "Balanced screen and room light with readable human/tool interaction."
+        "composition": "Show an editor actively working through physical editing tools: headphones, a jog/shuttle wheel, control surface, keyboard, stylus, camera media, or storyboard/image cards. Any monitor is back-facing, edge-on, dark, or heavily defocused and must not display a timeline, waveform, toolbar, panels, labels, or UI.",
+        "camera": "Tight three-quarter medium view centered on hands, editing controls, headphones, media, and creator focus; monitor faces are excluded.",
+        "lighting": "Balanced room light with crisp physical-tool interaction and no readable screen glow."
       },
       {
         "id": "drawing_animation",
         "generic_eligible": false,
-        "composition": "The creator actively draws, animates, sequences, or refines visual media using a tablet, stylus, storyboard-like non-text frames, or drawing surface.",
-        "camera": "Close-medium hands-and-screen/tablet view.",
+        "composition": "The creator actively draws, animates, sequences, or refines visual media using a stylus and drawing surface. Prefer a paper-like or blank tablet surface viewed at a steep angle; if digital imagery is visible, it is only a large simple non-textual illustration fragment with no interface chrome.",
+        "camera": "Close-medium hands-and-stylus view with the drawing surface highly oblique and interface-free.",
         "lighting": "Soft studio light with crisp stylus/hand/visual-work detail."
       },
       {
         "id": "writing_desk",
         "generic_eligible": false,
-        "composition": "A creator actively drafts or edits written content at a calm desk with notebook/keyboard and non-readable layout cues, avoiding visible article text.",
-        "camera": "Warm close-medium writing perspective.",
-        "lighting": "Natural window or desk-lamp light."
+        "composition": "A creator actively drafts or edits written content using a notebook, index cards, keyboard, or writing tools. Keep all monitor/display faces out of frame or turned away; no visible article layout or text is needed.",
+        "camera": "Warm close-medium writing perspective centered on hands and physical writing tools.",
+        "lighting": "Natural window or desk-lamp light without screen glow."
       },
       {
         "id": "stream_broadcast",
         "generic_eligible": false,
-        "composition": "A creator actively broadcasts gameplay or live content using a generic microphone, camera, controls, and screen feedback; the streaming process reads without platform logos or chat text.",
-        "camera": "Three-quarter medium creator-and-rig view.",
-        "lighting": "Controlled screen light with warm studio accents, no neon overload."
+        "composition": "A creator actively broadcasts gameplay or live content using a generic microphone, camera, controller/keyboard, headphones, and lighting rig. Show the back or edge of the monitor only; player reaction and physical broadcast equipment must communicate streaming without visible gameplay UI or chat.",
+        "camera": "Three-quarter medium creator-and-rig view from beside or behind the display, so no screen face is visible.",
+        "lighting": "Controlled studio light with warm human accents and no interface glow."
       }
     ],
     "shared_workspace": [
