@@ -1,0 +1,25 @@
+{
+  "version": "v1",
+  "purpose": "Apples-to-apples successor discriminator: run the exact same 24 compiled prompts that failed on Standard FLUX and succeeded on gemini-2.5-flash-image through gemini-3.1-flash-lite-image via the Google Gemini API directly, not fal.ai.",
+  "source_validation": "catalog/semantic_anchor_revalidation_24_v1.json",
+  "prior_comparison_manifest": "output/gemini25_direct_batch_24_v1/manifest.json",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "prompt_policy": "Compile from the exact same current recipe/compiler state; do not add model-specific semantic wording so model is the main changed variable.",
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 24,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.4032,
+    "note": "Input text token charges are additional but small relative to image output cost."
+  },
+  "decision_gate": {
+    "diagnostic": "Compare directly with output/semantic_anchor_revalidation_24_v1 (FLUX) and output/gemini25_direct_batch_24_v1 (Gemini 2.5 Flash Image). If 3.1 Flash Lite preserves the strong prompt-following of 2.5 Flash Image closely enough, recommend it as the production candidate (cheaper, non-deprecated). If meaningfully worse, recommend testing gemini-3.1-flash-image next before any bulk-generation decision.",
+    "pipeline_check": "Manifest must preserve canonical ID, exact final prompt, batch job name, response index/metadata key, and image filename so prompt-to-image mapping is auditable.",
+    "no_auto_scale": true
+  }
+}

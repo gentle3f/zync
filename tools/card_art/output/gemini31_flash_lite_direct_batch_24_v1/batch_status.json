@@ -1,0 +1,2096 @@
+{
+  "name": "batches/0sk611c6pgs21sbrm650fbpn1saftixnlh0w",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-gemini31-flash-lite-direct-24-v1",
+    "output": {
+      "inlinedResponses": {
+        "inlinedResponses": [
+          {
+            "error": {
+              "code": 4,
+              "message": "Deadline expired before operation could complete."
+            },
+            "metadata": {
+              "index": 0,
+              "key": "food.yum_cha"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1011064]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1425064]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1085,
+                "candidatesTokenCount": 1519,
+                "totalTokenCount": 2604,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1085
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "qOuzas7rNfCCqtsPqonW4AE"
+            },
+            "metadata": {
+              "key": "food.dish.egg_tart",
+              "index": 1
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1052888]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1472816]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1090,
+                "candidatesTokenCount": 1516,
+                "totalTokenCount": 2606,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1090
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "lPWzat_-E92tz7IPnbuM-Ak"
+            },
+            "metadata": {
+              "index": 2,
+              "key": "food.dish.bun_cha"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=927472]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1324004]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1170,
+                "candidatesTokenCount": 1498,
+                "totalTokenCount": 2668,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1170
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "fOuzarGGJ4-3_PUP4eTuwQM"
+            },
+            "metadata": {
+              "key": "music.style.trip_hop",
+              "index": 3
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=897200]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1289656]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1164,
+                "candidatesTokenCount": 1707,
+                "totalTokenCount": 2871,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1164
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "-vmzaumDBNeRmtkP4Pmg0Q8"
+            },
+            "metadata": {
+              "key": "music.style.japanese_alternative",
+              "index": 4
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=905544]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1299916]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1042,
+                "candidatesTokenCount": 1551,
+                "totalTokenCount": 2593,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1042
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "deuzasioC82V_uMPpOSxkAE"
+            },
+            "metadata": {
+              "index": 5,
+              "key": "entertainment.screenwriting"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=893904]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1288900]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1045,
+                "candidatesTokenCount": 1509,
+                "totalTokenCount": 2554,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1045
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "gOuzav2uIZD7qtsP352E2QQ"
+            },
+            "metadata": {
+              "index": 6,
+              "key": "entertainment.movie_subgenre.legal_thriller"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1095160]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1518592]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1132,
+                "candidatesTokenCount": 1562,
+                "totalTokenCount": 2694,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1132
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "2OqzaoqpDp-kmtkPvbvm6Qo"
+            },
+            "metadata": {
+              "key": "travel.style_deep.pilgrimage_routes",
+              "index": 7
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1391764]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1859620]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1156,
+                "candidatesTokenCount": 1559,
+                "totalTokenCount": 2715,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1156
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "ZvWzaoGcJeXlqtsPi-_CoQ4"
+            },
+            "metadata": {
+              "key": "travel.cabin_getaways",
+              "index": 8
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1158288]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1596644]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1080,
+                "candidatesTokenCount": 1632,
+                "totalTokenCount": 2712,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1080
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "YPWzav7oPIb9qtsPmf-aaQ"
+            },
+            "metadata": {
+              "key": "pets.dogs",
+              "index": 9
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1056164]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1476128]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1084,
+                "candidatesTokenCount": 1629,
+                "totalTokenCount": 2713,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1084
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "ZuuzatefEfCY6dkPwbfr4Ag"
+            },
+            "metadata": {
+              "key": "pets.terrariums",
+              "index": 10
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=975096]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1382656]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1104,
+                "candidatesTokenCount": 1612,
+                "totalTokenCount": 2716,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1104
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "nuuzap-EFp-kmtkPvbvm6Qo"
+            },
+            "metadata": {
+              "key": "learning.philosophy",
+              "index": 11
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1077436]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1492236]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1092,
+                "candidatesTokenCount": 1575,
+                "totalTokenCount": 2667,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1092
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "xeqzaoeRCNSa6dkPs4zr0Q0"
+            },
+            "metadata": {
+              "index": 12,
+              "key": "lifestyle.interior_design"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1351536]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1801276]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1006,
+                "candidatesTokenCount": 1519,
+                "totalTokenCount": 2525,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1006
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "H_WzavfgOfLnz7IP8Zew0Aw"
+            },
+            "metadata": {
+              "index": 13,
+              "key": "outdoors.rockhounding"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1332360]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1793696]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1008,
+                "candidatesTokenCount": 1552,
+                "totalTokenCount": 2560,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1008
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "peuzaoywL4-3_PUP4eTuwQM"
+            },
+            "metadata": {
+              "key": "outdoors.cycling",
+              "index": 14
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1069284]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1489368]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1068,
+                "candidatesTokenCount": 1586,
+                "totalTokenCount": 2654,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1068
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "hOuzaoG2B8nUz7IPitzPiQs"
+            },
+            "metadata": {
+              "key": "outdoors.ice_fishing",
+              "index": 15
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1111604]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1540308]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1061,
+                "candidatesTokenCount": 1664,
+                "totalTokenCount": 2725,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1061
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "o_Ozat-GAdfRz7IPvai50Ac"
+            },
+            "metadata": {
+              "index": 16,
+              "key": "transport.ferries"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1045096]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1469132]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1101,
+                "candidatesTokenCount": 1670,
+                "totalTokenCount": 2771,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1101
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "bvWzar_9MdfRz7IPvai50Ac"
+            },
+            "metadata": {
+              "key": "photography.general",
+              "index": 17
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1019288]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1432444]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1293,
+                "candidatesTokenCount": 1536,
+                "totalTokenCount": 2829,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1293
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "i-uzaqroJr3Uz7IP06mM2A4"
+            },
+            "metadata": {
+              "index": 18,
+              "key": "fashion.streetwear"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1134792]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1561988]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1120,
+                "candidatesTokenCount": 1587,
+                "totalTokenCount": 2707,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1120
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "bvWzapvbCIb9qtsPmf-aaQ"
+            },
+            "metadata": {
+              "key": "gaming.board",
+              "index": 19
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1003544]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1414280]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1091,
+                "candidatesTokenCount": 1619,
+                "totalTokenCount": 2710,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1091
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "h-uzasGPN82V_uMPpOSxkAE"
+            },
+            "metadata": {
+              "index": 20,
+              "key": "gaming.chess"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=887948]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1279624]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 946,
+                "candidatesTokenCount": 1522,
+                "totalTokenCount": 2468,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 946
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "ceuzapT_GfCCqtsPqonW4AE"
+            },
+            "metadata": {
+              "key": "wellness.pilates",
+              "index": 21
+            }
+          },
+          {
+            "error": {
+              "code": 4,
+              "message": "Deadline expired before operation could complete."
+            },
+            "metadata": {
+              "index": 22,
+              "key": "wellness.sauna"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1135732]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1560888]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1274,
+                "candidatesTokenCount": 1556,
+                "totalTokenCount": 2830,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1274
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "luuzavamN8CAz7IPyY2FgQk"
+            },
+            "metadata": {
+              "index": 23,
+              "key": "business.coworking"
+            }
+          }
+        ]
+      }
+    },
+    "createTime": "2026-09-23T15:04:08.619907065Z",
+    "endTime": "2026-09-23T16:31:39.730322912Z",
+    "updateTime": "2026-09-23T16:31:39.730322932Z",
+    "batchStats": {
+      "requestCount": "24",
+      "successfulRequestCount": "22",
+      "failedRequestCount": "2"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/0sk611c6pgs21sbrm650fbpn1saftixnlh0w"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput",
+    "inlinedResponses": {
+      "inlinedResponses": [
+        {
+          "error": {
+            "code": 4,
+            "message": "Deadline expired before operation could complete."
+          },
+          "metadata": {
+            "index": 0,
+            "key": "food.yum_cha"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1011064]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1425064]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1085,
+              "candidatesTokenCount": 1519,
+              "totalTokenCount": 2604,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1085
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "qOuzas7rNfCCqtsPqonW4AE"
+          },
+          "metadata": {
+            "key": "food.dish.egg_tart",
+            "index": 1
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1052888]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1472816]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1090,
+              "candidatesTokenCount": 1516,
+              "totalTokenCount": 2606,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1090
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "lPWzat_-E92tz7IPnbuM-Ak"
+          },
+          "metadata": {
+            "index": 2,
+            "key": "food.dish.bun_cha"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=927472]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1324004]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1170,
+              "candidatesTokenCount": 1498,
+              "totalTokenCount": 2668,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1170
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "fOuzarGGJ4-3_PUP4eTuwQM"
+          },
+          "metadata": {
+            "key": "music.style.trip_hop",
+            "index": 3
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=897200]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1289656]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1164,
+              "candidatesTokenCount": 1707,
+              "totalTokenCount": 2871,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1164
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "-vmzaumDBNeRmtkP4Pmg0Q8"
+          },
+          "metadata": {
+            "key": "music.style.japanese_alternative",
+            "index": 4
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=905544]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1299916]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1042,
+              "candidatesTokenCount": 1551,
+              "totalTokenCount": 2593,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1042
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "deuzasioC82V_uMPpOSxkAE"
+          },
+          "metadata": {
+            "index": 5,
+            "key": "entertainment.screenwriting"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=893904]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1288900]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1045,
+              "candidatesTokenCount": 1509,
+              "totalTokenCount": 2554,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1045
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "gOuzav2uIZD7qtsP352E2QQ"
+          },
+          "metadata": {
+            "index": 6,
+            "key": "entertainment.movie_subgenre.legal_thriller"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1095160]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1518592]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1132,
+              "candidatesTokenCount": 1562,
+              "totalTokenCount": 2694,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1132
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "2OqzaoqpDp-kmtkPvbvm6Qo"
+          },
+          "metadata": {
+            "key": "travel.style_deep.pilgrimage_routes",
+            "index": 7
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1391764]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1859620]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1156,
+              "candidatesTokenCount": 1559,
+              "totalTokenCount": 2715,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1156
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "ZvWzaoGcJeXlqtsPi-_CoQ4"
+          },
+          "metadata": {
+            "key": "travel.cabin_getaways",
+            "index": 8
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1158288]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1596644]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1080,
+              "candidatesTokenCount": 1632,
+              "totalTokenCount": 2712,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1080
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "YPWzav7oPIb9qtsPmf-aaQ"
+          },
+          "metadata": {
+            "key": "pets.dogs",
+            "index": 9
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1056164]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1476128]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1084,
+              "candidatesTokenCount": 1629,
+              "totalTokenCount": 2713,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1084
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "ZuuzatefEfCY6dkPwbfr4Ag"
+          },
+          "metadata": {
+            "key": "pets.terrariums",
+            "index": 10
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=975096]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1382656]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1104,
+              "candidatesTokenCount": 1612,
+              "totalTokenCount": 2716,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1104
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "nuuzap-EFp-kmtkPvbvm6Qo"
+          },
+          "metadata": {
+            "key": "learning.philosophy",
+            "index": 11
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1077436]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1492236]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1092,
+              "candidatesTokenCount": 1575,
+              "totalTokenCount": 2667,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1092
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "xeqzaoeRCNSa6dkPs4zr0Q0"
+          },
+          "metadata": {
+            "index": 12,
+            "key": "lifestyle.interior_design"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1351536]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1801276]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1006,
+              "candidatesTokenCount": 1519,
+              "totalTokenCount": 2525,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1006
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "H_WzavfgOfLnz7IP8Zew0Aw"
+          },
+          "metadata": {
+            "index": 13,
+            "key": "outdoors.rockhounding"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1332360]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1793696]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1008,
+              "candidatesTokenCount": 1552,
+              "totalTokenCount": 2560,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1008
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "peuzaoywL4-3_PUP4eTuwQM"
+          },
+          "metadata": {
+            "key": "outdoors.cycling",
+            "index": 14
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1069284]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1489368]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1068,
+              "candidatesTokenCount": 1586,
+              "totalTokenCount": 2654,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1068
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "hOuzaoG2B8nUz7IPitzPiQs"
+          },
+          "metadata": {
+            "key": "outdoors.ice_fishing",
+            "index": 15
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1111604]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1540308]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1061,
+              "candidatesTokenCount": 1664,
+              "totalTokenCount": 2725,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1061
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "o_Ozat-GAdfRz7IPvai50Ac"
+          },
+          "metadata": {
+            "index": 16,
+            "key": "transport.ferries"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1045096]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1469132]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1101,
+              "candidatesTokenCount": 1670,
+              "totalTokenCount": 2771,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1101
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "bvWzar_9MdfRz7IPvai50Ac"
+          },
+          "metadata": {
+            "key": "photography.general",
+            "index": 17
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1019288]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1432444]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1293,
+              "candidatesTokenCount": 1536,
+              "totalTokenCount": 2829,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1293
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "i-uzaqroJr3Uz7IP06mM2A4"
+          },
+          "metadata": {
+            "index": 18,
+            "key": "fashion.streetwear"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1134792]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1561988]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1120,
+              "candidatesTokenCount": 1587,
+              "totalTokenCount": 2707,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1120
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "bvWzapvbCIb9qtsPmf-aaQ"
+          },
+          "metadata": {
+            "key": "gaming.board",
+            "index": 19
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1003544]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1414280]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1091,
+              "candidatesTokenCount": 1619,
+              "totalTokenCount": 2710,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1091
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "h-uzasGPN82V_uMPpOSxkAE"
+          },
+          "metadata": {
+            "index": 20,
+            "key": "gaming.chess"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=887948]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1279624]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 946,
+              "candidatesTokenCount": 1522,
+              "totalTokenCount": 2468,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 946
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "ceuzapT_GfCCqtsPqonW4AE"
+          },
+          "metadata": {
+            "key": "wellness.pilates",
+            "index": 21
+          }
+        },
+        {
+          "error": {
+            "code": 4,
+            "message": "Deadline expired before operation could complete."
+          },
+          "metadata": {
+            "index": 22,
+            "key": "wellness.sauna"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1135732]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1560888]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1274,
+              "candidatesTokenCount": 1556,
+              "totalTokenCount": 2830,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1274
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "luuzavamN8CAz7IPyY2FgQk"
+          },
+          "metadata": {
+            "index": 23,
+            "key": "business.coworking"
+          }
+        }
+      ]
+    }
+  }
+}
