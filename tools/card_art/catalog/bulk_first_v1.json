@@ -3570,5 +3570,9 @@
     "wellness.walking_groups",
     "wellness.weightlifting",
     "wellness.yoga"
-  ]
+  ],
+  "status": "superseded_after_100_card_validation_failure",
+  "production_ready": false,
+  "superseded_by": "AI_STATE/HANDOFF_20260923_CARD_ART_BULK_FIRST_100_RESULTS.md",
+  "warning": "Do not use this file as a production queue. The 100-card validation failed 72/100 and exposed a systemic semantic-anchor gap. Retained only as historical routing evidence."
 }
