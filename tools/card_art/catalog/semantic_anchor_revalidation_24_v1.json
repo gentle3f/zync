@@ -1,0 +1,106 @@
+{
+  "version": "v1",
+  "purpose": "Targeted before/after revalidation of the semantic-anchor architecture using 24 interests that exercise the dominant failures from the 100-card run. This is not a bulk-readiness sample.",
+  "output_tag": "semantic_anchor_revalidation_24_v1",
+  "model": "text",
+  "endpoint": "fal-ai/flux-2",
+  "estimated_unit_cost_usd": 0.0125,
+  "expected": {
+    "api_calls": 24,
+    "estimated_total_cost_usd": 0.3
+  },
+  "ids": [
+    "food.yum_cha",
+    "food.dish.egg_tart",
+    "food.dish.bun_cha",
+    "music.style.trip_hop",
+    "music.style.japanese_alternative",
+    "entertainment.screenwriting",
+    "entertainment.movie_subgenre.legal_thriller",
+    "travel.style_deep.pilgrimage_routes",
+    "travel.cabin_getaways",
+    "pets.dogs",
+    "pets.terrariums",
+    "learning.philosophy",
+    "lifestyle.interior_design",
+    "outdoors.rockhounding",
+    "outdoors.cycling",
+    "outdoors.ice_fishing",
+    "transport.ferries",
+    "photography.general",
+    "fashion.streetwear",
+    "gaming.board",
+    "gaming.chess",
+    "wellness.pilates",
+    "wellness.sauna",
+    "business.coworking"
+  ],
+  "qa_focus": {
+    "food": [
+      "exact dish identity",
+      "no unrelated substitute food",
+      "no signage/text"
+    ],
+    "music": [
+      "physical audio/listening cue",
+      "no camera/gadget prior",
+      "no screen/code/UI"
+    ],
+    "story_culture": [
+      "recognizable viewing/cultural experience",
+      "no gadget prior",
+      "no readable titles/IP characters"
+    ],
+    "travel": [
+      "traveler/route cue",
+      "no readable signage",
+      "no camera as generic fallback"
+    ],
+    "pets": [
+      "animal-first scene",
+      "no wildlife-photography/camera fallback"
+    ],
+    "learning": [
+      "topic-specific physical evidence",
+      "no generic gadget"
+    ],
+    "home": [
+      "real home activity",
+      "no gadget/controller"
+    ],
+    "outdoors": [
+      "exact gear/activity",
+      "no generic campfire/ski substitute"
+    ],
+    "journey_machine": [
+      "correct named vehicle",
+      "no sci-fi buggy"
+    ],
+    "lens": [
+      "real camera not binoculars"
+    ],
+    "urban": [
+      "blank signage",
+      "no readable storefront text"
+    ],
+    "tabletop": [
+      "no video-game controller/screens"
+    ],
+    "wellness": [
+      "correct embodied ritual",
+      "general-audience coverage; no implied nudity/bathtub framing"
+    ],
+    "shared_workspace": [
+      "shared office identity",
+      "no readable code/screens"
+    ],
+    "chrome": [
+      "full-bleed image; no rounded light frame/chrome"
+    ]
+  },
+  "decision_gate": {
+    "architecture": "Do not call the semantic architecture fixed from one clean image. Look for large directional improvement across the known failure classes.",
+    "next": "If the targeted set improves materially, continue expanding semantic-rule coverage and repeat small stratified checks. If the same generic gadget/wrong-content prior remains dominant, stop FLUX architecture work and route larger families toward manual Image 2.5 rather than another wording pass.",
+    "no_auto_scale": true
+  }
+}
