@@ -1489,6 +1489,112 @@
           "racing-series branding"
         ]
       }
+    },
+    {
+      "match": {
+        "category": "sports",
+        "id_in": [
+          "sports.american_football",
+          "sports.football",
+          "sports.basketball",
+          "sports.volleyball",
+          "sports.baseball",
+          "sports.rugby",
+          "sports.cricket",
+          "sports.field_hockey",
+          "sports.lacrosse"
+        ]
+      },
+      "patch": {
+        "subject_template": "One athlete actively doing ${title} in a plain generic practice/training kit with solid unmarked fabric and completely blank equipment surfaces; use no team-style jersey design, no printed number, no chest crest, no sleeve mark, and no decorative brand-like symbol",
+        "environment_template": "A generic practice or training setting for ${title}, not a professional team match presentation; keep stadium branding, sponsor boards, scoreboards, and signage absent",
+        "must_include": [
+          "plain solid-colour unnumbered practice clothing",
+          "generic unbranded equipment",
+          "one unmistakable ${title} action anchor"
+        ],
+        "avoid": [
+          "competition jersey styling",
+          "printed jersey number",
+          "player name",
+          "team crest",
+          "sponsor patch",
+          "swoosh-like mark",
+          "three-stripe-like mark",
+          "manufacturer badge",
+          "scoreboard",
+          "stadium advertising"
+        ]
+      }
+    },
+    {
+      "match": {
+        "category": "food",
+        "id_in": [
+          "food.yum_cha",
+          "food.japanese",
+          "food.chinese",
+          "food.cantonese",
+          "food.dim_sum",
+          "food.korean",
+          "food.thai",
+          "food.vietnamese",
+          "food.taiwanese",
+          "food.hong_kong",
+          "food.street_food",
+          "food.food_markets"
+        ]
+      },
+      "patch": {
+        "subject_template": "People actively sharing, receiving, preparing, or tasting ${title} through a close food-focused moment; identify the cuisine through dishes, ingredients, utensils, serving method, steam, tea, or preparation rather than written cultural signage",
+        "environment_template": "A close table, kitchen, serving-counter, or food-preparation setting with plain walls and blank surfaces; no storefront, signboard, menu, lantern writing, banner, poster, package label, or readable script in frame",
+        "must_include": [
+          "recognisable ${title} food or serving/preparation cue",
+          "human food interaction",
+          "plain text-free background surfaces"
+        ],
+        "avoid": [
+          "storefront signage",
+          "menu board",
+          "lantern text",
+          "banner text",
+          "Chinese/Japanese/Korean/Thai/Vietnamese characters used as décor",
+          "restaurant branding",
+          "packaging labels",
+          "price signs",
+          "wall calligraphy",
+          "readable script of any kind"
+        ]
+      }
+    },
+    {
+      "match": {
+        "id": "sports.american_football"
+      },
+      "patch": {
+        "must_include": [
+          "plain solid-colour unnumbered American-football practice clothing",
+          "generic unbranded helmet and shoulder pads",
+          "exactly one brown oval American football",
+          "yard-line field context"
+        ],
+        "avoid": [
+          "competition jersey styling",
+          "printed jersey number",
+          "player name",
+          "team crest",
+          "sponsor patch",
+          "swoosh-like mark",
+          "three-stripe-like mark",
+          "manufacturer badge",
+          "scoreboard",
+          "stadium advertising",
+          "soccer ball",
+          "rugby scrum or rugby kit",
+          "round ball",
+          "multiple footballs"
+        ]
+      }
     }
   ],
   "hard_case_ids": [

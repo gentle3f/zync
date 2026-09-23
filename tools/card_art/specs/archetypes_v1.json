@@ -89,13 +89,17 @@
         "wonder",
         "possibility"
       ],
-      "composition": "A journey or destination scene with strong depth and one clear travel anchor such as a vehicle, traveler, road, or unmistakable architecture.",
-      "camera": "Wide enough for place identity but not so distant that the hobby disappears.",
-      "recognition": "Destination or route cues plus intentional travel action.",
+      "composition": "Show a coherent journey or destination through architecture, terrain, route geometry, transit form, skyline, shoreline, landscape, or traveler action. Avoid using signs, storefront words, road signs, station boards, banners, posters, advertisements, license plates, or written place names as destination cues.",
+      "camera": "Wide enough for place identity but close enough that the traveler or journey anchor remains clear and no signboard needs to carry the meaning.",
+      "recognition": "Destination or route cues should come from non-textual architecture, landscape, transport form, or traveler action.",
       "avoid": [
         "generic wallpaper landscape",
         "no journey subject",
-        "beauty without hobby identity"
+        "beauty without hobby identity",
+        "storefront signage",
+        "road signs or station boards",
+        "banners, posters, advertisements, maps with labels, or readable place names",
+        "license plates or vehicle branding"
       ]
     },
     "urban_discovery": {
@@ -167,11 +171,15 @@
         "experimentation",
         "future"
       ],
-      "composition": "Human actively interacting with technology in a way specific to the subfield. Screens support the story rather than becoming abstract screen soup.",
-      "camera": "Medium layered workstation view.",
-      "recognition": "Subfield-specific interaction, tools, and output.",
+      "composition": "Show a person actively building, testing, configuring, measuring, or creating with technology through one clear physical input and one visible non-textual output. If a display is present, it should contain only abstract geometry, image previews, graphs without labels, simple shapes, nodes, waveforms, or visual feedback—never code, words, menus, terminal text, UI labels, or dense dashboards.",
+      "camera": "Medium layered workstation or maker-bench view with hands, hardware, and physical interaction at least as prominent as any screen.",
+      "recognition": "Subfield-specific hardware, physical process, input device, prototype, experiment, or visual output should identify the technology without readable text.",
       "avoid": [
         "generic coder at desk",
+        "screen full of code",
+        "terminal windows",
+        "readable UI labels or menus",
+        "dense dashboard or spreadsheet",
         "glowing brain cliché",
         "anonymous cyberpunk screen soup"
       ]
@@ -279,13 +287,15 @@
         "collaboration",
         "ambition"
       ],
-      "composition": "A professional is actively doing field-specific work with one unmistakable tool, environment, object, or collaboration cue; the profession must read without text.",
-      "camera": "Confident human-height medium environmental portrait in action, not a posed headshot.",
-      "recognition": "Profession-specific action plus physical work context or tool.",
+      "composition": "Show a professional in the middle of one concrete field-specific action. A large physical tool, object, client interaction, work surface, specimen, instrument, product, or real task must carry the profession visually. Keep laptops, paperwork, presentation boards, signage, and wall displays absent or small, blank, and non-readable.",
+      "camera": "Human-height medium or medium-close action framing that prioritizes hands, tools, objects, and the real task over generic office scenery.",
+      "recognition": "The profession must be identifiable from the physical action, tool, object, client interaction, or workplace task alone, without text, logos, uniforms with writing, screens, or documents.",
       "avoid": [
         "generic laptop office",
         "corporate handshake stock photo",
+        "presentation slide or whiteboard as the main cue",
         "readable documents or screens",
+        "wall certificates, signs, nameplates, newspapers, forms, charts, or printed pages",
         "profession signaled only by text"
       ]
     },
@@ -330,12 +340,16 @@
         "reflection",
         "shared discovery"
       ],
-      "composition": "Show the physical and emotional act of reading, browsing, discussing, or discovering books. Books and human engagement must be visible without relying on readable covers or page text.",
-      "camera": "Warm human-height medium or close-medium reading perspective.",
-      "recognition": "Book or reading material plus active reader/browsing/discussion context.",
+      "composition": "Show the physical and emotional act of reading, browsing, discussing, or discovering books. Use plain, unbranded books with blank or abstract covers and unreadable pages. The reader's posture, reaction, exchange, or discovery moment must carry the concept—not cover titles, spine text, bookstore signs, posters, labels, or page content.",
+      "camera": "Warm human-height medium or close-medium reading perspective that keeps faces, hands, and books clear while de-emphasizing shelves full of legible spines.",
+      "recognition": "A plain book or reading material plus active reading, browsing, discussing, choosing, or discovery context.",
       "avoid": [
-        "readable copyrighted cover art",
+        "readable book covers or spine titles",
+        "copyrighted cover art",
         "page text carrying the concept",
+        "bookstore signage",
+        "shelf labels",
+        "poster-like book display",
         "generic library room with no reader action",
         "floating literary symbols"
       ]
@@ -450,13 +464,17 @@
         "social warmth",
         "curiosity"
       ],
-      "composition": "Show people actively discovering, choosing, sharing, or tasting food in a market, dining, counter, café, or communal setting. The experience and food cues must both read.",
-      "camera": "Human-height medium or medium-wide experiential framing.",
-      "recognition": "Food/dining context plus active choosing, sharing, tasting, or exploration.",
+      "composition": "Show people actively choosing, sharing, receiving, or tasting food through a close human-and-food interaction. Use the table, serving hands, dishes, steam, utensils, counter surface, or ingredients to identify the experience. Keep storefronts, banners, menu boards, lantern text, wall signs, packaging, labels, and branded décor outside the frame or visually blank.",
+      "camera": "Medium or medium-close experiential framing tight enough that people, hands, and food dominate over the venue façade.",
+      "recognition": "Food/dining context plus active choosing, sharing, tasting, serving, or comparison, readable from the dishes and human interaction alone.",
       "avoid": [
         "single isolated menu-product shot",
         "generic crowd with no food cue",
-        "readable restaurant branding or menu text",
+        "storefront signage",
+        "menu board",
+        "lantern or banner text",
+        "restaurant branding",
+        "readable labels or packaging",
         "unrelated dishes overwhelming the experience"
       ]
     },

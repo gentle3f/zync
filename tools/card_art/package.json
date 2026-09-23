@@ -23,7 +23,9 @@
     "audit-prompt-format-v1": "node src/runPromptFormatValidation.js --dry-run",
     "generate-prompt-format-v1": "node src/runPromptFormatValidation.js",
     "audit-scale-100-v1": "node src/runScale100Batch.js --dry-run",
-    "generate-scale-100-v1": "node src/runScale100Batch.js"
+    "generate-scale-100-v1": "node src/runScale100Batch.js",
+    "audit-archetype-fix-v1": "node src/runArchetypeFixValidation.js --dry-run",
+    "generate-archetype-fix-v1": "node src/runArchetypeFixValidation.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

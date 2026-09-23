@@ -1,0 +1,94 @@
+{
+  "version": "v1",
+  "purpose": "20-card targeted re-validation after archetype content and structural risk-class fixes. Mostly reuses known fail/minor cases to support before/after comparison.",
+  "output_tag": "archetype_fix_v1",
+  "routes": [
+    {
+      "name": "standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "business.startups",
+        "business.coworking",
+        "business.marketing",
+        "career.software_engineering",
+        "career.legal_profession",
+        "career.journalism",
+        "technology.electronics",
+        "technology.generative_ai",
+        "technology.machine_learning",
+        "learning.book_genre.literary_fiction",
+        "learning.fiction",
+        "travel.general",
+        "travel.destination_deep.tokyo_travel",
+        "travel.japan"
+      ]
+    },
+    {
+      "name": "klein",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": [
+        "technology.javascript",
+        "learning.book_genre.booktube",
+        "food.yum_cha",
+        "food.food_markets",
+        "sports.american_football",
+        "sports.football"
+      ]
+    }
+  ],
+  "expected": {
+    "total_cards": 20,
+    "standard_cards": 14,
+    "klein_cards": 6,
+    "estimated_total_cost_usd": 0.2434
+  },
+  "qa_groups": {
+    "professional_world": [
+      "business.startups",
+      "business.coworking",
+      "business.marketing",
+      "career.software_engineering",
+      "career.legal_profession",
+      "career.journalism"
+    ],
+    "tech_workspace": [
+      "technology.electronics",
+      "technology.generative_ai",
+      "technology.machine_learning",
+      "technology.javascript"
+    ],
+    "reading_world": [
+      "learning.book_genre.literary_fiction",
+      "learning.fiction",
+      "learning.book_genre.booktube"
+    ],
+    "travel_vista": [
+      "travel.general",
+      "travel.destination_deep.tokyo_travel",
+      "travel.japan"
+    ],
+    "ethnic_signage_food": [
+      "food.yum_cha",
+      "food.food_markets"
+    ],
+    "uniform_sports": [
+      "sports.american_football",
+      "sports.football"
+    ]
+  },
+  "qa_focus": [
+    "professional recognition without screens/documents/text",
+    "technology recognition via physical interaction and non-textual output",
+    "plain books with no readable covers/spines/signage",
+    "travel recognition through architecture/terrain rather than signs",
+    "food scenes without signage/menu/lantern/banner text",
+    "sports scenes using plain unnumbered practice kits with no brand-like marks",
+    "Klein style drift",
+    "card/poster chrome",
+    "anatomy and key-object integrity"
+  ]
+}

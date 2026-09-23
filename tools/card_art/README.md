@@ -316,3 +316,41 @@ npm run generate-scale-100-v1
 Do not auto-reroll during first review. QA must report failure rates by model,
 category, archetype and rank stratum, and must separately score Klein
 photoreal/stock-photo style drift.
+
+
+## 20-card archetype-content re-validation
+
+The 100-card scale test showed that failures cluster by archetype rather than
+randomly. The next remediation stage changes scene design, not just negative
+wording.
+
+Updated archetype families:
+- `professional_world`
+- `tech_workspace`
+- `reading_world`
+- `food_exploration`
+- `travel_vista`
+
+Structural risk-class rules also now reframe:
+- uniform/team sports into plain unnumbered practice/training kits
+- signage-heavy ethnic food into close table/preparation scenes with text-free
+  backgrounds
+
+Targeted re-validation:
+
+```bash
+npm run audit-archetype-fix-v1
+npm run generate-archetype-fix-v1
+```
+
+Batch:
+`catalog/archetype_fix_validation_v1.json`
+
+Output:
+`output/archetype_fix_v1/`
+
+The batch uses 20 prior fail/minor examples (14 standard FLUX, 6 Klein) so
+before/after comparison is meaningful. Estimated first-pass cost is
+**US$0.2434**.
+
+Do not scale further until this gate is visually reviewed.

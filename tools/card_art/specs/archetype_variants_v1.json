@@ -105,19 +105,19 @@
     "travel_vista": [
       {
         "id": "leading_route",
-        "composition": "A road, path, or transit line leads the eye from a clear journey anchor into a distinctive destination.",
-        "camera": "Wide three-quarter view with strong leading lines.",
+        "composition": "A road, path, rail line, river edge, trail, or transit form leads the eye from a traveler or vehicle into a distinctive non-textual destination. Keep road signs, storefront text, station boards, ads, and license plates out of view.",
+        "camera": "Wide three-quarter view with strong leading lines and no signboard as focal point.",
         "lighting": "Destination-specific golden/blue-hour light without stock-photo lens flare."
       },
       {
         "id": "traveler_foreground",
-        "composition": "A traveler fills the near foreground while the destination remains clearly identifiable behind them.",
+        "composition": "A traveler fills the near foreground while non-textual architecture, terrain, skyline, shoreline, or transit form identifies the destination behind. Crop away readable signs, shopfront lettering, posters, and road boards.",
         "camera": "Medium-wide rear or three-quarter traveler perspective.",
         "lighting": "Cinematic natural light with layered depth."
       },
       {
         "id": "reveal_frame",
-        "composition": "Use a doorway, street opening, ridge, or architectural frame to reveal the destination as a discovery moment.",
+        "composition": "Use a doorway, alley opening, ridge, bridge, natural frame, or architectural opening to reveal the destination through shape and place character rather than signage or text.",
         "camera": "Human-height medium-wide reveal shot.",
         "lighting": "Controlled contrast between foreground frame and luminous destination."
       }
@@ -205,22 +205,22 @@
     "tech_workspace": [
       {
         "id": "over_shoulder_generation",
-        "composition": "Look over the creator's shoulder at one primary display where an input is visibly transforming into multiple coherent generated outputs; secondary screens stay subordinate.",
-        "camera": "Over-shoulder medium shot.",
+        "composition": "Look over the creator's shoulder at one primary display where a physical input, sketch, image, model, or object visibly transforms into multiple coherent visual outputs; all displays contain imagery and shapes only, no words, code, menus, or labels.",
+        "camera": "Over-shoulder medium shot with hands/input and visual result both readable.",
         "lighting": "Cool screen light balanced by warm human/environment accents.",
         "generic_eligible": false
       },
       {
         "id": "creator_interface",
-        "composition": "The human creator and one meaningful AI/technology interaction share equal visual importance; show purposeful creation rather than passive coding.",
-        "camera": "Three-quarter medium workstation view.",
-        "lighting": "Controlled modern light with a clear face/hands focal hierarchy."
+        "composition": "The person actively manipulates hardware, controls, a prototype, stylus, camera, sensor, device, or other concrete technology input while one simple non-textual visual result supports the action. Keep screens sparse and subordinate.",
+        "camera": "Three-quarter medium workstation or maker-bench view emphasizing hands and physical interaction.",
+        "lighting": "Controlled modern light with a clear face/hands/tool focal hierarchy."
       },
       {
         "id": "physical_digital_hybrid",
-        "composition": "Connect a physical input or gesture to an evolving digital result so the technology feels active and creative.",
-        "camera": "Medium-wide diagonal workstation view.",
-        "lighting": "Modern cool base with restrained luminous accents."
+        "composition": "Connect a physical object, device, component, gesture, sample, or prototype to one simple visual response made only of shapes, images, nodes, or light patterns. The physical process should remain the main story.",
+        "camera": "Medium-wide diagonal workstation or lab view with clear physical-to-digital cause and effect.",
+        "lighting": "Modern cool base with restrained luminous accents and strong material detail."
       }
     ],
     "collection_object_hero": [
@@ -355,20 +355,20 @@
     "professional_world": [
       {
         "id": "tool_in_action",
-        "composition": "One professional actively uses a field-specific physical tool, instrument, object, or workspace process; the action dominates over office décor.",
-        "camera": "Three-quarter medium environmental action shot.",
-        "lighting": "Polished realistic workplace light with cinematic separation."
+        "composition": "Frame one professional performing a concrete field-specific task with a large physical tool, object, client, specimen, instrument, product, or work surface. The task itself must dominate; any screen or paper is secondary, blank, and unreadable.",
+        "camera": "Three-quarter medium or medium-close action shot centered on hands, tool, object, and task.",
+        "lighting": "Polished workplace light with cinematic subject separation and no glowing-screen dominance."
       },
       {
         "id": "collaboration_case",
-        "composition": "Two or three professionals collaborate around a concrete field-specific object, specimen, model, plan without readable text, instrument, or process.",
-        "camera": "Eye-level collaborative medium shot.",
-        "lighting": "Warm focused team light with restrained background detail."
+        "composition": "Two or three people actively collaborate around one tangible work object, prototype, sample, model, equipment setup, client interaction, or physical case material. Faces, hands, and the shared object carry the story; no presentation slide is needed.",
+        "camera": "Eye-level collaborative medium shot with the tangible work anchor large in frame.",
+        "lighting": "Warm focused team light with a quiet, non-textual background."
       },
       {
         "id": "environmental_role",
-        "composition": "The professional is embedded in a recognisable work environment and caught in a purposeful task rather than posing for a portrait.",
-        "camera": "Human-height medium-wide environmental frame.",
+        "composition": "Place the professional inside a recognisable workplace while they perform one specific physical task. Use equipment, architecture, client interaction, or work materials to identify the role; keep signage, screens, certificates, posters, newspapers, and paperwork out of focal view.",
+        "camera": "Human-height medium-wide environmental frame with the person and physical task clearly dominant.",
         "lighting": "Naturalistic workplace light enhanced with premium illustration contrast."
       }
     ],
@@ -428,31 +428,31 @@
     "reading_world": [
       {
         "id": "close_reading",
-        "composition": "One reader and an open book form the clear focal cluster; posture and expression show absorption while pages remain unreadable.",
-        "camera": "Close-medium seated three-quarter view.",
+        "composition": "One reader and one plain open book form the focal cluster; posture and expression show absorption while the pages remain blank, softly patterned, or completely unreadable.",
+        "camera": "Close-medium seated three-quarter view that crops away signage and distant shelf labels.",
         "lighting": "Warm window or lamp light with crisp book and hand detail."
       },
       {
         "id": "library_discovery",
-        "composition": "A reader actively browses or pulls one book from a shelf, with enough library context to show discovery but no readable spines.",
-        "camera": "Human-height medium environmental frame.",
+        "composition": "A reader pulls or compares one or two plain books from a shelf. Keep shelf spines abstract and non-readable and crop away section signs or labels.",
+        "camera": "Human-height medium environmental frame centered on hands, book, and reader reaction.",
         "lighting": "Soft library daylight or warm aisle light with clean depth."
       },
       {
         "id": "book_club",
-        "composition": "Two or three people discuss books around one shared table or seating area, holding generic unbranded books with natural reactions.",
+        "composition": "Two or three people discuss plain unbranded books around one shared table or seating area; faces, gestures, and blank-cover books carry the story.",
         "camera": "Eye-level intimate social medium shot.",
         "lighting": "Warm conversational interior light."
       },
       {
         "id": "bookshop_browse",
-        "composition": "A person browses a coherent bookshop display, actively comparing or opening books while covers and signs remain non-readable.",
-        "camera": "Three-quarter medium environmental view.",
+        "composition": "A person compares or opens one or two plain books at a simple display with no visible shop sign, price tag, shelf label, poster, or readable cover text.",
+        "camera": "Three-quarter medium view cropped tightly around reader, hands, and books.",
         "lighting": "Inviting retail ambient light with the reader as focal subject."
       },
       {
         "id": "outdoor_reading",
-        "composition": "A reader is immersed in a book in a calm park, garden, or cafe-edge outdoor setting; the reading act stays larger than the scenery.",
+        "composition": "A reader is immersed in one plain book in a calm park, garden, or outdoor seating area; the book and reading act stay larger than the scenery and no café signage is visible.",
         "camera": "Human-height medium-wide lifestyle framing.",
         "lighting": "Gentle natural daylight with soft atmospheric separation."
       }
@@ -589,19 +589,19 @@
     "food_exploration": [
       {
         "id": "venue_discovery",
-        "composition": "A person actively discovers, chooses, receives, or tastes food in a coherent market, stall, café, restaurant, tea-house, or communal venue; the food cue remains visible and specific.",
-        "camera": "Human-height three-quarter medium view.",
-        "lighting": "Warm experiential light with appetising food highlights and clean human/venue separation."
+        "composition": "Show the moment a person receives, chooses, or tastes a dish at close range. Frame inward toward food, hands, steam, counter, and reaction; exclude storefront signs, banners, menu boards, branded décor, and readable wall text.",
+        "camera": "Human-height three-quarter medium or medium-close view.",
+        "lighting": "Warm experiential light with appetising food highlights and quiet background surfaces."
       },
       {
         "id": "shared_table",
-        "composition": "Two or three people actively share, compare, or discover a meal at one table; the experience and food remain equally readable.",
+        "composition": "Two or three people actively share, compare, or discover a meal at one table; dishes, hands, tea, serving action, and reactions fill the frame while walls and venue signage remain absent or blank.",
         "camera": "Intimate eye-level medium shot.",
         "lighting": "Warm social dining light with crisp hero dishes."
       },
       {
         "id": "counter_tasting",
-        "composition": "Capture the moment of receiving, tasting, or comparing food at a counter, chef-pass, café, or tasting setting.",
+        "composition": "Capture receiving, tasting, or comparing food at a plain unbranded counter or serving surface. Keep the frame tight on food, hands, utensils, and reaction; no menus, labels, signs, or branding.",
         "camera": "Counter-height medium-close.",
         "lighting": "Premium warm practical light with clean human/food separation."
       }
