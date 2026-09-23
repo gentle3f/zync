@@ -11,7 +11,9 @@
     "audit-catalog-recipes": "node src/auditCatalogRecipes.js",
     "audit-prompt-samples": "node src/auditPromptSamples.js",
     "generate-compiled-batch": "node src/generateCompiledBatch.js",
-    "audit-launch-image-batch": "node src/generateCompiledBatch.js --dry-run"
+    "audit-launch-image-batch": "node src/generateCompiledBatch.js --dry-run",
+    "audit-reference-free-v1": "node src/generateCompiledBatch.js --dry-run --model=text --only=crafts.diy,lifestyle.game_nights,fashion.streetwear,technology.ai",
+    "generate-reference-free-v1": "node src/generateCompiledBatch.js --model=text --only=crafts.diy,lifestyle.game_nights,fashion.streetwear,technology.ai"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

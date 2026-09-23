@@ -4,7 +4,7 @@
 //   - uses catalog/launch_image_batch_v1.json
 //   - rebuilds the runtime rights-first recipe bridge in memory
 //   - compiles prompts with the structured V1 compiler
-//   - generates through FLUX.2 edit first
+//   - generates through reference-free FLUX.2 text-to-image first
 //   - refuses any canonical that is not baseline-art eligible
 //
 // Usage:
@@ -33,6 +33,7 @@ const IMAGES_DIR = path.join(OUTPUT_DIR, 'images');
 const MANIFEST_PATH = path.join(OUTPUT_DIR, 'manifest.json');
 
 const COST_USD = {
+  'flux-2': 0.0125,
   'flux-2/edit': 0.025,
   'gemini-25-flash-image/edit': 0.039,
   'nano-banana-pro/edit': 0.15,
@@ -63,7 +64,9 @@ function falModel(model) {
 
 function resolveModel(name, globalStyle) {
   const aliases = {
-    default: globalStyle.default_model,
+    default: 'flux-2',
+    text: 'flux-2',
+    edit: 'flux-2/edit',
     fallback: globalStyle.fallback_model,
     premium: globalStyle.premium_model,
   };
@@ -100,7 +103,28 @@ async function uploadReference() {
   return fal.storage.upload(file);
 }
 
+function needsReference(model) {
+  return model.endsWith('/edit');
+}
+
+function promptForModel(prompt, model) {
+  if (needsReference(model)) return prompt;
+  return prompt
+    .split('\n\n')
+    .filter(section => !section.startsWith('REFERENCE STYLE:'))
+    .join('\n\n');
+}
+
 function modelInput(model, prompt, referenceUrl) {
+  if (model === 'flux-2') {
+    return {
+      prompt,
+      image_size: { width: 832, height: 1248 },
+      num_images: 1,
+      output_format: 'png',
+    };
+  }
+
   const common = {
     prompt,
     image_urls: [referenceUrl],
@@ -191,8 +215,9 @@ function compileRows(ids) {
 }
 
 async function generateOne({ row, model, referenceUrl, attempt }) {
+  const finalPrompt = promptForModel(row.prompt, model);
   const result = await fal.subscribe(falModel(model), {
-    input: modelInput(model, row.prompt, referenceUrl),
+    input: modelInput(model, finalPrompt, referenceUrl),
     logs: false,
   });
   const image = result?.data?.images?.[0];
@@ -223,8 +248,12 @@ async function generateOne({ row, model, referenceUrl, attempt }) {
     visual_variant: row.visual_variant,
     model,
     attempt,
-    final_prompt: row.prompt,
+    final_prompt: finalPrompt,
     negative_constraints: row.negative_constraints,
+    conditioning_mode: needsReference(model) ? 'reference_edit' : 'text_only',
+    reference_style_path: needsReference(model)
+      ? 'references/zync-card-style-reference.png'
+      : null,
     fal_request_id: result?.requestId || null,
     local_image_path: path.relative(REPO_ROOT, localPath).replace(/\\/g, '/'),
     estimated_cost_usd: COST_USD[model],
@@ -263,7 +292,7 @@ async function main() {
   fal.config({ credentials: process.env.FAL_KEY });
 
   const manifest = loadManifest();
-  const referenceUrl = await uploadReference();
+  const referenceUrl = needsReference(model) ? await uploadReference() : null;
 
   let calls = 0;
   let runCost = 0;

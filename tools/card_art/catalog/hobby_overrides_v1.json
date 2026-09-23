@@ -1,5 +1,61 @@
 {
   "version": "v1",
   "description": "Per-hobby correction layer applied after the base recipe. Supported scalar replacements: subject, environment, composition, camera, lighting, palette, visual_variant. Supported append arrays: emotion_add, recognition_anchors_add, must_include_add, avoid_add, override_prompt_additions. Use only after review/QA identifies a real need.",
-  "overrides": {}
+  "overrides": {
+    "fashion.streetwear": {
+      "subject": "A young adult actively styling and wearing layered generic streetwear with distinctive silhouette, texture, sneakers, and accessories, with no visible brands or text",
+      "environment": "A clean contemporary urban setting with abstract architecture and color blocks only; no storefront names, posters, advertisements, signs, or readable environmental text",
+      "recognition_anchors_add": [
+        "layered generic streetwear silhouette",
+        "streetwear sneakers and accessories without logos",
+        "urban fashion context without commercial signage"
+      ],
+      "must_include_add": [
+        "generic unbranded streetwear",
+        "clear fashion styling action or pose",
+        "background surfaces free of readable text"
+      ],
+      "avoid_add": [
+        "storefront signage",
+        "shop names",
+        "brand wordmarks",
+        "readable text on clothing",
+        "letters or words in the background",
+        "logos",
+        "advertising posters",
+        "pseudo-text"
+      ],
+      "override_prompt_additions": [
+        "Every garment, wall, storefront-like surface, poster-like surface, accessory, and background element must be completely free of readable words, letters, logos, brand marks, slogans, and pseudo-text. Where signage would normally appear, use blank material, abstract color blocks, or non-linguistic geometric patterns."
+      ]
+    },
+    "technology.ai": {
+      "subject": "A person actively exploring an abstract artificial-intelligence visualization made of glowing nodes, linked patterns, flowing data-like light, and model-like structures, without any readable interface",
+      "environment": "A believable modern creative or research workspace where AI is represented through abstract light, nodes, diagrams, and spatial visualization rather than text-bearing screens",
+      "recognition_anchors_add": [
+        "abstract neural-network-like nodes and connections",
+        "human actively interacting with an AI visualization",
+        "non-textual data or model visualization"
+      ],
+      "must_include_add": [
+        "clear human-to-AI interaction",
+        "abstract AI visualization",
+        "all interfaces free of readable text"
+      ],
+      "avoid_add": [
+        "readable screen text",
+        "UI labels",
+        "slogans",
+        "letters or words on displays",
+        "numbers or code blocks",
+        "chat bubbles",
+        "software logos",
+        "pseudo-text",
+        "multi-panel collage"
+      ],
+      "override_prompt_additions": [
+        "Do not render any readable interface copy. Any display or projection must contain only abstract shapes, nodes, light patterns, diagrams, and non-linguistic marks—no letters, words, numbers, code, slogans, logos, labels, captions, or pseudo-text."
+      ]
+    }
+  }
 }

@@ -134,6 +134,36 @@ The checked-in `generated/compiled_prompts_v1.jsonl` predates this bridge and is
 compiled. Re-run `npm run compile-prompts` before treating generated prompt outputs as
 current. The compiler makes no fal.ai calls.
 
+## Reference-free FLUX default after launch QA
+
+Launch-batch QA showed that using the full Zync card mockup as an edit reference
+contaminated 7/16 FLUX outputs with copied card chrome/text. The structured batch
+runner therefore now defaults to **reference-free `fal-ai/flux-2` text-to-image**.
+
+The historical edit path remains available explicitly as `--model=edit`, but it
+must not be used for catalog-scale first-pass generation with the current
+`references/zync-card-style-reference.png`.
+
+A four-card validation gate is provided before any new large run:
+
+```bash
+npm run audit-reference-free-v1
+npm run generate-reference-free-v1
+```
+
+The validation set is:
+- `crafts.diy`
+- `lifestyle.game_nights`
+- `fashion.streetwear`
+- `technology.ai`
+
+The first two previously suffered reference-copy contamination. The latter two
+still leaked text after Gemini fallback and now have explicit no-signage /
+no-screen-text overrides.
+
+At 832x1248, the current FLUX.2 text-to-image estimate is about US$0.0125 per
+image, so the four-card gate is roughly **US$0.05**.
+
 ## Launch-first structured image batch
 
 Do **not** use the legacy `src/generate.js` for catalog-scale artwork. It is preserved only

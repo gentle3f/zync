@@ -7,10 +7,7 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Authoritative continuation checkpoint:
 
-`AI_STATE/HANDOFF_20260923_CARD_ART_LAUNCH_BATCH_QA_RESULTS.md`
-
-(previous checkpoint, still useful for batch/runner context:
-`AI_STATE/HANDOFF_20260923_CARD_ART_LAUNCH_BATCH_READY.md`)
+`AI_STATE/HANDOFF_20260923_REFERENCE_FREE_FLUX_VALIDATION_READY.md`
 
 Branch:
 
@@ -18,4 +15,4 @@ Branch:
 
 Current state:
 
-> **The 16-card launch batch has been generated and QA'd. BLOCKING FINDING: FLUX.2 edit contaminated 7/16 (44%) first-pass cards with a copied Zync card mockup (logo/rarity/frame/garbled text) from the reference image, plus 2 more with lighter text/collage leaks — root cause is `references/zync-card-style-reference.png` itself being a full 10-card mockup (including an actual "Board Games" card) rather than a style-only image. Gemini 2.5 Flash Image edit fallback fixed 7 of 9 flagged cards cleanly; `fashion.streetwear` and `technology.ai` still fail on both models. Do NOT run this pipeline at catalog scale (2,210 eligible interests) until the reference image is replaced with a text/logo-free style asset — the current contamination rate is not survivable at that scale. Total spend this session: $0.751. Keep Vercel, GitHub Actions, Production and Play closed.**
+> **Do not run catalog-scale image generation yet. The old FLUX.2 edit path was contaminated by the full-card reference image. The structured runner now defaults to reference-free `fal-ai/flux-2` text-to-image, strips the reference-style section, and only uploads a reference for explicit edit models. Streetwear and AI received explicit no-text/no-signage overrides. Next action is the 4-card reference-free validation (DIY, Game Nights, Streetwear, AI), approximately US$0.05 total. Keep Vercel, GitHub Actions, Production and Play closed.**
