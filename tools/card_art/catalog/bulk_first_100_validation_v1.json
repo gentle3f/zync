@@ -1,0 +1,351 @@
+{
+  "version": "v1",
+  "purpose": "Stratified 100-card validation of the conservative BULK-FIRST catalog before scaling bulk production. Covers every BULK-FIRST archetype, weights larger archetypes more heavily, and deliberately includes repaired/boundary probes.",
+  "source_bulk_file": "catalog/bulk_first_v1.json",
+  "output_tag": "bulk_first_100_validation_v1",
+  "model": "text",
+  "endpoint": "fal-ai/flux-2",
+  "estimated_unit_cost_usd": 0.0125,
+  "expected": {
+    "api_calls": 100,
+    "estimated_total_cost_usd": 1.25,
+    "bulk_first_population": 1731,
+    "archetypes_covered": 32
+  },
+  "sampling": {
+    "method": "Every BULK-FIRST archetype gets >=1 card; remaining slots are broadly size-weighted, with a small set of explicit boundary/repaired probes forced in. This is a validation sample, not a random prevalence estimator.",
+    "allocations_by_archetype": {
+      "aviation_world": 1,
+      "calm_wellness": 3,
+      "campaign_planning": 2,
+      "campus_activity": 3,
+      "community_gathering": 2,
+      "companion_bond": 3,
+      "creative_studio": 4,
+      "creator_workflow": 2,
+      "drink_ritual": 4,
+      "fitness_training": 2,
+      "food_exploration": 2,
+      "food_hero": 7,
+      "group_play": 4,
+      "home_lifestyle": 3,
+      "journey_machine": 3,
+      "learning_exploration": 4,
+      "legal_practice": 3,
+      "lens_perspective": 2,
+      "music_listening": 7,
+      "nature_immersion": 3,
+      "outdoor_motion": 2,
+      "performance": 3,
+      "reading_world": 5,
+      "shared_workspace": 1,
+      "solo_action": 3,
+      "story_culture": 5,
+      "strategy_table": 2,
+      "travel_vista": 4,
+      "urban_discovery": 4,
+      "vertical_adventure": 2,
+      "water_outdoors": 3,
+      "wellness_experience": 2
+    },
+    "forced_probes": [
+      "outdoors.ice_fishing",
+      "entertainment.screenwriting",
+      "learning.book_genre.programming_books",
+      "arts.screen_printing",
+      "arts.livestreaming",
+      "business.marketing",
+      "business.coworking",
+      "career.legal_profession",
+      "learning.mock_trial",
+      "learning.moot_court",
+      "transport.aviation",
+      "sports.fencing",
+      "sports.archery",
+      "food.yum_cha"
+    ]
+  },
+  "qa_gate": {
+    "inspect_all_100_individually": true,
+    "report": [
+      "PASS/MINOR/FAIL",
+      "archetype/category failure rates",
+      "text/logo leakage",
+      "screen/UI leakage",
+      "brand/IP leakage",
+      "card-border/chrome",
+      "style drift",
+      "recognizability"
+    ],
+    "decision": "Do not stop bulk readiness for isolated single-card failures. Escalate only repeated/clustered failures that indicate an archetype/category/systemic defect.",
+    "no_auto_scale": true
+  },
+  "ids_by_archetype": {
+    "aviation_world": [
+      "transport.aviation"
+    ],
+    "calm_wellness": [
+      "wellness.pilates",
+      "wellness.self_care",
+      "wellness.mindful_walking"
+    ],
+    "campaign_planning": [
+      "business.marketing",
+      "career.digital_marketing"
+    ],
+    "campus_activity": [
+      "learning.model_united_nations",
+      "learning.student_societies",
+      "learning.internships"
+    ],
+    "community_gathering": [
+      "business.founder_meetups",
+      "transport.car_meets"
+    ],
+    "companion_bond": [
+      "pets.dogs",
+      "pets.terrariums",
+      "pets.pet_sitting"
+    ],
+    "creative_studio": [
+      "arts.drawing",
+      "crafts.diy",
+      "arts.comedy_writing",
+      "arts.screen_printing"
+    ],
+    "creator_workflow": [
+      "learning.book_genre.booktube",
+      "arts.livestreaming"
+    ],
+    "drink_ritual": [
+      "food.coffee",
+      "food.drink.tea_ceremony",
+      "food.drink.natural_wine",
+      "food.home_brewing"
+    ],
+    "fitness_training": [
+      "sports.gym",
+      "wellness.reformer_pilates"
+    ],
+    "food_exploration": [
+      "food.restaurant_hopping",
+      "food.yum_cha"
+    ],
+    "food_hero": [
+      "food.japanese",
+      "food.cuisine_deep.hakka_cuisine",
+      "food.cuisine_deep.peruvian_cuisine",
+      "food.dish.egg_tart",
+      "food.dish.bun_cha",
+      "food.dish.feijoada",
+      "food.recipe_swaps"
+    ],
+    "group_play": [
+      "gaming.board",
+      "gaming.tabletop_style.negotiation_games",
+      "gaming.tabletop_style.horror_board_games",
+      "lifestyle.game_nights"
+    ],
+    "home_lifestyle": [
+      "lifestyle.interior_design",
+      "lifestyle.family_activities",
+      "lifestyle.slow_living"
+    ],
+    "journey_machine": [
+      "motorsport.cars",
+      "transport.ferries",
+      "transport.car_restoration"
+    ],
+    "learning_exploration": [
+      "science.astronomy",
+      "learning.philosophy",
+      "science.meteorology",
+      "learning.mythology"
+    ],
+    "legal_practice": [
+      "learning.mock_trial",
+      "learning.moot_court",
+      "career.legal_profession"
+    ],
+    "lens_perspective": [
+      "photography.general",
+      "arts.macro_wildlife_photography"
+    ],
+    "music_listening": [
+      "music.pop",
+      "music.style.math_rock",
+      "music.style.bluegrass",
+      "music.style.bossa_nova",
+      "music.style.trip_hop",
+      "music.style.japanese_alternative",
+      "music.style.audiophile_music"
+    ],
+    "nature_immersion": [
+      "sports.hiking",
+      "outdoors.rockhounding",
+      "outdoors.rv_life"
+    ],
+    "outdoor_motion": [
+      "outdoors.cycling",
+      "outdoors.snowmobiling"
+    ],
+    "performance": [
+      "music.singing",
+      "arts.kpop_dance",
+      "arts.dance"
+    ],
+    "reading_world": [
+      "books.reading",
+      "learning.book_genre.medical_fiction",
+      "learning.book_genre.litrpg",
+      "learning.book_genre.popular_science_books",
+      "learning.book_genre.programming_books"
+    ],
+    "shared_workspace": [
+      "business.coworking"
+    ],
+    "solo_action": [
+      "sports.badminton",
+      "sports.archery",
+      "sports.fencing"
+    ],
+    "story_culture": [
+      "media.anime",
+      "entertainment.movie_subgenre.dark_fantasy",
+      "entertainment.movie_subgenre.road_movies",
+      "entertainment.movie_subgenre.dance_movies",
+      "entertainment.screenwriting"
+    ],
+    "strategy_table": [
+      "gaming.chess",
+      "sports.speedcubing"
+    ],
+    "travel_vista": [
+      "travel.general",
+      "travel.style_deep.pilgrimage_routes",
+      "travel.style_deep.unesco_heritage_travel",
+      "travel.cabin_getaways"
+    ],
+    "urban_discovery": [
+      "fashion.streetwear",
+      "fashion.fragrance",
+      "lifestyle.art_fairs",
+      "lifestyle.photo_booths"
+    ],
+    "vertical_adventure": [
+      "outdoors.rock_climbing",
+      "outdoors.trad_climbing"
+    ],
+    "water_outdoors": [
+      "outdoors.bass_fishing",
+      "outdoors.river_tubing_and_float_trips",
+      "outdoors.ice_fishing"
+    ],
+    "wellness_experience": [
+      "wellness.sauna",
+      "wellness.hot_springs"
+    ]
+  },
+  "ids": [
+    "transport.aviation",
+    "wellness.pilates",
+    "wellness.self_care",
+    "wellness.mindful_walking",
+    "business.marketing",
+    "career.digital_marketing",
+    "learning.model_united_nations",
+    "learning.student_societies",
+    "learning.internships",
+    "business.founder_meetups",
+    "transport.car_meets",
+    "pets.dogs",
+    "pets.terrariums",
+    "pets.pet_sitting",
+    "arts.drawing",
+    "crafts.diy",
+    "arts.comedy_writing",
+    "arts.screen_printing",
+    "learning.book_genre.booktube",
+    "arts.livestreaming",
+    "food.coffee",
+    "food.drink.tea_ceremony",
+    "food.drink.natural_wine",
+    "food.home_brewing",
+    "sports.gym",
+    "wellness.reformer_pilates",
+    "food.restaurant_hopping",
+    "food.yum_cha",
+    "food.japanese",
+    "food.cuisine_deep.hakka_cuisine",
+    "food.cuisine_deep.peruvian_cuisine",
+    "food.dish.egg_tart",
+    "food.dish.bun_cha",
+    "food.dish.feijoada",
+    "food.recipe_swaps",
+    "gaming.board",
+    "gaming.tabletop_style.negotiation_games",
+    "gaming.tabletop_style.horror_board_games",
+    "lifestyle.game_nights",
+    "lifestyle.interior_design",
+    "lifestyle.family_activities",
+    "lifestyle.slow_living",
+    "motorsport.cars",
+    "transport.ferries",
+    "transport.car_restoration",
+    "science.astronomy",
+    "learning.philosophy",
+    "science.meteorology",
+    "learning.mythology",
+    "learning.mock_trial",
+    "learning.moot_court",
+    "career.legal_profession",
+    "photography.general",
+    "arts.macro_wildlife_photography",
+    "music.pop",
+    "music.style.math_rock",
+    "music.style.bluegrass",
+    "music.style.bossa_nova",
+    "music.style.trip_hop",
+    "music.style.japanese_alternative",
+    "music.style.audiophile_music",
+    "sports.hiking",
+    "outdoors.rockhounding",
+    "outdoors.rv_life",
+    "outdoors.cycling",
+    "outdoors.snowmobiling",
+    "music.singing",
+    "arts.kpop_dance",
+    "arts.dance",
+    "books.reading",
+    "learning.book_genre.medical_fiction",
+    "learning.book_genre.litrpg",
+    "learning.book_genre.popular_science_books",
+    "learning.book_genre.programming_books",
+    "business.coworking",
+    "sports.badminton",
+    "sports.archery",
+    "sports.fencing",
+    "media.anime",
+    "entertainment.movie_subgenre.dark_fantasy",
+    "entertainment.movie_subgenre.road_movies",
+    "entertainment.movie_subgenre.dance_movies",
+    "entertainment.screenwriting",
+    "gaming.chess",
+    "sports.speedcubing",
+    "travel.general",
+    "travel.style_deep.pilgrimage_routes",
+    "travel.style_deep.unesco_heritage_travel",
+    "travel.cabin_getaways",
+    "fashion.streetwear",
+    "fashion.fragrance",
+    "lifestyle.art_fairs",
+    "lifestyle.photo_booths",
+    "outdoors.rock_climbing",
+    "outdoors.trad_climbing",
+    "outdoors.bass_fishing",
+    "outdoors.river_tubing_and_float_trips",
+    "outdoors.ice_fishing",
+    "wellness.sauna",
+    "wellness.hot_springs"
+  ]
+}
