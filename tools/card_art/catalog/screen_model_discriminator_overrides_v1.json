@@ -1,0 +1,85 @@
+{
+  "version": "v1",
+  "description": "Experiment-only scene replacements for the smallest screen-prior discriminator. These overrides are loaded only when --experiment-overrides points to this file and do not change normal catalog routing.",
+  "overrides": {
+    "technology.robotics": {
+      "archetype": "physical_prototype",
+      "visual_variant": "field_robot_test",
+      "subject": "An engineer physically tests and adjusts one generic wheeled or articulated robot on an open indoor test floor, touching a joint or sensor while the robot moves through simple cones or floor markers",
+      "environment": "A bright open robotics test floor with mechanical parts, cones, floor tape, robot wheels/joints/sensors, and optionally one simple screenless handheld remote controller; absolutely no desk, monitor, laptop, tablet, phone, television, desktop computer, terminal, code display, or digital panel anywhere",
+      "composition": "Make the robot body, engineer's hands, joints, wheels, sensors, and physical test movement fill the storytelling area. The scene must contain zero objects with a display surface.",
+      "camera": "Low three-quarter medium-wide field-test view with open floor behind the robot; avoid all desk/workstation framing.",
+      "recognition_anchors_add": [
+        "generic robot body with wheels or articulated joints",
+        "hands-on adjustment of a physical sensor or joint",
+        "open physical test course with cones or floor markers"
+      ],
+      "must_include_add": [
+        "one real physical generic robot",
+        "hands-on mechanical or sensor adjustment",
+        "zero screen-bearing devices anywhere in frame"
+      ],
+      "avoid_add": [
+        "monitor",
+        "laptop",
+        "tablet",
+        "phone",
+        "television",
+        "desktop computer",
+        "computer desk",
+        "workstation",
+        "display panel",
+        "screen glow",
+        "code",
+        "syntax highlighting",
+        "IDE",
+        "terminal",
+        "dashboard",
+        "waveform",
+        "editing interface"
+      ],
+      "override_prompt_additions": [
+        "This experiment intentionally uses a physically impossible-to-misread screen-free setting: there are no monitors, computers, laptops, tablets, phones, televisions, dashboards, or display panels in the location at all. Do not substitute any digital screen for the physical robot, hands, sensors, joints, wheels, cones, or screenless remote controller."
+      ]
+    },
+    "gaming.game_streaming": {
+      "archetype": "screenless_broadcast",
+      "visual_variant": "camera_gamepad_performance",
+      "subject": "A game streamer performs directly to a generic camera while holding a plain unbranded game controller and reacting expressively, with a microphone, headphones, tripod, and studio light making the live-broadcast context clear",
+      "environment": "A small screen-free creator studio with a plain wall or acoustic background, camera/tripod, microphone, headphones, controller, and one lighting stand; there is no desk, monitor, television, laptop, desktop computer, tablet, phone display, game screen, or digital panel anywhere",
+      "composition": "Treat this as a live performance portrait built from camera, microphone, controller, headphones, and expressive human reaction. No computer equipment or screen-bearing object exists in the scene.",
+      "camera": "Three-quarter medium creator-and-camera framing with the controller and microphone prominent and the background completely screen-free.",
+      "recognition_anchors_add": [
+        "creator reacting to camera",
+        "generic game controller in hand",
+        "microphone, headphones, camera/tripod, and studio light"
+      ],
+      "must_include_add": [
+        "active creator performance",
+        "plain unbranded game controller",
+        "zero screen-bearing devices anywhere in frame"
+      ],
+      "avoid_add": [
+        "monitor",
+        "television",
+        "laptop",
+        "desktop computer",
+        "tablet",
+        "phone display",
+        "gameplay screen",
+        "code",
+        "IDE",
+        "terminal",
+        "waveform",
+        "game HUD",
+        "chat window",
+        "streaming interface",
+        "card border",
+        "rounded card frame"
+      ],
+      "override_prompt_additions": [
+        "This experiment intentionally places the streamer in a studio with no screens or computers present at all. Live-streaming recognition must come only from the camera, microphone, headphones, controller, lighting rig, and the creator's on-camera reaction."
+      ]
+    }
+  }
+}

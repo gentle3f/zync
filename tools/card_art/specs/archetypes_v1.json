@@ -630,6 +630,63 @@
         "readable airport signage, tail code, registration number, or gate text",
         "toy or model aircraft standing in for real aviation"
       ]
+    },
+    "physical_prototype": {
+      "feeling": [
+        "hands-on discovery",
+        "testing",
+        "engineering",
+        "motion"
+      ],
+      "composition": "Show a person physically testing or adjusting a real prototype in an open test area. The prototype, hands, mechanical parts, movement, sensors, wheels, joints, tools, cones, or physical controller carry the idea. The scene contains zero monitors, zero laptops, zero tablets, zero phones, zero televisions, zero computer desks, and zero visible display surfaces.",
+      "camera": "Human-height or slightly low medium-wide field-test framing centered on the prototype and hands, with no office/workstation composition.",
+      "recognition": "A real physical prototype plus active hands-on testing, adjustment, movement, sensors, mechanical parts, or a physical controller; never a computer screen.",
+      "avoid": [
+        "monitor",
+        "laptop",
+        "tablet",
+        "phone",
+        "television",
+        "computer desk",
+        "computer workstation",
+        "display panel",
+        "code",
+        "terminal",
+        "IDE",
+        "dashboard",
+        "waveform",
+        "editing interface",
+        "screen glow"
+      ]
+    },
+    "screenless_broadcast": {
+      "feeling": [
+        "live energy",
+        "performance",
+        "connection",
+        "focus"
+      ],
+      "composition": "Show a creator performing directly to a camera in a small live-production setup using a microphone, headphones, handheld game controller, lighting stand, and camera/tripod. The entire set is screen-free: no monitor, television, laptop, desktop computer, tablet, phone display, or visible digital panel anywhere in the scene.",
+      "camera": "Front/three-quarter medium performance framing from beside the camera rig, with the creator, microphone, game controller, headphones, and lighting equipment visible and all screens physically absent.",
+      "recognition": "Live creator performance plus camera, microphone, headphones, controller and studio lighting; recognition must not depend on gameplay or any display.",
+      "avoid": [
+        "monitor",
+        "television",
+        "laptop",
+        "desktop computer",
+        "tablet",
+        "phone screen",
+        "display panel",
+        "code",
+        "IDE",
+        "terminal",
+        "waveform",
+        "game HUD",
+        "chat window",
+        "streaming UI",
+        "card border",
+        "rounded card frame"
+      ]
     }
   }
 }

@@ -824,6 +824,22 @@
         "camera": "Close-medium cockpit/doorway or wing-root perspective that keeps aircraft identity unmistakable.",
         "lighting": "Balanced cockpit and daylight illumination with crisp mechanical detail."
       }
+    ],
+    "physical_prototype": [
+      {
+        "id": "field_robot_test",
+        "composition": "An engineer crouches beside a wheeled or articulated generic robot on an open indoor test floor, physically adjusting a joint or sensor while a second person may hold a simple screenless physical remote controller. Use cones, floor markers, mechanical parts, and robot movement as the only context. No desk or computer equipment appears.",
+        "camera": "Low three-quarter medium-wide test-floor view keeping the robot body, hands, wheels/joints/sensors, and open surrounding floor clear.",
+        "lighting": "Bright neutral test-space light with crisp mechanical detail and painterly cinematic depth."
+      }
+    ],
+    "screenless_broadcast": [
+      {
+        "id": "camera_gamepad_performance",
+        "composition": "A creator speaks and reacts directly to a generic camera while holding a plain unbranded game controller; a microphone, headphones and one light stand establish a live broadcast setup. There is no desk and no screen-bearing device anywhere in frame.",
+        "camera": "Three-quarter medium creator-and-camera view with controller and microphone prominent, plain wall or acoustic background behind.",
+        "lighting": "Warm creator-studio key light with clean subject separation and no screen glow."
+      }
     ]
   }
 }

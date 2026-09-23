@@ -36,7 +36,10 @@
     "generate-post-confirmatory-repair-v1": "node src/runPostConfirmatoryRepair.js",
     "diagnose-letterbox-v1": "node src/diagnoseLetterbox.js",
     "audit-screen-structural-remediation-v1": "node src/runScreenStructuralRemediation.js --dry-run",
-    "generate-screen-structural-remediation-v1": "node src/runScreenStructuralRemediation.js"
+    "generate-screen-structural-remediation-v1": "node src/runScreenStructuralRemediation.js",
+    "diagnose-letterbox-v2": "node src/diagnoseLetterbox.js",
+    "audit-screen-model-discriminator-v1": "node src/runScreenModelDiscriminator.js --dry-run",
+    "generate-screen-model-discriminator-v1": "node src/runScreenModelDiscriminator.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.6.4",

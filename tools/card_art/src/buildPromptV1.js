@@ -13,7 +13,7 @@ function stableIndex(id, n) {
 function applyOverride(base, override) {
   if (!override) return {...base};
   const out = {...base};
-  for (const k of ['subject','environment','composition','camera','lighting','palette','visual_variant']) {
+  for (const k of ['subject','environment','composition','camera','lighting','palette','visual_variant','archetype']) {
     if (override[k] != null) out[k] = override[k];
   }
   out.emotion = [...(base.emotion || []), ...(override.emotion_add || [])];
@@ -22,9 +22,10 @@ function applyOverride(base, override) {
   out.avoid = [...(base.avoid || []), ...(override.avoid_add || []), ...(override.override_avoid || [])];
   return out;
 }
-export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, categories, subcategories, override, flagshipOverride }) {
+export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, categories, subcategories, override, flagshipOverride, experimentOverride }) {
   let effective = applyOverride(hobby, override);
   effective = applyOverride(effective, flagshipOverride);
+  effective = applyOverride(effective, experimentOverride);
   const archetype = archetypes.archetypes[effective.archetype];
   if (!archetype) throw new Error(`Unknown archetype "${effective.archetype}" for hobby "${effective.id}"`);
   const category = categories.categories[effective.category];
@@ -80,7 +81,8 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
 
   const promptAdditions = [
     ...(override?.override_prompt_additions || []),
-    ...(flagshipOverride?.override_prompt_additions || [])
+    ...(flagshipOverride?.override_prompt_additions || []),
+    ...(experimentOverride?.override_prompt_additions || [])
   ];
   if (promptAdditions.length) {
     sections.push(`Follow these additional scene constraints: ${promptAdditions.join(' ')}`);

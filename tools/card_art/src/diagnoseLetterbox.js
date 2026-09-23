@@ -9,11 +9,15 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
-function contiguousEdgeBand(rowStats, fromStart = true) {
-  let count = 0;
+function contiguousFlatEdgeBand(rowStats, fromStart = true) {
   const ordered = fromStart ? rowStats : [...rowStats].reverse();
+  if (!ordered.length) return 0;
+  const seed = ordered[0].meanLuma;
+  let count = 0;
   for (const row of ordered) {
-    if (row.meanLuma <= 48 && row.darkFraction >= 0.82) count += 1;
+    const flat = row.stddevLuma <= 8 && row.rangeLuma <= 28;
+    const stableTone = Math.abs(row.meanLuma - seed) <= 15;
+    if (flat && stableTone) count += 1;
     else break;
   }
   return count;
@@ -27,7 +31,9 @@ async function inspect(filePath) {
   const rows = [];
   for (let y = 0; y < info.height; y++) {
     let total = 0;
-    let dark = 0;
+    let totalSq = 0;
+    let minLuma = 255;
+    let maxLuma = 0;
     for (let x = 0; x < info.width; x++) {
       const i = (y * info.width + x) * info.channels;
       const r = data[i] ?? 0;
@@ -35,21 +41,26 @@ async function inspect(filePath) {
       const b = data[i + 2] ?? r;
       const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       total += luma;
-      if (luma <= 48) dark += 1;
+      totalSq += luma * luma;
+      minLuma = Math.min(minLuma, luma);
+      maxLuma = Math.max(maxLuma, luma);
     }
-    rows.push({ meanLuma: total / info.width, darkFraction: dark / info.width });
+    const meanLuma = total / info.width;
+    const variance = Math.max(0, totalSq / info.width - meanLuma * meanLuma);
+    rows.push({ meanLuma, stddevLuma: Math.sqrt(variance), rangeLuma: maxLuma - minLuma });
   }
-  const top = contiguousEdgeBand(rows, true);
-  const bottom = contiguousEdgeBand(rows, false);
+  const top = contiguousFlatEdgeBand(rows, true);
+  const bottom = contiguousFlatEdgeBand(rows, false);
   const frac = (top + bottom) / info.height;
   return {
+    detector_version: 'v2-flatness',
     file: path.relative(ROOT, filePath).replace(/\\/g, '/'),
     format: metadata.format,
     width: metadata.width,
     height: metadata.height,
-    top_dark_band_px: top,
-    bottom_dark_band_px: bottom,
-    combined_dark_band_fraction: Number(frac.toFixed(4)),
+    top_flat_band_px: top,
+    bottom_flat_band_px: bottom,
+    combined_flat_band_fraction: Number(frac.toFixed(4)),
     likely_letterbox: frac >= 0.06 || top >= 24 || bottom >= 24,
   };
 }

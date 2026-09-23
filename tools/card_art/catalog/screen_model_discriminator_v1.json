@@ -1,0 +1,55 @@
+{
+  "version": "v1",
+  "purpose": "Three-call discriminator for the persistent screen/code prior. Compare the exact same screen-free robotics scene on Standard FLUX versus Klein, then test a structurally screenless game-streaming performance scene on Standard while also seeking a second observation of the prior rounded card-border defect.",
+  "output_tag": "screen_model_discriminator_v1",
+  "experiment_overrides": "catalog/screen_model_discriminator_overrides_v1.json",
+  "routes": [
+    {
+      "name": "robotics_standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "technology.robotics"
+      ]
+    },
+    {
+      "name": "robotics_klein",
+      "model": "kleinNegative",
+      "endpoint": "fal-ai/flux-2/klein/9b/base",
+      "estimated_unit_cost_usd": 0.0114,
+      "ids": [
+        "technology.robotics"
+      ]
+    },
+    {
+      "name": "game_streaming_standard",
+      "model": "text",
+      "endpoint": "fal-ai/flux-2",
+      "estimated_unit_cost_usd": 0.0125,
+      "ids": [
+        "gaming.game_streaming"
+      ]
+    }
+  ],
+  "expected": {
+    "api_calls": 3,
+    "standard_calls": 2,
+    "klein_calls": 1,
+    "estimated_total_cost_usd": 0.0364
+  },
+  "qa_focus": [
+    "Robotics Standard and Klein must use the exact same experiment override and therefore the same screen-free physical scene semantics.",
+    "No monitor, laptop, tablet, phone, television, desktop computer, computer desk, digital panel, screen glow, code, terminal, IDE, waveform, dashboard, or UI may appear in either robotics image.",
+    "Robotics recognition must come from a physical robot, hands-on sensor/joint adjustment, wheels/joints/sensors, and a physical test course.",
+    "Klein must also be checked for MATERIAL house-style drift; a screen-clean but photoreal/off-style image does not count as production-safe.",
+    "Game Streaming must contain no screen-bearing device at all; recognition must come from camera + microphone + headphones + controller + lighting + creator performance.",
+    "Game Streaming must be checked for recurrence of the light rounded card-border/chrome defect.",
+    "Use letterbox detector v2-flatness only as a diagnostic and still visually inspect all three outputs."
+  ],
+  "decision_gate": {
+    "robotics_model_discriminator": "If Standard passes screen-safety and style, retain Standard with the alternate physical setting. If only Klein passes screen-safety, Klein is only a candidate if style remains within house style. If both fail, the hobby/title prior survives both model routes and should be quarantined or moved to a radically non-workspace visual strategy/model.",
+    "game_streaming": "PASS only if completely screen-free, recognizable as game streaming from physical broadcast gear, and no card-border/chrome recurrence.",
+    "scale": "Do not generalize any fix to all tech/gaming cards from these three calls alone. Use this experiment only to decide the next smallest route/setting test."
+  }
+}

@@ -50,7 +50,7 @@ function readJson(p) {
 }
 
 function parseArgs(argv) {
-  const args = { only: null, retry: new Set(), dryRun: false, model: 'default', allowQuarantined: new Set() };
+  const args = { only: null, retry: new Set(), dryRun: false, model: 'default', allowQuarantined: new Set(), experimentOverrides: null };
   for (const arg of argv) {
     if (arg === '--dry-run') args.dryRun = true;
     else if (arg.startsWith('--only=')) {
@@ -61,6 +61,8 @@ function parseArgs(argv) {
       args.model = arg.slice('--model='.length).trim();
     } else if (arg.startsWith('--allow-quarantined=')) {
       args.allowQuarantined = new Set(arg.slice('--allow-quarantined='.length).split(',').map(x => x.trim()).filter(Boolean));
+    } else if (arg.startsWith('--experiment-overrides=')) {
+      args.experimentOverrides = arg.slice('--experiment-overrides='.length).trim();
     }
   }
   return args;
@@ -106,11 +108,15 @@ function saveManifest(manifest) {
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
 }
 
-function contiguousEdgeBand(rowStats, fromStart = true) {
-  let count = 0;
+function contiguousFlatEdgeBand(rowStats, fromStart = true) {
   const ordered = fromStart ? rowStats : [...rowStats].reverse();
+  if (!ordered.length) return 0;
+  const seed = ordered[0].meanLuma;
+  let count = 0;
   for (const row of ordered) {
-    if (row.meanLuma <= 48 && row.darkFraction >= 0.82) count += 1;
+    const flat = row.stddevLuma <= 8 && row.rangeLuma <= 28;
+    const stableTone = Math.abs(row.meanLuma - seed) <= 15;
+    if (flat && stableTone) count += 1;
     else break;
   }
   return count;
@@ -123,7 +129,9 @@ async function analyzeGeneratedImage(buffer) {
   const rows = [];
   for (let y = 0; y < info.height; y++) {
     let total = 0;
-    let dark = 0;
+    let totalSq = 0;
+    let minLuma = 255;
+    let maxLuma = 0;
     for (let x = 0; x < info.width; x++) {
       const i = (y * info.width + x) * info.channels;
       const r = data[i] ?? 0;
@@ -131,23 +139,32 @@ async function analyzeGeneratedImage(buffer) {
       const b = data[i + 2] ?? r;
       const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       total += luma;
-      if (luma <= 48) dark += 1;
+      totalSq += luma * luma;
+      minLuma = Math.min(minLuma, luma);
+      maxLuma = Math.max(maxLuma, luma);
     }
-    rows.push({ meanLuma: total / info.width, darkFraction: dark / info.width });
+    const meanLuma = total / info.width;
+    const variance = Math.max(0, totalSq / info.width - meanLuma * meanLuma);
+    rows.push({
+      meanLuma,
+      stddevLuma: Math.sqrt(variance),
+      rangeLuma: maxLuma - minLuma,
+    });
   }
-  const topBandPx = contiguousEdgeBand(rows, true);
-  const bottomBandPx = contiguousEdgeBand(rows, false);
+  const topBandPx = contiguousFlatEdgeBand(rows, true);
+  const bottomBandPx = contiguousFlatEdgeBand(rows, false);
   const bandFraction = (topBandPx + bottomBandPx) / info.height;
   return {
+    detector_version: 'v2-flatness',
     format: metadata.format || null,
     width: metadata.width || info.width,
     height: metadata.height || info.height,
     channels: info.channels,
-    top_dark_band_px: topBandPx,
-    bottom_dark_band_px: bottomBandPx,
-    combined_dark_band_fraction: Number(bandFraction.toFixed(4)),
+    top_flat_band_px: topBandPx,
+    bottom_flat_band_px: bottomBandPx,
+    combined_flat_band_fraction: Number(bandFraction.toFixed(4)),
     likely_letterbox: bandFraction >= 0.06 || topBandPx >= 24 || bottomBandPx >= 24,
-    detector_note: 'Diagnostic only: contiguous top/bottom rows count as dark when mean luma <=48 and >=82% of pixels are dark.'
+    detector_note: 'Diagnostic only: edge bands require low within-row luma variance/range plus stable tone across contiguous rows; darkness is not required.'
   };
 }
 
@@ -232,7 +249,7 @@ function modelInput(model, prompt, referenceUrl, row) {
   throw new Error(`No input adapter for model ${model}`);
 }
 
-function compileRows(ids) {
+function compileRows(ids, experimentOverrides = {}) {
   const specs = path.join(ROOT, 'specs');
   const catalog = path.join(ROOT, 'catalog');
   const globalStyle = readJson(path.join(specs, 'global_style_v1.json'));
@@ -269,6 +286,7 @@ function compileRows(ids) {
       subcategories,
       override: overrides.overrides?.[overrideKey] || null,
       flagshipOverride: flagship.flagship?.[overrideKey] || null,
+      experimentOverride: experimentOverrides?.[row.canonical_interest_id] || null,
     });
 
     output.push({
@@ -283,8 +301,9 @@ function compileRows(ids) {
       difficulty: hobby.difficulty || 'normal',
       human_review_required:
         !!hobby.human_review_required || row.art_policy === 'abstractOnly',
-      archetype: hobby.archetype,
+      archetype: compiled.effective.archetype,
       visual_variant: compiled.variant.id,
+      experiment_override_applied: !!experimentOverrides?.[row.canonical_interest_id],
       prompt: compiled.compiledPrompt,
       negative_constraints: compiled.negativeConstraints,
       reference_instruction: globalStyle.reference_instruction,
@@ -326,6 +345,7 @@ async function generateOne({ row, model, referenceUrl, attempt }) {
     tier: row.tier,
     difficulty: row.difficulty,
     human_review_required: row.human_review_required,
+    experiment_override_applied: row.experiment_override_applied,
     archetype: row.archetype,
     visual_variant: row.visual_variant,
     model,
@@ -368,7 +388,16 @@ async function main() {
     }
   }
 
-  const rows = compileRows(ids);
+  let experimentOverrides = {};
+  if (args.experimentOverrides) {
+    const experimentPath = path.isAbsolute(args.experimentOverrides)
+      ? args.experimentOverrides
+      : path.resolve(ROOT, args.experimentOverrides);
+    const parsedExperiment = readJson(experimentPath);
+    experimentOverrides = parsedExperiment.overrides || parsedExperiment;
+  }
+
+  const rows = compileRows(ids, experimentOverrides);
   const globalStyle = rows[0]?.global_style || readJson(path.join(ROOT, 'specs', 'global_style_v1.json'));
   const model = resolveModel(args.model, globalStyle);
   for (const row of rows) delete row.global_style;
