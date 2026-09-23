@@ -593,7 +593,8 @@
           "domestic bathtub mistaken for spa/sauna/hot spring",
           "transparent clothing",
           "minor/child in bathing context"
-        ]
+        ],
+        "environment_template": "A clearly identifiable professional, resort, or outdoor wellness venue appropriate to ${title}, with modest general-audience presentation; use sauna benches/heater, natural hot-spring pool, cold-plunge vessel, treatment table, or sound-wellness equipment as appropriate, never a domestic bathtub"
       }
     },
     {
