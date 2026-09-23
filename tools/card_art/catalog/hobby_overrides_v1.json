@@ -23,10 +23,38 @@
         "letters or words in the background",
         "logos",
         "advertising posters",
-        "pseudo-text"
+        "pseudo-text",
+        "any real-world sneaker brand silhouette or trade dress",
+        "signature sole geometry associated with a known sneaker model",
+        "recognisable stripe layout on shoes",
+        "swoosh-like mark on footwear",
+        "three-stripe-like treatment on footwear",
+        "distinctive panel arrangement copied from a real sneaker",
+        "trademark-like footwear silhouette"
       ],
       "override_prompt_additions": [
-        "Every garment, wall, storefront-like surface, poster-like surface, accessory, and background element must be completely free of readable words, letters, logos, brand marks, slogans, and pseudo-text. Where signage would normally appear, use blank material, abstract color blocks, or non-linguistic geometric patterns."
+        "Every garment, wall, storefront-like surface, poster-like surface, accessory, and background element must be completely free of readable words, letters, logos, brand marks, slogans, and pseudo-text. Where signage would normally appear, use blank material, abstract color blocks, or non-linguistic geometric patterns.",
+        "The footwear must be a generic, fictional, entirely unbranded sneaker design that is not recognisably derived from any real sneaker model or manufacturer: no signature sole geometry, no recognisable stripe layout, no swoosh-like mark, no three-stripe-like treatment, no distinctive panel arrangement, and no other trademark-like silhouette associated with a known shoe brand. Invent a plain, original shoe shape instead."
+      ]
+    },
+    "lifestyle.game_nights": {
+      "avoid_add": [
+        "title text",
+        "caption text",
+        "typography",
+        "readable words",
+        "labels",
+        "letters or numbers on cards",
+        "letters or numbers on the game box",
+        "letters or numbers on the table",
+        "letters or numbers on walls",
+        "letters or numbers on posters",
+        "letters or numbers anywhere in the background",
+        "pseudo-text",
+        "gibberish lettering"
+      ],
+      "override_prompt_additions": [
+        "The finished artwork must contain absolutely no title, no caption, no typography, and no readable words or labels anywhere in the image. The board, cards, game pieces, game box, table surface, walls, and any posters or background details must use only abstract, non-linguistic symbols, icons, and patterns — never letters, numbers, or words of any kind, including as a caption beneath or within the scene."
       ]
     },
     "technology.ai": {

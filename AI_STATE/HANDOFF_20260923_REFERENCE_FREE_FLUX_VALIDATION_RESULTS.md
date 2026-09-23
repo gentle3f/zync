@@ -94,6 +94,120 @@ Smallest next step, pending review:
    category combination (group_play captions, or fashion/shoe rendering)
    needs a model-level test (fallback) rather than more prompt iteration.
 
+## Round 2: targeted override retry (2026-09-23, same day)
+
+Acted on the round-1 recommendation above. Edited
+`tools/card_art/catalog/hobby_overrides_v1.json`:
+
+- Added a new `lifestyle.game_nights` override: `avoid_add` covering title/
+  caption/typography/readable-words/labels/letters-or-numbers on cards, game
+  box, table, walls, posters, background; plus an `override_prompt_additions`
+  sentence explicitly forbidding any caption "beneath or within the scene."
+- Strengthened the existing `fashion.streetwear` override: added `avoid_add`
+  entries for real sneaker-brand silhouette/trade dress, signature sole
+  geometry, recognisable stripe layout, swoosh-like marks, three-stripe-like
+  treatment, distinctive panel arrangement, trademark-like footwear
+  silhouette; plus an `override_prompt_additions` sentence requiring a "plain,
+  original shoe shape."
+
+`npm run audit-reference-free-v1`-equivalent dry-run for only these 2 IDs
+(`node src/generateCompiledBatch.js --dry-run --model=text
+--only=lifestyle.game_nights,fashion.streetwear`) confirmed both compiled
+prompts contained the new constraints verbatim, cost $0.025, no
+`REFERENCE STYLE` section.
+
+`node src/generateCompiledBatch.js --model=text
+--retry=lifestyle.game_nights,fashion.streetwear
+--only=lifestyle.game_nights,fashion.streetwear` — **2/2 API calls
+succeeded**, cost $0.025 exactly as estimated (29 -> 31 manifest entries).
+
+### Round-2 result: BOTH STILL FAIL
+
+| ID | Verdict | Quality | Reason |
+|---|---|---|---|
+| `lifestyle.game_nights` (attempt 2) | **FAIL** | 4/5 visual | Board, cards, dice, and pieces are clean of text/letters/numbers — that part of the override worked. But the model again rendered a large, bold, fully readable **"GAME NIGHT"** caption across the bottom of the image, despite an explicit, detailed no-caption instruction. |
+| `fashion.streetwear` (attempt 2) | **FAIL** | 3.5/5 | Storefront/background text remains clean. But both sneakers now render an unmistakable **white swoosh-like check mark** on the side — more prominent and more recognisable than the round-1 attempt, despite explicitly naming and forbidding "swoosh-like mark" in the override. |
+
+Generated image paths:
+- `tools/card_art/output/launch_v1/images/lifestyle__game_nights__flux_2__attempt2.png`
+- `tools/card_art/output/launch_v1/images/fashion__streetwear__flux_2__attempt2.png`
+
+### Revised diagnosis: this looks model-specific, not a prompt gap
+
+The round-1 hypothesis ("prompt/override gap") is now contradicted by evidence:
+both defects persisted, and the streetwear defect got *more* pronounced, after
+adding highly explicit, specific negative language directly naming the exact
+feature to avoid ("swoosh-like mark", "no caption beneath or within the
+scene"). Two supporting observations:
+
+1. **Cross-model comparison available in the manifest.** An earlier
+   `gemini-25-flash-image/edit` attempt for `lifestyle.game_nights` (round-1
+   checkpoint, reference-conditioned) did **not** add a text caption, even
+   though it used the old contaminated reference image and picked up its own
+   defect (storefront-adjacent lettering elsewhere in that era's Streetwear
+   run). Across three separate FLUX calls for Game Nights now (`flux-2/edit`
+   attempt 1, `flux-2` text attempt 1, `flux-2` text attempt 2), **all three**
+   added a caption; the one Gemini attempt did not. That is consistent with a
+   FLUX-family-specific prior for captioning "hobby card"-like group scenes,
+   not a per-prompt fluke.
+2. **`fal-ai/flux-2` and `fal-ai/flux-2/edit` have no dedicated
+   `negative_prompt` parameter** (confirmed against the model's documented
+   request schema: `prompt, image_urls, guidance_scale, seed,
+   num_inference_steps, num_images, acceleration, enable_prompt_expansion,
+   sync_mode, enable_safety_checker, output_format, image_size` — no negative-
+   prompt field). Every "AVOID:"/negative-constraint list in this pipeline is
+   currently embedded as ordinary text inside the single positive prompt, not
+   routed through a true CFG negative-prompt channel. Naming a specific visual
+   feature inside a positive-prompt "avoid" sentence is a weaker and
+   sometimes counter-productive way to suppress it in diffusion models
+   compared to a real negative-prompt input — which may explain why explicitly
+   naming "swoosh-like mark" did not reduce, and may have increased, its
+   presence.
+
+This is a plausible **root cause**, not a proven one — it has not been tested
+against a model/parameter change, only inferred from behavior. It should be
+tested before further prompt-only iteration on these two IDs.
+
+### Decision: 4-card validation is NOT closed
+
+Per the task's decision rule, do **not** auto-reroll a third time. Final
+status:
+
+- `crafts.diy` — PASS (unchanged from round 1)
+- `technology.ai` — PASS (unchanged from round 1)
+- `lifestyle.game_nights` — FAIL after 2 rounds of prompt-level correction
+- `fashion.streetwear` — FAIL after 2 rounds of prompt-level correction
+
+**The 48-card stratified batch is NOT recommended yet** — that recommendation
+was explicitly conditional on all 4 passing, and 2 of 4 still fail after a
+targeted retry. Recommending a 48-card spend now would risk baking the same
+FLUX-specific caption/silhouette bias into every group-scene and
+footwear-adjacent card in that batch.
+
+### Recommended next step (not executed — needs review before any spend)
+
+1. Treat `lifestyle.game_nights` and `fashion.streetwear` as flagged for a
+   **model-level test**, not further prompt iteration on FLUX. The smallest
+   justified next action is a **reference-free equivalent test on the
+   fallback model** — but note `gemini-25-flash-image/edit` is an edit-only
+   endpoint in this codebase (`modelInput()` always attaches
+   `image_urls: [referenceUrl]`), so using it today would re-upload
+   `references/zync-card-style-reference.png` (the original 10-card mockup)
+   and risk reintroducing the Zync-logo/Board-Games contamination this whole
+   effort was meant to eliminate. Before escalating either ID to Gemini,
+   either (a) replace `references/zync-card-style-reference.png` with a
+   text/logo-free style asset (the fix already recommended in the prior
+   checkpoint for catalog-scale work), or (b) confirm whether fal.ai exposes
+   a genuinely reference-free Gemini text-to-image endpoint and wire it in
+   alongside `flux-2`.
+2. Separately, investigate whether `fal-ai/flux-2`/`flux-2/edit` support any
+   real negative-conditioning mechanism (e.g. a `negative_prompt` field on a
+   different endpoint variant, or a `guidance_scale` adjustment that changes
+   how strongly the positive-prompt "avoid" language is honored) before
+   assuming prompt text alone cannot fix this.
+3. Everything else (`crafts.diy`, `technology.ai`, and the already-confirmed
+   reference-contamination fix) remains valid and does not need to be redone.
+
 ## Infrastructure
 
 Vercel deployment confirmed disabled for this branch (unchanged from prior
