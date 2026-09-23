@@ -1987,6 +1987,16 @@
           "toy or model aircraft"
         ]
       }
+    },
+    {
+      "match": {
+        "id": "outdoors.ice_fishing"
+      },
+      "patch": {
+        "art_category": "adventure",
+        "archetype": "water_outdoors",
+        "visual_variant": "water_ritual"
+      }
     }
   ],
   "hard_case_ids": [
