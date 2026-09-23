@@ -1,0 +1,74 @@
+{
+  "version": "v1",
+  "purpose": "D4 cross-category durability test: 12 hobbies spanning categories not tested (or barely tested) by the D1-D4 calibration rounds, generated through the now-production D4 global style baseline (global_style_v1.json) plus the new global brand-safety policy and the learning.philosophy recipe fix. Uses the REAL production compiler, not an experiment-only style override, since D4 has now been promoted to global_style_v1.json's prompt field.",
+  "prior_rounds": [
+    "catalog/style_calibration_18_v1.json (A/B/C, none selected)",
+    "catalog/style_calibration_d_18_v1.json (D1/D2/D3, D3 strongest but not special-illustration)",
+    "catalog/style_calibration_d4_6_v1.json (D4, decisive improvement, promoted to production this checkpoint)"
+  ],
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "ids": [
+    "sports.skateboarding",
+    "outdoors.kayaking",
+    "pets.birds",
+    "travel.destination_deep.japanese_onsen_trips",
+    "music.piano",
+    "wellness.cold_plunge",
+    "science.marine_biology",
+    "technology.3d_printing",
+    "crafts.knitting",
+    "books.reading",
+    "lifestyle.game_nights",
+    "lifestyle.home_decor"
+  ],
+  "id_selection_rationale": {
+    "sports.skateboarding": "Required type: sport. Untested in D1-D4. solo_action archetype, single-person action, outdoor, equipment-heavy (board/wheels), tests brand-safety policy against another sport with real-world gear branding risk beyond the already-fixed streetwear sneakers.",
+    "outdoors.kayaking": "Required type: outdoor activity. Untested. water_outdoors archetype, outdoor environment, equipment-heavy (kayak/paddle/gear).",
+    "pets.birds": "Required type: pet/animal. Tests companion_bond archetype generalizing beyond pets.dogs (the only companion_bond ID tested in D1-D3) to a structurally different animal.",
+    "travel.destination_deep.japanese_onsen_trips": "Required type: travel. travel_vista archetype. Deliberately chosen for thematic overlap with the historically safety-sensitive sauna/onsen content from earlier FLUX-era rounds, as an extra check that D4's more heightened/dynamic composition style does not reopen that risk even though this is a travel-category ID, not wellness_experience.",
+    "music.piano": "Required type: music. performance archetype, single-person, indoor, object-focused hero prop (the piano itself), untested (music.guitar was mentioned but not generated in prior rounds either).",
+    "wellness.cold_plunge": "Required type: wellness. wellness_experience archetype - the third ID in this specific archetype (alongside sauna/hot_springs) and has never been generated anywhere in this remediation arc. Deliberate safety stress test: confirms the existing wellness_experience safety rule still holds under D4's more heightened, dynamic special-illustration composition instructions.",
+    "science.marine_biology": "Required type: science/learning. learning_exploration archetype - same archetype as learning.philosophy, chosen specifically to confirm the new philosophy-only hobby override did not need to be (and was not accidentally) applied globally, and that sibling learning_exploration hobbies remain fine on their own generic anchor.",
+    "technology.3d_printing": "Required type: technology. tech_workspace archetype (NOT technology.robotics, which remains quarantined and untouched) - deliberately included as a stress test of whether the new global brand-safety policy plus D4 style hold up on this historically screen/code-leak-prone archetype family, equipment-heavy and screen-adjacent by nature.",
+    "crafts.knitting": "Required type: craft/making. creative_studio archetype, single-person, indoor, material/object-focused (yarn, needles), untested.",
+    "books.reading": "Required type: solo hobby. reading_world archetype, calm indoor solo activity, untested in D-rounds, a low-risk control point.",
+    "lifestyle.game_nights": "Required type: social hobby. group_play archetype, genuine multi-person group scene distinct from gaming.board (one of the 6 D4 calibration cards, not reused here). Already has an existing hobby_overrides_v1.json entry (text-suppression) - a second good test of override-stacking with the new global brand-safety policy, similar to fashion.streetwear.",
+    "lifestyle.home_decor": "Required type: lifestyle/everyday activity. home_lifestyle archetype, indoor, object-focused (decor items), untested."
+  },
+  "avoided": [
+    "sports.american_football (quarantined, not reopened)",
+    "technology.robotics (quarantined, not reopened)",
+    "the exact 6 D4 calibration cards (business.coworking, entertainment.movie_subgenre.legal_thriller, fashion.streetwear, food.dish.bun_cha, gaming.board, learning.philosophy) - none reused, no control card was judged necessary given the extensive existing D4 evidence on those 6"
+  ],
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 12,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.2016,
+    "note": "Input text token charges are additional but small relative to image output cost. Uses the real production compiler (global_style_v1.json = D4, hobby_overrides_v1.json includes the new learning.philosophy fix) - not an isolated experiment style override."
+  },
+  "decision_gate": {
+    "preferred_gate": {
+      "semantic_fail": 0,
+      "semantic_minor_max": 2,
+      "brand_trademark_leak": 0,
+      "border_ui_defect": 0,
+      "major_text_leak": 0,
+      "avg_japanese_anime_feel_min": 3.0,
+      "avg_special_illustration_feel_min": 3.0,
+      "avg_collectible_appeal_min": 3.0,
+      "avg_zync_distinctiveness_min": 2.5,
+      "avg_fantasy_drift_max": 1.0,
+      "no_systemic_category_collapse": true
+    },
+    "if_gate_met": "Recommend D4 (now production global_style_v1.json) as the leading production-style baseline. Do not start bulk generation automatically.",
+    "if_localized_issues": "Fix at recipe level (hobby_overrides_v1.json), not by rewriting D4 globally.",
+    "if_systemic_collapse": "Do not keep micro-tuning text indefinitely. Recommend a reference-conditioned gemini-3.1-flash-image style-consistency test instead.",
+    "no_auto_scale": true
+  }
+}

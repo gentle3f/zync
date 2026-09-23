@@ -57,6 +57,40 @@
         "The finished artwork must contain absolutely no title, no caption, no typography, and no readable words or labels anywhere in the image. The board, cards, game pieces, game box, table surface, walls, and any posters or background details must use only abstract, non-linguistic symbols, icons, and patterns — never letters, numbers, or words of any kind, including as a caption beneath or within the scene."
       ]
     },
+    "learning.philosophy": {
+      "subject": "Two or three young adults actively discussing a philosophical idea, with one person explaining or debating a concept while pointing to a contemporary notebook, annotated book, logic/argument diagram, concept map, or simple philosophical thought-experiment sketch",
+      "environment": "A modern library, university study space, bright reading room, contemporary cafe, or campus discussion setting that supports lively intellectual conversation",
+      "recognition_anchors_add": [
+        "active intellectual discussion between two or three people",
+        "a modern book or notebook with a concept diagram or argument sketch",
+        "gestures showing debate, explanation, or reasoning",
+        "a contemporary study or discussion setting"
+      ],
+      "must_include_add": [
+        "at least one modern book or notebook",
+        "an active discussion or reasoning gesture",
+        "a visual cue of ideas or argument structure such as a concept diagram or annotated notes"
+      ],
+      "avoid_add": [
+        "occult symbols",
+        "alchemy diagrams",
+        "mystical geometry",
+        "magical relics",
+        "ancient runes",
+        "grimoire",
+        "mysterious ancient artifact",
+        "astrology imagery",
+        "arcane compass or instrument",
+        "supernatural glow",
+        "pseudo-esoteric symbols",
+        "ancient scroll as the primary focus",
+        "antique leather-bound tome as the primary focus",
+        "archaeological or museum-artifact framing"
+      ],
+      "override_prompt_additions": [
+        "This is a scene of contemporary intellectual discussion, not historical research, archaeology, or the occult. The book or notebook shown must read as a modern, ordinary object with handwritten notes or a simple diagram — never as an ancient tome, grimoire, or mystical artifact. Keep the emotional tone 'knowledge is exciting': curious, animated, and engaging, never gloomy, solemn, or mysterious."
+      ]
+    },
     "technology.ai": {
       "subject": "A person actively exploring an abstract artificial-intelligence visualization made of glowing nodes, linked patterns, flowing data-like light, and model-like structures, without any readable interface",
       "environment": "A believable modern creative or research workspace where AI is represented through abstract light, nodes, diagrams, and spatial visualization rather than text-bearing screens",
