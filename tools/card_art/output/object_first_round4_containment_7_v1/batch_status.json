@@ -1,0 +1,22 @@
+{
+  "name": "batches/0vvyfj15xoel12ouij75cnm61dit0pexdh4t",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-object-first-round4-containment-7-v1",
+    "output": {},
+    "createTime": "2026-09-24T16:03:17.475919028Z",
+    "endTime": "2026-09-24T16:11:37.180698770Z",
+    "updateTime": "2026-09-24T16:11:37.180698790Z",
+    "batchStats": {
+      "requestCount": "7",
+      "successfulRequestCount": "7"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/0vvyfj15xoel12ouij75cnm61dit0pexdh4t"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput"
+  }
+}

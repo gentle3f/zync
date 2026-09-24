@@ -1,0 +1,44 @@
+{
+  "version": "v1",
+  "purpose": "Round 4 of the isolated object-first visual-direction experiment: structural containment rescue test. Round 3 showed strong model priors reintroducing humans in specific hobby families (media.movies, sports.running, outdoors.swimming, sports.basketball, gaming.board, technology.ai) and a related background-human leak in pets.dogs. Round 4 re-tests exactly those 7 IDs using structural scene design (empty/private environments, before/after-action staging) rather than a normal human-centered scene with humans subtracted. Uses the real, unmodified D4 global style (global_style_v1.json, read only, never written) plus a temporary experiment-only object-first policy via compileHobbyPrompt's existing experimentOverride mechanism. Does NOT modify any production file, the production queue, launch-gate files, or quarantine status. Not persisted into production. Generation-only from Claude's side - no visual QA performed by Claude on the collected images; visual review happens separately in ChatGPT.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "production_files_touched": false,
+  "ids": [
+    "media.movies",
+    "sports.running",
+    "outdoors.swimming",
+    "sports.basketball",
+    "gaming.board",
+    "technology.ai",
+    "pets.dogs"
+  ],
+  "id_mapping_note": "No mapping needed - all 7 IDs are exact canonical IDs reused unchanged from round 3.",
+  "role_per_id": {
+    "media.movies": "round-3 FAIL retest - prior failure: human silhouette rendered on the screen content itself",
+    "sports.running": "round-3 FAIL retest - prior failure: bare human legs visible attached to the shoes",
+    "outdoors.swimming": "round-3 MINOR retest - prior failure: small human foot/ankle visible in the splash",
+    "sports.basketball": "round-3 MINOR retest - prior failure: ambiguous blurred-crowd shapes in the stands",
+    "gaming.board": "round-3 FAIL retest - prior failure: two clearly visible background people at a cafe table + readable handwritten text",
+    "technology.ai": "round-3 SEVERE FAIL retest - prior failure: human hands/arms/torso dominating the frame + a human face in a floating thumbnail",
+    "pets.dogs": "round-3 MINOR retest - prior failure: small distant human silhouettes with umbrellas visible through the window; dog protagonist itself was fully compliant"
+  },
+  "image": { "aspect_ratio": "2:3" },
+  "expected": {
+    "requests": 7,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.1176
+  },
+  "method": "Structural containment: scenes are designed from the start so no human presence is structurally expected (empty cinema, empty track/pool/gym, private game room, private garden/home interior, non-human AI visual metaphor), rather than a human-centered scene with the human subtracted after the fact. Physical-logic rule: no invisible-human physics (no floating tools operating themselves) - only already-in-motion objects, moving water, burning fire, automatically operating machines, wind, aftermath traces.",
+  "claude_role_this_round": "generation only: compile prompts, submit, collect, verify files technically (existence, filename mapping, dimensions, format, file size, sha256, request/response mapping, API success/failure, cost). No visual inspection, no PASS/MINOR/FAIL judgment, no human-compliance verdict, no semantic/composition/quality scoring performed by Claude. Visual review will be done separately in ChatGPT.",
+  "hard_guardrails": [
+    "exactly 7 images this round, no rerolls",
+    "no production file writes, no production queue changes, no launch-gate file changes, no quarantine changes",
+    "no Batch-1/Batch-2 authorization state touched",
+    "no auto-scaling/auto-promotion/permanent architecture build after the test",
+    "no fal.ai, no other image model, no reference images, no image-to-image",
+    "no visual QA performed by Claude on the resulting images"
+  ]
+}
