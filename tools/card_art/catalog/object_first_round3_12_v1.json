@@ -1,0 +1,70 @@
+{
+  "version": "v1",
+  "purpose": "Round 3 of the isolated object-first visual-direction experiment: cross-family stress test (12 new hobby families, several deliberately hard: cinema, AI, road trip, pets) plus a deliberate composition/lighting diversity router to test whether object-first develops a new sameness problem (warm golden light + cozy room + centered object + sparkles). Uses the real, unmodified D4 global style (global_style_v1.json, read only, never written) plus a temporary experiment-only object-first policy via compileHobbyPrompt's existing experimentOverride mechanism. Does NOT modify any production file, the production queue, launch-gate files, or quarantine status. Not persisted into production.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "production_files_touched": false,
+  "id_mapping": {
+    "cinema": { "canonical_id": "media.movies", "note": "No exact 'cinema' ID exists; closest generic match (title 'Movies')." },
+    "running": { "canonical_id": "sports.running", "note": "exact" },
+    "swimming": { "canonical_id": "outdoors.swimming", "note": "exact" },
+    "basketball": { "canonical_id": "sports.basketball", "note": "exact" },
+    "photography": { "canonical_id": "photography.general", "note": "exact (title 'Photography')" },
+    "piano": { "canonical_id": "music.piano", "note": "exact" },
+    "board games": { "canonical_id": "gaming.board", "note": "exact generic match (title 'Board Games', not a sub-style variant)" },
+    "gardening": { "canonical_id": "lifestyle.gardening", "note": "exact" },
+    "baking": { "canonical_id": "food.baking", "note": "exact" },
+    "artificial intelligence / AI": { "canonical_id": "technology.ai", "note": "exact (title 'Artificial Intelligence')" },
+    "pets / dogs": { "canonical_id": "pets.dogs", "note": "exact" },
+    "road trip": { "canonical_id": "travel.roadtrip", "note": "exact (title 'Road Trips')" }
+  },
+  "ids": [
+    "media.movies",
+    "sports.running",
+    "outdoors.swimming",
+    "sports.basketball",
+    "photography.general",
+    "music.piano",
+    "gaming.board",
+    "lifestyle.gardening",
+    "food.baking",
+    "technology.ai",
+    "pets.dogs",
+    "travel.roadtrip"
+  ],
+  "composition_diversity_router": {
+    "media.movies": "architectural wide shot",
+    "sports.running": "action-freeze moment",
+    "outdoors.swimming": "overhead / top-down",
+    "sports.basketball": "low-angle kinetic",
+    "photography.general": "macro close-up",
+    "music.piano": "quiet atmospheric composition",
+    "gaming.board": "dense-detail composition",
+    "lifestyle.gardening": "bright daylight",
+    "food.baking": "strong diagonal composition",
+    "technology.ai": "minimal hero composition",
+    "pets.dogs": "rainy / moody atmosphere",
+    "travel.roadtrip": "cool night scene",
+    "note": "All 12 of the required composition archetypes used exactly once across the set, deliberately assigned to avoid convergence on a single default treatment."
+  },
+  "image": { "aspect_ratio": "2:3" },
+  "expected": {
+    "requests": 12,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.2016
+  },
+  "decision_gate_options": [
+    "A. Object-first as primary - default visual language, humans only as exceptions",
+    "B. Hybrid - object-first for selected archetype families, human-led D4 remains equally important",
+    "C. Object-first limited - niche/fallback lane only"
+  ],
+  "hard_guardrails": [
+    "exactly 12 images this round, no rerolls unless technically unusable (corrupt/undecodable file)",
+    "no production file writes, no production queue changes, no launch-gate file changes, no quarantine changes",
+    "no Batch-1/Batch-2 authorization state touched",
+    "no auto-scaling/auto-promotion/permanent architecture build after the test",
+    "no fal.ai, no other image model, no reference images, no image-to-image"
+  ]
+}
