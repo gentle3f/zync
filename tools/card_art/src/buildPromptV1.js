@@ -55,6 +55,9 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
   if (globalStyle.business_text_suppression_policy && effective.id?.startsWith('business.')) {
     sections.push(globalStyle.business_text_suppression_policy);
   }
+  if (globalStyle.arts_text_suppression_policy && effective.id?.startsWith('arts.')) {
+    sections.push(globalStyle.arts_text_suppression_policy);
+  }
   sections.push(
     `Use this overall composition approach: ${archetype.composition} ${archetype.camera} ` +
     `The emotional feeling should be ${list(archetype.feeling)}. ` +

@@ -1,0 +1,131 @@
+{
+  "version": "v1",
+  "reviewed_at": "2026-09-24",
+  "purpose": "Full individual human QA of all 8 final-hygiene-test images, each compared against its documented original defect from Batch-1 and/or the prior remediation_test_12_v1 round.",
+  "gate_from_config": {
+    "business_readable_text_rate_required": "0/2",
+    "arts_readable_text_rate_required": "0/6",
+    "semantic_fail": 0,
+    "brand_trademark_leak": 0,
+    "border_ui_defect": 0,
+    "safety_issue": 0
+  },
+  "results": [
+    {
+      "id": "business.product_management",
+      "role": "mandatory business blocker",
+      "prior_defect": "remediation_test_12_v1: readable 'Product Roadmap' title + column headers 'Discover/Validate/Build/Launch/Optimize'.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - the round table diagram is now a rich, fully abstract hexagon/node network with colored bars; background whiteboard is abstract blocks/arrows; device mockups on shelves show blank wireframe placeholders, no logos. Zero readable text anywhere."
+    },
+    {
+      "id": "business.fire_movement",
+      "role": "mandatory business blocker",
+      "prior_defect": "remediation_test_12_v1: readable 'Life Map' title on the primary planning sheet (prior 'FINANCE' book-spine and 'Mind Map' header were already fixed then).",
+      "semantic": "PASS",
+      "readable_text_leak": "YES",
+      "text_leak_detail": "No large title this time, but small legible sticky-note-style labels are visible on the corkboard, including 'Side Hustles' and what reads as 'Investing'. Location: corkboard, secondary/mid-ground. Severity: MODERATE (much smaller and less dominant than the prior 'Life Map' title, but still clearly readable words).",
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "PARTIALLY FIXED - the title-specific pattern is gone, but small distributed readable labels persist on the board. Net improvement over both Batch-1 and the prior remediation round, but still fails the strict 0-readable-text requirement."
+    },
+    {
+      "id": "arts.zine_making",
+      "role": "mandatory arts control",
+      "prior_defect": "Batch-1 and remediation_test_12_v1 (both): the literal hobby name 'ZINE' rendered repeatedly and clearly on multiple zine/prop covers; 'COMICS' also readable on a shelf book.",
+      "semantic": "PASS",
+      "readable_text_leak": "YES",
+      "text_leak_detail": "The primary zine/booklet being actively made on the desk (the hero object) is now completely free of the 'ZINE' wordmark and any other readable text. However, the background wall poster/flyer collage still shows some legible-looking gig-poster-style text fragments. Location: background wall decor, secondary. Severity: MINOR-MODERATE (major improvement on the primary prop; residual leak is incidental environmental decor, not the craft object itself).",
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "MAJOR IMPROVEMENT, NOT FULLY FIXED - the specific direct violation (hobby name on the hero prop) is eliminated; a secondary, lower-severity leak remains in background wall decor."
+    },
+    {
+      "id": "arts.comedy_writing",
+      "role": "mandatory arts control",
+      "prior_defect": "Batch-1 and remediation_test_12_v1 (both): whiteboard flowchart extensively readable; book cover clearly reads 'THESAURUS'; prior round additionally showed a full readable joke line.",
+      "semantic": "PASS",
+      "readable_text_leak": "YES",
+      "text_leak_detail": "'THESAURUS' still clearly readable on the book spine, unchanged from both prior rounds. Notebook content is now illegible scribble marks (improved - no more full readable joke line). Location: foreground book prop, dominant. Severity: MODERATE (one persistent, unchanged violation; notebook improved).",
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "PARTIALLY FIXED - notebook/script content improved to illegible, but the book-title prop violation is unchanged across all three rounds. Likely needs a hobby-level override targeting this specific prop, similar to the books.reading fix."
+    },
+    {
+      "id": "arts.hip_hop_dance",
+      "role": "additional arts offender (poster/signage family)",
+      "prior_defect": "Batch-1: large, fully legible graffiti wall text - 'FLOW', 'CYPHER', 'UNITY EST. 98'.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "YES",
+      "brand_leak_detail": "NEW finding this round (not present in the Batch-1 record for this id): a pale swoosh-like curved mark is visible on the black sneaker on the kicking foot, and the woman's orange jacket sleeve shows a clear three-stripe pattern resembling a real sportswear brand.",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "TEXT FULLY FIXED (graffiti wall is now completely non-linguistic tag-style scribbles), but a NEW brand/trademark issue was discovered in the same generation (footwear/apparel silhouette family, the same class of residual risk already documented for sports.skateboarding and arts.kpop_dance). Needs brand-safety review before regeneration."
+    },
+    {
+      "id": "arts.voice_acting",
+      "role": "additional arts offender (script/notebook family)",
+      "prior_defect": "Batch-1: script pages held by multiple actors show small but clearly legible Japanese text.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - script pages are now fully illegible dense line-texture; background monitors blank/dark; mixing console generic. Clean."
+    },
+    {
+      "id": "arts.calligraphy",
+      "role": "additional arts offender (workshop/scroll family, hardest stress test)",
+      "prior_defect": "Batch-1: multiple background wall-scroll characters beyond the one semantically-necessary in-progress brushstroke.",
+      "semantic": "PASS",
+      "readable_text_leak": "YES",
+      "text_leak_detail": "Background hanging scroll and framed wall pieces still show large, legible-looking individual kanji-style characters, beyond the actively-written character on the main paper (which is semantically expected and not counted as a violation). Location: background wall decor, secondary but visually prominent. Severity: MODERATE, essentially unchanged from Batch-1.",
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "NOT FIXED, LARGELY AS EXPECTED - this was deliberately chosen as the hardest possible stress test since the craft itself is about writing characters. The general arts_text_suppression_policy was not sufficient here; needs a hobby-level override (background wall art must be blank/abstract) similar to the existing wellness.tai_chi fix."
+    },
+    {
+      "id": "arts.webcomics",
+      "role": "additional arts offender (layout/design surface + screen UI family)",
+      "prior_defect": "Batch-1: tablet shows visible toolbar icon chrome (screen-policy leak); comic book cover shows a hero-like figure with book-cover text.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - tablet now shows only the in-progress artwork (no toolbar/UI chrome); comic covers on shelf/desk show illustrated art only, no readable titles. Clean on both the text and screen-policy dimensions."
+    }
+  ],
+  "aggregate": {
+    "semantic_pass": 8,
+    "semantic_minor": 0,
+    "semantic_fail": 0,
+    "business_readable_text_leak_rate": "1/2 (business.fire_movement)",
+    "arts_readable_text_leak_rate": "3/6 (arts.zine_making partial, arts.comedy_writing, arts.calligraphy)",
+    "brand_trademark_leak_total": "1/8 (arts.hip_hop_dance - new finding)",
+    "border_ui_defect_total": 0,
+    "safety_issue_total": 0,
+    "fully_clean_cards": "4/8 (business.product_management, arts.voice_acting, arts.webcomics, and arts.hip_hop_dance on the text dimension specifically though it has a new brand finding)"
+  }
+}

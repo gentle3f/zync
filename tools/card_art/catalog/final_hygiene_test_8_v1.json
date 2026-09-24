@@ -1,0 +1,68 @@
+{
+  "version": "v1",
+  "purpose": "Final targeted production-hygiene validation: proves (1) the strengthened business title/heading rule fixes the last two Batch-1 business blockers, and (2) the new arts_text_suppression_policy controls the 14/89 (15.7%) arts.* text-leak cluster from Batch 1. Reuses exact Batch-1 offender IDs (business.product_management, business.fire_movement) and exact Batch-1/prior-remediation arts offender IDs from production_batch_001_v1/qa_layer2_human_review_v1.json and remediation_test_12_v1/qa_results_v1.json.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "fixes_under_test": [
+    "business_text_suppression_policy title/heading paragraph added this round (no title/heading/caption above any diagram, board, roadmap, or kanban board, even short named-diagram titles like 'Roadmap' or 'Life Map')",
+    "new arts_text_suppression_policy (new global_style_v1.json field, auto-applied to every canonical_interest_id starting with 'arts.')"
+  ],
+  "ids": [
+    "business.product_management",
+    "business.fire_movement",
+    "arts.zine_making",
+    "arts.comedy_writing",
+    "arts.hip_hop_dance",
+    "arts.voice_acting",
+    "arts.calligraphy",
+    "arts.webcomics"
+  ],
+  "id_selection_and_original_defect": {
+    "business.product_management": { "role": "mandatory business blocker", "original_defect": "Prior remediation round (remediation_test_12_v1): despite the business no-readable-text policy, still rendered a large readable 'Product Roadmap' title plus column headers 'Discover/Validate/Build/Launch/Optimize' on the dominant foreground whiteboard." },
+    "business.fire_movement": { "role": "mandatory business blocker", "original_defect": "Prior remediation round: book-spine 'FINANCE' and whiteboard 'Mind Map' header were fixed, but a new large readable 'Life Map' title appeared on the primary planning sheet." },
+    "arts.zine_making": { "role": "mandatory arts control", "cause_family": "book/zine cover", "original_defect": "Batch-1 and prior remediation round (both): the literal hobby name 'ZINE' renders repeatedly, clearly readable, on multiple zine/prop covers; 'COMICS' also readable on a shelf book." },
+    "arts.comedy_writing": { "role": "mandatory arts control", "cause_family": "notebook/whiteboard", "original_defect": "Batch-1 and prior remediation round (both): whiteboard flowchart extensively readable; book cover clearly reads 'THESAURUS'; prior remediation additionally showed a full readable joke line in the notebook." },
+    "arts.hip_hop_dance": { "role": "additional arts offender (selected)", "cause_family": "poster/signage", "original_defect": "Batch-1: large, fully legible graffiti wall text - 'FLOW', 'CYPHER', 'UNITY EST. 98'. The most severe signage-family text leak in the whole 120-card batch." },
+    "arts.voice_acting": { "role": "additional arts offender (selected)", "cause_family": "script pages held during performance", "original_defect": "Batch-1: script pages held by multiple actors show small but clearly legible Japanese text." },
+    "arts.calligraphy": { "role": "additional arts offender (selected)", "cause_family": "workshop wall scrolls (art-form-inherent text stress test)", "original_defect": "Batch-1: multiple background wall-scroll characters beyond the one semantically-necessary in-progress brushstroke. Deliberately chosen because calligraphy is the hardest possible stress test for a text-suppression policy - the craft itself is about writing characters." },
+    "arts.webcomics": { "role": "additional arts offender (selected)", "cause_family": "layout/design surface + screen UI", "original_defect": "Batch-1: tablet shows visible toolbar icon chrome (screen-policy leak); comic book cover shows a hero-like figure with book-cover text." }
+  },
+  "cause_family_coverage": [
+    "book/zine cover (arts.zine_making)",
+    "notebook/whiteboard (arts.comedy_writing)",
+    "poster/signage (arts.hip_hop_dance)",
+    "script/notebook (arts.voice_acting)",
+    "workshop board/scroll (arts.calligraphy)",
+    "layout/design surface (arts.webcomics)"
+  ],
+  "avoided": [
+    "sports.american_football (quarantined, not reopened)",
+    "technology.robotics (quarantined, not reopened)",
+    "no unrelated successful Batch-1 or prior-remediation image is being regenerated - all 8 ids here have a documented prior text-leak defect"
+  ],
+  "image": { "aspect_ratio": "2:3" },
+  "expected": {
+    "requests": 8,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.1344
+  },
+  "final_production_hygiene_gate": {
+    "business_readable_text_rate_required": "0/2",
+    "arts_readable_text_rate_required": "0/6",
+    "semantic_fail": 0,
+    "brand_trademark_leak": 0,
+    "border_ui_defect": 0,
+    "safety_issue": 0,
+    "no_new_systemic_defect": true,
+    "note": "One tiny ambiguous non-linguistic scribble is not a failure. Clearly readable invented words/titles/headings ARE failures."
+  },
+  "decision_rule": {
+    "green": "Known Batch-1 production-hygiene clusters (business titles, arts readable text) are controlled; Batch 2 MAY be considered after a new explicit user authorization.",
+    "amber": "A localized blocker remains; Batch 2 stays locked.",
+    "red": "The policy approach failed; production stays stopped.",
+    "no_auto_scale": true,
+    "batch_2_not_started_automatically_even_if_green": true
+  }
+}

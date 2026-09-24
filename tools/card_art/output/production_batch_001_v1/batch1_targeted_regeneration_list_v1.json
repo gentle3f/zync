@@ -1,10 +1,9 @@
 {
-  "version": "v1",
-  "generated_at": "2026-09-24T05:09:31.618Z",
-  "purpose": "Classification only - prepared per task Part 7. No regeneration executed in this task.",
+  "version": "v2",
+  "generated_at": "2026-09-24T05:56:37.760Z",
+  "purpose": "Classification only, updated after the final production-hygiene remediation round (final_hygiene_test_8_v1). No regeneration executed in this task.",
   "total_batch1_images": 120,
   "approved_as_is_count": 81,
-  "targeted_regeneration_needed_count": 39,
   "approved_as_is": [
     "arts.acrylic_painting",
     "arts.acting",
@@ -88,6 +87,7 @@
     "business.real_estate",
     "business.real_estate_investing"
   ],
+  "targeted_regeneration_needed_count": 39,
   "targeted_regeneration_needed": [
     {
       "id": "arts.blogging",
@@ -98,7 +98,8 @@
         "screen_policy_leak": "YES",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.calligraphy",
@@ -109,7 +110,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "manual_review_required",
+      "retest_note": "RETESTED this round (deliberately the hardest stress test): background wall-scroll/framed characters still persist beyond the semantically-necessary active brushstroke. Likely needs a hobby-level override (background wall art must be blank/abstract), similar to the existing wellness.tai_chi fix."
     },
     {
       "id": "arts.chinese_calligraphy",
@@ -120,7 +122,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.chinese_painting",
@@ -131,7 +134,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.comedy_writing",
@@ -142,7 +146,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "manual_review_required",
+      "retest_note": "RETESTED this round: notebook content is now illegible scribbles (improved), but the book spine still clearly reads \"THESAURUS\", unchanged from Batch 1. Likely needs a hobby-level override for this specific book-title prop, similar to the books.reading fix."
     },
     {
       "id": "arts.film_photography",
@@ -153,7 +158,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.graphic_design",
@@ -164,7 +170,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.hip_hop_dance",
@@ -175,7 +182,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "manual_review_required",
+      "retest_note": "RETESTED this round: graffiti text fully eliminated (clean), but a NEW brand/trademark issue was discovered - a swoosh-like mark on the sneaker and a three-stripe pattern on a jacket sleeve. Needs brand-safety review before regeneration, not just the text fix."
     },
     {
       "id": "arts.kpop_dance",
@@ -186,7 +194,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.magic_performance",
@@ -197,7 +206,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.online_video_creation",
@@ -208,7 +218,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "YES"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "manual_review_required",
+      "retest_note": "Not retested this round. Its defect (camera-rig/anatomy placement oddity) is not addressed by either the business or arts text-suppression policies - no applicable automated fix exists yet; needs individual human review/recipe adjustment."
     },
     {
       "id": "arts.photo_editing",
@@ -219,7 +230,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.photo_retouching",
@@ -230,7 +242,8 @@
         "screen_policy_leak": "YES",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.podcasting",
@@ -241,7 +254,8 @@
         "screen_policy_leak": "YES",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.short_form_video",
@@ -252,7 +266,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.street_art",
@@ -263,7 +278,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.urban_sketching",
@@ -274,7 +290,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.vlogging",
@@ -285,7 +302,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.voice_acting",
@@ -296,7 +314,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "RETESTED this round (final_hygiene_test_8_v1): script pages now fully illegible. Clean."
     },
     {
       "id": "arts.voiceover",
@@ -307,7 +326,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "arts.webcomics",
@@ -318,7 +338,8 @@
         "screen_policy_leak": "YES",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "RETESTED this round: tablet now shows only artwork (no toolbar chrome); comic covers show no readable text. Clean on both text and screen-policy dimensions."
     },
     {
       "id": "arts.zine_making",
@@ -329,7 +350,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+      "subclass": "manual_review_required",
+      "retest_note": "RETESTED this round: the primary zine/booklet prop (the hero object) is now completely text-free - the literal \"ZINE\" wordmark is gone from it. However, background wall poster/flyer collage still shows some legible-looking gig-poster-style text fragments. Partial fix."
     },
     {
       "id": "business.budgeting",
@@ -340,7 +362,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "business.career_development",
@@ -351,7 +374,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.career_switching",
@@ -362,7 +386,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.coworking",
@@ -373,7 +398,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.design_thinking",
@@ -384,7 +410,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.dividend_investing",
@@ -395,7 +422,8 @@
         "screen_policy_leak": "YES",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "business.ecommerce",
@@ -406,7 +434,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "business.financial_independence",
@@ -417,7 +446,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.fire_movement",
@@ -428,7 +458,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_partial_needs_followup_before_regeneration"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "RETESTED this round: the big title (\"Life Map\") is gone, but small readable sticky-note labels (\"Side Hustles\", \"Investing\") still leak. Net improvement but not yet clean."
     },
     {
       "id": "business.freelancing",
@@ -439,7 +470,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "business.index_investing",
@@ -450,7 +482,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.marketing",
@@ -461,7 +494,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "business.no_code",
@@ -472,7 +506,8 @@
         "screen_policy_leak": "YES",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.personal_branding",
@@ -483,7 +518,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     },
     {
       "id": "business.product_management",
@@ -494,7 +530,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_partial_needs_followup_before_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "RETESTED this round (final_hygiene_test_8_v1): title/heading rule fully eliminated the readable text (\"Product Roadmap\" + column headers both gone). Now clean."
     },
     {
       "id": "business.project_management",
@@ -505,7 +542,8 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "fix_validated_ready_for_regeneration"
+      "subclass": "policy_fix_validated_and_ready_for_regen",
+      "retest_note": "Validated in the prior remediation round (remediation_test_12_v1); not retested again this round, no new evidence contradicts it."
     },
     {
       "id": "business.remote_work",
@@ -516,13 +554,20 @@
         "screen_policy_leak": "NO",
         "anatomy_object_corruption": "NO"
       },
-      "subclass": "business_policy_applied_not_individually_spot_tested"
+      "subclass": "policy_fix_still_unvalidated",
+      "retest_note": "Not individually retested this round. The relevant global policy (business text-suppression incl. the new title/heading rule, the new arts text-suppression policy, or the existing brand-safety policy) now applies structurally to this id but has not been spot-tested."
     }
   ],
   "subclass_summary": {
-    "fix_validated_ready_for_regeneration": 8,
-    "fix_partial_needs_followup_before_regeneration": 2,
-    "business_policy_applied_not_individually_spot_tested": 7,
-    "not_covered_by_this_rounds_fix_needs_separate_hobby_override": 22
+    "policy_fix_still_unvalidated": 23,
+    "manual_review_required": 5,
+    "policy_fix_validated_and_ready_for_regen": 11
+  },
+  "regeneration_planning": {
+    "ready_now_count": 11,
+    "ready_now_estimated_cost_usd": 0.1848,
+    "total_targeted_regeneration_needed_count": 39,
+    "total_targeted_regeneration_estimated_cost_usd_once_all_validated": 0.6552,
+    "note": "ready_now = policy_fix_validated_and_ready_for_regen only (fixes individually spot-tested and confirmed clean this round or the prior remediation round). The larger total assumes every remaining policy_fix_still_unvalidated and manual_review_required id eventually also gets fixed/validated and regenerated - it is a planning ceiling, not a current recommendation. No regeneration was executed in this task."
   }
 }

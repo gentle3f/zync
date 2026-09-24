@@ -1,0 +1,22 @@
+{
+  "name": "batches/oem8kbk06k56o6u8visuq6vlyygkcujs13p3",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-final-hygiene-test-8-v1",
+    "output": {},
+    "createTime": "2026-09-24T05:45:07.087987161Z",
+    "endTime": "2026-09-24T05:50:10.422060907Z",
+    "updateTime": "2026-09-24T05:50:10.422060937Z",
+    "batchStats": {
+      "requestCount": "8",
+      "successfulRequestCount": "8"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/oem8kbk06k56o6u8visuq6vlyygkcujs13p3"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput"
+  }
+}
