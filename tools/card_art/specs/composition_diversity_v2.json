@@ -1,0 +1,48 @@
+{
+  "version": "v2",
+  "purpose": "Deterministic composition/palette/effects diversity router for candidate V2 object-first cards. Reuses the proven hashing pattern from src/diversityLayer.js (stable per-dimension hash of the canonical id, so the same id always routes to the same values across regenerations) but with a new, independent set of dimensions suited to object-first/non-human-led scenes rather than V1's human-presentation dimensions (gender/body/hair etc, which do not apply here). Round 3 validated that this kind of router is necessary and effective: 11/12 archetype-compliant results and a genuine break from the golden-hour/cozy/centered/sparkle sameness pattern.",
+  "dimensions": {
+    "composition_archetype": {
+      "description": "Camera angle, object scale, and framing treatment.",
+      "values": {
+        "macro_hero": "Extreme close-up on texture/material detail of the hero object.",
+        "low_angle_kinetic": "Camera positioned low, looking dramatically upward at the hero in motion.",
+        "overhead_tabletop": "Camera looking straight down from directly above.",
+        "architectural_wide": "A wide shot that shows the scale and architecture of the whole environment.",
+        "dense_detail": "An elevated three-quarter view packed with rich supporting detail around the hero.",
+        "strong_diagonal": "A bold diagonal line (light, edge, or object arrangement) creates dynamic tension instead of a centered symmetrical shot.",
+        "action_aftermath_frame": "A still, ground-level or eye-level frame centered on physical traces of a very recent action.",
+        "minimal_iconic": "The hero occupies a small, precisely placed area within a large field of negative space.",
+        "quiet_atmospheric": "A mostly dark or muted scene with a single isolated light source on the hero.",
+        "rainy_moody_window": "An intimate interior view framed by a window with soft, diffused outdoor light.",
+        "elevated_three_quarter": "A dynamic three-quarter medium-wide view, neither fully overhead nor fully eye-level.",
+        "extreme_scale_contrast": "The hero object is shown dramatically larger or smaller relative to its surroundings than expected."
+      }
+    },
+    "palette_lighting_route": {
+      "description": "Time of day and color-temperature family, deliberately spread across cool/warm/neutral rather than defaulting to warm/golden.",
+      "values": {
+        "cool_night": "Deep night blues, a single artificial light source (headlights, screen glow, neon), stars or dark sky.",
+        "bright_daylight": "Crisp, clear, high-visibility daylight with saturated natural color.",
+        "rainy_moody": "Soft grey rain-light, muted cool tones, one small warm accent light.",
+        "warm_intimate": "A single warm light source (lamp, spotlight, oven glow) isolated against a cooler or dark surrounding.",
+        "neutral_overcast": "Even, shadow-soft daylight with a restrained, muted palette.",
+        "dusk_transition": "The in-between blue-to-orange light band just after sunset or before sunrise.",
+        "studio_dark": "A controlled dark environment lit by one deliberate, focused light source.",
+        "cool_daylight_shade": "Bright but cool-toned daylight, as in open shade or an overcast bright sky."
+      }
+    },
+    "effect_level": {
+      "description": "Sparkle/glow/particle intensity. Weighted so most cards receive none or restrained treatment - sparkle/glow must never be the default.",
+      "weights": { "none": 45, "restrained": 40, "expressive": 15 },
+      "semantic_guidance": {
+        "none": "No decorative particle effects of any kind.",
+        "restrained": "A small, semantically-motivated effect only (steam for food, dust for a track/trail, water droplets for water sports, light glints on glass/metal) - never a magical sparkle unrelated to the hobby's real physics.",
+        "expressive": "A stronger but still semantically-grounded effect (visible motion trail, glowing active process, dramatic light beam) reserved for hobbies whose defining moment is inherently dynamic or luminous (e.g. an active 3D print, a night road, an AI data structure)."
+      },
+      "unreasonable_examples": ["random sparkles around books", "magical glow around ordinary furniture", "stars around every hobby regardless of semantics"]
+    }
+  },
+  "anti_sameness_constraint": "No catalog-wide distribution in this router should exceed roughly 15% concentration in any single composition_archetype or palette_lighting_route value (12 and 8 values respectively imply a uniform baseline of ~8.3% and ~12.5%); the audit must flag any value that exceeds double its uniform baseline as a suspicious concentration requiring review.",
+  "hashing_note": "Implemented independently in src/objectFirstV2Router.js using the same FNV-1a stable-hash + modulo technique as src/diversityLayer.js's stableHash()/uniformPick()/weightedPick(), reimplemented locally rather than imported so V2 has zero code dependency on V1's diversity system and remains fully independently selectable."
+}

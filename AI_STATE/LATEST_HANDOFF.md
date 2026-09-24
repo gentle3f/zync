@@ -5,9 +5,18 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-Authoritative continuation checkpoint:
+Authoritative continuation checkpoint (production V1/D4 track - Batch-1
+repair and Batch-2 work are PAUSED pending explicit user instruction, per
+a standing STOP directive; do not resume without a new explicit
+authorization):
 
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
+
+Second, separate authoritative checkpoint (isolated object-first visual-
+direction research track, now at the architecture stage - candidate V2,
+not yet promoted to production, V1 above remains untouched and live):
+
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_ARCHITECTURE.md`
 
 (previous checkpoint, still useful for context:
 `AI_STATE/HANDOFF_20260924_CARD_ART_FINAL_HYGIENE_TEST_8_RESULTS.md`)

@@ -1,0 +1,28 @@
+{
+  "version": "v1",
+  "purpose": "Permanent physical-logic policy for candidate V2 object-first prompts: object-first must not look like a human was digitally erased from an otherwise human-shaped scene. Applies catalog-wide to every V2-routed hobby regardless of archetype or containment rule.",
+  "rule_name": "no_invisible_human_physics",
+  "rule_text": "Do not solve a zero-human scene using invisible-human physics. Never show a tool, instrument, vessel, or object operating, pouring, swinging, or moving entirely on its own with no plausible physical cause - this reads as an erased person, not as an object-first composition.",
+  "forbidden_examples": [
+    "a watering can pouring while floating unsupported in mid-air",
+    "a racket or bat swinging with no hand and no prior momentum shown",
+    "a musical instrument playing itself with keys/strings moving with no cause",
+    "a cup or kettle lifting or tilting itself",
+    "a tool (brush, pen, hammer, needle) actively working a material with no hand and no mechanism",
+    "chopsticks or utensils hovering as though invisibly held"
+  ],
+  "allowed_causes_of_motion": [
+    "gravity (a falling or dropped object, water pouring downward from a fixed spout under its own weight rather than tilting itself)",
+    "wind or air movement (fluttering pages, drifting dust, rippling fabric)",
+    "machine automation (a 3D printer head moving via its own mechanism, an automatic sprinkler, a self-stirring appliance)",
+    "a ball or object already in flight from a prior, unseen action",
+    "water settling or rippling after a very recent disturbance",
+    "fire burning",
+    "a wheel, fan, or turntable spinning under its own established mechanism",
+    "bubbles rising",
+    "rolling dice that have just been released (shown mid-roll or freshly settled, not being thrown by an invisible hand)",
+    "environmental aftermath (footprints, chalk dust, melting ice, steam) that does not require a currently-acting body",
+    "a mechanical or electronic process operating under its own established power source"
+  ],
+  "compiler_integration_note": "This policy is intended to be appended as a fixed, always-on section of the V2 base style (see global_style_v2_object_first.json's physical_logic_ref), immediately after the non-human-protagonist directive and before any per-hobby structural containment language, so it constrains every containment rule's scene design rather than being hobby-specific."
+}

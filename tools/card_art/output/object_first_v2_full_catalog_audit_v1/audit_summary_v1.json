@@ -1,0 +1,94 @@
+{
+  "version": "v1",
+  "generated_at": "2026-09-24T16:31:36.694Z",
+  "scope": "Zero-cost, text/catalog-only V2 object-first routing audit. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics and rules, not visual findings.",
+  "total_catalog": 4053,
+  "total_eligible": 2210,
+  "total_blocked": 1843,
+  "total_quarantined_excluded": 2,
+  "total_routed_nonquarantined": 2208,
+  "protagonist_type_distribution": {
+    "object": 671,
+    "environment": 525,
+    "machine_process": 223,
+    "unresolved": 376,
+    "food_drink": 332,
+    "abstract_system": 52,
+    "animal": 29
+  },
+  "object_first_status_distribution": {
+    "containment_required": 1545,
+    "excluded_quarantined": 2,
+    "review_required": 376,
+    "clean": 287
+  },
+  "composition_archetype_distribution": {
+    "quiet_atmospheric": 189,
+    "minimal_iconic": 188,
+    "extreme_scale_contrast": 164,
+    "action_aftermath_frame": 188,
+    "strong_diagonal": 204,
+    "architectural_wide": 188,
+    "rainy_moody_window": 173,
+    "overhead_tabletop": 183,
+    "dense_detail": 186,
+    "macro_hero": 181,
+    "low_angle_kinetic": 182,
+    "elevated_three_quarter": 182
+  },
+  "palette_lighting_route_distribution": {
+    "cool_night": 309,
+    "bright_daylight": 270,
+    "studio_dark": 259,
+    "cool_daylight_shade": 272,
+    "dusk_transition": 270,
+    "warm_intimate": 287,
+    "rainy_moody": 294,
+    "neutral_overcast": 247
+  },
+  "effect_level_distribution": {
+    "none": 981,
+    "restrained": 902,
+    "expressive": 325
+  },
+  "physical_logic_risk_count": 545,
+  "text_risk_count": 695,
+  "brand_risk_count": 427,
+  "human_exception_candidate_count": 0,
+  "human_exception_candidate_rate_pct": 0,
+  "review_required_count": 376,
+  "validations": {
+    "v1_all_2210_compile": true,
+    "v2_no_duplicate_ids": true,
+    "v3_deterministic_across_two_runs": true,
+    "v4_v1_production_files_unchanged": true,
+    "v5_no_production_queue_mutation": true,
+    "v6_quarantine_untouched_and_excluded": true,
+    "v7_every_nonquarantined_row_has_protagonist_type": true,
+    "v8_every_nonquarantined_row_has_composition_route": true,
+    "v9_containment_rules_reference_valid_archetypes": true,
+    "v10_no_human_exception_explosion": true,
+    "v11_no_forbidden_production_side_effects": true,
+    "v12_no_image_generation_calls": true,
+    "concentration_problems": []
+  },
+  "all_validations_pass": true,
+  "v1_guard_file_hashes_before": {
+    "specs\\global_style_v1.json": "57be3dc81e8e6fa0b45009e7a32bcb0902cae84df93072827b3825182abd930d",
+    "specs\\archetypes_v1.json": "d3a681f3eaa31056d0950eaf64d9dea465f2456a0354c7d86f1d9ce8b1f77b50",
+    "specs\\generation_guardrails_v1.json": "b52f3a39bdb0bcc86b03ba62fad37dd464a90599a015a1e400a936ec46d00015",
+    "src\\buildPromptV1.js": "0732831b0059fef183e5870896ff5a481876643b5601a8f8fc55f7b0aafe045c",
+    "catalog\\production_queue_v1.json": "f02e2f7b1b6f2e300187aa180dce325074b8e945d86f7865e64fb617777445b8",
+    "catalog\\production_batch_plan_v1.json": "e009d66469b5724d40a97d78b54cec7ae68c507acd011955dd8b61f09152add2"
+  },
+  "v1_guard_file_hashes_after": {
+    "specs\\global_style_v1.json": "57be3dc81e8e6fa0b45009e7a32bcb0902cae84df93072827b3825182abd930d",
+    "specs\\archetypes_v1.json": "d3a681f3eaa31056d0950eaf64d9dea465f2456a0354c7d86f1d9ce8b1f77b50",
+    "specs\\generation_guardrails_v1.json": "b52f3a39bdb0bcc86b03ba62fad37dd464a90599a015a1e400a936ec46d00015",
+    "src\\buildPromptV1.js": "0732831b0059fef183e5870896ff5a481876643b5601a8f8fc55f7b0aafe045c",
+    "catalog\\production_queue_v1.json": "f02e2f7b1b6f2e300187aa180dce325074b8e945d86f7865e64fb617777445b8",
+    "catalog\\production_batch_plan_v1.json": "e009d66469b5724d40a97d78b54cec7ae68c507acd011955dd8b61f09152add2"
+  },
+  "image_generation_calls_made": 0,
+  "api_cost_usd": 0
+}

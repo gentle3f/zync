@@ -1,0 +1,63 @@
+{
+  "version": "v2",
+  "purpose": "Reusable structural-containment rules for candidate V2 object-first prompt compilation. Each rule changes SCENE DESIGN itself (what is structurally present or absent in the scene) rather than merely appending a 'no humans' negative to an otherwise human-centered scene. Rules are referenced by id from object_first_rules_v2.json's archetype_defaults / id_prefix_overrides. This spec is read-only input for a future V2 compiler; it does not generate prompts or images by itself.",
+  "rules": {
+    "action_aftermath": {
+      "applies_to_archetypes": ["solo_action", "vertical_adventure", "creative_studio", "fitness_training", "outdoor_motion"],
+      "bad_pattern": "Equipment shown dynamically in use mid-action (e.g. shoes mid-stride), which reliably pulls a human body part (legs, hands, arms) into frame even when a human is never explicitly requested.",
+      "good_pattern": "Design the scene as the moment immediately AFTER the action: equipment at rest, fresh physical traces (footprints, chalk dust, displaced material, a still-ticking stopwatch, settling water/dust), no currently-moving body part attached to anything.",
+      "validated_by": ["sports.running (round 3 fail -> round 4 redesign)"],
+      "notes": "The energy of the card must come from the aftermath details, not from an implied currently-acting body."
+    },
+    "private_empty_venue": {
+      "applies_to_archetypes": ["group_play", "drink_ritual", "travel_vista", "strategy_table", "journey_machine", "food_exploration", "aviation_world", "screenless_broadcast", "screenless_pc_play"],
+      "bad_pattern": "A public/social venue (cafe, restaurant, tavern, arena concourse) used as the backdrop, which reliably causes the model to populate the background with patrons, staff, or spectators even when not requested.",
+      "good_pattern": "Relocate the scene to a private, empty version of the same venue type (a private game room instead of a cafe; an empty street food stall instead of a busy one; an empty overlook instead of a scenic viewpoint with tourists) so no social context is structurally implied.",
+      "validated_by": ["gaming.board (round 3 fail -> round 4 redesign)", "food.dish.bun_cha (round 1 fail -> round 2 fix)", "travel.roadtrip (round 3, empty vehicle interior)"],
+      "notes": "This is the single most impactful containment rule found across all four rounds - the venue choice, not the hero object, was the actual leak source in every case it was applied to."
+    },
+    "object_hero_no_performer": {
+      "applies_to_archetypes": ["performance", "lens_perspective"],
+      "bad_pattern": "A scene built around 'a performer doing X with an instrument/tool', where the performer is the implicit subject even if described only via the instrument.",
+      "good_pattern": "Make the instrument/tool itself the sole hero, staged mid-resonance or mid-use through purely physical/optical cues (a spotlight on piano keys with faint string-vibration suggestion; a lens reflecting a landscape) with no performer present at all.",
+      "validated_by": ["music.piano (round 3, clean pass)", "photography.general (round 3, clean pass)"],
+      "notes": "This is a lower-risk rule than action_aftermath or private_empty_venue - both validating cases passed cleanly on the first attempt without needing a round-4 redesign."
+    },
+    "abstract_system_no_operator": {
+      "applies_to_archetypes": ["tech_workspace", "creator_workflow", "physical_prototype"],
+      "bad_pattern": "A 'person operating equipment' scene (coder at a monitor, hands adjusting a prototype), which is a very strong default model prior and pulled hands/arms/torso to dominate the frame even under an explicit no-human policy.",
+      "good_pattern": "Remove the operator entirely and represent the process as a self-contained abstract or mechanical system: a neural-network/data-flow graph, a prototype mid-automatic-operation, a self-contained rig - with the majority of the frame left as clean negative space rather than filled with a body.",
+      "validated_by": ["technology.ai (round 3 severe fail -> round 4 redesign)"],
+      "notes": "This is the highest-risk containment rule in the set - technology.ai was round 3's single worst failure. Treat any archetype routed here as needing the strongest possible explicit containment language, not the baseline policy alone."
+    },
+    "screen_non_human_content": {
+      "applies_to_archetypes": ["story_culture"],
+      "bad_pattern": "A screen/display within the scene is allowed to show generic 'story' or 'scene' content, which the model reliably fills with a human figure or character even when the physical room has no people.",
+      "good_pattern": "Constrain any in-scene screen/display content to an explicit non-human visual whitelist (galaxy, ocean horizon, clouds, abstract city lights, landscape) and forbid figurative/character/story content on it entirely - this rule applies to media INSIDE the scene, not just the physical room.",
+      "validated_by": ["media.movies (round 3 fail -> round 4 redesign)"],
+      "notes": "This rule generalizes to any hobby where a screen-within-the-scene could show narrative content (e.g. a future technology.streaming or arts.animation card) and should be applied proactively wherever a display surface is unavoidable."
+    },
+    "private_environment_animal": {
+      "applies_to_archetypes": ["companion_bond"],
+      "bad_pattern": "A real-animal protagonist placed in a public-facing environment (a window facing a street) still leaks small background human silhouettes even though the animal itself is fully compliant.",
+      "good_pattern": "Keep the real-animal protagonist but constrain the environment to a private space only: a fenced private garden, or a home interior whose window shows only garden/plants/rain/sky, never a street.",
+      "validated_by": ["pets.dogs (round 3 minor fail -> round 4 redesign)"],
+      "notes": "The animal itself was never the problem in any round - only the background environment. This rule should be paired with the explicit animal carve-out from object_first_rules_v2.json, not with the general containment policy alone."
+    },
+    "swimming_hard_case_no_visible_swimmer": {
+      "applies_to_archetypes": ["water_outdoors"],
+      "bad_pattern": "Any narrative implying a swimmer currently in the water or having JUST passed through (a splash, a fresh entry trail, dispersing bubbles at the point of entry) still leaked a partial human body part (a foot/ankle) even under an explicit no-human policy, because the storytelling device itself implies a body.",
+      "good_pattern": "Use only a genuinely static empty-lane presentation: goggles and cap resting on the starting block, taut lane ropes, ambient ripples and reflections near the pool wall, water droplets - with no narrative device that implies a swimmer was just there.",
+      "validated_by": ["outdoors.swimming (round 3 minor fail -> round 4 redesign, explicitly called out as a special hard case in the round-4 brief)"],
+      "notes": "This is the strictest rule in the set - it is the only one that forbids the 'aftermath' storytelling device otherwise encouraged by action_aftermath, because in this specific case the aftermath device itself was the leak vector, not the fix."
+    },
+    "generic_structural_containment": {
+      "applies_to_archetypes": ["urban_discovery", "calm_wellness", "nature_immersion", "learning_exploration", "reading_world", "digital_play", "home_lifestyle", "wellness_experience"],
+      "bad_pattern": "A default scene design that assumes a person is present to perform the activity, even when the archetype's own object/equipment/environment language could carry full recognition alone.",
+      "good_pattern": "Apply the general V2 non-human-protagonist policy (empty/private environment, object/equipment/environment as hero, physical traces of the activity) without a more specialized containment pattern - these archetypes have not shown the sharper, scene-specific leak vectors found in the other named rules.",
+      "validated_by": ["lifestyle.gardening (round 3, clean pass)", "lifestyle.home_decor (round 2, clean pass)", "books.reading (round 2, clean pass)", "outdoors.camping (round 2, clean pass)"],
+      "notes": "This is the default/fallback rule and is expected to cover the largest number of catalog rows. It is intentionally less prescriptive than the named rules because no round has yet found a specific leak pattern requiring a bespoke fix for these archetypes."
+    }
+  },
+  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment"]
+}
