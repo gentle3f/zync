@@ -13,14 +13,18 @@ authorization):
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
 Second, separate authoritative checkpoint (isolated object-first visual-
-direction research track, now at the compiler stage - candidate V2,
-not yet promoted to production, V1 above remains untouched and live):
+direction research track, now at the final zero-cost compiler gate -
+candidate V2, not yet promoted to production, V1 above remains untouched
+and live. V2 is READY for a $0.2688 paid 16-card validation batch
+pending explicit user authorization - not yet authorized or run):
 
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_FINAL_ZERO_COST_GATE.md`
+
+(previous checkpoints in this track, still useful for context:
 `AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_COMPILER_AND_REVIEW_REDUCTION.md`
-
-(previous checkpoint in this track, still useful for context - routing/
-audit architecture before the prompt compiler existed:
-`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_ARCHITECTURE.md`)
+(prompt compiler built, review_required 376->0),
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_ARCHITECTURE.md`
+(routing/audit architecture before the prompt compiler existed))
 
 (previous checkpoint, still useful for context:
 `AI_STATE/HANDOFF_20260924_CARD_ART_FINAL_HYGIENE_TEST_8_RESULTS.md`)

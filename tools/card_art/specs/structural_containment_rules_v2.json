@@ -107,6 +107,14 @@
       "validated_by": [],
       "notes": "New in v2.1. This is explicitly flagged as the single lowest-confidence reroute in the entire rule set - the task itself called this archetype 'difficult' and asked that genuinely weak individual cases be kept in review rather than forced. confidence=weak_extrapolation. A future round should visually test this rule before trusting it as strongly as the others."
     },
+    "community_gathering_vehicles": {
+      "applies_to_archetypes": ["community_gathering"],
+      "bad_pattern": "A text-only audit of all 8 community_gathering rows (2026-09-25 final zero-cost gate) found that community_gathering_traces' communal-table/chairs/food grammar produces genuine nonsense for transport.car_meets specifically - a car meet's shared object IS the vehicles themselves, not a table of food and decorations.",
+      "good_pattern": "For vehicle-gathering hobbies, show several generic unbranded vehicles parked together as the community's shared object, with no owners, drivers, or spectators present - the vehicles themselves carry the sense of a gathering, not a table.",
+      "scene_template": "Several generic, unbranded vehicles related to ${title} are gathered and parked together, as if just before or just after the event - ambient or headlight glow catching their bodywork, tire tracks or fresh parking marks on the ground, no owners, drivers, or spectators present anywhere in the scene.",
+      "validated_by": [],
+      "notes": "New in v2.1, added specifically to fix a disclosed grammar mismatch found during the final zero-cost gate's Part-7 community_gathering review, applied via an id-exact override for transport.car_meets only (see object_first_rules_v2.json's id_prefix_overrides). confidence=weak_extrapolation, same as the parent archetype - not yet visually tested."
+    },
     "shared_workspace_grammar": {
       "applies_to_archetypes": ["shared_workspace"],
       "bad_pattern": "Rows of completely empty desks with nothing else can read as 'nobody works here' rather than 'this is a shared workspace', losing the archetype's identity.",
@@ -132,5 +140,5 @@
       "notes": "New in v2.1 - reroutes legal_practice from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
     }
   },
-  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment", "object_hero_clean", "professional_material_world", "listening_equipment_world", "campus_activity_grammar", "community_gathering_traces", "shared_workspace_grammar", "campaign_planning_materials", "legal_practice_materials"]
+  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment", "object_hero_clean", "professional_material_world", "listening_equipment_world", "campus_activity_grammar", "community_gathering_traces", "community_gathering_vehicles", "shared_workspace_grammar", "campaign_planning_materials", "legal_practice_materials"]
 }

@@ -61,6 +61,7 @@ const BRAND_RISK_ARCHETYPES = new Set([
 ]);
 
 function matchesIdPrefixOverride(id, override) {
+  if (override.match?.id) return id === override.match.id;
   return Boolean(override.match?.id_prefix) && id.startsWith(override.match.id_prefix);
 }
 
@@ -141,7 +142,8 @@ export function routeHobbyV2(row, ctx) {
     object_first_status = idOverride.object_first_status;
     structural_containment_rule_id = idOverride.structural_containment_rule_id;
     confidence = idOverride.confidence;
-    routing_note = `id_prefix_override(${idOverride.match.id_prefix}): ${idOverride.rationale}`;
+    const matchLabel = idOverride.match.id || idOverride.match.id_prefix;
+    routing_note = `id_override(${matchLabel}): ${idOverride.rationale}`;
   }
 
   const keywordMatch = findKeywordMatch(id, title, rules);

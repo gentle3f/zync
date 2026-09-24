@@ -1,0 +1,24 @@
+{
+  "version": "v1",
+  "reviewed_at": "2026-09-25",
+  "purpose": "Part 7 of the final zero-cost compiler gate: text-only review of every community_gathering row's actual rendered scene text, to check whether the weak_extrapolation grammar produces plausible object-first scenes or loses hobby identity. No image generated or inspected.",
+  "total_community_gathering_rows": 8,
+  "rows": [
+    { "id": "business.founder_meetups", "title": "Founder Meetups", "verdict": "RESOLVED", "note": "Generic professional-meetup grammar (shared table, communal materials) fits plausibly; identity carried adequately by title context." },
+    { "id": "business.startup_meetups", "title": "Startup Meetups", "verdict": "RESOLVED", "note": "Same as founder_meetups - generic professional-meetup fit." },
+    { "id": "business.tech_meetups", "title": "Tech Meetups", "verdict": "RESOLVED", "note": "Same as founder_meetups - generic professional-meetup fit." },
+    { "id": "business.alumni_networking", "title": "Alumni Networking", "verdict": "RESOLVED", "note": "Same generic professional-meetup fit." },
+    { "id": "lifestyle.book_swaps", "title": "Book Swaps", "verdict": "MODERATE_CONFIDENCE", "note": "The grammar's 'communal objects and shared materials' phrasing is generic enough that it does not explicitly evoke books; plausible the model renders books (matches a book-swap table image search prior) but the specific hobby identity is carried more weakly than the professional-meetup rows. Not reclassified this round - flagged for the future 16-card visual test rather than forced to a bespoke sub-grammar, since it is not clearly nonsensical (unlike car_meets/repair_workshops below)." },
+    { "id": "lifestyle.clothing_swaps", "title": "Clothing Swaps", "verdict": "MODERATE_CONFIDENCE", "note": "Same concern as book_swaps - generic 'shared materials' language doesn't explicitly evoke clothing/racks/piles. Flagged, not fixed this round." },
+    { "id": "transport.car_meets", "title": "Car Meets", "verdict": "FIXED_THIS_ROUND", "note": "The original community_gathering_traces grammar (shared table, chairs, food, decorations 'warmly prepared for togetherness') was genuinely nonsensical for a car meet - confirmed by reading the actual rendered scene text. Fixed via a new id-exact override routing to a new community_gathering_vehicles rule (generic unbranded vehicles parked together, no owners/drivers/spectators). protagonist_type changed from environment to machine_process. Still weak_extrapolation - not visually tested." },
+    { "id": "lifestyle.repair_workshops", "title": "Repair Workshops", "verdict": "FIXED_THIS_ROUND", "note": "The communal-table/food/decoration tone genuinely mismatches a repair workshop's tools/craft identity - confirmed by reading the actual rendered scene text. Fixed via a new id-exact override rerouting it out of community_gathering_traces entirely to generic_structural_containment (arranged tools, natural wear, activity mid-progress), which fits a workshop far better. protagonist_type changed from environment to object. Still weak_extrapolation - not visually tested." }
+  ],
+  "summary": {
+    "confidently_resolved": 4,
+    "moderate_confidence_unresolved": 2,
+    "fixed_this_round_via_id_override": 2,
+    "remaining_weak_or_uncertain": 2,
+    "residual_review_list": ["lifestyle.book_swaps", "lifestyle.clothing_swaps"]
+  },
+  "honesty_note": "Per the task's explicit instruction ('honesty over forcing 0'), book_swaps and clothing_swaps are NOT claimed as fully resolved. They are not nonsensical the way car_meets and repair_workshops were (which is why those two got a real fix this round), but their hobby-identity strength under the generic grammar is genuinely uncertain without a visual test. Recommendation: if a future community_gathering visual test shows these two rendering generically (unidentifiable as book/clothing swaps specifically), add bespoke id overrides for them the same way car_meets and repair_workshops were fixed this round, rather than trusting the generic grammar indefinitely."
+}

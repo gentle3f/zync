@@ -128,17 +128,39 @@ function checkConcentration(counts, uniformBaselinePct, label, problems) {
 }
 
 // --- Static (text-only) prompt QA -----------------------------------
-const CONFLICTING_HUMAN_PHRASES = [
-  /\ba person\b/i, /\bthe person\b/i, /\ba man\b/i, /\ba woman\b/i,
+// Part 4A: direct positive human-role requests.
+const POSITIVE_HUMAN_ROLE_PHRASES = [
+  /\ba person\b/i, /\bthe person\b/i, /\ba man\b/i, /\ba woman\b/i, /\bpeople\b/i,
   /\bthe athlete\b/i, /\bthe performer\b/i, /\bthe player\b/i, /\bthe chef\b/i,
   /\bthe artist\b/i, /\bhis hands\b/i, /\bher hands\b/i, /\ba human\b/i,
   /\bthe reader\b/i, /\bthe swimmer\b/i, /\bthe runner\b/i, /\bthe model\b/i,
+  /\bthe worker\b/i, /\bworkers\b/i, /\bthe student\b/i, /\bstudents\b/i,
+  /\bthe diner\b/i, /\bdiners\b/i, /\bthe driver\b/i, /\bthe listener\b/i,
+  /\bthe photographer\b/i, /\bthe coworker\b/i, /\bcoworkers\b/i, /\bthe lawyer\b/i,
+  /\bthe user\b/i, /\bthe operator\b/i, /\bteammates?\b/i, /\bthe pianist\b/i,
+];
+// Part 4B: human-medium leakage (indirect requests for a person via a
+// depicted medium - a portrait, a screen, a photo - rather than a body).
+const HUMAN_MEDIUM_LEAK_PHRASES = [
+  /\bportrait\b/i, /\bselfie\b/i, /\bvideo call\b/i, /\ban? audience\b/i,
+  /\ba crowd\b/i, /\bprofile image\b/i, /\bprofile photo\b/i,
+  /\bperson on (?:the |a )?screen\b/i, /\bhuman photograph\b/i,
 ];
 const BRAND_NAME_PATTERNS = [
   /\bnike\b/i, /\badidas\b/i, /\bapple\b/i, /\bsony\b/i, /\bcanon\b/i, /\bnikon\b/i,
   /\bgopro\b/i, /\bfigma\b/i, /\bslack\b/i, /\bnotion\b/i, /\bgoogle\b/i, /\bmicrosoft\b/i,
 ];
-const READABLE_TEXT_REQUEST_PATTERNS = [/\breadable sign\b/i, /\bwith visible text saying\b/i, /\bshowing the words\b/i];
+const READABLE_TEXT_REQUEST_PATTERNS = [/\breadable sign\b/i, /\bwith visible text saying\b/i, /\bshowing the words\b/i, /\bclearly labeled chart\b/i];
+// Part 4C: specific internal-contradiction patterns the task called out
+// by example (an invisible operator implicitly performing the action -
+// the exact failure mode physical_logic_v1.json exists to prevent).
+const CONTRADICTION_PATTERNS = [/\bactively operated by\b/i, /\boperated by an? (?:invisible )?person\b/i, /\bheld by an? (?:invisible )?hand\b/i];
+// Part 4D: repeated-negation bloat - the same suppression concept
+// (people/human/crowd) restated many times rather than said once clearly.
+// No 'g' flag: used only via .test() per-section below, and a global
+// regex's stateful lastIndex would otherwise corrupt repeated .test()
+// calls across different section strings.
+const HUMAN_NEGATION_MENTION = /\b(?:no|zero)\s+(?:real\s+)?(?:humans?|people|person)\b/i;
 
 // A raw match is only a real "positive" leak if it isn't itself sitting
 // inside a negation/suppression clause ("no X", "never X", "avoid X",
@@ -166,6 +188,17 @@ function findUnnegatedMatch(prompt, patterns) {
   return null;
 }
 
+const SCENE_COMPLETENESS_MARKERS = [
+  'Depict this activity:', 'Use this composition:', 'Use this lighting and palette:',
+  'Effects guidance:', 'full-bleed',
+];
+
+function percentile(sortedArr, p) {
+  if (!sortedArr.length) return 0;
+  const idx = Math.min(sortedArr.length - 1, Math.floor((p / 100) * sortedArr.length));
+  return sortedArr[idx];
+}
+
 function staticPromptQa(compiledRows) {
   const nonQuarantined = compiledRows.filter(r => r.compiled);
   const findings = {
@@ -173,32 +206,65 @@ function staticPromptQa(compiledRows) {
     empty_or_missing_prompt: [],
     unresolved_placeholder: [],
     excessive_length_over_6000: [],
-    conflicting_human_wording: [],
+    positive_human_role_leak: [],
+    human_medium_leak: [],
+    internal_contradiction: [],
     brand_name_leak: [],
     readable_text_requested: [],
-    max_length: 0,
-    min_length: Infinity,
+    excessive_human_negation_repeats_over_3: [],
+    incomplete_scene_sections: [],
+    lengths: [],
   };
   for (const r of nonQuarantined) {
     const p = r.final_compiled_prompt || '';
     if (!p) findings.empty_or_missing_prompt.push(r.canonical_interest_id);
     if (p.includes('${')) findings.unresolved_placeholder.push(r.canonical_interest_id);
     if (p.length > 6000) findings.excessive_length_over_6000.push(r.canonical_interest_id);
-    findings.max_length = Math.max(findings.max_length, p.length);
-    findings.min_length = Math.min(findings.min_length, p.length);
-    const humanMatch = findUnnegatedMatch(p, CONFLICTING_HUMAN_PHRASES);
-    if (humanMatch) findings.conflicting_human_wording.push({ id: r.canonical_interest_id, matched: humanMatch });
+    findings.lengths.push(p.length);
+
+    const roleMatch = findUnnegatedMatch(p, POSITIVE_HUMAN_ROLE_PHRASES);
+    if (roleMatch) findings.positive_human_role_leak.push({ id: r.canonical_interest_id, matched: roleMatch });
+    const mediumMatch = findUnnegatedMatch(p, HUMAN_MEDIUM_LEAK_PHRASES);
+    if (mediumMatch) findings.human_medium_leak.push({ id: r.canonical_interest_id, matched: mediumMatch });
+    const contradictionMatch = findUnnegatedMatch(p, CONTRADICTION_PATTERNS);
+    if (contradictionMatch) findings.internal_contradiction.push({ id: r.canonical_interest_id, matched: contradictionMatch });
     const brandMatch = findUnnegatedMatch(p, BRAND_NAME_PATTERNS);
     if (brandMatch) findings.brand_name_leak.push({ id: r.canonical_interest_id, matched: brandMatch });
     const textMatch = findUnnegatedMatch(p, READABLE_TEXT_REQUEST_PATTERNS);
     if (textMatch) findings.readable_text_requested.push({ id: r.canonical_interest_id, matched: textMatch });
+
+    // Count DISTINCT SECTIONS (the compiler joins sections with "\n\n")
+    // that mention human-negation, not raw word occurrences - a single
+    // section is allowed to enumerate many body parts in one deliberate,
+    // comprehensive list (e.g. non_human_protagonist_policy's "no people,
+    // no faces, no heads, no hands...") without that counting as
+    // "repeated" bloat; the real bloat concern is the same concept being
+    // restated across several separate sections of the prompt.
+    const sectionsWithNegation = p.split('\n\n').filter(section => HUMAN_NEGATION_MENTION.test(section)).length;
+    if (sectionsWithNegation > 3) findings.excessive_human_negation_repeats_over_3.push({ id: r.canonical_interest_id, distinct_sections: sectionsWithNegation });
+
+    const missingSections = SCENE_COMPLETENESS_MARKERS.filter(marker => !p.includes(marker));
+    if (missingSections.length) findings.incomplete_scene_sections.push({ id: r.canonical_interest_id, missing: missingSections });
   }
+  const sortedLengths = [...findings.lengths].sort((a, b) => a - b);
+  findings.length_stats = {
+    min: sortedLengths[0] || 0,
+    median: percentile(sortedLengths, 50),
+    p90: percentile(sortedLengths, 90),
+    p95: percentile(sortedLengths, 95),
+    max: sortedLengths[sortedLengths.length - 1] || 0,
+  };
+  delete findings.lengths;
   findings.all_clean =
     findings.empty_or_missing_prompt.length === 0 &&
     findings.unresolved_placeholder.length === 0 &&
-    findings.conflicting_human_wording.length === 0 &&
+    findings.positive_human_role_leak.length === 0 &&
+    findings.human_medium_leak.length === 0 &&
+    findings.internal_contradiction.length === 0 &&
     findings.brand_name_leak.length === 0 &&
-    findings.readable_text_requested.length === 0;
+    findings.readable_text_requested.length === 0 &&
+    findings.excessive_human_negation_repeats_over_3.length === 0 &&
+    findings.incomplete_scene_sections.length === 0;
   return findings;
 }
 
@@ -258,12 +324,21 @@ function buildValidation16Plan(rows) {
   if (tripleRiskRow) {
     add('physical_text_brand_combo', tripleRiskRow, 'stress-tests physical-logic, text, and brand risk flags simultaneously on one card');
   } else {
-    // The three risk-flag archetype sets never overlap all three at once
-    // by construction (verified: 0 rows). physical_logic_risk and
-    // brand_risk do overlap (fitness_training is in both sets), so that
-    // is used as the closest available two-flag stress test instead of
-    // silently dropping this slot to 15 cards.
-    add('physical_and_brand_risk_combo', rows.find(r => r.compiled && r.physical_logic_risk && r.brand_risk), 'no row exists with all three risk flags simultaneously (verified programmatically - the risk-flag archetype sets do not fully overlap); this is the closest real two-flag combo (physical-logic + brand risk, via fitness_training) as a substitute stress test');
+    // No row exists with all three risk flags at once (verified: 0 rows -
+    // the risk-flag archetype sets don't fully overlap). Prefer a
+    // machine_process + two-risk-flag row over a same-protagonist-type
+    // combo: the first full audit of this list found machine_process was
+    // the only protagonist_type with zero coverage across the 16 cards,
+    // and gaming.video (digital_play: text_risk + brand_risk) fixes that
+    // gap in the same slot rather than needing a second swap elsewhere -
+    // see the 2026-09-25 final zero-cost gate handoff for the full
+    // before/after coverage comparison.
+    const machineProcessCombo = rows.find(r => r.compiled && r.protagonist_type === 'machine_process' && r.text_risk && r.brand_risk);
+    if (machineProcessCombo) {
+      add('machine_process_text_brand_combo', machineProcessCombo, 'fills the machine_process coverage gap found in this list\'s first coverage report while keeping a genuine two-flag risk combo (text_risk + brand_risk)');
+    } else {
+      add('physical_and_brand_risk_combo', rows.find(r => r.compiled && r.physical_logic_risk && r.brand_risk), 'fallback: no machine_process + 2-risk-flag row found either; closest available two-flag combo (physical-logic + brand risk)');
+    }
   }
 
   return {
@@ -399,7 +474,17 @@ function main() {
     review_required_count: reviewRequired.length,
     review_required_rate_pct: Number(reviewRequiredRatePct.toFixed(3)),
     review_required_before_this_checkpoint: 376,
-    static_prompt_qa_summary: { total_checked: promptQa.total_checked, all_clean: promptQa.all_clean, max_length: promptQa.max_length, min_length: promptQa.min_length, empty_count: promptQa.empty_or_missing_prompt.length, conflicting_human_wording_count: promptQa.conflicting_human_wording.length, brand_name_leak_count: promptQa.brand_name_leak.length },
+    static_prompt_qa_summary: {
+      total_checked: promptQa.total_checked, all_clean: promptQa.all_clean, length_stats: promptQa.length_stats,
+      empty_count: promptQa.empty_or_missing_prompt.length,
+      positive_human_role_leak_count: promptQa.positive_human_role_leak.length,
+      human_medium_leak_count: promptQa.human_medium_leak.length,
+      internal_contradiction_count: promptQa.internal_contradiction.length,
+      brand_name_leak_count: promptQa.brand_name_leak.length,
+      readable_text_requested_count: promptQa.readable_text_requested.length,
+      excessive_human_negation_repeats_count: promptQa.excessive_human_negation_repeats_over_3.length,
+      incomplete_scene_sections_count: promptQa.incomplete_scene_sections.length,
+    },
     keyword_scan_regression: { pass: keywordRegression.pass },
     validations,
     all_validations_pass: allPass,

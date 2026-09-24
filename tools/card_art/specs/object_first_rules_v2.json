@@ -72,6 +72,22 @@
       "structural_containment_rule_id": "object_hero_clean",
       "confidence": "validated",
       "rationale": "Validated directly: collecting.stamps (round 1) passed cleanly with no containment redesign needed; collecting.* is inherently object-hero-first."
+    },
+    {
+      "match": { "id": "transport.car_meets" },
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "community_gathering_vehicles",
+      "confidence": "weak_extrapolation",
+      "rationale": "Added during the 2026-09-25 final zero-cost gate's Part-7 community_gathering review: the archetype default's community_gathering_traces grammar (shared table, chairs, food, decorations) produces genuine nonsense for a car meet, whose actual shared object is the vehicles themselves. This override routes to the new community_gathering_vehicles rule instead. Still weak_extrapolation - not visually tested."
+    },
+    {
+      "match": { "id": "lifestyle.repair_workshops" },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "weak_extrapolation",
+      "rationale": "Added during the 2026-09-25 final zero-cost gate's Part-7 community_gathering review: the archetype default's community_gathering_traces grammar (a 'warmly prepared for togetherness' communal table) tonally mismatches a repair workshop, whose identity is tools/materials/craft-in-progress, not a social table. This override routes to generic_structural_containment instead, which already reads correctly for a workshop-style scene (arranged tools, natural wear, an activity mid-progress). Still weak_extrapolation - not visually tested."
     }
   ],
   "human_exception_keyword_scan": {

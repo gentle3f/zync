@@ -12,11 +12,17 @@
 // no_operator, screen_non_human_content, swimming_hard_case_no_visible_
 // swimmer).
 //
-// Reuses V1's global_style_v1.json fields (prompt, global_screen_policy,
-// global_brand_safety_policy) BY REFERENCE/READ ONLY - this module never
-// writes to global_style_v1.json and V1's own compiler
-// (buildPromptV1.js's compileHobbyPrompt) is untouched and still used
-// for all real V1/production generation.
+// Reuses ONLY global_style_v1.json's global_brand_safety_policy field BY
+// REFERENCE/READ ONLY (this module never writes to global_style_v1.json).
+// The base rendering style and screen policy use V2-native text instead
+// (global_style_v2_object_first.json's v2_native_style / screen_policy_v2)
+// - see that file's history for why: V1's 'prompt' and
+// 'global_screen_policy' fields both contain human/character-oriented
+// language incompatible with V2's zero-human mandate, and V2 now uses its
+// own explicitly-authorized human-language-free equivalents rather than
+// reusing-and-patching V1's. V1's own compiler (buildPromptV1.js's
+// compileHobbyPrompt) is untouched and still used for all real
+// V1/production generation.
 //
 // This module makes no network/file-write calls and generates no images.
 
@@ -86,19 +92,23 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
     humanSuppressionSection += ' ' + STRONG_SUPPRESSION_ADDENDUM;
   }
 
-  // Note: V1's global_screen_policy is deliberately NOT reused here - it
-  // contains a human-recognition clause ("Recognition must come from the
-  // person, physical tool, device...") written for V1's human-led
-  // compositions that would directly conflict with V2's zero-human
-  // mandate. Screen suppression for V2 is instead covered by
-  // non_human_protagonist_policy's existing "no screen images of people"
-  // clause plus the dedicated screen_non_human_content containment rule
-  // for archetypes where a screen is semantically present. See
-  // global_style_v2_object_first.json's base_style_conflict_disclosure.
+  // V2 base style: uses globalStyleV2.v2_native_style, an explicitly
+  // authorized human-language-free fork of V1's D4 rendering-language
+  // block (global_style_v1.json's 'prompt' field), written this
+  // checkpoint to eliminate the character/face/anatomy language that a
+  // prior checkpoint could only patch with an override clause. V1's
+  // global_style_v1.json is never read for prompt text here and remains
+  // completely untouched (still hash-verified unchanged by the audit).
+  //
+  // Screen suppression uses globalStyleV2.screen_policy_v2, a dedicated
+  // positive V2 screen policy written this checkpoint - V1's
+  // global_screen_policy (which contains a human-recognition clause) is
+  // still never reused, but is now replaced by real V2-native coverage
+  // instead of being simply omitted.
   const sections = [
-    ctx.globalStyleV1.prompt,
-    ctx.globalStyleV2.base_style_override_clause,
+    ctx.globalStyleV2.v2_native_style,
     ctx.globalStyleV1.global_brand_safety_policy,
+    ctx.globalStyleV2.screen_policy_v2,
     humanSuppressionSection,
     ctx.globalStyleV2.anti_sameness_policy,
     physicalLogicSection,

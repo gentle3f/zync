@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "generated_at": "2026-09-24T17:03:52.128Z",
+  "plan_source": "tools/card_art/catalog/object_first_v2_validation_16_plan_v1.json",
+  "plan_ids_changed": false,
+  "plan_ids_changed_reason": "All 16 planned ids in the CURRENT plan file compiled successfully with no mechanical issue found; no further id substitution was needed at this audit step. Note for the full audit trail: one card WAS swapped earlier in this same checkpoint, before this script was run - the first coverage_report_v1.json run found machine_process had zero representation across the original 16, so 'physical_and_brand_risk_combo' (sports.gym) was replaced with 'machine_process_text_brand_combo' (gaming.video) directly in the plan file and its generator function (see the handoff's Part 6 section for the full before/after). This script only confirms no ADDITIONAL swap was needed after that fix.",
+  "total_cards": 16,
+  "all_static_audits_pass": true,
+  "coverage_complete": true,
+  "missing_coverage": [],
+  "expected_cost_if_authorized_usd": 0.2688
+}

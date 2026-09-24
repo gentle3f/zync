@@ -2212,10 +2212,19 @@
     "lifestyle.photo_booths",
     "food.late_night_eats"
   ],
-  "conflicting_human_wording": [],
+  "positive_human_role_leak": [],
+  "human_medium_leak": [],
+  "internal_contradiction": [],
   "brand_name_leak": [],
   "readable_text_requested": [],
-  "max_length": 11465,
-  "min_length": 10531,
+  "excessive_human_negation_repeats_over_3": [],
+  "incomplete_scene_sections": [],
+  "length_stats": {
+    "min": 10852,
+    "median": 11205,
+    "p90": 11505,
+    "p95": 11667,
+    "max": 11786
+  },
   "all_clean": true
 }

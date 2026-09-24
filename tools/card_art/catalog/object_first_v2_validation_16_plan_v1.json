@@ -246,20 +246,20 @@
       "reason": "new legal_practice_materials grammar, unvalidated, risk of gavel/scales cliche"
     },
     {
-      "label": "physical_and_brand_risk_combo",
-      "id": "sports.gym",
-      "title": "Gym & Fitness",
-      "archetype": "fitness_training",
+      "label": "machine_process_text_brand_combo",
+      "id": "gaming.video",
+      "title": "Video Games",
+      "archetype": "digital_play",
       "object_first_status": "containment_required",
-      "structural_containment_rule_id": "action_aftermath",
-      "protagonist_type": "object",
-      "composition_archetype": "extreme_scale_contrast",
-      "palette_lighting_route": "dusk_transition",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "protagonist_type": "machine_process",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
       "effect_level": "none",
-      "physical_logic_risk": true,
-      "text_risk": false,
+      "physical_logic_risk": false,
+      "text_risk": true,
       "brand_risk": true,
-      "reason": "no row exists with all three risk flags simultaneously (verified programmatically - the risk-flag archetype sets do not fully overlap); this is the closest real two-flag combo (physical-logic + brand risk, via fitness_training) as a substitute stress test"
+      "reason": "fills the machine_process coverage gap found in this list's first coverage report while keeping a genuine two-flag risk combo (text_risk + brand_risk)"
     }
   ]
 }

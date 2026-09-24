@@ -1,0 +1,31 @@
+{
+  "unique_protagonist_types": 6,
+  "unique_object_first_statuses": 2,
+  "unique_confidence_values": 4,
+  "unique_archetypes": 15,
+  "unique_composition_archetypes": "8 of 16 (12 possible catalog-wide values)",
+  "unique_palette_lighting_routes": "7 of 16 (8 possible catalog-wide values)",
+  "unique_effect_levels": 3,
+  "coverage_flags": {
+    "has_animal": true,
+    "has_abstract_system": true,
+    "has_food_drink": true,
+    "has_machine_process": true,
+    "has_clean_status": true,
+    "has_containment_required": true,
+    "has_new_grammar_unvalidated": true,
+    "has_weak_extrapolation": true,
+    "has_professional_world": true,
+    "has_music_listening": true,
+    "has_campus_activity": true,
+    "has_community_gathering": true,
+    "has_shared_workspace": true,
+    "has_campaign_planning": true,
+    "has_legal_practice": true,
+    "has_physical_logic_risk": true,
+    "has_text_risk": true,
+    "has_brand_risk": true
+  },
+  "missing_coverage": [],
+  "coverage_complete": true
+}
