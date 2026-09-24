@@ -1,0 +1,21 @@
+{
+  "version": "v1",
+  "generated_at": "2026-09-24T02:40:27.666Z",
+  "unit_price_usd_per_successful_image": 0.0168,
+  "eligible_catalog_count": 2210,
+  "quarantine_count": 2,
+  "auto_production_count": 2208,
+  "estimated_baseline_cost_usd_all_eligible": 37.128,
+  "estimated_cost_usd_auto_production_only": 37.0944,
+  "planned_images": 2208,
+  "successful_images": 0,
+  "failed_transient": 0,
+  "failed_content": 0,
+  "needs_qa": 0,
+  "retry_pending": 0,
+  "billed_image_outputs_estimate": 0,
+  "estimated_cost_of_successful_so_far_usd": 0,
+  "actual_cost_known_usd": null,
+  "actual_cost_known_image_count": 0,
+  "note": "estimated_cost_of_successful_so_far_usd assumes only successful images are billed (Google Batch image-output pricing) unless actual_cost_known_usd from real billing metadata says otherwise. Failed/transient requests are not assumed billed."
+}

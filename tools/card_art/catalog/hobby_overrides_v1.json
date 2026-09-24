@@ -49,7 +49,8 @@
         "poster or signage text",
         "readable text of any kind on books",
         "legible typography on book covers",
-        "legible typography on book spines"
+        "legible typography on book spines",
+        "pseudo-text used decoratively on covers or spines"
       ],
       "must_include_add": [
         "plain or abstract book covers and spines with no readable text",
@@ -111,6 +112,23 @@
       ],
       "override_prompt_additions": [
         "The skate shoes must be a plain, generic, entirely unbranded design: invent an original sole tread, upper panel layout, and silhouette rather than reproducing any real skate-shoe brand's construction. No swoosh-like mark, no checkmark-like mark, no three-stripe-like treatment, no signature side-panel shape, no manufacturer badge, and no readable text anywhere on the shoes. The skateboard deck and trucks must likewise carry no readable logo, wordmark, or recognisable brand graphic. The shoes and board should still look stylish, well-designed, and true to real-world skate gear construction — not blank, sterile, or obviously censored."
+      ]
+    },
+    "wellness.tai_chi": {
+      "avoid_add": [
+        "readable Chinese calligraphy",
+        "readable scroll text",
+        "pseudo-characters resembling writing",
+        "signage",
+        "labels",
+        "readable wall-hanging text",
+        "readable text on scrolls, banners, or wall art"
+      ],
+      "must_include_add": [
+        "blank or abstract wall art if any wall art is present"
+      ],
+      "override_prompt_additions": [
+        "Any wall hanging, scroll, banner, or piece of wall art in this scene must be blank, abstract, or carry only non-linguistic ornament (simple ink-wash shapes, plain color fields, abstract brushwork patterns) - never readable Chinese calligraphy, readable scroll text, pseudo-characters that resemble writing, signage, or labels. The Tai Chi practice itself (posture, movement, setting) stays exactly as otherwise specified."
       ]
     },
     "lifestyle.game_nights": {

@@ -1,41 +1,73 @@
 {
-  "version": "v1",
-  "purpose": "A presentation-variety layer that sits on top of the D4 house style without changing D4's rendering language. It supplies deterministic, per-hobby guidance across five dimensions (protagonist presentation, scene structure, lighting/palette, emotional mode, special-effect intensity) so that thousands of catalog cards do not converge on the same young-female / golden-hour / medium-shot / smiling / sparkly default. Selection is a stable hash of the hobby recipe id, so it is reproducible across regenerations, not random. A hobby_overrides_v1.json entry may set 'diversity_lock' to pin one or more dimensions when the hobby's own semantics require it; hobby-specific recognition/must_include requirements always take priority over this guidance if the two ever conflict.",
+  "version": "v2",
+  "purpose": "A presentation-variety layer that sits on top of the D4 house style without changing D4's rendering language. It supplies deterministic, per-hobby guidance across nine dimensions (gender presentation, age presentation, face/hair presentation, body build, composition, lighting time, palette mood, emotional mode, effects intensity) so that thousands of catalog cards do not converge on the same young-female / dark-straight-hair / golden-hour / medium-shot / smiling / sparkly default. Selection is a stable per-dimension hash of the hobby recipe id, so it is reproducible across regenerations, not random. Dimensions may carry a 'weights' map for a non-uniform deterministic split (used for effects_intensity); dimensions without 'weights' are picked uniformly. A hobby_overrides_v1.json entry may set 'diversity_lock' to pin one or more dimensions when the hobby's own semantics require it; hobby-specific recognition/must_include requirements always take priority over this guidance if the two ever conflict. This is presentation variety only - it never infers protected characteristics from hobby identity, and it must never force an implausible age/build/context.",
   "dimensions": {
-    "protagonist": {
+    "gender_presentation": {
       "values": {
         "male_led": "If a person is the clear main subject, let them read as a male-presenting protagonist.",
         "female_led": "If a person is the clear main subject, let them read as a female-presenting protagonist.",
         "mixed_group": "If multiple people appear, mix genders and presentations naturally rather than defaulting to a single uniform type.",
-        "older_adult": "If a person is the clear main subject, let them read as a mature or older adult rather than defaulting to a young adult.",
-        "younger_adult": "If a person is the clear main subject, let them read as a younger adult, appropriate and non-sexualized.",
-        "object_led": "Where the hobby recognition requirements allow it, let the hero object, tool, animal, or environment carry the composition, with any human figure secondary, partially visible, or background-scale rather than a dominant foreground face."
+        "object_led": "OBJECT_LED_PLACEHOLDER"
       }
     },
-    "scene_structure": {
+    "age_presentation": {
       "values": {
-        "solo_action": "Favor a single-person action moment.",
-        "pair_interaction": "Favor a two-person interaction moment.",
-        "small_group": "Favor a small-group moment (three to four people) rather than a solo portrait.",
-        "object_hero": "Let the key object or piece of equipment itself be the hero of the frame, with any person secondary.",
-        "environment_hero": "Let the environment or setting carry real visual weight alongside the subject, rather than a tight character-only portrait.",
-        "close_up_action": "Use a closer, more intimate action framing than a standard medium shot.",
-        "medium_hero_shot": "Use a classic medium hero shot.",
-        "wide_environmental_scene": "Use a wider environmental framing that shows more of the surrounding space."
+        "younger_adult": "Let the protagonist read as a younger adult, appropriate and non-sexualized.",
+        "adult": "Let the protagonist read as a person in their thirties, an ordinary adult rather than a teen or student.",
+        "middle_aged_adult": "Let the protagonist read as a middle-aged adult (roughly forties to fifties).",
+        "older_adult": "Let the protagonist read as a mature or older adult rather than defaulting to a young adult."
       }
     },
-    "lighting_palette": {
+    "face_hair_presentation": {
+      "values": {
+        "short_neat_hair": "Give the protagonist short, neat hair rather than long flowing hair, and a rounder or softer face shape.",
+        "long_straight_hair": "Give the protagonist long straight hair and an oval face shape.",
+        "wavy_medium_hair": "Give the protagonist wavy, medium-length hair and a softer jawline.",
+        "curly_or_coily_hair": "Give the protagonist curly or coily-textured hair, distinct from straight anime-default hair.",
+        "buzzed_or_very_short_hair": "Give the protagonist buzzed or very short cropped hair and a more angular jawline.",
+        "tied_back_practical_hair": "Give the protagonist hair tied back or bundled up in a practical style suited to the activity, with a squarer or more defined jaw.",
+        "grey_or_silver_hair": "Give the protagonist grey, silver, or visibly greying hair rather than a uniform youthful hair colour.",
+        "warm_toned_hair": "Give the protagonist a warm hair tone such as auburn, chestnut, or reddish-brown rather than plain black hair."
+      }
+    },
+    "body_build": {
+      "values": {
+        "slim": "Give the protagonist a slim, lean build.",
+        "average": "Give the protagonist an average, everyday build.",
+        "athletic": "Give the protagonist a visibly athletic, toned build appropriate to the activity.",
+        "broader_build": "Give the protagonist a broader, sturdier build, rendered naturally and without caricature.",
+        "mature_build": "Give the protagonist a build appropriate to a mature adult, rendered naturally and without caricature."
+      }
+    },
+    "composition": {
+      "values": {
+        "close_action": "Use a close, intimate action framing rather than a standard medium shot.",
+        "medium_hero_shot": "Use a classic medium hero shot.",
+        "wide_environmental_hero": "Use a wide environmental framing that gives real visual weight to the surrounding space.",
+        "pair_interaction": "Favor a two-person interaction moment.",
+        "group_interaction": "Favor a small-group interaction moment (three or more people) rather than a solo portrait.",
+        "object_hero": "Let the key object or piece of equipment itself be the hero of the frame, with any person secondary.",
+        "environment_hero": "Let the environment or setting carry as much visual weight as the subject, rather than a tight character-only portrait."
+      }
+    },
+    "lighting_time": {
       "values": {
         "bright_daylight": "Light the scene with bright, clear daylight.",
-        "soft_morning": "Light the scene with soft early-morning light.",
         "cool_daylight": "Light the scene with cool, neutral daylight rather than warm golden tones.",
+        "soft_morning": "Light the scene with soft early-morning light.",
         "golden_hour": "Light the scene with warm golden-hour light.",
         "blue_hour": "Light the scene with the cool blue tones of dusk (blue hour).",
         "evening_interior": "Light the scene as a warm evening interior.",
-        "night_neon": "Light the scene at night, with artificial or neon-like light accents where the setting realistically allows it.",
+        "night_neon": "Light the scene at night, with artificial or neon-like light accents where the setting realistically allows it."
+      }
+    },
+    "palette_mood": {
+      "values": {
         "warm_palette": "Favor an overall warm color palette.",
         "cool_palette": "Favor an overall cool color palette.",
-        "mixed_complementary_palette": "Use a mixed, complementary color palette rather than a single dominant hue family."
+        "complementary_palette": "Use a mixed, complementary color palette rather than a single dominant hue family.",
+        "high_key": "Use a bright, high-key palette with light, airy tones.",
+        "subdued_colorful": "Use a subdued but still colorful palette rather than a saturated, poster-bright one."
       }
     },
     "emotional_mode": {
@@ -51,11 +83,12 @@
         "friendship_connection": "The emotional mode should read as warm friendship or connection between people."
       }
     },
-    "effect_intensity": {
+    "effects_intensity": {
+      "weights": { "zero_effects": 40, "minimal_effects": 35, "accent_effects": 25 },
       "values": {
-        "none_minimal": "Keep special-effect accents essentially absent: no sparkle trails, glints, or floating highlight particles.",
-        "subtle_highlights": "Keep special-effect accents subtle: at most a few restrained highlights or small light glints, nothing showy.",
-        "moderate_sparkle_motion": "Moderate sparkle and motion accents are welcome here to heighten the collectible feel."
+        "zero_effects": "Render this artwork with NO sparkles, no floating glowing particles, no magical glints, no decorative light flecks, and no aura-like glow effects anywhere in the image. Ordinary physically plausible highlights, reflections, and light sources (sun glare, lamp light, water reflections, polished-surface shine) are still allowed - only decorative/magical-feeling sparkle and particle effects are prohibited.",
+        "minimal_effects": "Keep special-effect accents very subtle and physically motivated: at most a few restrained highlights, small glints off a genuinely reflective surface, or light dust/mist consistent with the real environment - nothing showy, no obvious decorative sparkle trails.",
+        "accent_effects": "Tasteful D4 special-moment energy accents (rim light, small glints, a light sparkle trail at the decisive action beat) are welcome here to heighten the collectible feel, used with restraint rather than covering the whole frame."
       }
     }
   }

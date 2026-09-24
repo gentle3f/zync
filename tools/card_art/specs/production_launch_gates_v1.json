@@ -1,0 +1,99 @@
+{
+  "version": "v1",
+  "purpose": "Explicit gates that must all be satisfied before any real 2,210-image production generation begins. This file records the gate definitions and their status as of this checkpoint; it does not itself authorize generation.",
+  "gates": [
+    {
+      "id": 1,
+      "name": "d4_live_style_confirmed",
+      "description": "D4's exact rendering language is the live production global_style_v1.json prompt.",
+      "status": "satisfied",
+      "evidence": "global_style_v1.json's prompt field was verified byte-identical to D4's calibration block when promoted (HANDOFF_20260924_CARD_ART_STYLE_D4_DURABILITY_12_RESULTS.md), and has not been modified since. D4 visual-style research is closed per this checkpoint's instructions."
+    },
+    {
+      "id": 2,
+      "name": "semantic_catalog_count_verified",
+      "description": "The rights-first eligible catalog reports exactly 2,210 baseline-art-eligible interests.",
+      "status": "satisfied",
+      "evidence": "buildCatalogRecipeBridge().eligible.length === 2210, re-verified this checkpoint. productionQueue.js fails closed (throws) if this count ever changes unexpectedly."
+    },
+    {
+      "id": 3,
+      "name": "diversity_effects_assignments_deterministic",
+      "description": "Diversity and effects-intensity assignments are reproducible, not random.",
+      "status": "satisfied",
+      "evidence": "validateProductionArchitecture.js's determinism check rebuilds the full queue twice in-process and asserts byte-identical diversity_profile/effects_profile/batch_number/prompt_sha256 for all 2,210 rows."
+    },
+    {
+      "id": 4,
+      "name": "known_localized_recipe_fixes_implemented",
+      "description": "books.reading, wellness.cold_plunge, sports.skateboarding, and wellness.tai_chi fixes are implemented in hobby_overrides_v1.json.",
+      "status": "satisfied",
+      "evidence": "All four overrides present and compiled successfully in this checkpoint's regression check (0 errors across all 2,210 rows)."
+    },
+    {
+      "id": 5,
+      "name": "batch_plan_validated",
+      "description": "The 2,210 (2,208 auto-production) queue is partitioned into ~120-image batches with no duplicate or missing assignments.",
+      "status": "satisfied",
+      "evidence": "validateProductionArchitecture.js confirms every non-quarantined id has exactly one batch assignment, batch sizes are <= 120, and the union of all batch id lists equals the auto-production set with no duplicates."
+    },
+    {
+      "id": 6,
+      "name": "resume_safe_logic_validated",
+      "description": "A restart never regenerates an already-succeeded image and only submits remaining pending/retry ids.",
+      "status": "satisfied",
+      "evidence": "validateProductionArchitecture.js's resume-safety check mocks a manifest with some succeeded/failed/pending entries and asserts planSubmission() excludes every succeeded id and includes only pending/retry/unresolved ids."
+    },
+    {
+      "id": 7,
+      "name": "failure_only_retry_validated",
+      "description": "Retry planning only ever includes failed_transient/retry_pending ids, never successful ids, and content-policy failures do not auto-retry.",
+      "status": "satisfied",
+      "evidence": "validateProductionArchitecture.js's retry check mocks failed_transient, failed_content, and succeeded entries in the same batch and asserts the retry plan contains only the failed_transient id."
+    },
+    {
+      "id": 8,
+      "name": "cost_estimator_validated",
+      "description": "Cost accounting distinguishes planned vs successful vs billed vs failed/retried, and never assumes failures are billed without evidence.",
+      "status": "satisfied",
+      "evidence": "productionCostReport.js only counts actual_cost_usd when a manifest record explicitly carries it from real billing metadata; validateProductionArchitecture.js exercises this against mocked mixed-outcome data."
+    },
+    {
+      "id": 9,
+      "name": "qa_sampling_plan_documented",
+      "description": "A layered QA plan (static checks, representative sampling, high-risk targeted review, cluster-defect escalation) is written down before any real generation.",
+      "status": "satisfied",
+      "evidence": "specs/production_qa_plan_v1.json."
+    },
+    {
+      "id": 10,
+      "name": "quarantine_enforcement_validated",
+      "description": "sports.american_football and technology.robotics cannot receive a batch assignment or be auto-submitted.",
+      "status": "satisfied",
+      "evidence": "Both ids are present in the 2,210 eligible set (rights-wise fine) but productionQueue.js gives them batch_number=null, status=quarantined_excluded, and planSubmission() in productionManifest.js explicitly skips any entry with quarantined=true regardless of manifest state."
+    },
+    {
+      "id": 11,
+      "name": "no_github_actions_dependency",
+      "description": "The production pipeline does not require or trigger GitHub Actions.",
+      "status": "satisfied",
+      "evidence": "All queue-building, batch-planning, cost, and QA-plan work in this checkpoint is local Node script execution only; no workflow files were added, modified, or triggered."
+    },
+    {
+      "id": 12,
+      "name": "no_vercel_dependency",
+      "description": "The production pipeline does not require or trigger Vercel.",
+      "status": "satisfied",
+      "evidence": "No deployment, preview, or Vercel-related action was taken or is required by any script added this checkpoint."
+    },
+    {
+      "id": 13,
+      "name": "explicit_user_authorization_to_start_production_generation",
+      "description": "A new, explicit user instruction to begin submitting real production batches.",
+      "status": "NOT satisfied - this is the blocking gate",
+      "evidence": "Not requested in this checkpoint's task; this checkpoint explicitly forbids starting production generation. No batch has been submitted."
+    }
+  ],
+  "overall_status": "12 of 13 gates satisfied. Gate 13 (explicit user authorization) is the sole remaining blocker. The architecture is otherwise READY.",
+  "critical_rule": "Do not submit any production batch without a new, explicit user instruction to start production generation."
+}

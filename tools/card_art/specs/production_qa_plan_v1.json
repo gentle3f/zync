@@ -1,0 +1,57 @@
+{
+  "version": "v1",
+  "purpose": "QA architecture for the eventual 2,210-image production run. Automated checks catch structural/mechanical defects; human sampling is the only thing that can validate semantic correctness, brand safety, and text leaks. This plan does not claim automated QA can replace human visual inspection.",
+  "layers": [
+    {
+      "layer": 1,
+      "name": "automated_static_checks",
+      "description": "Runs against every generated file and manifest entry after each batch collects. Fully automatable, zero human time, catches mechanical failures only.",
+      "checks": [
+        { "id": "missing_image", "description": "Manifest entry has status=succeeded but the output file does not exist on disk." },
+        { "id": "duplicate_hash", "description": "Two different canonical_interest_ids produced files with the same file_sha256 (suspicious duplication / stuck cache)." },
+        { "id": "wrong_dimensions_aspect", "description": "Image dimensions do not match the expected 2:3 aspect ratio within tolerance." },
+        { "id": "suspiciously_tiny_or_corrupt_file", "description": "File size below a sane floor (e.g. <20KB) or fails to decode as a valid image." },
+        { "id": "border_chrome_detector", "description": "Reuses the existing flatness/letterbox heuristic from generateCompiledBatch.js's analyzeGeneratedImage() as a best-effort signal for card-border/frame leakage; diagnostic only, not authoritative." },
+        { "id": "manifest_mismatch", "description": "output_filename, prompt_sha256, or canonical_interest_id in the manifest do not match what the queue specified for that id." },
+        { "id": "text_risk_metadata_if_available", "description": "If the provider ever exposes safety/classification metadata on a response, flag entries with elevated text/OCR-risk signals for priority human review; this is opportunistic, not a guaranteed detector." },
+        { "id": "quarantined_interest_accidentally_included", "description": "Any entry with quarantined=true that somehow reached status=succeeded or submitted outside an explicitly-approved quarantine run - treated as a hard stop, not just a warning." }
+      ]
+    },
+    {
+      "layer": 2,
+      "name": "representative_human_sampling",
+      "description": "A human opens and visually reviews a deterministic sample after each batch, using the same 15-dimension-style QA rubric used in the D4 calibration/durability/diversity rounds (semantic PASS/MINOR/FAIL, D4 fidelity, special-illustration feel, collectible appeal, brand/trademark leak, text leak, border/UI leak).",
+      "minimum_sample_per_batch": {
+        "rule": "max(8, ceil(0.10 * batch_size))",
+        "rationale": "10% of a ~120-image batch is ~12 images; the max(8, ...) floor keeps the last, smaller batch (~48 images) still meaningfully sampled."
+      },
+      "selection_rule": "Stratified, not purely random: from each batch's sample quota, draw across as many distinct runtime_category values as the batch contains, plus at least one entry per distinct archetype present, before filling any remaining slots by stable-hash pseudo-random selection (same determinism pattern as the diversity layer, so the sample is reproducible)."
+    },
+    {
+      "layer": 3,
+      "name": "targeted_high_risk_review",
+      "description": "Independent of the per-batch percentage sample, every entry belonging to a declared high-risk family gets individual human review, not just a statistical chance of being sampled.",
+      "high_risk_families": [
+        { "family": "brand_trademark_sensitive", "match": "runtime_category in [sports, fashion] or archetype in [solo_action, group_play] with footwear/apparel/equipment-heavy must_include", "reason": "Proven leak source: fashion.streetwear's swoosh-like mark, sports.skateboarding's skate-shoe silhouette." },
+        { "family": "text_sensitive", "match": "runtime_category in [books, learning] or hobby recipes whose must_include mentions books, notes, diagrams, screens, or signage", "reason": "Proven leak source: books.reading's invented book titles, wellness.tai_chi's background calligraphy." },
+        { "family": "screen_adjacent", "match": "archetype = tech_workspace or must_include mentions monitor/laptop/device display", "reason": "Historically screen/code-leak-prone family from earlier FLUX-era rounds." },
+        { "family": "wellness_safety", "match": "archetype = wellness_experience or calm_wellness", "reason": "Proven safety-sensitive family: earlier FLUX-era nudity-adjacent risk, and the cold_plunge warm-bath semantic drift." },
+        { "family": "rights_sensitive_or_near_quarantine", "match": "runtime_cluster shares a cluster with a quarantined interest, or recipe_source=derived with no manual review yet", "reason": "Guards against a near-neighbor of american_football/robotics silently reproducing the same risk under a different canonical id." }
+      ]
+    },
+    {
+      "layer": 4,
+      "name": "cluster_defect_escalation",
+      "description": "If layer 2 or layer 3 review finds the same defect type (semantic FAIL, brand leak, text leak, or border/UI leak) on 2 or more entries within one batch, or on the same runtime_category/archetype across two different batches, that is treated as a systemic cluster defect, not an isolated card issue.",
+      "escalation_rule": "Pause submission of any further not-yet-submitted batches immediately. Do not resume batch submission until: (a) the root cause is identified, (b) a recipe-level or global-policy fix is written and dry-run-validated, and (c) either a small targeted re-generation of the affected canonical ids confirms the fix, or the affected ids are pulled from auto-production pending manual review. This mirrors the localized-fix-not-global-rewrite pattern already used for books.reading/wellness.cold_plunge/sports.skateboarding/wellness.tai_chi."
+    }
+  ],
+  "reporting": {
+    "per_batch_qa_summary_fields": [
+      "batch_number", "planned_batch_id", "batch_size", "sample_size",
+      "sample_semantic_pass_count", "sample_semantic_minor_count", "sample_semantic_fail_count",
+      "brand_leak_count", "text_leak_count", "border_ui_leak_count",
+      "high_risk_family_entries_reviewed", "cluster_defect_detected", "escalation_triggered"
+    ]
+  }
+}
