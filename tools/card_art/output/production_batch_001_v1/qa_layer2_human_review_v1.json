@@ -1,0 +1,128 @@
+{
+  "version": "v1",
+  "batch_number": 1,
+  "reviewed_at": "2026-09-24",
+  "review_scope": "Full individual human visual review of all 120 images in production batch 1 (no sampling, per task instruction).",
+  "rubric": [
+    "semantic (PASS/MINOR/FAIL)",
+    "d4_style_fidelity (PASS/MINOR/FAIL)",
+    "special_illustration_quality (PASS/MINOR/FAIL)",
+    "brand_trademark_leak (YES/NO)",
+    "text_leak (YES/NO)",
+    "screen_policy_leak (YES/NO)",
+    "border_ui_leak (YES/NO)",
+    "safety_concern (YES/NO)",
+    "anatomy_object_corruption (YES/NO)",
+    "notes"
+  ],
+  "default_values_note": "Every entry not listed in 'flagged_entries' below scored: semantic=PASS, d4_style_fidelity=PASS, special_illustration_quality=PASS, brand_trademark_leak=NO, text_leak=NO, screen_policy_leak=NO, border_ui_leak=NO, safety_concern=NO, anatomy_object_corruption=NO. Zero images scored semantic=FAIL, border_ui_leak=YES, or safety_concern=YES anywhere in this batch.",
+  "flagged_entries": [
+    { "id": "arts.animation_production", "screen_policy_leak": "NO", "notes": "Front-facing tablet shows only in-progress artwork, no UI chrome - judged compliant/borderline, not counted as a leak." },
+    { "id": "arts.blogging", "text_leak": "YES", "screen_policy_leak": "YES", "notes": "Tablet shows a front-facing dashboard-style UI (colored blocks); notebook has pseudo-text scribbles." },
+    { "id": "arts.calligraphy", "text_leak": "YES", "notes": "Multiple background wall-scroll characters beyond the single necessary in-progress brushstroke." },
+    { "id": "arts.chinese_calligraphy", "text_leak": "YES", "notes": "Several wall scrolls plus practice sheets carry legible Chinese characters; same family issue as arts.calligraphy and the earlier wellness.tai_chi finding, more severe here." },
+    { "id": "arts.chinese_painting", "text_leak": "YES", "notes": "One background wall scroll with legible characters; the main painting itself correctly avoided text (bamboo, not calligraphy)." },
+    { "id": "arts.comedy_writing", "text_leak": "YES", "notes": "Whiteboard flowchart is extensively readable; book cover clearly reads 'THESAURUS'. Severe." },
+    { "id": "arts.film_photography", "text_leak": "YES", "notes": "Background neon storefront/rooftop signage renders legible-looking katakana." },
+    { "id": "arts.graphic_design", "brand_trademark_leak": "YES", "notes": "Color-swatch fan book resembles a real 'Pantone'-style guide with brand-like spine text." },
+    { "id": "arts.hip_hop_dance", "text_leak": "YES", "notes": "Large, fully legible graffiti text: 'FLOW', 'CYPHER', 'UNITY EST. 98'. Severe." },
+    { "id": "arts.kpop_dance", "brand_trademark_leak": "YES", "notes": "Sneaker silhouette closely resembles a specific recognizable real shoe model (no logo/text)." },
+    { "id": "arts.magic_performance", "text_leak": "YES", "notes": "Readable 'EXIT' signage (minor, standard utility signage)." },
+    { "id": "arts.online_video_creation", "anatomy_object_corruption": "YES", "notes": "Camera rig appears to merge with/float from the subject's head rather than sit on a clearly separate stand." },
+    { "id": "arts.photo_editing", "text_leak": "YES", "notes": "Background billboard/neon signage renders legible-looking Japanese/English text fragments." },
+    { "id": "arts.photo_retouching", "screen_policy_leak": "YES", "notes": "Editing-tablet monitor shows a visible toolbar and menu-bar row (UI chrome)." },
+    { "id": "arts.podcasting", "screen_policy_leak": "YES", "notes": "Laptop screen shows a faint but visible UI sidebar list; minor, edge-of-frame." },
+    { "id": "arts.short_form_video", "brand_trademark_leak": "YES", "notes": "Flexible tripod design closely echoes a specific well-known real tripod product line (borderline/minor)." },
+    { "id": "arts.street_art", "text_leak": "YES", "notes": "Background storefront neon shows partial legible lettering." },
+    { "id": "arts.urban_sketching", "text_leak": "YES", "brand_trademark_leak": "YES", "notes": "Storefront awning shows a readable shop name; marker pens carry brand-style readable-ish labels." },
+    { "id": "arts.vlogging", "brand_trademark_leak": "YES", "notes": "Same flexible-tripod product-design echo as arts.short_form_video (recurring, not a one-off)." },
+    { "id": "arts.voice_acting", "text_leak": "YES", "notes": "Script pages held by multiple actors show small but legible Japanese text." },
+    { "id": "arts.voiceover", "text_leak": "YES", "notes": "Script pages show pseudo-script text mimicking a real script layout; less clearly legible than arts.voice_acting, borderline." },
+    { "id": "arts.webcomics", "screen_policy_leak": "YES", "notes": "Tablet shows visible toolbar icon chrome; comic book cover shows a hero-like figure (minor franchise-adjacent risk, not a specific recognizable character)." },
+    { "id": "arts.zine_making", "text_leak": "YES", "notes": "The word 'ZINE' (the hobby's own name) renders clearly, repeatedly, on multiple zine covers - a direct violation of the explicit 'never render the hobby name' rule. Severe." },
+    { "id": "business.budgeting", "text_leak": "YES", "notes": "Corkboard headers 'Planning' and 'Budget Category' are clearly readable." },
+    { "id": "business.career_development", "text_leak": "YES", "notes": "'SKILL DEVELOPMENT' and 'GOAL' render as large bold readable labels." },
+    { "id": "business.career_switching", "text_leak": "YES", "notes": "'SKILLS' (repeated), 'COMPANY', 'BUSINESS' all clearly readable on the diagram sheet." },
+    { "id": "business.consulting", "text_leak": "NO", "notes": "Whiteboard flowchart and map stay illegible/generic at this resolution - compliant." },
+    { "id": "business.coworking", "brand_trademark_leak": "YES", "notes": "Laptop lid shows a clearly recognizable real Apple logo. Severe, unambiguous trademark leak." },
+    { "id": "business.design_thinking", "text_leak": "YES", "notes": "'Empathy Map' and 'Ideation Cluster' are large, clearly readable whiteboard headers." },
+    { "id": "business.dividend_investing", "text_leak": "YES", "screen_policy_leak": "YES", "notes": "Monitor shows a full front-facing stock-chart dashboard with a readable-ish header and data table - clear screen-policy violation." },
+    { "id": "business.ecommerce", "text_leak": "YES", "notes": "Small map pin tags carry legible-ish short labels ('New Order'/'Shipped'-style)." },
+    { "id": "business.financial_independence", "text_leak": "YES", "notes": "'BUSINESS GROWTH MILESTONES' and 'REVENUE STREAMS' render as large, clearly readable flip-chart headers." },
+    { "id": "business.fire_movement", "text_leak": "YES", "notes": "Whiteboard 'Mind[ Map]' header plus book spines clearly reading 'FINANCE' (repeated)." },
+    { "id": "business.founder_meetups", "text_leak": "NO", "notes": "Small prototype-device screen shows only abstract UI blocks, not clearly readable words - compliant." },
+    { "id": "business.freelancing", "text_leak": "YES", "notes": "'Project Discovery' clearly readable at the center of the mind-map diagram; also background neon storefront signage." },
+    { "id": "business.index_investing", "text_leak": "YES", "brand_trademark_leak": "YES", "notes": "'S&P 500' (a real trademarked index name) plus 'Sector Funds'/'Emerging Economies' render clearly readable. Severe - simultaneously a text leak and a real trademark leak." },
+    { "id": "business.marketing", "text_leak": "YES", "notes": "Small whiteboard header word is plausibly legible at this resolution (minor)." },
+    { "id": "business.no_code", "brand_trademark_leak": "YES", "screen_policy_leak": "YES", "notes": "iPad clearly shows a recognizable real Apple logo (second such instance in this batch); large touchscreen shows a front-facing flowchart-style UI." },
+    { "id": "business.personal_branding", "text_leak": "YES", "notes": "'RISE' (repeated) and 'STUDIO' neon signage render as large, clearly readable text." },
+    { "id": "business.product_management", "text_leak": "YES", "notes": "Kanban board columns 'Backlog', 'Doing', 'Validation', 'Done' all clearly readable." },
+    { "id": "business.project_management", "text_leak": "YES", "notes": "PM lifecycle labels 'INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING' all clearly readable." },
+    { "id": "business.real_estate", "text_leak": "NO", "notes": "Map/tablet labels stay illegibly small - compliant." },
+    { "id": "business.real_estate_investing", "text_leak": "NO", "notes": "Map annotations are small illegible pseudo-text, not clearly readable words." },
+    { "id": "business.remote_work", "text_leak": "YES", "notes": "World-map annotations are borderline legible short labels (minor/ambiguous)." }
+  ],
+  "recurring_face_observation": {
+    "description": "A specific 'long dark-haired, angular-jawed, serious male' face/presentation recurs across roughly 7 of the male-led/object-led cards (e.g. arts.newsletter_writing, arts.podcasting, books.reading, business.consulting, business.finance, business.remote_work) despite the deterministic diversity layer assigning genuinely different age/hair/build dimensions to each of these hobbies. This indicates the underlying model has a strong rendering prior toward one 'brooding male professional' archetype for certain contexts that the current diversity-layer phrasing does not fully override, even though the catalog-wide *assignment* distribution itself is confirmed even (see the Part-2 production-hardening handoff). This is a tuning opportunity for the face_hair_presentation/body_build phrasing, not a defect in the deterministic assignment mechanism itself.",
+    "counterexamples_showing_the_layer_does_work": [
+      "grey/silver hair used naturally on both younger-styled and older character (arts.ceramics, arts.sticker_making, arts.puppetry, arts.square_dancing)",
+      "curly/coily hair and darker skin tones (arts.lion_dance, arts.pole_dance, arts.screen_printing, arts.mixed_media, arts.video_editing, business.marketing)",
+      "broader/sturdier build without caricature (arts.tap_dance, arts.sculpture's muscular older woman)",
+      "buzzed/very-short hair across multiple genders (arts.bird_photography, arts.macro_wildlife_photography, arts.painting_socials, arts.contemporary_dance, arts.landscape_photography)"
+    ]
+  },
+  "aggregate_counts": {
+    "total_images": 120,
+    "semantic_pass": 120,
+    "semantic_minor": 0,
+    "semantic_fail": 0,
+    "brand_trademark_leak_yes": 8,
+    "text_leak_yes": 29,
+    "screen_policy_leak_yes": 6,
+    "border_ui_leak_yes": 0,
+    "safety_concern_yes": 0,
+    "anatomy_object_corruption_yes": 1
+  },
+  "category_breakdown": {
+    "arts (89 images)": {
+      "text_leak_count": 14,
+      "text_leak_rate": "15.7%",
+      "brand_leak_count": 5,
+      "screen_leak_count": 4,
+      "note": "Leaks span several distinct sub-causes: calligraphy-family background scrolls, urban-night-scene signage, creator-tool screen UI chrome, and isolated cases (comedy_writing's whiteboard+book, hip_hop_dance's graffiti, zine_making's literal hobby-name text)."
+    },
+    "books (1 image)": {
+      "text_leak_count": 0,
+      "note": "books.reading (the hobby fixed last round) rendered completely clean - confirms the fix holds in real production output."
+    },
+    "business (30 images)": {
+      "text_leak_count": 15,
+      "text_leak_rate": "50.0%",
+      "brand_leak_count": 3,
+      "screen_leak_count": 2,
+      "note": "SYSTEMIC CLUSTER DEFECT. More than half of all business.* cards render clearly readable diagram/whiteboard/kanban/flip-chart labels (e.g. 'SKILLS', 'GOAL', 'Empathy Map', 'REVENUE STREAMS', 'S&P 500', 'Backlog/Doing/Validation/Done', 'INITIATION/PLANNING/EXECUTION/MONITORING'). This is the dominant defect in the entire batch and is narrowly scoped to one runtime_category, with a clear likely cause: the business category's 'concept diagram / kanban board / planning board' recognition-anchor language leads the model to add literal English labels instead of abstract non-linguistic diagram marks, the same class of gap already fixed for lifestyle.game_nights (game pieces) and learning.philosophy (concept diagrams) at the individual-hobby level, but not yet addressed at the business-category level."
+    }
+  },
+  "brand_leak_detail": {
+    "device_logo_family": {
+      "ids": ["business.coworking", "business.no_code"],
+      "description": "Two clear, unambiguous real Apple logos rendered on laptop/tablet lids. This is a direct gap in global_brand_safety_policy's 'consumer electronics and devices' coverage - the policy text exists but was not reliably followed by the model for this specific device-logo case, twice in one 120-image batch.",
+      "severity": "high - most severe brand-safety finding of this round"
+    },
+    "footwear_silhouette_family": {
+      "ids": ["arts.kpop_dance"],
+      "description": "Recognizable real sneaker silhouette (no logo/text). Same class of residual risk already documented for sports.skateboarding after its hardening fix - confirms the global brand-safety policy reduces but does not eliminate this risk class for footwear-heavy scenes outside the hobbies with dedicated overrides.",
+      "severity": "moderate"
+    },
+    "design_tool_brand_family": {
+      "ids": ["arts.graphic_design", "arts.urban_sketching"],
+      "description": "Color-swatch guide and marker pens echo real design-industry product branding (Pantone-style, branded marker labels).",
+      "severity": "low-moderate"
+    },
+    "trademarked_term_family": {
+      "ids": ["business.index_investing"],
+      "description": "'S&P 500' rendered as a real trademarked financial index name - a text leak that is simultaneously a trademark leak.",
+      "severity": "moderate"
+    }
+  }
+}

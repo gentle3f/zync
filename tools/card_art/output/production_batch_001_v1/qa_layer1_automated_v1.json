@@ -1,0 +1,58 @@
+{
+  "version": "v1",
+  "generated_at": "2026-09-24T03:41:47.791Z",
+  "batch_number": 1,
+  "checks": [
+    {
+      "name": "manifest_expected_entries_matches_batch_plan_size",
+      "pass": true,
+      "detail": "entries=120"
+    },
+    {
+      "name": "no_missing_images_for_succeeded_entries",
+      "pass": true,
+      "detail": "checked=120"
+    },
+    {
+      "name": "no_suspiciously_tiny_or_corrupt_files",
+      "pass": true,
+      "detail": "min_bytes_floor=20000"
+    },
+    {
+      "name": "no_duplicate_file_hashes",
+      "pass": true,
+      "detail": "unique_hashes=120"
+    },
+    {
+      "name": "expected_2_3_aspect_ratio",
+      "pass": true,
+      "detail": "checked=120 distinct_dimensions=848x1264"
+    },
+    {
+      "name": "manifest_id_prompt_filename_mapping_matches_queue",
+      "pass": true,
+      "detail": "checked=120"
+    },
+    {
+      "name": "output_filenames_unique_on_disk",
+      "pass": true,
+      "detail": "files=120"
+    },
+    {
+      "name": "no_quarantined_interests_in_batch",
+      "pass": true,
+      "detail": "clean"
+    },
+    {
+      "name": "cost_accounting_consistent",
+      "pass": true,
+      "detail": "succeeded=120 estimated_cost_usd=$2.016"
+    },
+    {
+      "name": "success_failure_counts_reported",
+      "pass": true,
+      "detail": "succeeded=120 failed_transient=0 failed_content=0"
+    }
+  ],
+  "summary": "10/10 checks passed"
+}
