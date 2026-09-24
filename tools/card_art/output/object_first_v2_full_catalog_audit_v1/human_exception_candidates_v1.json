@@ -1,45 +1,8 @@
 {
   "final_human_exception_candidate_count": 0,
-  "keyword_scan_matched_count": 13,
-  "keyword_scan_downgraded_to_containment_count": 13,
-  "irreducible_human_ids_configured": [],
-  "note": "Every keyword-scan match is challenged against object/aftermath/environment/animal/machine/miniature/symbolic alternatives before being accepted as a true human exception (see routing_note on each row). A near-zero final count is the expected, intended outcome of the conservative philosophy in object_first_rules_v2.json, not a bug.",
+  "keyword_scan_matched_count": 3,
+  "note": "v2.1: keyword scan is now token-aware with an explicit known_false_positive_ids exclusion list (see object_first_rules_v2.json). Every remaining match is still challenged against object/aftermath/environment/animal/machine/miniature/symbolic alternatives before being accepted as a true human exception.",
   "keyword_matched_rows": [
-    {
-      "id": "outdoors.stand_up_paddleboarding",
-      "title": "Stand-up Paddleboarding",
-      "matched_keyword": "stand_up",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"stand_up\" but was CHALLENGED and downgraded: a microphone stand under a spotlight with an empty stool, aftermath staging (already validated pattern for arts.comedy_writing's notebook/mic-stand treatment)"
-    },
-    {
-      "id": "outdoors.dragon_boat",
-      "title": "Dragon Boat",
-      "matched_keyword": "drag",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"drag\" but was CHALLENGED and downgraded: costume/wig/makeup vanity display as the object hero, no face"
-    },
-    {
-      "id": "crafts.model_building",
-      "title": "Model Building",
-      "matched_keyword": "model",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"model\" but was CHALLENGED and downgraded: garment/clothing displayed on a mannequin, hanger, or dress form as the object hero (no visible face)"
-    },
-    {
-      "id": "transport.modelrailways",
-      "title": "Model Railways",
-      "matched_keyword": "model",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"model\" but was CHALLENGED and downgraded: garment/clothing displayed on a mannequin, hanger, or dress form as the object hero (no visible face)"
-    },
-    {
-      "id": "learning.self_improvement",
-      "title": "Self-improvement Books",
-      "matched_keyword": "improv",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"improv\" but was CHALLENGED and downgraded: a bare stage with a single prop and a spotlight, no performer"
-    },
     {
       "id": "business.public_speaking",
       "title": "Public Speaking",
@@ -55,46 +18,11 @@
       "routing_note": "human_exception_keyword_scan matched \"stand_up\" but was CHALLENGED and downgraded: a microphone stand under a spotlight with an empty stool, aftermath staging (already validated pattern for arts.comedy_writing's notebook/mic-stand treatment)"
     },
     {
-      "id": "crafts.model_kit_building",
-      "title": "Model Kit Building",
-      "matched_keyword": "model",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"model\" but was CHALLENGED and downgraded: garment/clothing displayed on a mannequin, hanger, or dress form as the object hero (no visible face)"
-    },
-    {
       "id": "lifestyle.improv_comedy",
       "title": "Improv Comedy",
       "matched_keyword": "improv",
       "final_status": "containment_required",
       "routing_note": "human_exception_keyword_scan matched \"improv\" but was CHALLENGED and downgraded: a bare stage with a single prop and a spotlight, no performer"
-    },
-    {
-      "id": "technology.3d_modeling",
-      "title": "3D Modeling",
-      "matched_keyword": "model",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"model\" but was CHALLENGED and downgraded: garment/clothing displayed on a mannequin, hanger, or dress form as the object hero (no visible face)"
-    },
-    {
-      "id": "lifestyle.home_improvement",
-      "title": "Home Improvement",
-      "matched_keyword": "improv",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"improv\" but was CHALLENGED and downgraded: a bare stage with a single prop and a spotlight, no performer"
-    },
-    {
-      "id": "sports.dragon_boat_racing",
-      "title": "Dragon Boat Racing",
-      "matched_keyword": "drag",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"drag\" but was CHALLENGED and downgraded: costume/wig/makeup vanity display as the object hero, no face"
-    },
-    {
-      "id": "learning.model_united_nations",
-      "title": "Model United Nations",
-      "matched_keyword": "model",
-      "final_status": "containment_required",
-      "routing_note": "human_exception_keyword_scan matched \"model\" but was CHALLENGED and downgraded: garment/clothing displayed on a mannequin, hanger, or dress form as the object hero (no visible face)"
     }
   ],
   "final_candidates": []

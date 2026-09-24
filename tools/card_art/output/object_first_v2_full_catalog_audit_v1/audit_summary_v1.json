@@ -1,26 +1,31 @@
 {
-  "version": "v1",
-  "generated_at": "2026-09-24T16:31:36.694Z",
-  "scope": "Zero-cost, text/catalog-only V2 object-first routing audit. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics and rules, not visual findings.",
+  "version": "v2",
+  "generated_at": "2026-09-24T16:49:49.415Z",
+  "baseline_checkpoint": "a369058",
+  "scope": "Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics and rules, not visual findings.",
   "total_catalog": 4053,
   "total_eligible": 2210,
   "total_blocked": 1843,
   "total_quarantined_excluded": 2,
-  "total_routed_nonquarantined": 2208,
+  "total_compiled": 2208,
   "protagonist_type_distribution": {
-    "object": 671,
-    "environment": 525,
+    "object": 1016,
+    "environment": 555,
     "machine_process": 223,
-    "unresolved": 376,
     "food_drink": 332,
-    "abstract_system": 52,
+    "abstract_system": 53,
     "animal": 29
   },
   "object_first_status_distribution": {
-    "containment_required": 1545,
+    "containment_required": 1920,
     "excluded_quarantined": 2,
-    "review_required": 376,
-    "clean": 287
+    "clean": 288
+  },
+  "confidence_distribution": {
+    "validated": 1341,
+    "extrapolated": 487,
+    "new_grammar_unvalidated": 372,
+    "weak_extrapolation": 8
   },
   "composition_archetype_distribution": {
     "quiet_atmospheric": 189,
@@ -56,7 +61,21 @@
   "brand_risk_count": 427,
   "human_exception_candidate_count": 0,
   "human_exception_candidate_rate_pct": 0,
-  "review_required_count": 376,
+  "review_required_count": 0,
+  "review_required_rate_pct": 0,
+  "review_required_before_this_checkpoint": 376,
+  "static_prompt_qa_summary": {
+    "total_checked": 2208,
+    "all_clean": true,
+    "max_length": 11465,
+    "min_length": 10531,
+    "empty_count": 0,
+    "conflicting_human_wording_count": 0,
+    "brand_name_leak_count": 0
+  },
+  "keyword_scan_regression": {
+    "pass": true
+  },
   "validations": {
     "v1_all_2210_compile": true,
     "v2_no_duplicate_ids": true,
@@ -64,12 +83,17 @@
     "v4_v1_production_files_unchanged": true,
     "v5_no_production_queue_mutation": true,
     "v6_quarantine_untouched_and_excluded": true,
-    "v7_every_nonquarantined_row_has_protagonist_type": true,
-    "v8_every_nonquarantined_row_has_composition_route": true,
+    "v7_every_compiled_row_has_protagonist_type": true,
+    "v8_every_compiled_row_has_composition_route": true,
     "v9_containment_rules_reference_valid_archetypes": true,
     "v10_no_human_exception_explosion": true,
     "v11_no_forbidden_production_side_effects": true,
     "v12_no_image_generation_calls": true,
+    "v13_keyword_regression_tests_pass": true,
+    "v14_human_exception_list_conservative": true,
+    "v15_review_required_reduction_reported_honestly": true,
+    "v16_every_compiled_row_has_final_prompt": true,
+    "v17_static_prompt_qa_clean": true,
     "concentration_problems": []
   },
   "all_validations_pass": true,
@@ -90,5 +114,6 @@
     "catalog\\production_batch_plan_v1.json": "e009d66469b5724d40a97d78b54cec7ae68c507acd011955dd8b61f09152add2"
   },
   "image_generation_calls_made": 0,
-  "api_cost_usd": 0
+  "api_cost_usd": 0,
+  "validation_16_plan_expected_cost_usd": 0.2688
 }

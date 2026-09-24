@@ -1,0 +1,85 @@
+{
+  "expect_match": [
+    {
+      "id": "business.public_speaking",
+      "title": "Public Speaking",
+      "matched": "public_speaking",
+      "ok": true
+    },
+    {
+      "id": "entertainment.stand_up_comedy",
+      "title": "Stand-up Comedy",
+      "matched": "stand_up",
+      "ok": true
+    },
+    {
+      "id": "lifestyle.improv_comedy",
+      "title": "Improv Comedy",
+      "matched": "improv",
+      "ok": true
+    }
+  ],
+  "expect_no_match": [
+    {
+      "id": "crafts.model_building",
+      "title": "Model Building",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "crafts.model_kit_building",
+      "title": "Model Kit Building",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "learning.model_united_nations",
+      "title": "Model United Nations",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "outdoors.stand_up_paddleboarding",
+      "title": "Stand-up Paddleboarding",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "technology.3d_modeling",
+      "title": "3D Modeling",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "transport.modelrailways",
+      "title": "Model Railways",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "learning.self_improvement",
+      "title": "Self-improvement Books",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "lifestyle.home_improvement",
+      "title": "Home Improvement",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "outdoors.dragon_boat",
+      "title": "Dragon Boat",
+      "matched": null,
+      "ok": true
+    },
+    {
+      "id": "sports.dragon_boat_racing",
+      "title": "Dragon Boat Racing",
+      "matched": null,
+      "ok": true
+    }
+  ],
+  "pass": true
+}

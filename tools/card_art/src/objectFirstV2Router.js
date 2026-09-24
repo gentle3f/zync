@@ -64,10 +64,28 @@ function matchesIdPrefixOverride(id, override) {
   return Boolean(override.match?.id_prefix) && id.startsWith(override.match.id_prefix);
 }
 
-function findKeywordMatch(id, title, rules) {
-  const haystack = `${id} ${title}`.toLowerCase();
+// Token-aware matching (v2.1 fix - see object_first_rules_v2.json's
+// human_exception_keyword_scan.matching_method_v2_1 for the full rationale).
+// Splits id+title into alphanumeric tokens and matches a pattern only
+// against exact token(s), not as a raw substring - this alone eliminates
+// false positives like "technology.3d_modeling" (token "modeling" != "model")
+// without needing an exclusion. Multi-word patterns (e.g. "stand_up") match
+// only an exact consecutive token sequence.
+export function tokenize(str) {
+  return str.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+export function findKeywordMatch(id, title, rules) {
+  if (rules.human_exception_keyword_scan.known_false_positive_ids?.[id]) return null;
+  const tokens = [...tokenize(id), ...tokenize(title)];
   for (const pattern of rules.human_exception_keyword_scan.patterns) {
-    if (haystack.includes(pattern)) return pattern;
+    const patternTokens = pattern.split('_');
+    if (patternTokens.length === 1) {
+      if (tokens.includes(patternTokens[0])) return pattern;
+      continue;
+    }
+    for (let i = 0; i <= tokens.length - patternTokens.length; i++) {
+      if (patternTokens.every((t, j) => tokens[i + j] === t)) return pattern;
+    }
   }
   return null;
 }
@@ -101,6 +119,7 @@ export function routeHobbyV2(row, ctx) {
       text_risk: false,
       brand_risk: false,
       human_exception_keyword_matched: null,
+      confidence: null,
       routing_note: 'Quarantined per generation_guardrails_v1.json; excluded from all V2 generation and distributions. Quarantine file not modified.',
     };
   }
@@ -113,6 +132,7 @@ export function routeHobbyV2(row, ctx) {
   let protagonist_type = archetypeDefault.protagonist_type;
   let object_first_status = archetypeDefault.object_first_status;
   let structural_containment_rule_id = archetypeDefault.structural_containment_rule_id;
+  let confidence = archetypeDefault.confidence;
   let routing_note = archetypeDefault.rationale;
 
   const idOverride = rules.id_prefix_overrides.find(o => matchesIdPrefixOverride(id, o));
@@ -120,6 +140,7 @@ export function routeHobbyV2(row, ctx) {
     protagonist_type = idOverride.protagonist_type;
     object_first_status = idOverride.object_first_status;
     structural_containment_rule_id = idOverride.structural_containment_rule_id;
+    confidence = idOverride.confidence;
     routing_note = `id_prefix_override(${idOverride.match.id_prefix}): ${idOverride.rationale}`;
   }
 
@@ -131,11 +152,13 @@ export function routeHobbyV2(row, ctx) {
       protagonist_type = 'unresolved';
       object_first_status = 'human_exception_candidate';
       structural_containment_rule_id = null;
+      confidence = 'validated';
       routing_note = `human_exception_keyword_scan matched "${keywordMatch}" and id is explicitly listed in irreducible_human_ids - accepted as a true human exception.`;
     } else {
       protagonist_type = 'object';
       object_first_status = 'containment_required';
       structural_containment_rule_id = 'private_empty_venue';
+      confidence = 'new_grammar_unvalidated';
       routing_note = `human_exception_keyword_scan matched "${keywordMatch}" but was CHALLENGED and downgraded: ${rules.human_exception_keyword_scan.challenge_alternatives[keywordMatch]}`;
     }
     human_exception_keyword_matched = keywordMatch;
@@ -157,6 +180,7 @@ export function routeHobbyV2(row, ctx) {
     text_risk: TEXT_RISK_ARCHETYPES.has(archetype),
     brand_risk: BRAND_RISK_ARCHETYPES.has(archetype),
     human_exception_keyword_matched,
+    confidence,
     routing_note,
   };
 }

@@ -1,11 +1,13 @@
 {
-  "version": "v2",
-  "purpose": "Reusable structural-containment rules for candidate V2 object-first prompt compilation. Each rule changes SCENE DESIGN itself (what is structurally present or absent in the scene) rather than merely appending a 'no humans' negative to an otherwise human-centered scene. Rules are referenced by id from object_first_rules_v2.json's archetype_defaults / id_prefix_overrides. This spec is read-only input for a future V2 compiler; it does not generate prompts or images by itself.",
+  "version": "v2.1",
+  "purpose": "Reusable structural-containment rules for candidate V2 object-first prompt compilation, now including concrete scene_template text usable directly by src/compileObjectFirstPromptV2.js. Each rule changes SCENE DESIGN itself (what is structurally present or absent in the scene) rather than merely appending a 'no humans' negative to an otherwise human-centered scene. Rules are referenced by id from object_first_rules_v2.json's archetype_defaults / id_prefix_overrides. This spec is read-only input for the V2 compiler; it does not generate images by itself. v2.1 adds scene_template fields to every existing rule and 7 new rules covering the archetypes that were previously review_required (see object_first_rules_v2.json v2.1's changelog).",
+  "template_note": "scene_template strings use ${title} as the only interpolation placeholder (rendered via the same renderTemplate pattern already used in catalogRecipeBridge.js's deriveRecipe()). They are deliberately generic/archetype-level rather than bespoke per-hobby, mirroring how catalog_recipe_defaults_v1.json's category_defaults already work for V1. A future refinement could add per-hobby overrides the same way hobby_overrides_v1.json does for V1, but that is out of scope for this checkpoint.",
   "rules": {
     "action_aftermath": {
       "applies_to_archetypes": ["solo_action", "vertical_adventure", "creative_studio", "fitness_training", "outdoor_motion"],
       "bad_pattern": "Equipment shown dynamically in use mid-action (e.g. shoes mid-stride), which reliably pulls a human body part (legs, hands, arms) into frame even when a human is never explicitly requested.",
       "good_pattern": "Design the scene as the moment immediately AFTER the action: equipment at rest, fresh physical traces (footprints, chalk dust, displaced material, a still-ticking stopwatch, settling water/dust), no currently-moving body part attached to anything.",
+      "scene_template": "The scene captures the moment immediately AFTER a ${title} session, not during it: the hobby's defining equipment or gear rests where it was just set down, surrounded by fresh physical traces of the activity that just happened - settling dust, displaced surface material, water droplets, a still-ticking timer, or a freshly disturbed surface. No currently-moving body part is attached to anything. The aftermath details alone must carry the sense of very recent, energetic activity.",
       "validated_by": ["sports.running (round 3 fail -> round 4 redesign)"],
       "notes": "The energy of the card must come from the aftermath details, not from an implied currently-acting body."
     },
@@ -13,6 +15,7 @@
       "applies_to_archetypes": ["group_play", "drink_ritual", "travel_vista", "strategy_table", "journey_machine", "food_exploration", "aviation_world", "screenless_broadcast", "screenless_pc_play"],
       "bad_pattern": "A public/social venue (cafe, restaurant, tavern, arena concourse) used as the backdrop, which reliably causes the model to populate the background with patrons, staff, or spectators even when not requested.",
       "good_pattern": "Relocate the scene to a private, empty version of the same venue type (a private game room instead of a cafe; an empty street food stall instead of a busy one; an empty overlook instead of a scenic viewpoint with tourists) so no social context is structurally implied.",
+      "scene_template": "The scene is set in a private, completely empty version of the space where ${title} normally happens - no other people, staff, or spectators anywhere, and the space is explicitly shown as unoccupied rather than merely cropped tight. The hobby's defining objects, equipment, or setup are arranged as if a session just ended or is about to begin, carrying full recognition on their own with no social context required.",
       "validated_by": ["gaming.board (round 3 fail -> round 4 redesign)", "food.dish.bun_cha (round 1 fail -> round 2 fix)", "travel.roadtrip (round 3, empty vehicle interior)"],
       "notes": "This is the single most impactful containment rule found across all four rounds - the venue choice, not the hero object, was the actual leak source in every case it was applied to."
     },
@@ -20,6 +23,7 @@
       "applies_to_archetypes": ["performance", "lens_perspective"],
       "bad_pattern": "A scene built around 'a performer doing X with an instrument/tool', where the performer is the implicit subject even if described only via the instrument.",
       "good_pattern": "Make the instrument/tool itself the sole hero, staged mid-resonance or mid-use through purely physical/optical cues (a spotlight on piano keys with faint string-vibration suggestion; a lens reflecting a landscape) with no performer present at all.",
+      "scene_template": "The instrument or tool that defines ${title} is the sole hero of the scene, staged as if in active use through purely physical or optical cues alone - resonance, reflection, glow, or motion trace - with absolutely no performer, operator, or user present anywhere in frame.",
       "validated_by": ["music.piano (round 3, clean pass)", "photography.general (round 3, clean pass)"],
       "notes": "This is a lower-risk rule than action_aftermath or private_empty_venue - both validating cases passed cleanly on the first attempt without needing a round-4 redesign."
     },
@@ -27,6 +31,7 @@
       "applies_to_archetypes": ["tech_workspace", "creator_workflow", "physical_prototype"],
       "bad_pattern": "A 'person operating equipment' scene (coder at a monitor, hands adjusting a prototype), which is a very strong default model prior and pulled hands/arms/torso to dominate the frame even under an explicit no-human policy.",
       "good_pattern": "Remove the operator entirely and represent the process as a self-contained abstract or mechanical system: a neural-network/data-flow graph, a prototype mid-automatic-operation, a self-contained rig - with the majority of the frame left as clean negative space rather than filled with a body.",
+      "scene_template": "${title} is represented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-flow, or process visualized directly - with the majority of the frame left as clean negative space. There is no operator, no hands, no arms, no torso, and no person of any kind adjusting, coding, or controlling anything.",
       "validated_by": ["technology.ai (round 3 severe fail -> round 4 redesign)"],
       "notes": "This is the highest-risk containment rule in the set - technology.ai was round 3's single worst failure. Treat any archetype routed here as needing the strongest possible explicit containment language, not the baseline policy alone."
     },
@@ -34,13 +39,15 @@
       "applies_to_archetypes": ["story_culture"],
       "bad_pattern": "A screen/display within the scene is allowed to show generic 'story' or 'scene' content, which the model reliably fills with a human figure or character even when the physical room has no people.",
       "good_pattern": "Constrain any in-scene screen/display content to an explicit non-human visual whitelist (galaxy, ocean horizon, clouds, abstract city lights, landscape) and forbid figurative/character/story content on it entirely - this rule applies to media INSIDE the scene, not just the physical room.",
+      "scene_template": "The venue where ${title} takes place is shown completely empty of any audience or participant. If any screen, stage, or display surface is visible within the scene, its content is restricted to non-figurative visuals only - abstract light, landscape, sky, or color - and must never show a person, character, or figure of any kind, including inside any screen or display within the scene.",
       "validated_by": ["media.movies (round 3 fail -> round 4 redesign)"],
-      "notes": "This rule generalizes to any hobby where a screen-within-the-scene could show narrative content (e.g. a future technology.streaming or arts.animation card) and should be applied proactively wherever a display surface is unavoidable."
+      "notes": "This rule generalizes to any hobby where a screen-within-the-scene could show narrative content and should be applied proactively wherever a display surface is unavoidable."
     },
     "private_environment_animal": {
       "applies_to_archetypes": ["companion_bond"],
       "bad_pattern": "A real-animal protagonist placed in a public-facing environment (a window facing a street) still leaks small background human silhouettes even though the animal itself is fully compliant.",
       "good_pattern": "Keep the real-animal protagonist but constrain the environment to a private space only: a fenced private garden, or a home interior whose window shows only garden/plants/rain/sky, never a street.",
+      "scene_template": "A real animal appropriate to ${title} is the protagonist, shown naturally in a fully private environment - a fenced private garden or a home/enclosure interior whose windows, if any, show only garden, plants, sky, or natural surroundings, never a street or public space. No human owner, handler, or trainer is present.",
       "validated_by": ["pets.dogs (round 3 minor fail -> round 4 redesign)"],
       "notes": "The animal itself was never the problem in any round - only the background environment. This rule should be paired with the explicit animal carve-out from object_first_rules_v2.json, not with the general containment policy alone."
     },
@@ -48,6 +55,7 @@
       "applies_to_archetypes": ["water_outdoors"],
       "bad_pattern": "Any narrative implying a swimmer currently in the water or having JUST passed through (a splash, a fresh entry trail, dispersing bubbles at the point of entry) still leaked a partial human body part (a foot/ankle) even under an explicit no-human policy, because the storytelling device itself implies a body.",
       "good_pattern": "Use only a genuinely static empty-lane presentation: goggles and cap resting on the starting block, taut lane ropes, ambient ripples and reflections near the pool wall, water droplets - with no narrative device that implies a swimmer was just there.",
+      "scene_template": "${title}'s equipment (goggles, cap, board, or gear as appropriate) rests in a completely static, empty water environment - no splash, no entry trail, no dispersing bubbles, and no narrative device implying a swimmer or diver was just present. Only ambient ripples, reflections, and droplets unrelated to any body are shown.",
       "validated_by": ["outdoors.swimming (round 3 minor fail -> round 4 redesign, explicitly called out as a special hard case in the round-4 brief)"],
       "notes": "This is the strictest rule in the set - it is the only one that forbids the 'aftermath' storytelling device otherwise encouraged by action_aftermath, because in this specific case the aftermath device itself was the leak vector, not the fix."
     },
@@ -55,9 +63,74 @@
       "applies_to_archetypes": ["urban_discovery", "calm_wellness", "nature_immersion", "learning_exploration", "reading_world", "digital_play", "home_lifestyle", "wellness_experience"],
       "bad_pattern": "A default scene design that assumes a person is present to perform the activity, even when the archetype's own object/equipment/environment language could carry full recognition alone.",
       "good_pattern": "Apply the general V2 non-human-protagonist policy (empty/private environment, object/equipment/environment as hero, physical traces of the activity) without a more specialized containment pattern - these archetypes have not shown the sharper, scene-specific leak vectors found in the other named rules.",
+      "scene_template": "The defining objects, equipment, and environment of ${title} are shown as the sole hero of the scene, in a space that is clearly set up for the activity but has no person currently present. Physical traces of use (arranged tools, natural wear, an activity mid-progress with no visible actor) carry the recognition.",
       "validated_by": ["lifestyle.gardening (round 3, clean pass)", "lifestyle.home_decor (round 2, clean pass)", "books.reading (round 2, clean pass)", "outdoors.camping (round 2, clean pass)"],
       "notes": "This is the default/fallback rule and is expected to cover the largest number of catalog rows. It is intentionally less prescriptive than the named rules because no round has yet found a specific leak pattern requiring a bespoke fix for these archetypes."
+    },
+    "object_hero_clean": {
+      "applies_to_archetypes": ["food_hero", "collection_object_hero"],
+      "bad_pattern": "N/A - these archetypes are already object-hero-first in their own V1 composition language and do not require a containment redesign.",
+      "good_pattern": "The hero object (food/drink, or a collected/created object) dominates the frame with no containment redesign needed beyond the baseline non-human-protagonist policy.",
+      "scene_template": "The object, dish, or collected item that defines ${title} is the unmistakable hero of the frame, shown with rich material and sensory detail. No person is present or required.",
+      "validated_by": ["food.baking (round 3, clean pass)", "food.dish.bun_cha (round 1-2)", "collecting.stamps (round 1, clean pass)"],
+      "notes": "Used for object_first_status=clean rows purely as the scene_template source; it does not imply containment_required."
+    },
+    "professional_material_world": {
+      "applies_to_archetypes": ["professional_world"],
+      "bad_pattern": "A generic office-worker or laptop scene, which both fails to communicate the specific profession and pulls a human figure into the default composition.",
+      "good_pattern": "Represent the profession through its own material world: field-specific tools, documents, equipment, neutral planning materials, architecture, and the visible outputs/results of the work, with no worker present.",
+      "scene_template": "The material world of ${title} is the hero: field-specific tools, equipment, documents (with abstract, non-legible markings only), neutral planning materials, and the visible physical outputs or results of the work, arranged in a workspace clearly set up for the profession but with no worker currently present. No generic laptop-and-coffee office cliche, and no readable whiteboard or business text.",
+      "validated_by": [],
+      "notes": "New in v2.1 - reroutes professional_world from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated by any round; confidence=new_grammar_unvalidated."
+    },
+    "listening_equipment_world": {
+      "applies_to_archetypes": ["music_listening"],
+      "bad_pattern": "A scene built around a listener enjoying music, which requires a human presence to communicate 'listening' as an experience.",
+      "good_pattern": "Represent the listening experience through audio equipment itself: headphones, speakers, a turntable, vinyl, an acoustically-treated listening room, and abstract ambient light or waveform-like visual texture, with no listener present.",
+      "scene_template": "The listening ritual of ${title} is represented entirely through its equipment and environment: headphones, speakers, a turntable or player, physical media, and an acoustically considered listening space, with soft ambient light or abstract waveform-like visual texture suggesting sound in the air. No listener is present, and no literal floating music-note symbols are used by default.",
+      "validated_by": [],
+      "notes": "New in v2.1 - reroutes music_listening from review_required to containment_required per the task's Part B scene-grammar instruction. Distinct from the already-validated performance/object_hero_no_performer rule (an instrument being played) - this is about the act of listening, not performing. Not yet visually validated; confidence=new_grammar_unvalidated."
+    },
+    "campus_activity_grammar": {
+      "applies_to_archetypes": ["campus_activity"],
+      "bad_pattern": "Assuming students must be visibly present to communicate a campus activity, when the activity's own equipment/setup/architecture can often carry recognition alone.",
+      "good_pattern": "Use the hobby-specific campus environment itself: an empty club room, activity equipment, campus architecture, event materials, props, and non-legible noticeboard graphics, with the activity's aftermath or setup carrying the scene.",
+      "scene_template": "${title} is represented through its specific campus environment and equipment: an empty club room or activity space, the activity's defining props or materials, distinctive campus architecture, and event setup details (a noticeboard with only abstract non-legible graphics, arranged chairs, or activity equipment), with no students currently present.",
+      "validated_by": [],
+      "notes": "New in v2.1 - reroutes campus_activity from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+    },
+    "community_gathering_traces": {
+      "applies_to_archetypes": ["community_gathering"],
+      "bad_pattern": "The archetype's semantic core is interpersonal connection, which is the hardest case in the whole rule set to represent without people - forcing an object-only scene risks reading as simply 'an empty room', losing the hobby's identity entirely.",
+      "good_pattern": "Show the moment just before people arrive or just after they leave: a prepared shared table, arranged chairs in a circle or group, communal objects, food or activity materials laid out, decorations, and other tangible traces of community - the emotional feeling comes from these traces rather than from visible people.",
+      "scene_template": "The scene shows ${title} in the quiet moment just before people arrive or just after they leave: a prepared shared table or circle of arranged chairs, communal objects and shared materials laid out and ready, food or activity items, and small decorative touches that make the space feel warmly prepared for togetherness, with nobody currently in the room.",
+      "validated_by": [],
+      "notes": "New in v2.1. This is explicitly flagged as the single lowest-confidence reroute in the entire rule set - the task itself called this archetype 'difficult' and asked that genuinely weak individual cases be kept in review rather than forced. confidence=weak_extrapolation. A future round should visually test this rule before trusting it as strongly as the others."
+    },
+    "shared_workspace_grammar": {
+      "applies_to_archetypes": ["shared_workspace"],
+      "bad_pattern": "Rows of completely empty desks with nothing else can read as 'nobody works here' rather than 'this is a shared workspace', losing the archetype's identity.",
+      "good_pattern": "Show multiple distinct, personalized empty desks (different stationery, plants, mugs, notebooks, devices with blank/non-readable displays) side by side, communicating multiple independent workers through their belongings rather than their bodies.",
+      "scene_template": "${title} is represented through several distinct, personalized desks shown side by side, each with different stationery, plants, mugs, notebooks, and a device with a blank or non-readable display - the visible variety of belongings communicates multiple independent workers without showing any of them. No coworkers, no code on any screen, and no readable kanban or workflow text.",
+      "validated_by": [],
+      "notes": "New in v2.1 - reroutes shared_workspace from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+    },
+    "campaign_planning_materials": {
+      "applies_to_archetypes": ["campaign_planning"],
+      "bad_pattern": "A person presenting at a whiteboard, which both requires a human and risks generating fake readable marketing text.",
+      "good_pattern": "Represent the planning process through its materials: blank cards, abstract sticky notes, colored nodes, neutral non-textual charts, calendar-like geometry, and mock layout pieces arranged on a table, with no presenter.",
+      "scene_template": "The planning process behind ${title} is shown through its materials alone: blank or abstractly-marked cards, colored sticky notes, connecting lines or nodes, neutral chart-like shapes with no readable labels, and mock layout pieces arranged thoughtfully on a table, with no presenter or planner currently in the scene. No readable marketing copy, slogans, or brand names.",
+      "validated_by": [],
+      "notes": "New in v2.1 - reroutes campaign_planning from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+    },
+    "legal_practice_materials": {
+      "applies_to_archetypes": ["legal_practice"],
+      "bad_pattern": "A lawyer arguing in court, or an oversized symbolic scales-of-justice icon standing in for the whole profession, neither of which is a genuine object-first scene.",
+      "good_pattern": "Represent the work through case files, evidence folders, tabbed document stacks, unbranded law books, legal pads with abstract markings, sealed envelopes, and courtroom or office architecture, with a restrained scales-of-justice detail only as supporting texture, not the whole subject.",
+      "scene_template": "${title} is represented through its material world: case files, tabbed evidence folders, stacked unbranded law books, a legal pad with only abstract non-legible markings, sealed envelopes, and courtroom or formal office architecture, arranged as if work is actively in progress but with no lawyer or client present. A scales-of-justice detail may appear only as a small supporting element, never as the sole subject. No readable case names or large blocks of legible document text.",
+      "validated_by": [],
+      "notes": "New in v2.1 - reroutes legal_practice from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
     }
   },
-  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment"]
+  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment", "object_hero_clean", "professional_material_world", "listening_equipment_world", "campus_activity_grammar", "community_gathering_traces", "shared_workspace_grammar", "campaign_planning_materials", "legal_practice_materials"]
 }

@@ -13,10 +13,14 @@ authorization):
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
 Second, separate authoritative checkpoint (isolated object-first visual-
-direction research track, now at the architecture stage - candidate V2,
+direction research track, now at the compiler stage - candidate V2,
 not yet promoted to production, V1 above remains untouched and live):
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_ARCHITECTURE.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_COMPILER_AND_REVIEW_REDUCTION.md`
+
+(previous checkpoint in this track, still useful for context - routing/
+audit architecture before the prompt compiler existed:
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_ARCHITECTURE.md`)
 
 (previous checkpoint, still useful for context:
 `AI_STATE/HANDOFF_20260924_CARD_ART_FINAL_HYGIENE_TEST_8_RESULTS.md`)
