@@ -1,0 +1,45 @@
+{
+  "version": "v1",
+  "purpose": "Authorized paid execution of the Object-First V2 Validation-16 batch. Uses the EXACT frozen final_compiled_prompt strings recorded in output/object_first_v2_validation_16_prompt_audit_v1/compiled_prompts_v1.json at commit 4eba93c - no recompilation, no manual edits. This experiment validates the V2 architecture as it existed at 4eba93c; nothing in V2's specs/compiler is touched by this run regardless of outcome, per explicit instruction (no rerolls, no fixes mid-experiment).",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "production_files_touched": false,
+  "frozen_prompt_source": "tools/card_art/output/object_first_v2_validation_16_prompt_audit_v1/compiled_prompts_v1.json",
+  "frozen_plan_source": "tools/card_art/catalog/object_first_v2_validation_16_plan_v1.json",
+  "source_commit": "4eba93c",
+  "ids": [
+    "transport.modelrailways",
+    "food.japanese",
+    "sports.badminton",
+    "outdoors.swimming",
+    "pets.dogs",
+    "technology.ai",
+    "media.anime",
+    "business.public_speaking",
+    "business.startups",
+    "music.pop",
+    "learning.model_united_nations",
+    "business.founder_meetups",
+    "business.coworking",
+    "business.marketing",
+    "learning.mock_trial",
+    "gaming.video"
+  ],
+  "image": { "aspect_ratio": "2:3" },
+  "expected": {
+    "requests": 16,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.2688
+  },
+  "hard_guardrails": [
+    "exactly 16 images this run, no rerolls under any circumstance including visually imperfect results",
+    "no recompilation - prompts are loaded verbatim from the frozen compiled_prompts_v1.json file, with a SHA256 cross-check against the recorded prompt_sha256 before submission",
+    "no production file writes, no production queue changes, no launch-gate file changes, no quarantine changes",
+    "no Batch-1/Batch-2 authorization state touched",
+    "no visual QA performed by Claude on the resulting images",
+    "no fal.ai, no other image model, no reference images, no image-to-image",
+    "no fixes to V2 specs/compiler regardless of what this batch produces - this run validates the architecture as frozen at 4eba93c"
+  ]
+}
