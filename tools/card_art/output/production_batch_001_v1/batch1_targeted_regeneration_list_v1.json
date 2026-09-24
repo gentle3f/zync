@@ -1,0 +1,528 @@
+{
+  "version": "v1",
+  "generated_at": "2026-09-24T05:09:31.618Z",
+  "purpose": "Classification only - prepared per task Part 7. No regeneration executed in this task.",
+  "total_batch1_images": 120,
+  "approved_as_is_count": 81,
+  "targeted_regeneration_needed_count": 39,
+  "approved_as_is": [
+    "arts.acrylic_painting",
+    "arts.acting",
+    "arts.animation_production",
+    "arts.architecture_photography",
+    "arts.audio_editing",
+    "arts.bachata_dancing",
+    "arts.ballet",
+    "arts.ballroom_dancing",
+    "arts.belly_dance",
+    "arts.bird_photography",
+    "arts.ceramics",
+    "arts.character_design",
+    "arts.chinese_dance",
+    "arts.circus_arts",
+    "arts.collage",
+    "arts.contemporary_dance",
+    "arts.content_creation",
+    "arts.creative_writing",
+    "arts.dance",
+    "arts.digital_art",
+    "arts.drawing",
+    "arts.drone_photography",
+    "arts.fan_art",
+    "arts.flamenco_dance",
+    "arts.food_photography",
+    "arts.gratitude_journaling",
+    "arts.illustration",
+    "arts.jazz_dance",
+    "arts.journaling",
+    "arts.juggling",
+    "arts.landscape_photography",
+    "arts.latin_dance",
+    "arts.line_dancing",
+    "arts.linocut",
+    "arts.lion_dance",
+    "arts.livestreaming",
+    "arts.macro_wildlife_photography",
+    "arts.mixed_media",
+    "arts.mobile_photography",
+    "arts.motion_graphics",
+    "arts.musical_theatre",
+    "arts.nature_journaling",
+    "arts.nature_sketching",
+    "arts.newsletter_writing",
+    "arts.oil_painting",
+    "arts.painting",
+    "arts.painting_socials",
+    "arts.photo_walks",
+    "arts.pole_dance",
+    "arts.portrait_photography",
+    "arts.printmaking",
+    "arts.puppetry",
+    "arts.salsa_dancing",
+    "arts.screen_printing",
+    "arts.sculpture",
+    "arts.sound_design",
+    "arts.square_dancing",
+    "arts.stage_production",
+    "arts.sticker_making",
+    "arts.storytelling",
+    "arts.swing_dancing",
+    "arts.tap_dance",
+    "arts.travel_photography",
+    "arts.video_editing",
+    "arts.visual_arts",
+    "arts.watercolor",
+    "arts.wildlife_photography",
+    "books.reading",
+    "business.alumni_networking",
+    "business.branding",
+    "business.case_competitions",
+    "business.consulting",
+    "business.creator_economy",
+    "business.crypto",
+    "business.family_business",
+    "business.finance",
+    "business.founder_meetups",
+    "business.networking",
+    "business.public_speaking",
+    "business.real_estate",
+    "business.real_estate_investing"
+  ],
+  "targeted_regeneration_needed": [
+    {
+      "id": "arts.blogging",
+      "original_defect": "Tablet shows a front-facing dashboard-style UI (colored blocks); notebook has pseudo-text scribbles.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "YES",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.calligraphy",
+      "original_defect": "Multiple background wall-scroll characters beyond the single necessary in-progress brushstroke.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.chinese_calligraphy",
+      "original_defect": "Several wall scrolls plus practice sheets carry legible Chinese characters; same family issue as arts.calligraphy and the earlier wellness.tai_chi finding, more severe here.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.chinese_painting",
+      "original_defect": "One background wall scroll with legible characters; the main painting itself correctly avoided text (bamboo, not calligraphy).",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.comedy_writing",
+      "original_defect": "Whiteboard flowchart is extensively readable; book cover clearly reads 'THESAURUS'. Severe.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.film_photography",
+      "original_defect": "Background neon storefront/rooftop signage renders legible-looking katakana.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.graphic_design",
+      "original_defect": "Color-swatch fan book resembles a real 'Pantone'-style guide with brand-like spine text.",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.hip_hop_dance",
+      "original_defect": "Large, fully legible graffiti text: 'FLOW', 'CYPHER', 'UNITY EST. 98'. Severe.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.kpop_dance",
+      "original_defect": "Sneaker silhouette closely resembles a specific recognizable real shoe model (no logo/text).",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.magic_performance",
+      "original_defect": "Readable 'EXIT' signage (minor, standard utility signage).",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.online_video_creation",
+      "original_defect": "Camera rig appears to merge with/float from the subject's head rather than sit on a clearly separate stand.",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "YES"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.photo_editing",
+      "original_defect": "Background billboard/neon signage renders legible-looking Japanese/English text fragments.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.photo_retouching",
+      "original_defect": "Editing-tablet monitor shows a visible toolbar and menu-bar row (UI chrome).",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "YES",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.podcasting",
+      "original_defect": "Laptop screen shows a faint but visible UI sidebar list; minor, edge-of-frame.",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "YES",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.short_form_video",
+      "original_defect": "Flexible tripod design closely echoes a specific well-known real tripod product line (borderline/minor).",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.street_art",
+      "original_defect": "Background storefront neon shows partial legible lettering.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.urban_sketching",
+      "original_defect": "Storefront awning shows a readable shop name; marker pens carry brand-style readable-ish labels.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.vlogging",
+      "original_defect": "Same flexible-tripod product-design echo as arts.short_form_video (recurring, not a one-off).",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.voice_acting",
+      "original_defect": "Script pages held by multiple actors show small but legible Japanese text.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.voiceover",
+      "original_defect": "Script pages show pseudo-script text mimicking a real script layout; less clearly legible than arts.voice_acting, borderline.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.webcomics",
+      "original_defect": "Tablet shows visible toolbar icon chrome; comic book cover shows a hero-like figure (minor franchise-adjacent risk, not a specific recognizable character).",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "YES",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "arts.zine_making",
+      "original_defect": "The word 'ZINE' (the hobby's own name) renders clearly, repeatedly, on multiple zine covers - a direct violation of the explicit 'never render the hobby name' rule. Severe.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "not_covered_by_this_rounds_fix_needs_separate_hobby_override"
+    },
+    {
+      "id": "business.budgeting",
+      "original_defect": "Corkboard headers 'Planning' and 'Budget Category' are clearly readable.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    },
+    {
+      "id": "business.career_development",
+      "original_defect": "'SKILL DEVELOPMENT' and 'GOAL' render as large bold readable labels.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.career_switching",
+      "original_defect": "'SKILLS' (repeated), 'COMPANY', 'BUSINESS' all clearly readable on the diagram sheet.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.coworking",
+      "original_defect": "Laptop lid shows a clearly recognizable real Apple logo. Severe, unambiguous trademark leak.",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.design_thinking",
+      "original_defect": "'Empathy Map' and 'Ideation Cluster' are large, clearly readable whiteboard headers.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.dividend_investing",
+      "original_defect": "Monitor shows a full front-facing stock-chart dashboard with a readable-ish header and data table - clear screen-policy violation.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "YES",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    },
+    {
+      "id": "business.ecommerce",
+      "original_defect": "Small map pin tags carry legible-ish short labels ('New Order'/'Shipped'-style).",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    },
+    {
+      "id": "business.financial_independence",
+      "original_defect": "'BUSINESS GROWTH MILESTONES' and 'REVENUE STREAMS' render as large, clearly readable flip-chart headers.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.fire_movement",
+      "original_defect": "Whiteboard 'Mind[ Map]' header plus book spines clearly reading 'FINANCE' (repeated).",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_partial_needs_followup_before_regeneration"
+    },
+    {
+      "id": "business.freelancing",
+      "original_defect": "'Project Discovery' clearly readable at the center of the mind-map diagram; also background neon storefront signage.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    },
+    {
+      "id": "business.index_investing",
+      "original_defect": "'S&P 500' (a real trademarked index name) plus 'Sector Funds'/'Emerging Economies' render clearly readable. Severe - simultaneously a text leak and a real trademark leak.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.marketing",
+      "original_defect": "Small whiteboard header word is plausibly legible at this resolution (minor).",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    },
+    {
+      "id": "business.no_code",
+      "original_defect": "iPad clearly shows a recognizable real Apple logo (second such instance in this batch); large touchscreen shows a front-facing flowchart-style UI.",
+      "defect_flags": {
+        "text_leak": "NO",
+        "brand_trademark_leak": "YES",
+        "screen_policy_leak": "YES",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.personal_branding",
+      "original_defect": "'RISE' (repeated) and 'STUDIO' neon signage render as large, clearly readable text.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    },
+    {
+      "id": "business.product_management",
+      "original_defect": "Kanban board columns 'Backlog', 'Doing', 'Validation', 'Done' all clearly readable.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_partial_needs_followup_before_regeneration"
+    },
+    {
+      "id": "business.project_management",
+      "original_defect": "PM lifecycle labels 'INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING' all clearly readable.",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "fix_validated_ready_for_regeneration"
+    },
+    {
+      "id": "business.remote_work",
+      "original_defect": "World-map annotations are borderline legible short labels (minor/ambiguous).",
+      "defect_flags": {
+        "text_leak": "YES",
+        "brand_trademark_leak": "NO",
+        "screen_policy_leak": "NO",
+        "anatomy_object_corruption": "NO"
+      },
+      "subclass": "business_policy_applied_not_individually_spot_tested"
+    }
+  ],
+  "subclass_summary": {
+    "fix_validated_ready_for_regeneration": 8,
+    "fix_partial_needs_followup_before_regeneration": 2,
+    "business_policy_applied_not_individually_spot_tested": 7,
+    "not_covered_by_this_rounds_fix_needs_separate_hobby_override": 22
+  }
+}

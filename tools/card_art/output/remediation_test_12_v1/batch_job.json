@@ -1,0 +1,22 @@
+{
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "submitted_at": "2026-09-24T05:01:22.188Z",
+  "batch_name": "batches/y4h2nq4smk8wuezwbcks8epcovoduio400z7",
+  "raw": {
+    "name": "batches/y4h2nq4smk8wuezwbcks8epcovoduio400z7",
+    "metadata": {
+      "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+      "model": "models/gemini-3.1-flash-lite-image",
+      "displayName": "zync-remediation-test-12-v1",
+      "createTime": "2026-09-24T05:01:15.746978022Z",
+      "updateTime": "2026-09-24T05:01:15.746978022Z",
+      "batchStats": {
+        "requestCount": "12",
+        "pendingRequestCount": "12"
+      },
+      "state": "BATCH_STATE_PENDING",
+      "name": "batches/y4h2nq4smk8wuezwbcks8epcovoduio400z7"
+    }
+  }
+}

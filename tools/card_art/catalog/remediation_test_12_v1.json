@@ -1,0 +1,72 @@
+{
+  "version": "v1",
+  "purpose": "Targeted remediation validation: proves the two concrete Batch-1 (production_batch_001_v1) failure classes - business-category readable-text leakage and device-lid brand-logo leakage - are fixed before Batch 2 is considered. Reuses actual Batch-1 offender IDs (from tools/card_art/output/production_batch_001_v1/qa_layer2_human_review_v1.json) wherever possible rather than picking easy clean cards. Not a D4 redesign, not a model change, not fal.ai, not Batch 2.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "fixes_under_test": [
+    "business_text_suppression_policy (new global_style_v1.json field, auto-applied to every canonical_interest_id starting with 'business.')",
+    "strengthened global_brand_safety_policy device-lid/logo language (laptops, tablets, phones, monitors)",
+    "strengthened global_brand_safety_policy software-icon and financial-index-term language"
+  ],
+  "ids": [
+    "business.career_development",
+    "business.career_switching",
+    "business.design_thinking",
+    "business.financial_independence",
+    "business.index_investing",
+    "business.product_management",
+    "business.project_management",
+    "business.fire_movement",
+    "business.coworking",
+    "business.no_code",
+    "arts.zine_making",
+    "arts.comedy_writing"
+  ],
+  "id_selection_and_original_batch1_defect": {
+    "business.career_development": { "role": "business text offender (1 of 8)", "batch1_defect": "text_leak - 'SKILL DEVELOPMENT' and 'GOAL' rendered as large bold readable labels on board-game-like pieces." },
+    "business.career_switching": { "role": "business text offender (2 of 8)", "batch1_defect": "text_leak - 'SKILLS' (repeated), 'COMPANY', 'BUSINESS' all clearly readable on a concept-diagram sheet." },
+    "business.design_thinking": { "role": "business text offender (3 of 8)", "batch1_defect": "text_leak - 'Empathy Map' and 'Ideation Cluster' large clearly readable whiteboard headers." },
+    "business.financial_independence": { "role": "business text offender (4 of 8)", "batch1_defect": "text_leak - 'BUSINESS GROWTH MILESTONES' and 'REVENUE STREAMS' large clearly readable flip-chart headers." },
+    "business.index_investing": { "role": "business text offender (5 of 8) - also the real-trademark-term case", "batch1_defect": "text_leak + brand_trademark_leak - the real trademarked term 'S&P 500' rendered clearly readable, plus 'Sector Funds'/'Emerging Economies'." },
+    "business.product_management": { "role": "business text offender (6 of 8) - kanban board family", "batch1_defect": "text_leak - Kanban columns 'Backlog', 'Doing', 'Validation', 'Done' all clearly readable." },
+    "business.project_management": { "role": "business text offender (7 of 8) - PM-lifecycle family", "batch1_defect": "text_leak - PM phase labels 'INITIATION', 'PLANNING', 'EXECUTION', 'MONITORING' all clearly readable." },
+    "business.fire_movement": { "role": "business text offender (8 of 8) - mixed whiteboard + book-spine family", "batch1_defect": "text_leak - whiteboard 'Mind[ Map]' header plus book spines clearly reading 'FINANCE' (repeated)." },
+    "business.coworking": { "role": "device-logo offender (1 of 2) - required by task instruction", "batch1_defect": "brand_trademark_leak (severe) - laptop lid shows a clearly recognizable real Apple logo." },
+    "business.no_code": { "role": "device-logo offender (2 of 2) - required by task instruction", "batch1_defect": "brand_trademark_leak (severe) + screen_policy_leak - iPad shows a clearly recognizable real Apple logo; large touchscreen shows a front-facing dashboard-style flowchart UI." },
+    "arts.zine_making": { "role": "arts/design/text offender (1 of 2) - most severe arts text leak in batch 1", "batch1_defect": "text_leak (severe) - the literal hobby name 'ZINE' renders repeatedly, clearly readable, on multiple prop covers - a direct violation of the 'never render the hobby name' rule. Not covered by the new business-scoped policy; included as a control to confirm it remains an isolated, separately-tracked issue rather than becoming a new blocker." },
+    "arts.comedy_writing": { "role": "arts/design/text offender (2 of 2)", "batch1_defect": "text_leak (severe) - whiteboard flowchart extensively readable; book cover clearly reads 'THESAURUS'. Also not covered by the new business-scoped policy; included as the same kind of control." }
+  },
+  "avoided": [
+    "sports.american_football (quarantined, not reopened)",
+    "technology.robotics (quarantined, not reopened)",
+    "no unrelated successful Batch-1 images are being regenerated - all 12 ids here were confirmed defective in production_batch_001_v1/qa_layer2_human_review_v1.json (or, for the 2 arts controls, chosen as the most severe text leaks outside the business category)"
+  ],
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 12,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.2016,
+    "note": "Uses the real production compiler (global_style_v1.json now includes business_text_suppression_policy + strengthened global_brand_safety_policy; hobby_overrides_v1.json unchanged for these 12 ids)."
+  },
+  "targeted_pass_gate": {
+    "semantic_fail": 0,
+    "readable_business_text_of_8_business_text_offenders": 0,
+    "device_logo_leak_of_2_device_offenders": 0,
+    "real_trademark_text_leak": 0,
+    "border_ui_defect": 0,
+    "safety_issue": 0,
+    "no_new_systemic_defect_introduced": true,
+    "isolated_arts_text_issue_outside_business_classified_separately_not_a_business_policy_failure": true
+  },
+  "decision_rule": {
+    "green": "The specific Batch-1 blockers (business readable text, device-lid logos) are fixed; Batch 2 may be considered (still requires new explicit user authorization).",
+    "amber": "A localized issue remains; fix before Batch 2.",
+    "red": "The category/global policy did not work; production remains stopped.",
+    "no_auto_scale": true,
+    "batch_2_not_started_automatically_even_if_green": true
+  }
+}
