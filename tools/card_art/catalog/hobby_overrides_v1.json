@@ -37,6 +37,82 @@
         "The footwear must be a generic, fictional, entirely unbranded sneaker design that is not recognisably derived from any real sneaker model or manufacturer: no signature sole geometry, no recognisable stripe layout, no swoosh-like mark, no three-stripe-like treatment, no distinctive panel arrangement, and no other trademark-like silhouette associated with a known shoe brand. Invent a plain, original shoe shape instead."
       ]
     },
+    "books.reading": {
+      "avoid_add": [
+        "readable book title",
+        "readable author name",
+        "readable spine text",
+        "invented words on a cover",
+        "invented words on a spine",
+        "pseudo-publishing logo",
+        "publisher imprint mark",
+        "poster or signage text",
+        "readable text of any kind on books",
+        "legible typography on book covers",
+        "legible typography on book spines"
+      ],
+      "must_include_add": [
+        "plain or abstract book covers and spines with no readable text",
+        "blank or non-linguistic page marks such as plain lines, dots, or abstract cover art only",
+        "visual identity carried by the physical books and the reading action, not by typography"
+      ],
+      "override_prompt_additions": [
+        "Every book cover, spine, and open page in this scene must be free of readable text: no title, no author name, no spine text, no invented words, no pseudo-publishing logo or imprint mark, and no poster/signage-style lettering anywhere. Book covers and spines should use plain colours, abstract patterns, simple non-linguistic ornament, or blank cloth/leather-like texture instead of typography. The scene must still clearly read as reading/books through physical book shapes, stacks, page texture, and an active reading gesture — not through any text on the books."
+      ]
+    },
+    "wellness.cold_plunge": {
+      "subject": "A person braced and alert in a cold plunge, submerged to the chest in visibly cold water with floating ice cubes, gripping the edge with a focused, invigorated expression",
+      "environment": "An outdoor cold-plunge or dedicated cold-therapy setting such as a winter garden, cold-spa deck, or ice-bath tub with frost/condensation on nearby surfaces, distinctly cold rather than steamy",
+      "recognition_anchors_add": [
+        "visible ice cubes or floating ice in the water",
+        "condensation or frost on the tub rim or nearby surfaces",
+        "braced, alert, invigorated body language",
+        "crisp cold-weather or cold-spa atmosphere"
+      ],
+      "must_include_add": [
+        "clearly cold water with visible ice",
+        "an alert, braced posture rather than a relaxed soak",
+        "a cold-plunge or cold-therapy context that is unmistakably not a hot bath"
+      ],
+      "avoid_add": [
+        "steam rising from the water",
+        "hot-spring or onsen atmosphere",
+        "warm glowing bath water",
+        "relaxed soaking pose with closed eyes",
+        "spa serenity that implies heat",
+        "domestic bathtub",
+        "sauna or hot-spring signage or architecture"
+      ],
+      "override_prompt_additions": [
+        "This must read unmistakably as a COLD plunge, not a warm bath or onsen: the water must look cold (clear, faintly blue-tinted, with visible floating ice cubes), any visible breath or vapor should read as cold-air breath rather than warm steam, and the person's expression and posture should be alert, braced, and invigorated rather than relaxed and melting into the water. Do not render rising steam, glowing warm light in the water, or a serene eyes-closed soaking pose — those read as a hot spring, which is the opposite of this hobby."
+      ]
+    },
+    "sports.skateboarding": {
+      "recognition_anchors_add": [
+        "generic unbranded skate shoes with plain, original sole and upper construction",
+        "skateboard deck and trucks free of any logo or wordmark"
+      ],
+      "must_include_add": [
+        "plain, stylish, entirely unbranded skate shoes",
+        "a skateboard deck and hardware with no readable graphics, logos, or brand marks"
+      ],
+      "avoid_add": [
+        "swoosh-like mark on footwear",
+        "checkmark-like mark on footwear",
+        "three-stripe-like treatment on footwear",
+        "signature side-panel mark on footwear",
+        "recognisable sneaker-brand logo geometry",
+        "manufacturer badge on footwear",
+        "readable brand text on footwear or deck",
+        "pseudo-brand mark on footwear or deck",
+        "any real-world sneaker brand silhouette or trade dress",
+        "signature sole geometry associated with a known sneaker model",
+        "recognisable skateboard deck graphic or brand logo"
+      ],
+      "override_prompt_additions": [
+        "The skate shoes must be a plain, generic, entirely unbranded design: invent an original sole tread, upper panel layout, and silhouette rather than reproducing any real skate-shoe brand's construction. No swoosh-like mark, no checkmark-like mark, no three-stripe-like treatment, no signature side-panel shape, no manufacturer badge, and no readable text anywhere on the shoes. The skateboard deck and trucks must likewise carry no readable logo, wordmark, or recognisable brand graphic. The shoes and board should still look stylish, well-designed, and true to real-world skate gear construction — not blank, sterile, or obviously censored."
+      ]
+    },
     "lifestyle.game_nights": {
       "avoid_add": [
         "title text",

@@ -1,0 +1,62 @@
+{
+  "version": "v1",
+  "purpose": "A presentation-variety layer that sits on top of the D4 house style without changing D4's rendering language. It supplies deterministic, per-hobby guidance across five dimensions (protagonist presentation, scene structure, lighting/palette, emotional mode, special-effect intensity) so that thousands of catalog cards do not converge on the same young-female / golden-hour / medium-shot / smiling / sparkly default. Selection is a stable hash of the hobby recipe id, so it is reproducible across regenerations, not random. A hobby_overrides_v1.json entry may set 'diversity_lock' to pin one or more dimensions when the hobby's own semantics require it; hobby-specific recognition/must_include requirements always take priority over this guidance if the two ever conflict.",
+  "dimensions": {
+    "protagonist": {
+      "values": {
+        "male_led": "If a person is the clear main subject, let them read as a male-presenting protagonist.",
+        "female_led": "If a person is the clear main subject, let them read as a female-presenting protagonist.",
+        "mixed_group": "If multiple people appear, mix genders and presentations naturally rather than defaulting to a single uniform type.",
+        "older_adult": "If a person is the clear main subject, let them read as a mature or older adult rather than defaulting to a young adult.",
+        "younger_adult": "If a person is the clear main subject, let them read as a younger adult, appropriate and non-sexualized.",
+        "object_led": "Where the hobby recognition requirements allow it, let the hero object, tool, animal, or environment carry the composition, with any human figure secondary, partially visible, or background-scale rather than a dominant foreground face."
+      }
+    },
+    "scene_structure": {
+      "values": {
+        "solo_action": "Favor a single-person action moment.",
+        "pair_interaction": "Favor a two-person interaction moment.",
+        "small_group": "Favor a small-group moment (three to four people) rather than a solo portrait.",
+        "object_hero": "Let the key object or piece of equipment itself be the hero of the frame, with any person secondary.",
+        "environment_hero": "Let the environment or setting carry real visual weight alongside the subject, rather than a tight character-only portrait.",
+        "close_up_action": "Use a closer, more intimate action framing than a standard medium shot.",
+        "medium_hero_shot": "Use a classic medium hero shot.",
+        "wide_environmental_scene": "Use a wider environmental framing that shows more of the surrounding space."
+      }
+    },
+    "lighting_palette": {
+      "values": {
+        "bright_daylight": "Light the scene with bright, clear daylight.",
+        "soft_morning": "Light the scene with soft early-morning light.",
+        "cool_daylight": "Light the scene with cool, neutral daylight rather than warm golden tones.",
+        "golden_hour": "Light the scene with warm golden-hour light.",
+        "blue_hour": "Light the scene with the cool blue tones of dusk (blue hour).",
+        "evening_interior": "Light the scene as a warm evening interior.",
+        "night_neon": "Light the scene at night, with artificial or neon-like light accents where the setting realistically allows it.",
+        "warm_palette": "Favor an overall warm color palette.",
+        "cool_palette": "Favor an overall cool color palette.",
+        "mixed_complementary_palette": "Use a mixed, complementary color palette rather than a single dominant hue family."
+      }
+    },
+    "emotional_mode": {
+      "values": {
+        "joy": "The emotional mode should read as joyful and light.",
+        "concentration": "The emotional mode should read as focused concentration rather than an open smile.",
+        "curiosity": "The emotional mode should read as curious and inquisitive.",
+        "excitement": "The emotional mode should read as excited and energized.",
+        "calm_satisfaction": "The emotional mode should read as calm, satisfied contentment.",
+        "tension": "The emotional mode should read as alert tension or suspense appropriate to the activity.",
+        "discovery": "The emotional mode should read as a moment of discovery or realization.",
+        "mastery": "The emotional mode should read as confident mastery and skill rather than a big grin.",
+        "friendship_connection": "The emotional mode should read as warm friendship or connection between people."
+      }
+    },
+    "effect_intensity": {
+      "values": {
+        "none_minimal": "Keep special-effect accents essentially absent: no sparkle trails, glints, or floating highlight particles.",
+        "subtle_highlights": "Keep special-effect accents subtle: at most a few restrained highlights or small light glints, nothing showy.",
+        "moderate_sparkle_motion": "Moderate sparkle and motion accents are welcome here to heighten the collectible feel."
+      }
+    }
+  }
+}

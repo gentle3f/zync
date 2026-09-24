@@ -1,0 +1,767 @@
+{
+  "name": "batches/epis1z2b60oxosfem9wnhjq5jkxdn9semh9a",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-d4-diversity-8-v1",
+    "output": {
+      "inlinedResponses": {
+        "inlinedResponses": [
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1100444]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1499892]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1992,
+                "candidatesTokenCount": 1602,
+                "totalTokenCount": 3594,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1992
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0au3NJJKu_PUPjNv7qAk"
+            },
+            "metadata": {
+              "index": 0,
+              "key": "collecting.stamps"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=890700]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1254992]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 2100,
+                "candidatesTokenCount": 1558,
+                "totalTokenCount": 3658,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 2100
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0aqexI9nkqtsP5tD_0A0"
+            },
+            "metadata": {
+              "index": 1,
+              "key": "sports.golf"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1153632]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1577752]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 2046,
+                "candidatesTokenCount": 1555,
+                "totalTokenCount": 3601,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 2046
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0aqiHI77oz7IPu5vG2AY"
+            },
+            "metadata": {
+              "key": "outdoors.fishing",
+              "index": 2
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=902192]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1255324]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 2041,
+                "candidatesTokenCount": 1555,
+                "totalTokenCount": 3596,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 2041
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0apfuI4Wtz7IPlL-CsQY"
+            },
+            "metadata": {
+              "key": "music.violin",
+              "index": 3
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1219332]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1645332]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 2086,
+                "candidatesTokenCount": 1619,
+                "totalTokenCount": 3705,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 2086
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0apPCJJKj_PUPupKp6Ag"
+            },
+            "metadata": {
+              "index": 4,
+              "key": "gaming.tabletop_rpg"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1015640]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1395548]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1981,
+                "candidatesTokenCount": 1600,
+                "totalTokenCount": 3581,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1981
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0aszsIr6sz7IPor3p0Qs"
+            },
+            "metadata": {
+              "index": 5,
+              "key": "crafts.pottery_wheel"
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=1226988]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1656776]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 2014,
+                "candidatesTokenCount": 1615,
+                "totalTokenCount": 3629,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 2014
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0atPWJP-i_PUP4ujokAk"
+            },
+            "metadata": {
+              "key": "outdoors.mountain_biking",
+              "index": 6
+            }
+          },
+          {
+            "response": {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "inlineData": {
+                          "mimeType": "image/jpeg",
+                          "data": "[redacted-large-string field=\"data\" len=868664]"
+                        },
+                        "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1229880]"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1937,
+                "candidatesTokenCount": 1552,
+                "totalTokenCount": 3489,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1937
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1120
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite-image",
+              "responseId": "sYS0avfVI_6JqtsP1oTz4Q0"
+            },
+            "metadata": {
+              "key": "wellness.tai_chi",
+              "index": 7
+            }
+          }
+        ]
+      }
+    },
+    "createTime": "2026-09-24T02:00:40.071128503Z",
+    "endTime": "2026-09-24T02:02:49.799255107Z",
+    "updateTime": "2026-09-24T02:02:49.799255127Z",
+    "batchStats": {
+      "requestCount": "8",
+      "successfulRequestCount": "8"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/epis1z2b60oxosfem9wnhjq5jkxdn9semh9a"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput",
+    "inlinedResponses": {
+      "inlinedResponses": [
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1100444]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1499892]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1992,
+              "candidatesTokenCount": 1602,
+              "totalTokenCount": 3594,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1992
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0au3NJJKu_PUPjNv7qAk"
+          },
+          "metadata": {
+            "index": 0,
+            "key": "collecting.stamps"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=890700]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1254992]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 2100,
+              "candidatesTokenCount": 1558,
+              "totalTokenCount": 3658,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 2100
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0aqexI9nkqtsP5tD_0A0"
+          },
+          "metadata": {
+            "index": 1,
+            "key": "sports.golf"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1153632]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1577752]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 2046,
+              "candidatesTokenCount": 1555,
+              "totalTokenCount": 3601,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 2046
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0aqiHI77oz7IPu5vG2AY"
+          },
+          "metadata": {
+            "key": "outdoors.fishing",
+            "index": 2
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=902192]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1255324]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 2041,
+              "candidatesTokenCount": 1555,
+              "totalTokenCount": 3596,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 2041
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0apfuI4Wtz7IPlL-CsQY"
+          },
+          "metadata": {
+            "key": "music.violin",
+            "index": 3
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1219332]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1645332]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 2086,
+              "candidatesTokenCount": 1619,
+              "totalTokenCount": 3705,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 2086
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0apPCJJKj_PUPupKp6Ag"
+          },
+          "metadata": {
+            "index": 4,
+            "key": "gaming.tabletop_rpg"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1015640]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1395548]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1981,
+              "candidatesTokenCount": 1600,
+              "totalTokenCount": 3581,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1981
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0aszsIr6sz7IPor3p0Qs"
+          },
+          "metadata": {
+            "index": 5,
+            "key": "crafts.pottery_wheel"
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=1226988]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1656776]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 2014,
+              "candidatesTokenCount": 1615,
+              "totalTokenCount": 3629,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 2014
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0atPWJP-i_PUP4ujokAk"
+          },
+          "metadata": {
+            "key": "outdoors.mountain_biking",
+            "index": 6
+          }
+        },
+        {
+          "response": {
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/jpeg",
+                        "data": "[redacted-large-string field=\"data\" len=868664]"
+                      },
+                      "thoughtSignature": "[redacted-large-string field=\"thoughtSignature\" len=1229880]"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "finishReason": "STOP",
+                "index": 0
+              }
+            ],
+            "usageMetadata": {
+              "promptTokenCount": 1937,
+              "candidatesTokenCount": 1552,
+              "totalTokenCount": 3489,
+              "promptTokensDetails": [
+                {
+                  "modality": "TEXT",
+                  "tokenCount": 1937
+                }
+              ],
+              "candidatesTokensDetails": [
+                {
+                  "modality": "IMAGE",
+                  "tokenCount": 1120
+                }
+              ],
+              "serviceTier": "standard"
+            },
+            "modelVersion": "gemini-3.1-flash-lite-image",
+            "responseId": "sYS0avfVI_6JqtsP1oTz4Q0"
+          },
+          "metadata": {
+            "key": "wellness.tai_chi",
+            "index": 7
+          }
+        }
+      ]
+    }
+  }
+}

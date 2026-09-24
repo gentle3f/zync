@@ -259,6 +259,7 @@ function compileRows(ids, experimentOverrides = {}) {
   const subcategories = readJson(path.join(specs, 'subcategory_modifiers_v1.json'));
   const overrides = readJson(path.join(catalog, 'hobby_overrides_v1.json'));
   const flagship = readJson(path.join(catalog, 'flagship_overrides_v1.json'));
+  const diversityProfiles = readJson(path.join(specs, 'diversity_profiles_v1.json'));
 
   const bridge = buildCatalogRecipeBridge();
   const eligible = new Map(bridge.eligible.map(row => [row.canonical_interest_id, row]));
@@ -287,6 +288,7 @@ function compileRows(ids, experimentOverrides = {}) {
       override: overrides.overrides?.[overrideKey] || null,
       flagshipOverride: flagship.flagship?.[overrideKey] || null,
       experimentOverride: experimentOverrides?.[row.canonical_interest_id] || null,
+      diversityProfiles,
     });
 
     output.push({

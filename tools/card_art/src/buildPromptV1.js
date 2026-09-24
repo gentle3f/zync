@@ -1,4 +1,5 @@
 // V1 prompt compiler. Pure compilation only: no fal.ai calls.
+import { computeDiversityProfile, buildDiversitySection } from './diversityLayer.js';
 function list(items) {
   return items && items.length ? items.join(', ') : null;
 }
@@ -22,7 +23,7 @@ function applyOverride(base, override) {
   out.avoid = [...(base.avoid || []), ...(override.avoid_add || []), ...(override.override_avoid || [])];
   return out;
 }
-export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, categories, subcategories, override, flagshipOverride, experimentOverride }) {
+export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, categories, subcategories, override, flagshipOverride, experimentOverride, diversityProfiles }) {
   let effective = applyOverride(hobby, override);
   effective = applyOverride(effective, flagshipOverride);
   effective = applyOverride(effective, experimentOverride);
@@ -67,6 +68,11 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
     sections.push(
       `Make these recognition cues visually clear: ${list(subcategory.recognition_anchors)}.`
     );
+  }
+  let diversityProfile = null;
+  if (diversityProfiles) {
+    diversityProfile = computeDiversityProfile(effective.id, diversityProfiles, override?.diversity_lock || null);
+    sections.push(buildDiversitySection(diversityProfile, diversityProfiles));
   }
   sections.push(`Depict this activity: ${effective.subject}`);
   sections.push(`Place it in this believable setting: ${effective.environment}`);
@@ -143,6 +149,6 @@ export function compileHobbyPrompt({ hobby, globalStyle, archetypes, variants, c
   return {
     compiledPrompt,
     negativeConstraints: [...new Set([...avoidList, ...globalStyle.global_negatives])],
-    archetype, category, subcategory, variant, effective
+    archetype, category, subcategory, variant, effective, diversityProfile
   };
 }

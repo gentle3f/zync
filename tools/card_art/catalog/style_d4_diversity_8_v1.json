@@ -1,0 +1,93 @@
+{
+  "version": "v1",
+  "purpose": "D4 diversity stress test: 8 hobbies chosen to exercise the new deterministic diversity layer (protagonist presentation, scene structure, lighting/palette, emotional mode, effect intensity) on top of the unmodified D4 house style plus the three localized recipe fixes (books.reading text leak, wellness.cold_plunge cold-vs-warm drift, sports.skateboarding footwear silhouette). This test does NOT revalidate D4 itself - the question is whether the same D4 rendering language can produce visibly diverse presentation without losing semantic fidelity or brand identity.",
+  "prior_rounds": [
+    "catalog/style_calibration_d4_6_v1.json (D4 6-card calibration, promoted to production)",
+    "catalog/style_d4_durability_12_v1.json (D4 12-card cross-category durability test, found the 3 localized defects fixed this round)"
+  ],
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "ids": [
+    "collecting.stamps",
+    "sports.golf",
+    "outdoors.fishing",
+    "music.violin",
+    "gaming.tabletop_rpg",
+    "crafts.pottery_wheel",
+    "outdoors.mountain_biking",
+    "wellness.tai_chi"
+  ],
+  "id_selection_and_diversity_profiles": {
+    "collecting.stamps": {
+      "required_stress": "1. male-led protagonist",
+      "archetype": "collection_object_hero",
+      "diversity_profile": { "protagonist": "male_led", "scene_structure": "environment_hero", "lighting_palette": "night_neon", "emotional_mode": "joy", "effect_intensity": "none_minimal" },
+      "why": "Deterministic profile for this id is male_led. Indoor, object-collection subject, not previously tested in the 12-card set, gives a clean read on whether the diversity layer can shift the protagonist away from the default young-female presentation without breaking semantic correctness."
+    },
+    "sports.golf": {
+      "required_stress": "2. older-adult protagonist",
+      "archetype": "solo_action",
+      "diversity_profile": { "protagonist": "older_adult", "scene_structure": "wide_environmental_scene", "lighting_palette": "mixed_complementary_palette", "emotional_mode": "discovery", "effect_intensity": "moderate_sparkle_motion" },
+      "why": "Deterministic profile for this id is older_adult, a category the D1-D4 and 12-card durability rounds never explicitly tested. Outdoor sport, wide environmental framing, tests whether an older protagonist still reads as an energetic hero-moment subject under D4."
+    },
+    "outdoors.fishing": {
+      "required_stress": "3. object-led / no-dominant-human composition",
+      "archetype": "water_outdoors",
+      "diversity_profile": { "protagonist": "object_led", "scene_structure": "object_hero", "lighting_palette": "evening_interior", "emotional_mode": "concentration", "effect_intensity": "none_minimal" },
+      "why": "Deterministic profile is object_led + object_hero, a double stress on de-emphasizing the human figure in favor of the fishing gear/catch moment - tests whether D4's hero-moment focal hierarchy still reads as a special-illustration key visual without a dominant human face."
+    },
+    "music.violin": {
+      "required_stress": "4. night or cool-palette scene",
+      "archetype": "performance",
+      "diversity_profile": { "protagonist": "younger_adult", "scene_structure": "solo_action", "lighting_palette": "blue_hour", "emotional_mode": "excitement", "effect_intensity": "none_minimal" },
+      "why": "Deterministic profile is blue_hour (cool dusk lighting), directly stress-testing the lighting/palette dimension against D4's frequent warm/golden default. Indoor solo performance, no equipment-brand-safety risk."
+    },
+    "gaming.tabletop_rpg": {
+      "required_stress": "5. group social scene",
+      "archetype": "group_play",
+      "diversity_profile": { "protagonist": "male_led", "scene_structure": "small_group", "lighting_palette": "night_neon", "emotional_mode": "concentration", "effect_intensity": "moderate_sparkle_motion" },
+      "why": "Deterministic profile is small_group, a genuine multi-person social scene distinct from lifestyle.game_nights (12-card set) and gaming.board (D4 6-card set) - different subcategory, different archetype variant, extra check that the group_play archetype stays legible with a night/neon palette."
+    },
+    "crafts.pottery_wheel": {
+      "required_stress": "6. indoor craft/making scene",
+      "archetype": "creative_studio",
+      "diversity_profile": { "protagonist": "younger_adult", "scene_structure": "small_group", "lighting_palette": "cool_daylight", "emotional_mode": "mastery", "effect_intensity": "moderate_sparkle_motion" },
+      "why": "Indoor hands-on craft distinct from crafts.knitting (12-card set), tests mastery emotional mode (confident skill rather than an open smile) plus cool daylight against the creative_studio archetype."
+    },
+    "outdoors.mountain_biking": {
+      "required_stress": "7. outdoor action scene",
+      "archetype": "outdoor_motion",
+      "diversity_profile": { "protagonist": "female_led", "scene_structure": "wide_environmental_scene", "lighting_palette": "soft_morning", "emotional_mode": "curiosity", "effect_intensity": "subtle_highlights" },
+      "why": "Genuine outdoor dynamic-motion action scene (outdoor_motion archetype, untested in prior rounds), female-led protagonist, wide environmental framing - stresses whether D4's hero-moment composition still holds at a wider, more landscape-inclusive frame."
+    },
+    "wellness.tai_chi": {
+      "required_stress": "8. calm/quiet hobby",
+      "archetype": "calm_wellness",
+      "diversity_profile": { "protagonist": "mixed_group", "scene_structure": "solo_action", "lighting_palette": "blue_hour", "emotional_mode": "mastery", "effect_intensity": "subtle_highlights" },
+      "why": "Calm, low-intensity hobby distinct from wellness.cold_plunge (12-card set, now fixed) - tests whether D4's 'heightened special-illustration moment' language still produces a calm, controlled emotional read (mastery, not excitement) rather than forcing artificial energy onto a quiet activity, and whether the calm_wellness archetype avoids any of the sauna/onsen-adjacent safety risk found earlier in this arc."
+    }
+  },
+  "avoided": [
+    "sports.american_football (quarantined, not reopened)",
+    "technology.robotics (quarantined, not reopened)",
+    "none of the 12 durability-test IDs reused (sports.skateboarding, outdoors.kayaking, pets.birds, travel.destination_deep.japanese_onsen_trips, music.piano, wellness.cold_plunge, science.marine_biology, technology.3d_printing, crafts.knitting, books.reading, lifestyle.game_nights, lifestyle.home_decor)",
+    "none of the 6 D4 calibration cards reused (business.coworking, entertainment.movie_subgenre.legal_thriller, fashion.streetwear, food.dish.bun_cha, gaming.board, learning.philosophy)"
+  ],
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 8,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.1344,
+    "note": "Uses the real production compiler with the diversity layer active (diversityProfiles passed to compileHobbyPrompt) plus the three new hobby_overrides_v1.json fixes."
+  },
+  "decision_rule": {
+    "question": "Can the same D4 house style produce visibly diverse cards without losing semantic fidelity or brand identity?",
+    "if_yes": "Keep D4 unchanged, keep the diversity layer, recommend moving toward production-batch architecture. Do not start bulk generation automatically.",
+    "if_no": "Fix the diversity system, not D4.",
+    "no_auto_scale": true
+  }
+}
