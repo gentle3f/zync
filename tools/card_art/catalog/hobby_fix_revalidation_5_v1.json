@@ -1,0 +1,56 @@
+{
+  "version": "v1",
+  "purpose": "Narrow hobby-level fix revalidation: the five new hobby_overrides_v1.json entries (business.fire_movement, arts.comedy_writing, arts.calligraphy, arts.zine_making, arts.hip_hop_dance) address the five remaining narrow Batch-1/final-hygiene-round blockers. This is not a new category-level policy - each fix is scoped to exactly one hobby.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "fixes_under_test": [
+    "business.fire_movement hobby override: unlabeled financial-planning props, explicit forbidden sticky-note words list",
+    "arts.comedy_writing hobby override: thesaurus/dictionary prop removed structurally, not just blanked",
+    "arts.calligraphy hobby override: abstract/partial/gestural brush strokes required, no hanging wall scrolls, semantic exception that brushwork itself is required but must not form readable text",
+    "arts.zine_making hobby override: plain studio wall / blank corkboard background, no posters/flyers/wall typography",
+    "arts.hip_hop_dance hobby override: generic unbranded dance sneakers/streetwear, explicit anti-swoosh/three-stripe language"
+  ],
+  "ids": [
+    "business.fire_movement",
+    "arts.comedy_writing",
+    "arts.calligraphy",
+    "arts.zine_making",
+    "arts.hip_hop_dance"
+  ],
+  "id_selection_and_original_defect": {
+    "business.fire_movement": { "original_defect": "final_hygiene_test_8_v1: big 'Life Map' title fixed, but small readable sticky-note labels 'Side Hustles' and 'Investing' persisted." },
+    "arts.comedy_writing": { "original_defect": "Batch-1 and both remediation rounds (three times unchanged): book spine clearly reads 'THESAURUS'." },
+    "arts.calligraphy": { "original_defect": "Batch-1 and final_hygiene_test_8_v1 (both): background hanging scroll and framed wall pieces show large, legible-looking individual kanji-style characters beyond the semantically-necessary active brushstroke." },
+    "arts.zine_making": { "original_defect": "final_hygiene_test_8_v1: primary zine prop fixed (no more 'ZINE' wordmark), but background wall poster/flyer collage still showed legible-looking gig-poster-style text fragments." },
+    "arts.hip_hop_dance": { "original_defect": "final_hygiene_test_8_v1: graffiti text fully fixed, but a new brand/trademark finding surfaced - a pale swoosh-like mark on the sneaker and a three-stripe pattern on a jacket sleeve." }
+  },
+  "avoided": [
+    "sports.american_football (quarantined, not reopened)",
+    "technology.robotics (quarantined, not reopened)",
+    "no substitutions, no easy controls, no extra cards - exactly these 5 exact IDs per the task instruction"
+  ],
+  "image": { "aspect_ratio": "2:3" },
+  "expected": {
+    "requests": 5,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.084
+  },
+  "final_green_gate": {
+    "business.fire_movement": "no readable sticky-note labels; no readable headings/titles",
+    "arts.comedy_writing": "no THESAURUS; no other readable writing",
+    "arts.calligraphy": "no recognizable/readable real text; abstract brush marks are permitted and NOT counted as a text leak",
+    "arts.zine_making": "no readable hero or background text",
+    "arts.hip_hop_dance": "no swoosh/check-like mark; no three-stripe pattern; no brand/pseudo-brand mark; no readable graffiti",
+    "global": { "semantic_fail": 0, "brand_leaks": 0, "border_ui_defects": 0, "safety_issues": 0, "no_new_systemic_defect": true },
+    "note": "If all five pass, classify GREEN. If one narrow hobby-specific defect remains, classify AMBER and identify only that blocker. Do not lower the gate to proceed."
+  },
+  "decision_rule": {
+    "green": "GREEN means Batch 2 is now eligible for explicit user authorization - a separate user instruction is still required to actually start it.",
+    "amber": "A narrow hobby-specific blocker remains; Batch 2 stays locked.",
+    "red": "Not applicable at this narrow a scope; any structural failure would be reported as AMBER with the specific blocker named.",
+    "no_auto_scale": true,
+    "batch_2_not_started_automatically_even_if_green": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "batches/phah2qtolk1suwdmcmx2qxty4l0i606h26hu",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-hobby-fix-revalidation-5-v1",
+    "output": {},
+    "createTime": "2026-09-24T07:54:42.389280092Z",
+    "endTime": "2026-09-24T07:58:58.741929376Z",
+    "updateTime": "2026-09-24T07:58:58.741929407Z",
+    "batchStats": {
+      "requestCount": "5",
+      "successfulRequestCount": "5"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/phah2qtolk1suwdmcmx2qxty4l0i606h26hu"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput"
+  }
+}

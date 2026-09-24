@@ -1,0 +1,22 @@
+{
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "submitted_at": "2026-09-24T07:54:48.958Z",
+  "batch_name": "batches/phah2qtolk1suwdmcmx2qxty4l0i606h26hu",
+  "raw": {
+    "name": "batches/phah2qtolk1suwdmcmx2qxty4l0i606h26hu",
+    "metadata": {
+      "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+      "model": "models/gemini-3.1-flash-lite-image",
+      "displayName": "zync-hobby-fix-revalidation-5-v1",
+      "createTime": "2026-09-24T07:54:42.389280092Z",
+      "updateTime": "2026-09-24T07:54:42.389280092Z",
+      "batchStats": {
+        "requestCount": "5",
+        "pendingRequestCount": "5"
+      },
+      "state": "BATCH_STATE_PENDING",
+      "name": "batches/phah2qtolk1suwdmcmx2qxty4l0i606h26hu"
+    }
+  }
+}

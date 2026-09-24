@@ -185,6 +185,139 @@
         "This is a scene of contemporary intellectual discussion, not historical research, archaeology, or the occult. The book or notebook shown must read as a modern, ordinary object with handwritten notes or a simple diagram — never as an ancient tome, grimoire, or mystical artifact. Keep the emotional tone 'knowledge is exciting': curious, animated, and engaging, never gloomy, solemn, or mysterious."
       ]
     },
+    "business.fire_movement": {
+      "subject": "A small group actively planning financial independence using an entirely unlabeled physical planning system: colored blank cards, abstract bar and line shapes, arrows, circles, blank nodes, coins, and generic savings objects arranged on a board or table",
+      "must_include_add": [
+        "an unlabeled physical financial-planning structure made of blank colored cards, abstract bars, arrows, circles, or blank nodes",
+        "coins or generic savings objects where appropriate to reinforce the financial-independence theme without any text",
+        "active collaborative planning gesture (pointing, arranging, discussing)"
+      ],
+      "avoid_add": [
+        "readable sticky-note label of any kind",
+        "Side Hustles",
+        "Investing",
+        "Savings",
+        "FIRE",
+        "Income",
+        "Expenses",
+        "Retirement",
+        "Goals",
+        "Finance",
+        "any readable category name on a card or note",
+        "any readable diagram title or heading",
+        "any readable book spine or book title",
+        "sticky notes with any mark resembling a word or short phrase"
+      ],
+      "override_prompt_additions": [
+        "Represent the financial-planning activity entirely through unlabeled colored cards, abstract bars, arrows, circles, blank nodes, simple chart shapes, coins, and generic savings objects - never through any readable word, however short. If sticky notes appear anywhere in the scene, they must be completely blank or carry only a single abstract color/shape mark - never a mark that resembles a word, category name, or heading (not 'Side Hustles', not 'Investing', not 'Savings', not 'FIRE', not 'Income', not 'Expenses', not 'Retirement', not 'Goals', not 'Finance', and not any other readable label). Any book on a shelf or table must have a blank or abstract spine. The financial-independence/planning meaning must still come through clearly via the objects, gestures, and structure alone, not through any typography."
+      ]
+    },
+    "arts.comedy_writing": {
+      "subject": "A person actively brainstorming comedy material, pen or pencil in hand over a blank notebook or blank script pages, with an animated brainstorming gesture and an expressive comic-timing reaction on their face",
+      "environment": "A believable writer's desk, rehearsal room, or small performance space appropriate to comedy writing, with no dictionary or thesaurus present",
+      "recognition_anchors_add": [
+        "a blank notebook or blank script pages actively being written on",
+        "an animated brainstorming or comic-timing gesture",
+        "pen or pencil in active use"
+      ],
+      "must_include_add": [
+        "a notebook or script page with a blank cover and only non-linguistic short line marks on the page",
+        "an expressive, comedic brainstorming or rehearsal gesture"
+      ],
+      "avoid_add": [
+        "thesaurus",
+        "dictionary",
+        "any reference book with a readable title",
+        "readable book title",
+        "joke text",
+        "punchline text",
+        "readable script dialogue",
+        "readable whiteboard words",
+        "readable poster text",
+        "any book prop at all other than the writer's own blank notebook"
+      ],
+      "override_prompt_additions": [
+        "Do not include a thesaurus, dictionary, or any other reference book with a readable title anywhere in the scene - remove that prop entirely rather than trying to blank its cover. Represent comedy writing instead through a blank notebook or blank script pages (covers and pages carrying only non-linguistic short line marks, never readable words), a pen or pencil in active use, an animated brainstorming gesture, and an expressive comic-timing reaction. Any whiteboard or corkboard present must carry only blank or abstract shapes, never readable words. The scene must still clearly read as comedy writing specifically - through the writer's expressive, amused, quick-witted reaction and active scribbling energy - not as generic quiet studying."
+      ]
+    },
+    "arts.calligraphy": {
+      "subject": "A calligrapher mid-stroke with an ink-loaded brush, captured at the moment of a dynamic, sweeping, expressive brush movement across paper, with the camera favoring the brush tip, ink trail, hand action, and paper texture over any complete finished character",
+      "environment": "An intimate calligraphy studio nook - ink stone, brush rack, paper, and worktable - with no hanging wall scrolls, framed characters, or other wall-mounted writing anywhere in view",
+      "recognition_anchors_add": [
+        "ink-loaded brush captured mid-stroke",
+        "visible ink trail and expressive gestural brushwork",
+        "ink stone and paper texture"
+      ],
+      "must_include_add": [
+        "an actively moving ink brush with visible ink trail",
+        "abstract, partial, gestural, or cropped brush strokes rather than one complete finished character or word"
+      ],
+      "avoid_add": [
+        "a complete readable Chinese character",
+        "a complete readable Japanese kanji or kana character",
+        "a complete readable English word",
+        "a poem or quotation rendered as text",
+        "wall scroll text",
+        "hanging scroll characters",
+        "a seal or stamp containing readable text",
+        "signage",
+        "captions",
+        "any hanging wall scroll, framed calligraphy piece, or other wall-mounted writing in the background"
+      ],
+      "override_prompt_additions": [
+        "This hobby requires visible brush-and-ink mark-making - do not remove the brushwork itself. But the marks the brush makes must be abstract, partial, gestural, cropped, or overlapping: deliberately non-linguistic strokes that evoke the feeling and motion of calligraphy practice without ever completing a single recognizable real character, kanji, kana, or English word, and without forming a readable poem, quotation, or inscription. Favor a composition where the camera focuses tightly on the brush tip, the ink trail, the hand's motion, and the paper's texture, rather than a wide shot of a finished, readable piece of writing. Do not include any hanging wall scroll, framed calligraphy piece, or other wall-mounted writing in the background - remove those props entirely rather than trying to blank them. Abstract or partial brush strokes are the correct, desired outcome here, not a compromise."
+      ]
+    },
+    "arts.zine_making": {
+      "environment": "A creator's zine-making desk against a plain studio wall or blank corkboard background, surrounded by colored paper shapes, cut collage pieces, captionless photographs, tape, scissors, and glue - with no posters, flyers, wall typography, signs, or other readable wall decoration anywhere in view",
+      "recognition_anchors_add": [
+        "plain studio wall or blank corkboard background",
+        "collage materials - colored paper shapes, cut pieces, captionless photographs, tape, scissors, glue"
+      ],
+      "must_include_add": [
+        "a plain or blank-corkboard background free of posters, flyers, or wall typography",
+        "background zine covers or pinned material, if any, that are blank or purely image-led with no readable titles"
+      ],
+      "avoid_add": [
+        "posters",
+        "flyers",
+        "wall typography",
+        "signs",
+        "magazine cover with readable words",
+        "background zine cover containing a readable title",
+        "readable pinboard note",
+        "banner"
+      ],
+      "override_prompt_additions": [
+        "The background must be a plain studio wall or a blank corkboard - not a wall covered in posters, flyers, gig-poster-style typography, signs, or banners. Any other zines, magazines, or pinned material visible in the background must be blank or purely image-led collage with no readable title, word, or caption anywhere on them. Represent the creative richness of the space through colored paper shapes, cut collage pieces, captionless photographs, tape, scissors, and glue instead of any readable print or typography. The main zine pages and covers the creator is actively working on must likewise stay blank, collage-based, abstract, or image-led, with no readable title - the scene must still clearly read as zine-making through the cutting, pasting, and layout activity itself."
+      ]
+    },
+    "arts.hip_hop_dance": {
+      "recognition_anchors_add": [
+        "generic unbranded dance sneakers with simple panel construction and plain side surfaces",
+        "generic streetwear free of manufacturer styling"
+      ],
+      "must_include_add": [
+        "plain, generic, entirely unbranded dance sneakers",
+        "generic streetwear with no manufacturer styling"
+      ],
+      "avoid_add": [
+        "swoosh-like mark on footwear",
+        "checkmark-like mark on footwear",
+        "three-stripe pattern on footwear or clothing",
+        "repeated parallel sportswear stripes",
+        "signature sneaker side panel",
+        "recognisable brand color blocking",
+        "manufacturer badge",
+        "pseudo-logo",
+        "brand text",
+        "readable graffiti letters or tags",
+        "readable graffiti symbols"
+      ],
+      "override_prompt_additions": [
+        "The dancer's sneakers must be a plain, generic, entirely unbranded design: simple panel construction, plain side surfaces, no swoosh-like mark, no checkmark-like mark, no three-stripe pattern, no repeated parallel sportswear stripes, no signature side-panel shape, no manufacturer badge, no pseudo-logo, and no brand text. Keep clothing similarly generic streetwear with no manufacturer styling or recognisable brand color blocking. If showing full footwear detail is difficult to keep unbranded, reduce visual emphasis on the shoes (smaller in frame, partially cropped, or in motion blur) rather than rendering complex brand-like shoe detail. Any background graffiti must remain abstract color shapes and marks only - no letters, no tags, no readable symbols of any kind."
+      ]
+    },
     "technology.ai": {
       "subject": "A person actively exploring an abstract artificial-intelligence visualization made of glowing nodes, linked patterns, flowing data-like light, and model-like structures, without any readable interface",
       "environment": "A believable modern creative or research workspace where AI is represented through abstract light, nodes, diagrams, and spatial visualization rather than text-bearing screens",

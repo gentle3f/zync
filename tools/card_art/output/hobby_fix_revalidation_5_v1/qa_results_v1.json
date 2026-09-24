@@ -1,0 +1,80 @@
+{
+  "version": "v1",
+  "reviewed_at": "2026-09-24",
+  "purpose": "Full individual human QA of all 5 narrow hobby-fix-revalidation images, each compared against its documented original defect.",
+  "calligraphy_qa_rule_note": "Per the task's explicit instruction, abstract/expressive/non-linguistic brush strokes on arts.calligraphy are NOT classified as a text leak. Only a clearly recognizable/readable real character, word, phrase, or inscription counts as a text leak for this hobby.",
+  "results": [
+    {
+      "id": "business.fire_movement",
+      "original_defect": "final_hygiene_test_8_v1: big 'Life Map' title fixed, but small readable sticky-note labels 'Side Hustles' and 'Investing' persisted.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - the planning board is now entirely unlabeled colored cards/hexagons, abstract bar shapes, arrows, coins, and a generic house icon. Zero readable text anywhere, including the small sticky-note-like squares on the background shelf and the notebook page."
+    },
+    {
+      "id": "arts.comedy_writing",
+      "original_defect": "Batch-1 and both prior remediation rounds (unchanged three times): book spine clearly reads 'THESAURUS'.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - the thesaurus/dictionary prop is structurally gone from the scene entirely. Notebook and scattered papers show only non-linguistic squiggle/scribble marks and doodles. The scene still clearly reads as comedy writing through the animated brainstorming gesture and expressive comic-timing reaction."
+    },
+    {
+      "id": "arts.calligraphy",
+      "original_defect": "Batch-1 and final_hygiene_test_8_v1 (both): background hanging scroll and framed wall pieces show large, legible-looking individual kanji-style characters beyond the semantically-necessary active brushstroke.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": "The main paper's brush stroke reads as a dynamic, sweeping, abstract gestural mark merged with a motion streak - not a complete, isolated, readable character. Two tiny background wall items show small dark ink-like marks; at this size and stylization they read as ambiguous abstract decor, not a clearly recognizable complete character, per the task's explicit QA rule for this hobby.",
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - major improvement from the prior multiple large, clearly legible wall-scroll characters to a composition dominated by abstract/gestural brushwork with the camera favoring the brush tip, ink trail, and paper texture, exactly as the override intended. No hanging wall scroll with a complete readable character is present."
+    },
+    {
+      "id": "arts.zine_making",
+      "original_defect": "final_hygiene_test_8_v1: primary zine prop fixed (no more 'ZINE' wordmark), but background wall poster/flyer collage still showed legible-looking gig-poster-style text fragments.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - the background is now a blank corkboard with abstract colorful collage pieces and blank sticky notes, no posters/flyers/typography. The open zine spread on the desk shows only abstract collage art, and the Polaroid-style photos are captionless. Both the hero prop and the background are clean."
+    },
+    {
+      "id": "arts.hip_hop_dance",
+      "original_defect": "final_hygiene_test_8_v1: graffiti text fully fixed, but a new brand/trademark finding surfaced - a pale swoosh-like mark on the sneaker and a three-stripe pattern on a jacket sleeve.",
+      "semantic": "PASS",
+      "readable_text_leak": "NO",
+      "text_leak_detail": null,
+      "brand_trademark_leak": "NO",
+      "brand_leak_detail": "Sneakers are plain black high-tops with white soles/toe caps only - no swoosh-like mark, no three-stripe pattern, no visible logo. Clothing (green hoodie, black undershirt, dark jeans) carries no brand marks.",
+      "border_ui_defect": "NO",
+      "safety_issue": "NO",
+      "d4_style_fidelity": "PASS",
+      "outcome": "FIXED - both the text leak (already fixed in the prior round) and the new brand/trademark finding are resolved. Background graffiti remains abstract colorful shapes with no readable letters, tags, or symbols."
+    }
+  ],
+  "aggregate": {
+    "semantic_pass": 5,
+    "semantic_minor": 0,
+    "semantic_fail": 0,
+    "readable_text_leak_total": 0,
+    "brand_trademark_leak_total": 0,
+    "border_ui_defect_total": 0,
+    "safety_issue_total": 0,
+    "fully_fixed_count": "5/5"
+  },
+  "final_gate_result": "ALL FIVE CRITERIA MET. business.fire_movement: no readable sticky-note labels or headings. arts.comedy_writing: no THESAURUS, no other readable writing. arts.calligraphy: no recognizable/readable real text (abstract brush marks correctly not counted as a leak). arts.zine_making: no readable hero or background text. arts.hip_hop_dance: no swoosh/three-stripe/brand mark, no readable graffiti. Global: semantic FAIL=0, brand leaks=0, border/UI defects=0, safety issues=0, no new systemic defect introduced."
+}
