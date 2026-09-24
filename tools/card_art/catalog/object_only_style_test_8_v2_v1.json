@@ -1,0 +1,51 @@
+{
+  "version": "v1",
+  "purpose": "Second isolated object-only visual-direction test: (A) targeted re-test of the 2 partial failures from object_only_style_test_6_v1 (gaming.tabletop_rpg, food.dish.bun_cha) with stronger human-containment language, and (B) scope-expansion test across 6 new hobby families to check whether object-only generalizes. Uses the real, unmodified D4 global style (global_style_v1.json, read only, never written) plus a temporary experiment-only object-only policy via compileHobbyPrompt's existing experimentOverride mechanism. Does NOT modify any production file, the production queue, launch-gate files, or quarantine status. Not persisted into production.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "production_files_touched": false,
+  "ids": [
+    "gaming.tabletop_rpg",
+    "food.dish.bun_cha",
+    "books.reading",
+    "outdoors.camping",
+    "sports.badminton",
+    "food.coffee",
+    "technology.3d_printing",
+    "lifestyle.home_decor"
+  ],
+  "id_mapping_note": "The requested ID 'coffee' does not exist as an exact canonical ID. Mapped to the nearest existing canonical ID: food.coffee (title 'Coffee'), the generic/base coffee hobby - other more specific variants exist (food.specialty_coffee, food.drink.cold_brew_coffee, food.drink.single_origin_coffee, food.drink.coffee_roasting, food.drink.coffee_grinders, food.drink.coffee_gear, lifestyle.coffee_chats, food.coffee_tasting, lifestyle.coffee_walks) but food.coffee is the closest match to the plain request.",
+  "role_per_id": {
+    "gaming.tabletop_rpg": "targeted re-test - prior failure: background human silhouettes at a tavern bar + readable 'THE RAVEN'S REST' sign",
+    "food.dish.bun_cha": "targeted re-test - prior failure: multiple clearly-visible background diners at other tables",
+    "books.reading": "scope expansion - reading/book atmosphere",
+    "outdoors.camping": "scope expansion - outdoor gear/environment",
+    "sports.badminton": "scope expansion - sport equipment/action",
+    "food.coffee": "scope expansion - ritual/brewing object world",
+    "technology.3d_printing": "scope expansion - active machine/process",
+    "lifestyle.home_decor": "scope expansion - interior/curated objects"
+  },
+  "image": { "aspect_ratio": "2:3" },
+  "expected": {
+    "requests": 8,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.1344
+  },
+  "decision_questions": [
+    "Can the 2 previous failures (tabletop_rpg, bun_cha) be fixed through prompt containment alone?",
+    "Can object-only succeed across a broader range of hobby families?",
+    "Which hobby families seem naturally compatible with object-only?",
+    "Which hobby families still appear structurally resistant, if any?",
+    "Should object-only become a universal replacement, a hybrid lane for selected families, or a niche fallback style?"
+  ],
+  "hard_guardrails": [
+    "exactly 8 images this round, retry only if genuinely ambiguous (max 1 retry, justified)",
+    "no production file writes, no production queue changes, no launch-gate file changes, no quarantine changes",
+    "no Batch-1/Batch-2 authorization state touched",
+    "no auto-scaling/auto-promotion after the test",
+    "no batch beyond this experiment",
+    "no fal.ai, no other image model, no reference images, no image-to-image"
+  ]
+}
