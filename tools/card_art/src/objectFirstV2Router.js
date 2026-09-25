@@ -31,6 +31,30 @@ function uniformPick(id, dimensionName, valuesObject) {
   const index = stableHash(`${id}::v2::${dimensionName}`) % keys.length;
   return keys[index];
 }
+
+// Deterministic scene-family/palette compatibility constraint (Wave-B
+// remediation follow-up): a structural containment rule may declare
+// forbidden_scene_families / forbidden_palette_routes when its own scene
+// grammar structurally requires (or excludes) an environment quality - e.g.
+// karaoke_object_first requires an enclosed indoor room, which is
+// incompatible with an "open outdoor space" scene_family or a "rain-light"
+// palette route. Reusable for any current or future rule, not hardcoded
+// per-id: when the rule has no forbidden list, behavior is identical to
+// plain uniformPick. When the initial hash pick lands on a forbidden
+// value, a second deterministic hash (a distinct salt, not a retry loop)
+// selects among just the compatible remaining values - still fully
+// reproducible, never random, and never silently falling back to the
+// full unconstrained set.
+function constrainedPick(id, dimensionName, valuesObject, forbidden) {
+  if (!forbidden || forbidden.length === 0) return uniformPick(id, dimensionName, valuesObject);
+  const allKeys = Object.keys(valuesObject);
+  const allowedKeys = allKeys.filter(k => !forbidden.includes(k));
+  if (allowedKeys.length === 0) throw new Error(`constrainedPick: forbidden list for "${dimensionName}" excludes every value - refusing to proceed for ${id}.`);
+  const initialPick = uniformPick(id, dimensionName, valuesObject);
+  if (allowedKeys.includes(initialPick)) return initialPick;
+  const index = stableHash(`${id}::v2::${dimensionName}::compatible`) % allowedKeys.length;
+  return allowedKeys[index];
+}
 function weightedPick(id, dimensionName, weights) {
   const entries = Object.entries(weights);
   const total = entries.reduce((sum, [, w]) => sum + w, 0);
@@ -170,15 +194,25 @@ export function routeHobbyV2(row, ctx) {
     human_exception_keyword_matched = keywordMatch;
   }
 
+  // Deterministic scene-family/palette compatibility: the matched
+  // structural containment rule may declare forbidden_scene_families /
+  // forbidden_palette_routes when its own scene grammar structurally
+  // requires an incompatible environment quality (e.g. an enclosed indoor
+  // room ruling out an "open outdoor" scene_family or a "rain-light"
+  // palette route). See constrainedPick() above.
+  const matchedRule = ctx.containment?.rules?.[structural_containment_rule_id];
+
   const composition_archetype = uniformPick(id, 'composition_archetype', ctx.composition.dimensions.composition_archetype.values);
-  const palette_lighting_route = uniformPick(id, 'palette_lighting_route', ctx.composition.dimensions.palette_lighting_route.values);
+  const palette_lighting_route = constrainedPick(id, 'palette_lighting_route', ctx.composition.dimensions.palette_lighting_route.values, matchedRule?.forbidden_palette_routes);
   const effect_level = weightedPick(id, 'effect_level', ctx.composition.dimensions.effect_level.weights);
   // Initial deterministic pick only - a separate sliding-window
   // de-collision pass (deconflictSceneFamilies(), run once over the full
   // ordered catalog by the audit script, not per-row here) may reassign
   // this to a different value to prevent local repetition. See
-  // composition_diversity_v2.json's scene_family_note.
-  const scene_family = uniformPick(id, 'scene_family', ctx.composition.dimensions.scene_family.values);
+  // composition_diversity_v2.json's scene_family_note. The compatibility
+  // constraint below is applied BEFORE de-collision, so de-collision
+  // never has to reason about it separately.
+  const scene_family = constrainedPick(id, 'scene_family', ctx.composition.dimensions.scene_family.values, matchedRule?.forbidden_scene_families);
 
   const text_mode = ctx.textModes?.id_overrides?.[id]?.mode
     || ctx.textModes?.default_mode_by_archetype?.[archetype]
@@ -221,7 +255,14 @@ export function routeHobbyV2(row, ctx) {
 // heavy local clustering survives even though each row's INITIAL pick
 // is already independently distributed. This does not touch any other
 // routing field and never mutates the input array.
-export function deconflictSceneFamilies(rows, sceneFamilyValues, window = 6, maxRepeatsInWindow = 1) {
+// `containmentV2` (optional) lets this pass respect the same
+// forbidden_scene_families constraint constrainedPick() applies to each
+// row's initial pick - without it, a rule requiring an enclosed indoor
+// room (e.g. karaoke_object_first) could have its scene_family reassigned
+// back to an incompatible value purely to resolve local window collision,
+// silently reintroducing the exact contradiction constrainedPick() exists
+// to prevent.
+export function deconflictSceneFamilies(rows, sceneFamilyValues, window = 6, maxRepeatsInWindow = 1, containmentV2 = null) {
   const familyKeys = Object.keys(sceneFamilyValues);
   const out = rows.map(r => ({ ...r }));
   for (let i = 0; i < out.length; i++) {
@@ -232,12 +273,14 @@ export function deconflictSceneFamilies(rows, sceneFamilyValues, window = 6, max
     if (countInWindow < maxRepeatsInWindow) continue;
     // Collision: deterministically rank the remaining candidates by hash
     // of (id + attempt index) and pick the first one not already
-    // over-represented in the window.
+    // over-represented in the window AND not forbidden for this row's rule.
     const id = out[i].canonical_interest_id;
+    const forbidden = containmentV2?.rules?.[out[i].structural_containment_rule_id]?.forbidden_scene_families || [];
     let chosen = null;
     for (let attempt = 0; attempt < familyKeys.length && !chosen; attempt++) {
       const idx = stableHash(`${id}::v2::scene_family::retry${attempt}`) % familyKeys.length;
       const candidate = familyKeys[idx];
+      if (forbidden.includes(candidate)) continue;
       const candidateCount = recent.filter(f => f === candidate).length;
       if (candidateCount < maxRepeatsInWindow) chosen = candidate;
     }

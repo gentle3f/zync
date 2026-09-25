@@ -1,0 +1,89 @@
+{
+  "version": "v2_4_1_narrow_fix_record_v1",
+  "generated_at": "2026-09-25T08:34:26.626Z",
+  "fix_summary": "Replaced the append-only precedence-sentence workaround with a structural, reusable deterministic compatibility constraint: structural_containment_rules_v2.json rules may declare forbidden_scene_families / forbidden_palette_routes; objectFirstV2Router.js constrainedPick() enforces it at the initial routing pick, and deconflictSceneFamilies() now also respects it during its sliding-window de-collision pass (previously it could reassign a row back into a forbidden value purely to resolve local collision, silently reintroducing the contradiction).",
+  "music_singing": {
+    "before": {
+      "scene_family": "open_daylight_outdoor",
+      "palette_lighting_route": "dusk_transition",
+      "contradictory": true
+    },
+    "after": {
+      "scene_family": "warm_intimate_interior",
+      "palette_lighting_route": "dusk_transition",
+      "contradictory": false
+    }
+  },
+  "music_karaoke": {
+    "before": {
+      "scene_family": "cool_night_outdoor",
+      "palette_lighting_route": "rainy_moody",
+      "contradictory": true
+    },
+    "after": {
+      "scene_family": "architectural_grand",
+      "palette_lighting_route": "cool_daylight_shade",
+      "contradictory": false
+    }
+  },
+  "changed_from_v2_4_count": 3,
+  "changed_ids": [
+    "music.karaoke",
+    "music.piano",
+    "music.singing"
+  ],
+  "queue_rows_migrated_to_v2_4_1": 1,
+  "queue_rows_kept_at_v2_4_unchanged": 2134,
+  "queue_rows_preserved_historical": 73,
+  "wellness_stretching_final_status": {
+    "generation_status": "temporary_generation_hold",
+    "generation_hold_reason": "semantic_repair_unvalidated",
+    "quarantine_status": "not_quarantined"
+  },
+  "checks": {
+    "all_2208_compile": true,
+    "deterministic_two_runs": true,
+    "singing_no_outdoor_rain_contradiction": true,
+    "karaoke_no_outdoor_rain_contradiction": true,
+    "singing_semantic_anchors_present": true,
+    "karaoke_semantic_anchors_present": true,
+    "singing_zero_human": true,
+    "karaoke_zero_human": true,
+    "no_unresolved_placeholders": true,
+    "no_internal_id_leak": true,
+    "scene_family_distribution_healthy": true
+  },
+  "all_checks_passed": true,
+  "sentinel_6_readiness": [
+    {
+      "canonical_id": "food.coffee",
+      "generation_status": "qa_quarantine",
+      "prompt_sha256": "7ffee10429522606500bef2c3acf466be9f20c48c0f6170283ee2dae3fb2b2c0"
+    },
+    {
+      "canonical_id": "learning.fiction",
+      "generation_status": "qa_quarantine",
+      "prompt_sha256": "a58aa9d5c365dd6f2f4f88761eae79d07451cc629cd808662439ca28d76728eb"
+    },
+    {
+      "canonical_id": "music.singing",
+      "generation_status": "qa_quarantine",
+      "prompt_sha256": "10d7bc289f6bd778bd0882736e96d6c290d6a6c09f2fedb26438f703a41fd755"
+    },
+    {
+      "canonical_id": "music.karaoke",
+      "generation_status": "qa_quarantine",
+      "prompt_sha256": "082f8254fef1a9fe28d47099a4713649ef05e1ea7266072d1086e358b2e96243"
+    },
+    {
+      "canonical_id": "learning.book_genre.booktube",
+      "generation_status": "qa_quarantine",
+      "prompt_sha256": "dc725c2c372056d487a7e9cd64eb1f7e97ac75561684650a477a04a7e6e36b16"
+    },
+    {
+      "canonical_id": "technology.gadgets",
+      "generation_status": "qa_quarantine",
+      "prompt_sha256": "40874ed9e35983a63dc44334a293f55ba7419c9989fecc1181d79390d23d7caa"
+    }
+  ]
+}

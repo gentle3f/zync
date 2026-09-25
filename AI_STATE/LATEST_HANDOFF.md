@@ -17,11 +17,20 @@ ROLLOUT is now IN PROGRESS, currently gated. Canary-24 ($0.4032) and
 Wave-B-48 ($0.8064) were both executed and visually reviewed by ChatGPT;
 the review surfaced 9 quarantined ids and 2 systemic warnings (music
 vocal-identity semantic routing, human-operated-object physical logic).
-A new production candidate v2.4 was built zero-cost in response - NOT
-generated, NOT authorized yet. Wave-C is on HOLD_FOR_REMEDIATION_VALIDATION
-pending a future 6-card Sentinel ($0.1008, planned but not spent):
+Production candidate v2.4 was built zero-cost in response, then a narrow
+v2.4.1 follow-up fixed a real music.singing/music.karaoke scene-family +
+palette contradiction STRUCTURALLY (a reusable deterministic
+forbidden_scene_families/forbidden_palette_routes constraint, not an
+appended sentence) and reconciled wellness.stretching to one canonical
+`temporary_generation_hold` status. NOT generated, NOT authorized yet.
+Wave-C is on HOLD_FOR_REMEDIATION_VALIDATION pending a future 6-card
+Sentinel ($0.1008, planned but not spent):
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_V24_WAVEB_REMEDIATION.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_V241_PRE_SENTINEL_CLEANUP.md`
+
+(previous checkpoint in this track, still useful for context - v2.4
+candidate, Wave-B-48 QA recording, music/isolated holds:
+`AI_STATE/HANDOFF_20260925_CARD_ART_V24_WAVEB_REMEDIATION.md`)
 
 (previous checkpoint in this track, still useful for context - production
 candidate v2.3, source commit 9b031bc, rollout infrastructure built

@@ -294,17 +294,33 @@
       "applies_to_archetypes": [],
       "bad_pattern": "object_hero_no_performer's generic 'instrument or tool that defines the hobby' framing has no instrument to anchor to for a vocal-only hobby, so the model substituted an unrelated instrument (percussion) as a false hero instead of communicating singing.",
       "good_pattern": "Anchor identity in vocal-performance equipment and environment rather than any instrument, with no visible singer.",
-      "scene_template": "A private, empty indoor vocal-performance scene for ${title} built from a mounted studio or stage microphone on its stand (never held, never floating), a pop filter, a vocal booth or rehearsal-room environment, a lyric sheet showing only non-legible abstract marks, and subtle visual cues suggesting recent vocal performance (a softly glowing waveform display, warm stage or booth lighting) - with absolutely no performer, singer, or visible person anywhere in frame, and no unrelated instrument substituted as the hero. This scene must read as an enclosed indoor room regardless of any separately assigned ambient scene-structure guidance - never an open outdoor space.",
+      "scene_template": "A private, empty indoor vocal-performance scene for ${title} built from a mounted studio or stage microphone on its stand (never held, never floating), a pop filter, a vocal booth or rehearsal-room environment, a lyric sheet showing only non-legible abstract marks, and subtle visual cues suggesting recent vocal performance (a softly glowing waveform display, warm stage or booth lighting) - with absolutely no performer, singer, or visible person anywhere in frame, and no unrelated instrument substituted as the hero.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding, Part 7 music semantic hardening). Reinforced to explicitly override scene_family (this id can still hash-route to open_daylight_outdoor, which directly contradicts the required enclosed vocal-booth/rehearsal-room setting) - the scene_template now explicitly takes precedence over ambient scene-structure text."
+      "notes": "Wave-B remediation (commit 6848b4b finding, Part 7 music semantic hardening). Structural fix (Wave-B pre-Sentinel cleanup): forbidden_scene_families/forbidden_palette_routes now deterministically exclude outdoor/rain-flavored routes at the routing layer (see objectFirstV2Router.js constrainedPick()), so the compiled prompt itself is internally coherent - no reliance on an append-only precedence sentence.",
+      "forbidden_scene_families": [
+        "open_daylight_outdoor",
+        "cool_night_outdoor",
+        "nature_environmental"
+      ],
+      "forbidden_palette_routes": [
+        "rainy_moody"
+      ]
     },
     "karaoke_object_first": {
       "applies_to_archetypes": [],
       "bad_pattern": "object_hero_no_performer's generic framing produced an isolated microphone in an unrelated outdoor rainy setting, communicating nothing about karaoke specifically.",
       "good_pattern": "Anchor identity in karaoke-room equipment (machine, screen, mounted mics, lounge cues) rather than a bare microphone in a generic setting.",
-      "scene_template": "A private, empty karaoke-room scene for ${title} built entirely indoors, from a karaoke microphone mounted on a stand or resting plausibly on a table (never floating, never held), a karaoke machine or screen showing only a non-readable abstract song-selection interface, a second microphone paired nearby if useful, a small speaker setup, and warm colored karaoke-lounge lighting - with absolutely no performer, singer, or visible person anywhere in frame. This scene must read as a warm indoor karaoke lounge regardless of any separately assigned ambient palette guidance - never rain, wet pavement, an outdoor street, or any exterior setting of any kind.",
+      "scene_template": "A private, empty karaoke-room scene for ${title} built from a karaoke microphone mounted on a stand or resting plausibly on a table (never floating, never held), a karaoke machine or screen showing only a non-readable abstract song-selection interface, a second microphone paired nearby if useful, a small speaker setup, and warm colored karaoke-lounge lighting - with absolutely no performer, singer, or visible person anywhere in frame.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding, Part 7 music semantic hardening). Reinforced to explicitly override palette_lighting_route (this id can still hash-route to rainy_moody, whose rain-light language was the direct cause of the original outdoor-rain-street failure) - the scene_template now explicitly takes precedence over ambient palette text."
+      "notes": "Wave-B remediation (commit 6848b4b finding, Part 7 music semantic hardening). Structural fix (Wave-B pre-Sentinel cleanup): forbidden_scene_families/forbidden_palette_routes now deterministically exclude outdoor/rain-flavored routes at the routing layer (see objectFirstV2Router.js constrainedPick()), so the compiled prompt itself is internally coherent - no reliance on an append-only precedence sentence.",
+      "forbidden_scene_families": [
+        "open_daylight_outdoor",
+        "cool_night_outdoor",
+        "nature_environmental"
+      ],
+      "forbidden_palette_routes": [
+        "rainy_moody"
+      ]
     },
     "booktube_creator_setup_no_presenter": {
       "applies_to_archetypes": [],

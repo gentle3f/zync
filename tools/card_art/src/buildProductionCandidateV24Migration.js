@@ -95,7 +95,7 @@ function validateRuleSpecReferences(ctx) {
 
 function compileAll(bridge, ctx) {
   const rows = bridge.eligible.map(bridgeRow => compileObjectFirstPromptV2(toRow(bridgeRow), ctx, routeHobbyV2));
-  const deconflicted = deconflictSceneFamilies(rows, ctx.compositionV2.dimensions.scene_family.values);
+  const deconflicted = deconflictSceneFamilies(rows, ctx.compositionV2.dimensions.scene_family.values, 6, 1, ctx.containmentV2);
   for (let i = 0; i < rows.length; i++) {
     if (!deconflicted[i].scene_family_deconflicted || !rows[i].compiled) continue;
     const oldFamily = rows[i].scene_family;

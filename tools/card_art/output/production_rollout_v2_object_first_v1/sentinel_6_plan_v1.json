@@ -1,9 +1,9 @@
 {
   "version": "sentinel_6_plan_v1",
-  "generated_at": "2026-09-25T07:55:55.508Z",
+  "generated_at": "2026-09-25T08:34:50.623Z",
   "status": "PLANNED_NOT_EXECUTED",
-  "production_candidate_version": "v2.4",
-  "purpose": "2 systemic physical/semantic fixes (food.coffee, learning.fiction) + 2 expanded music vocal-identity failures (music.singing, music.karaoke) + 2 isolated semantic failures (learning.book_genre.booktube, technology.gadgets). wellness.stretching intentionally excluded from this first paid sentinel per instruction - kept as a static-regression/held row for now.",
+  "production_candidate_version": "mixed: v2.4 (4 unchanged cards) + v2.4.1 (music.singing, music.karaoke - narrowly repaired for the outdoor/rain scene-palette contradiction)",
+  "purpose": "2 systemic physical/semantic fixes (food.coffee, learning.fiction) + 2 expanded music vocal-identity failures (music.singing, music.karaoke, now structurally coherent under v2.4.1) + 2 isolated semantic failures (learning.book_genre.booktube, technology.gadgets). wellness.stretching intentionally excluded from this first paid sentinel - now in temporary_generation_hold (semantic_repair_unvalidated), not part of Sentinel-6.",
   "card_count": 6,
   "cards": [
     {
@@ -40,13 +40,13 @@
       "archetype": "performance",
       "structural_containment_rule_id": "vocal_singing_object_first",
       "confidence": "extrapolated",
-      "scene_family": "open_daylight_outdoor",
+      "scene_family": "warm_intimate_interior",
       "composition_archetype": "architectural_wide",
       "palette_lighting_route": "dusk_transition",
       "effect_level": "none",
       "text_mode": "text_none",
-      "prompt_sha256": "0e3b91b1fec316e0ad05b185f41054a1b4dafb1c2f9511380098400b06ff9f6e",
-      "production_candidate_version": "v2.4"
+      "prompt_sha256": "044064dd0a1ea944fa4d3ade975c927f1522e923461503dfcd6164235a59a74b",
+      "production_candidate_version": "v2.4.1"
     },
     {
       "id": "music.karaoke",
@@ -54,13 +54,13 @@
       "archetype": "performance",
       "structural_containment_rule_id": "karaoke_object_first",
       "confidence": "extrapolated",
-      "scene_family": "cool_night_outdoor",
+      "scene_family": "architectural_grand",
       "composition_archetype": "action_aftermath_frame",
-      "palette_lighting_route": "rainy_moody",
+      "palette_lighting_route": "cool_daylight_shade",
       "effect_level": "none",
       "text_mode": "text_none",
-      "prompt_sha256": "31c844fa8bf8620b16fc03f0a1d97b32398be8c789b6b4378066fd6b9e785b25",
-      "production_candidate_version": "v2.4"
+      "prompt_sha256": "d8ee0ca47086e89cd4faf0059edad0c186c441c37eec43987d3585c7571f9120",
+      "production_candidate_version": "v2.4.1"
     },
     {
       "id": "learning.book_genre.booktube",
@@ -97,8 +97,8 @@
     "scene_family_values": [
       "warm_intimate_interior",
       "macro_material_scene",
-      "open_daylight_outdoor",
-      "cool_night_outdoor",
+      "warm_intimate_interior",
+      "architectural_grand",
       "architectural_grand",
       "macro_material_scene"
     ],
@@ -116,14 +116,14 @@
       "warm_intimate",
       "warm_intimate",
       "dusk_transition",
-      "rainy_moody",
+      "cool_daylight_shade",
       "bright_daylight",
       "rainy_moody"
     ],
     "palette_collapsed": false,
-    "note": "Mild natural overlap only (macro_material_scene shared by learning.fiction/technology.gadgets; warm_intimate shared by food.coffee/learning.fiction; rainy_moody shared by music.karaoke/technology.gadgets) - not a concentration collapse. No artificial re-diversification was applied; semantic correctness took priority over forced diversity, per instruction."
+    "note": "Mild natural overlap only - not a concentration collapse. No artificial re-diversification was applied; semantic correctness took priority over forced diversity, per instruction."
   },
-  "known_caveat_ambient_route_conflict": "music.singing and music.karaoke both still hash-route (unchanged routing logic) to an ambient scene_family/palette that textually conflicts with their new indoor/warm-lounge grammar (open_daylight_outdoor for singing; rainy_moody for karaoke - the exact rain-palette text that plausibly caused the original street-rain failure). Each rule's scene_template was reinforced with an explicit precedence sentence telling the model to disregard the conflicting ambient text, but the conflicting text itself is still present in the compiled prompt (not removed, since removing it would require a per-id routing override mechanism beyond this task's scope). This should be watched specifically when ChatGPT reviews these 2 sentinel results - if the precedence sentence does not reliably win, a routing-level id-exact palette/scene_family override would be the next fix.",
+  "known_caveat_ambient_route_conflict": "RESOLVED this checkpoint (v2.4.1): music.singing and music.karaoke no longer route to a contradictory scene_family/palette - fixed structurally via forbidden_scene_families/forbidden_palette_routes on their containment rules, enforced deterministically in objectFirstV2Router.js, not via an appended precedence sentence. See v2_4_1_narrow_fix_record_v1.json for the exact before/after routing values.",
   "mechanically_ready": true,
-  "sha256_verification": "Each card prompt_sha256 recomputed from production_candidate_freeze_v2_4_v1.json; a future sentinel runner must SHA256-verify before submission using the same loadFrozenRows() pattern as every prior runner."
+  "sha256_verification": "Each card prompt_sha256 recomputed from its authoritative freeze file (production_candidate_freeze_v2_4_v1.json for 4 unchanged cards, production_candidate_freeze_v2_4_1_v1.json for music.singing/music.karaoke); a future sentinel runner must SHA256-verify before submission using the same loadFrozenRows() pattern as every prior runner, and must load frozen prompt text from the matching per-card version."
 }

@@ -119,7 +119,7 @@ function compileAll(bridge, ctx) {
   // an already-compiled prompt. To keep the compiled prompt consistent
   // with its own recorded scene_family, we recompile just the affected
   // rows' scene-family text/prompt after deconfliction.
-  const deconflicted = deconflictSceneFamilies(rows, ctx.compositionV2.dimensions.scene_family.values);
+  const deconflicted = deconflictSceneFamilies(rows, ctx.compositionV2.dimensions.scene_family.values, 6, 1, ctx.containmentV2);
   for (let i = 0; i < rows.length; i++) {
     if (!deconflicted[i].scene_family_deconflicted || !rows[i].compiled) continue;
     const oldFamily = rows[i].scene_family;
