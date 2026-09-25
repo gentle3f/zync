@@ -1,0 +1,78 @@
+{
+  "version": "v1",
+  "purpose": "Consolidated zero-cost policy document for the V2 production rollout: wave-gate strategy, QA taxonomy, stop/hold rules, failure/quarantine workflow, cost guardrails, prompt-hash integrity, and the raw-art/frame composition pipeline plan. No image generation. Companion to production_candidate_freeze_v1.json, canary_24_manifest_v1.json, qa_sampling_manifests_v1.json, rolling_sentinels_v1.json, cost_model_v1.json, and dry_run_report_v1.json in this same directory.",
+
+  "wave_gate_strategy": {
+    "principle": "No wave may auto-trigger the next wave. Every wave (Canary-24, Wave-B-48, Wave-C-96, each steady-state 120-batch) requires a separate, explicit, future user authorization after ChatGPT visual QA of that wave's sample - exactly the pattern already used and proven for every prior paid batch in this project (Validation-16, Validation-8, Recheck-3, the single-sentinel startups fix), none of which ever auto-triggered a follow-on batch.",
+    "waves": [
+      { "name": "wave_canary_24", "count": 24, "max_cost_usd": 0.4032, "qa_sample_pct": 100 },
+      { "name": "wave_b_48", "count": 48, "max_cost_usd": 0.8064, "qa_sample_pct": 50 },
+      { "name": "wave_c_96", "count": 96, "max_cost_usd": 1.6128, "qa_sample_pct": 25 },
+      { "name": "steady_state_batches", "batch_size": 120, "max_cost_per_batch_usd": 2.016, "qa_sample_pct_per_batch": 10, "note": "Exact batch count and final remainder are computed dynamically from the actual remaining queue after reuse/canary/wave-B/wave-C are removed - see cost_model_v1.json for the real numbers this checkpoint (17 batches: 16x120 + 1x119), never hard-coded." }
+    ],
+    "no_auto_chain_verification": "Every runner script in this project (runObjectFirstV2Validation16.js, runObjectFirstV2Validation8HardSentinels.js, runObjectFirstV2Recheck3Final.js, runObjectFirstV2StartupsFinalRecheck.js) requires an explicit --submit invocation and contains no code path that invokes another runner or another wave. The same pattern must be followed by any future production-wave runner built from this queue."
+  },
+
+  "qa_taxonomy": {
+    "overall_verdict": ["PASS", "MINOR", "FAIL"],
+    "flags": ["semantic_identity", "zero_human", "character_substitution", "physical_logic", "text_leak", "brand_leak", "copyrighted_IP", "scene_convergence", "composition", "collectible_quality", "technical_artifact"],
+    "note": "Kept intentionally compact per explicit instruction not to create an enormous scoring bureaucracy. Applied ONLY by ChatGPT/the user - Claude never assigns these labels to a generated image."
+  },
+
+  "stop_hold_rules": {
+    "principle": "Distinguish an isolated card failure (quarantine that one card, keep the wave moving) from a systemic rule failure (HOLD the next wave entirely). Do not stop for one harmless MINOR. Final rollout gate decision always belongs to the user/ChatGPT - these are guidance thresholds, not an automatic kill switch.",
+    "hold_conditions": [
+      { "category": "zero_human", "trigger": "The same structural_containment_rule_id or archetype produces real-human leakage (body part, silhouette, reflection) on 2+ cards within one wave's QA sample." },
+      { "category": "semantic", "trigger": "The same structural_containment_rule_id produces the same wrong-neighboring-concept confusion on 2+ cards within one wave's QA sample (mirrors the business.startups electronics-hobby collapse pattern)." },
+      { "category": "physical_logic", "trigger": "The same physical_logic_domain produces invisible-human-physics (an object operating/held with no support) on 2+ cards within one wave's QA sample." },
+      { "category": "text", "trigger": "The same text_mode family produces systemic pseudo-text or readable fake branding/product copy on 2+ cards within one wave's QA sample." },
+      { "category": "brand_ip", "trigger": "A recognizable real logo, trademark-like design, or copyrighted character appears on ANY card - single-occurrence HOLD, since brand/IP leakage is a legal/compliance risk, not merely an aesthetic one." },
+      { "category": "diversity", "trigger": "Clear rendered scene convergence (the same visual pattern - e.g. the Validation-16 dark-interior-plus-warm-lamp pattern - recurring) despite distinct scene_family metadata, observed across 3+ cards in one wave's QA sample." },
+      { "category": "safety", "trigger": "2+ IMAGE_SAFETY or other content-policy blocks from the same structural_containment_rule_id or archetype within one wave." }
+    ],
+    "isolated_card_response": ["preserve the original generated image", "mark QA failure with the specific flag(s)", "quarantine that one canonical_id (queue generation_status -> qa_hold, quarantine_status -> quarantined)", "do NOT reroll until the user explicitly authorizes a fix", "continue the wave/queue otherwise"],
+    "systemic_rule_response": ["HOLD the next wave entirely - do not submit further cards using the implicated rule/domain/archetype", "the implicated structural_containment_rule_id, physical_logic_domain, or text_mode must be reviewed and revised (creating a new prompt_sha256/production-candidate version, per the immutability rule) before any further generation using it", "already-generated cards from the implicated rule in the CURRENT wave should be individually reviewed, not blanket-discarded"]
+  },
+
+  "failure_quarantine_workflow": {
+    "visual_fail_workflow": ["preserve the original failed image file, never delete or overwrite it", "record the QA finding (verdict + flags) against that canonical_id in the queue", "classify the failure as isolated (recipe-specific) or systemic (archetype/rule-wide) per stop_hold_rules above", "set queue generation_status to qa_hold and quarantine_status to quarantined for that id", "do NOT silently mutate the prompt - any fix requires a new prompt_sha256 and becomes a new production-candidate version", "do NOT reroll until the user explicitly authorizes a fix", "preserve full provenance: original image, original prompt, original prompt_sha256, and (once fixed) the new prompt/hash, exactly mirroring the repair_history pattern already used for the V1 Batch-1 repair"],
+    "content_block_workflow": ["record the exact finish_reason (e.g. IMAGE_SAFETY) against that canonical_id", "no automatic prompt mutation, no automatic retry", "set generation_status to content_blocked and quarantine_status to quarantined", "investigate only after that wave's QA is otherwise complete, not mid-wave"],
+    "technical_failure_workflow": ["retry ONLY if the failed request is confirmed unbilled (the pattern already used in every runner in this project)", "preserve logs of the failure", "a technical retry is never counted as a visual reroll and never requires user re-authorization, since no content judgment was involved"]
+  },
+
+  "cost_guardrails": {
+    "hard_rule": "No single authorized wave may exceed its approved budget. No automatic generation outside an explicitly approved wave. See cost_model_v1.json for the exact reconciled counts/costs for this checkpoint's queue (reuse=1, canary=24, wave_b=48, wave_c=96, steady_state=2039 across 17 batches, total_new_generation=2207, full_fresh_ceiling=$37.0944, revised_projected_cost=$37.0776, savings=$0.0168).",
+    "per_wave_record_fields": ["planned image count", "reusable count", "submitted count", "billed count", "failed-unbilled count", "cost this wave", "cumulative production cost", "theoretical remaining cost"],
+    "note_on_reuse_savings": "The reuse savings this checkpoint are modest ($0.0168, 1 image) because 2 otherwise-accepted images (media.anime, learning.mock_trial) diverged from the canonical prompt due to a one-off local diversity patch made during the Recheck-3 test batch (see production_candidate_freeze_v1.json's rows and existing_art_inventory_v1.json for the full explanation) - those 2 ids are included in Canary-24 as fresh reconfirmation slots rather than being silently counted as reusable."
+  },
+
+  "prompt_hash_version_integrity": {
+    "rule": "Before every generation request: verify canonical_id, production_candidate_version, exact prompt_sha256 (recompute live and compare against the frozen queue value), model, and queue state. If the live-recomputed SHA256 differs from the frozen queue value, ABORT that specific row - do not silently regenerate with a changed prompt. This exact pattern is already implemented and proven in every prior runner (runObjectFirstV2Validation16.js's/Validation8HardSentinels.js's/Recheck3Final.js's/StartupsFinalRecheck.js's loadFrozenRows() functions, which throw on mismatch).",
+    "architecture_change_rule": "If architecture changes after production starts (a new semantic fix, a new containment rule, a new global policy addition), that must create a NEW production-candidate version (e.g. v2.4) with its own frozen snapshot and new prompt hashes for every affected row - never a silent mutation of the v2.3 snapshot this checkpoint freezes. A migration/requeue decision (which in-flight or already-generated rows need to be regenerated under the new version) must be made explicitly, and historical provenance (which version actually generated which existing image) must never be overwritten."
+  },
+
+  "frame_and_final_card_pipeline_plan": {
+    "principle": "Card frame composition is explicitly OUT OF SCOPE for image generation. Never bake a card frame into a Gemini prompt or generation request.",
+    "pipeline_stages": ["raw generated artwork (from a production wave, per this queue)", "technical validation (dimensions/format/hash - the same checks already used in every prior runner's technical_validation_v1.json)", "visual QA (ChatGPT/user, per the qa_taxonomy above)", "approved raw-art master (immutable once approved, provenance-tagged)", "crop/fit artwork window to the card's artwork frame", "overlay the locked rarity frame (Common/Uncommon/Rare/Epic/Legendary)", "final card asset", "app derivative sizes (thumbnails, list views, etc.)"],
+    "non_destructive_note": "Regenerating art must never be forced merely because frame composition changes later - the raw art and the frame overlay are independently versioned and stored (see art_asset_directory_convention below)."
+  },
+
+  "art_asset_directory_convention": {
+    "raw_generated_art": "tools/card_art/output/<experiment_or_wave_dir>/images/ (existing convention, unchanged)",
+    "qa_metadata": "tools/card_art/output/<experiment_or_wave_dir>/ (manifest.json, technical_validation_v1.json - existing convention; a future qa_results_v1.json per wave would sit alongside)",
+    "approved_raw_art": "PROPOSED, not yet created this checkpoint: tools/card_art/output/production_approved_v2/<canonical_id>/ - populated only after explicit ChatGPT/user visual approval, never auto-populated",
+    "quarantined_art": "PROPOSED: tools/card_art/output/production_quarantined_v2/<canonical_id>/ - failed/blocked cards preserved here with their QA finding, never deleted",
+    "frame_masters": "PROPOSED: tools/card_art/assets/frames/<rarity>.png (or repo-consistent equivalent) - see frame_master_inventory_v1.json in this same directory for the current (missing) state",
+    "composed_card_assets": "PROPOSED: tools/card_art/output/production_composed_v2/<canonical_id>/ - built by a future, separate frame-composition pipeline, never by the image-generation runner",
+    "app_derivatives": "Owned by the mobile app build pipeline, out of card_art's scope entirely",
+    "provenance_fields_per_raw_image": ["canonical_id", "prompt_sha256", "model", "generation_batch (which wave/runner produced it)", "generation_timestamp", "image_sha256", "qa_status"],
+    "no_silent_replacement_rule": "A file at any of the above paths is never silently overwritten - a corrected/regenerated image gets a new provenance record (new prompt_sha256, new generation_batch) alongside the old one, exactly mirroring the repair_history pattern already used for the V1 Batch-1 repair."
+  },
+
+  "legacy_v1_disposition": {
+    "batch_1": { "status": "legacy_human_led_v1", "disposition": "preserved for audit/history, superseded as active production direction, not part of Object-First V2 rollout, no further paid generation authorized", "location": "tools/card_art/output/production_batch_001_v1/ (untouched)" },
+    "batch_2": { "status": "legacy_human_led_v1", "disposition": "preserved for audit/history, not authorized to continue, not part of Object-First V2 rollout, no further paid generation authorized", "location": "tools/card_art/output/production_batch_002_v1/ (untouched)" },
+    "batch_1_repair": { "status": "legacy_human_led_v1", "disposition": "preserved for audit/history alongside batch_1", "location": "tools/card_art/output/batch1_repairs_v1/ (untouched)" },
+    "note": "No original image file was modified. A non-destructive status marker (legacy_v1_status_v1.json) was added alongside inside production_batch_001_v1/ only, since that directory is already tracked/committed history. production_batch_002_v1/ and batch1_repairs_v1/ are still UNCOMMITTED, paused work from an earlier explicit STOP instruction - no new file was added into either directory this checkpoint, to avoid touching that paused work in any way (including via a new file) without a separate explicit instruction to do so. Their disposition is documented here instead."
+  }
+}

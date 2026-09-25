@@ -1,0 +1,7 @@
+{
+  "version": "v1",
+  "added_at": "2026-09-25",
+  "status": "legacy_human_led_v1",
+  "disposition": "Preserved for audit/history. Superseded as the active production direction by Object-First V2 (see tools/card_art/output/production_rollout_v2_object_first_v1/). Not part of the V2 rollout. No further paid generation authorized for this batch.",
+  "non_destructive_note": "This marker file is additive only - no existing file in this directory was modified, moved, or deleted."
+}

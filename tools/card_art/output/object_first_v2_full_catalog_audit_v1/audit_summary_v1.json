@@ -1,6 +1,6 @@
 {
   "version": "v3",
-  "generated_at": "2026-09-25T05:19:58.478Z",
+  "generated_at": "2026-09-25T05:45:09.012Z",
   "baseline_checkpoint": "53f72d2",
   "scope": "Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit, post-Validation-16 architecture fix. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics, rules, and the authoritative ChatGPT visual findings supplied for Validation-16 - not re-derived visual findings.",
   "total_catalog": 4053,

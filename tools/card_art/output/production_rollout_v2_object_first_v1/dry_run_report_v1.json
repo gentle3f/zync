@@ -1,0 +1,53 @@
+{
+  "version": "v1",
+  "generated_at": "2026-09-25T05:52:10.755Z",
+  "no_api_calls_made": true,
+  "simulated": {
+    "reusable_asset_resolution": "1 id(s) resolved to existing accepted assets: business.startups",
+    "queue_ordering": "stratified round-robin by archetype (alphabetical archetype cycling), deterministic and reproducible",
+    "wave_a_canary_24": "24 ids selected, 0 overlap with reuse candidates (verified)",
+    "wave_b_48": "48 ids selected from stratified order, excluding canary + reuse",
+    "wave_c_96": "96 ids selected from stratified order, excluding canary + wave_b + reuse",
+    "steady_state_batching": "17 batches of up to 120, remainder=119",
+    "qa_sample_selection": "deterministic, risk-flag-mandatory plus even-stride fill to target fraction",
+    "prompt_hash_verification": "every row carries its prompt_sha256 from the frozen snapshot; a future runner must recompute and compare before submission (pattern already proven in every prior runObjectFirstV2*.js script) and ABORT that row on mismatch",
+    "cost_accumulation": {
+      "total_eligible": 2208,
+      "reuse_candidate_count": 1,
+      "canary_24_count": 24,
+      "canary_24_cost_usd": 0.4032,
+      "wave_b_48_count": 48,
+      "wave_b_48_cost_usd": 0.8064,
+      "wave_c_96_count": 96,
+      "wave_c_96_cost_usd": 1.6128,
+      "steady_state_batch_count": 17,
+      "steady_state_batch_sizes": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        119
+      ],
+      "steady_state_total_count": 2039,
+      "steady_state_total_cost_usd": 34.2552,
+      "total_new_generation_count": 2207,
+      "total_new_generation_cost_usd": 37.0776,
+      "full_fresh_ceiling_usd": 37.0944,
+      "savings_from_reuse_usd": 0.0168,
+      "reconciliation_check_passes": true
+    },
+    "auto_run_check": "No code in this checkpoint calls a generation API or chains a wave to the next automatically. Every wave requires a separate, explicit, future user-authorized runner invocation, per the same pattern already used for every prior paid batch in this project (Validation-16, Validation-8, Recheck-3, single-sentinel startups fix) - none of which ever auto-triggered the next one."
+  }
+}

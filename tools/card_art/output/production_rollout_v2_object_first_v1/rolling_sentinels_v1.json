@@ -1,0 +1,13 @@
+{
+  "purpose": "Represents historically difficult failure modes for production monitoring. Do NOT regenerate the same sentinel every batch unnecessarily - select a comparable sentinel-class row from the current batch instead where one exists, to catch systemic regression without wasting generation money.",
+  "sentinel_classes": {
+    "semantic_scale": "transport.modelrailways",
+    "food_physical_logic": "food.japanese",
+    "social_professional_scene": "business.startups",
+    "text_sensitive_concept": "learning.model_united_nations",
+    "zero_human_containment": "outdoors.swimming",
+    "abstract_concept": "technology.ai",
+    "media_anime_type_content": "media.anime",
+    "scene_family_diversity": "(no single id - checked via the scene_family distribution report on every wave, not a per-card sentinel)"
+  }
+}

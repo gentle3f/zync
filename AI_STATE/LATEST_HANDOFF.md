@@ -12,15 +12,19 @@ authorization):
 
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
-Second, separate authoritative checkpoint (isolated object-first visual-
-direction research track, now at final production-readiness hardening -
-candidate V2, not yet promoted to production, V1 above remains untouched
-and live. A Recheck-3 plan is proposed ($0.0504 if authorized) but NOT
-yet authorized or run):
+Second, separate authoritative checkpoint (Object-First V2 research is
+now CLOSED and validated as the production candidate architecture,
+version v2.3, source commit 9b031bc. Now at production ROLLOUT
+ENGINEERING - a zero-cost queue/wave/QA-policy plan, V1 above remains
+untouched and live. Canary-24 is proposed ($0.4032 if authorized) but
+NOT yet authorized or run):
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_READINESS_HARDENING.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_ROLLOUT_PLAN.md`
 
 (previous checkpoints in this track, still useful for context:
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_READINESS_HARDENING.md`
+(startup/anime/mock-trial fixes through Recheck-3 and the final
+single-sentinel startups recheck, commits 4c8791c/7425cce/9b031bc),
 `AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_POST_VALIDATION_ARCHITECTURE_FIX.md`
 (semantic identity/physical-logic/text-mode/scene-family architecture,
 post-Validation-16),

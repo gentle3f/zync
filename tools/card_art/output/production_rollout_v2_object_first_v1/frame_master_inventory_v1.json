@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "checked_at": "2026-09-25",
+  "method": "Mechanical filesystem search across the repository for the 5 locked rarity frame masters (find with case-insensitive name patterns for common/uncommon/rare/epic/legendary combined with 'frame', plus a broader search for any 'rarity' or card/asset directories). No file contents were opened or assumed.",
+  "expected_masters": ["Common", "Uncommon", "Rare", "Epic", "Legendary"],
+  "result": {
+    "Common": { "found": false, "path": null, "dimensions": null, "alpha_status": null },
+    "Uncommon": { "found": false, "path": null, "dimensions": null, "alpha_status": null },
+    "Rare": { "found": false, "path": null, "dimensions": null, "alpha_status": null },
+    "Epic": { "found": false, "path": null, "dimensions": null, "alpha_status": null },
+    "Legendary": { "found": false, "path": null, "dimensions": null, "alpha_status": null }
+  },
+  "summary": "0/5 locked rarity frame masters are currently present in this repository. No 'frame', 'rarity', or card-asset directory of any kind was found under any searched path. This is a factual finding, not an assumption - the masters are still only external/prepared (per the task's own framing) and have not been committed here.",
+  "impact_on_raw_art_production_plan": "None. Per explicit instruction, frame composition is a separate, later pipeline stage (see production_rollout_policy_v1.json's frame_and_final_card_pipeline_plan) - the absence of frame masters does not block generating, technically validating, or visually QA-ing raw artwork under this queue. It only means the crop/overlay/final-card-asset stages cannot be built or tested yet."
+}
