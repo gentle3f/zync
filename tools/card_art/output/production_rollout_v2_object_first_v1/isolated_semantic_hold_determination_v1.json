@@ -1,0 +1,29 @@
+{
+  "version": "isolated_semantic_hold_determination_v1",
+  "recorded_at": "2026-09-25T07:50:59.719Z",
+  "purpose": "Part 3 of the Wave-B remediation gate: for each of the 3 isolated semantic failures (learning.book_genre.booktube, technology.gadgets, wellness.stretching), determine whether the fix scope should be exact-ID-only or a broader grammar-family hold on sibling ungenerated rows sharing the same archetype + structural_containment_rule combination.",
+  "determination": "exact-ID-only for all 3. No broader hold applied.",
+  "entries": [
+    {
+      "canonical_id": "learning.book_genre.booktube",
+      "archetype": "creator_workflow",
+      "shared_rule": "abstract_system_no_operator",
+      "evidence": "No other creator_workflow-archetype row has been generated or failed under this rule; arts.podcasting (same archetype family, different rule) passed cleanly in Wave-B. The failure (robot-library/conveyor) traces to booktube's own recipe forcing a human-creator concept into a \"self-operating abstract system\" framing - a recipe-specific mismatch, not a rule-family failure.",
+      "resolution": "Exact-ID fix only: new booktube_creator_setup_no_presenter containment rule (Part 8). No hold applied to sibling creator_workflow rows."
+    },
+    {
+      "canonical_id": "technology.gadgets",
+      "archetype": "tech_workspace",
+      "shared_rule": "abstract_system_no_operator",
+      "evidence": "technology.ai shares the exact same archetype (tech_workspace) and containment rule (abstract_system_no_operator) and was APPROVED cleanly in Canary-24 - direct evidence the rule itself works correctly for its intended genuinely-abstract/automated subject. Gadgets failed because ordinary consumer hardware does not fit an \"abstract system operating on its own\" framing, not because the rule is broadly broken.",
+      "resolution": "Exact-ID fix only: new consumer_gadgets_object_hero containment rule (Part 8), plus protagonist_type changed from abstract_system to object for this id alone. No hold applied to the other 51 tech_workspace rows."
+    },
+    {
+      "canonical_id": "wellness.stretching",
+      "archetype": "calm_wellness",
+      "shared_rule": "generic_structural_containment",
+      "evidence": "wellness.pilates shares the exact same archetype (calm_wellness) and containment rule family and was APPROVED cleanly in Canary-24; wellness.yoga (also calm_wellness) generated in Wave-B with no comparable finding. Stretching failed because the generic fallback rule gives no specific prop guidance and the model invented a large gym/rehab machine - a recipe-specific prop-guidance gap, not a rule-family failure.",
+      "resolution": "Exact-ID fix only: new stretching_mobility_props_no_body containment rule (Part 8). No hold applied to the other 17 calm_wellness rows."
+    }
+  ]
+}

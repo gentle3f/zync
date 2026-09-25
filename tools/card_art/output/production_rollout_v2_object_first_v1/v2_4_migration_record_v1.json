@@ -1,0 +1,17 @@
+{
+  "version": "v2_4_migration_record_v1",
+  "generated_at": "2026-09-25T07:55:28.066Z",
+  "migration_rules": [
+    "production_candidate_freeze_v1.json (v2.3) is never rewritten - it remains the sole authoritative record of what actually produced every already-generated image.",
+    "production_candidate_freeze_v2_4_v1.json is a NEW, separate immutable snapshot covering the current (patched) compiled state of all 2208 rows, each carrying its own previous_v2_3_prompt_sha256 for provenance.",
+    "The production queue's prompt_sha256/production_candidate_version fields were updated to v2.4 ONLY for rows with generation_status === \"pending_generation\" (never yet generated, held or not).",
+    "The 72 already-generated rows (24 Canary + 48 Wave-B) were left completely untouched in the queue - their recorded prompt_sha256/production_candidate_version still point to the exact v2.3 prompt that produced their real image, including the 9 quarantined ones, whose failed v2.3 asset and prompt are preserved as-is.",
+    "A future authorized retry of a quarantined id must use a freshly computed v2.4 (or later) prompt at that time - none was silently back-filled into the queue now.",
+    "Only rows whose compiled prompt text actually changed under the new architecture received a new hash - verified by comparing every row's newly computed SHA256 against its recorded v2.3 SHA256, not assumed."
+  ],
+  "changed_from_v2_3_count": 2208,
+  "unchanged_from_v2_3_count": 0,
+  "unchanged_ids": [],
+  "queue_rows_migrated_to_v2_4": 2135,
+  "queue_rows_preserved_at_v2_3_historical": 73
+}

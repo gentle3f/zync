@@ -1,0 +1,129 @@
+{
+  "version": "sentinel_6_plan_v1",
+  "generated_at": "2026-09-25T07:55:55.508Z",
+  "status": "PLANNED_NOT_EXECUTED",
+  "production_candidate_version": "v2.4",
+  "purpose": "2 systemic physical/semantic fixes (food.coffee, learning.fiction) + 2 expanded music vocal-identity failures (music.singing, music.karaoke) + 2 isolated semantic failures (learning.book_genre.booktube, technology.gadgets). wellness.stretching intentionally excluded from this first paid sentinel per instruction - kept as a static-regression/held row for now.",
+  "card_count": 6,
+  "cards": [
+    {
+      "id": "food.coffee",
+      "title": "Coffee",
+      "archetype": "drink_ritual",
+      "structural_containment_rule_id": "coffee_ritual_resting_scene",
+      "confidence": "extrapolated",
+      "scene_family": "warm_intimate_interior",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "restrained",
+      "text_mode": "text_none",
+      "prompt_sha256": "824e2c561a0d08cd43a4928695828ed87f235da8b23535a98939e8af08a7aca4",
+      "production_candidate_version": "v2.4"
+    },
+    {
+      "id": "learning.fiction",
+      "title": "Fiction",
+      "archetype": "reading_world",
+      "structural_containment_rule_id": "fiction_object_first_grammar",
+      "confidence": "extrapolated",
+      "scene_family": "macro_material_scene",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "none",
+      "text_mode": "text_incidental_nonlegible",
+      "prompt_sha256": "54974d380ff60a904bf26bb577d50e6f307b85849339354c75fd53dcdf6d3c34",
+      "production_candidate_version": "v2.4"
+    },
+    {
+      "id": "music.singing",
+      "title": "Singing",
+      "archetype": "performance",
+      "structural_containment_rule_id": "vocal_singing_object_first",
+      "confidence": "extrapolated",
+      "scene_family": "open_daylight_outdoor",
+      "composition_archetype": "architectural_wide",
+      "palette_lighting_route": "dusk_transition",
+      "effect_level": "none",
+      "text_mode": "text_none",
+      "prompt_sha256": "0e3b91b1fec316e0ad05b185f41054a1b4dafb1c2f9511380098400b06ff9f6e",
+      "production_candidate_version": "v2.4"
+    },
+    {
+      "id": "music.karaoke",
+      "title": "Karaoke",
+      "archetype": "performance",
+      "structural_containment_rule_id": "karaoke_object_first",
+      "confidence": "extrapolated",
+      "scene_family": "cool_night_outdoor",
+      "composition_archetype": "action_aftermath_frame",
+      "palette_lighting_route": "rainy_moody",
+      "effect_level": "none",
+      "text_mode": "text_none",
+      "prompt_sha256": "31c844fa8bf8620b16fc03f0a1d97b32398be8c789b6b4378066fd6b9e785b25",
+      "production_candidate_version": "v2.4"
+    },
+    {
+      "id": "learning.book_genre.booktube",
+      "title": "BookTube",
+      "archetype": "creator_workflow",
+      "structural_containment_rule_id": "booktube_creator_setup_no_presenter",
+      "confidence": "extrapolated",
+      "scene_family": "architectural_grand",
+      "composition_archetype": "minimal_iconic",
+      "palette_lighting_route": "bright_daylight",
+      "effect_level": "restrained",
+      "text_mode": "text_incidental_nonlegible",
+      "prompt_sha256": "ea2726c6ebd1a505ee9fea3e7518269b39dd0ccdb72a592999c12a307e821c1c",
+      "production_candidate_version": "v2.4"
+    },
+    {
+      "id": "technology.gadgets",
+      "title": "Technology & Gadgets",
+      "archetype": "tech_workspace",
+      "structural_containment_rule_id": "consumer_gadgets_object_hero",
+      "confidence": "extrapolated",
+      "scene_family": "macro_material_scene",
+      "composition_archetype": "elevated_three_quarter",
+      "palette_lighting_route": "rainy_moody",
+      "effect_level": "expressive",
+      "text_mode": "text_none",
+      "prompt_sha256": "fd7569875d22c748a7577e69b11d29e56d5bfa39e43a46308d0d96ed9c5fcad9",
+      "production_candidate_version": "v2.4"
+    }
+  ],
+  "cost_per_image_usd": 0.0168,
+  "total_cost_usd": 0.1008,
+  "diversity_check": {
+    "scene_family_values": [
+      "warm_intimate_interior",
+      "macro_material_scene",
+      "open_daylight_outdoor",
+      "cool_night_outdoor",
+      "architectural_grand",
+      "macro_material_scene"
+    ],
+    "scene_family_collapsed": false,
+    "composition_values": [
+      "strong_diagonal",
+      "strong_diagonal",
+      "architectural_wide",
+      "action_aftermath_frame",
+      "minimal_iconic",
+      "elevated_three_quarter"
+    ],
+    "composition_collapsed": false,
+    "palette_values": [
+      "warm_intimate",
+      "warm_intimate",
+      "dusk_transition",
+      "rainy_moody",
+      "bright_daylight",
+      "rainy_moody"
+    ],
+    "palette_collapsed": false,
+    "note": "Mild natural overlap only (macro_material_scene shared by learning.fiction/technology.gadgets; warm_intimate shared by food.coffee/learning.fiction; rainy_moody shared by music.karaoke/technology.gadgets) - not a concentration collapse. No artificial re-diversification was applied; semantic correctness took priority over forced diversity, per instruction."
+  },
+  "known_caveat_ambient_route_conflict": "music.singing and music.karaoke both still hash-route (unchanged routing logic) to an ambient scene_family/palette that textually conflicts with their new indoor/warm-lounge grammar (open_daylight_outdoor for singing; rainy_moody for karaoke - the exact rain-palette text that plausibly caused the original street-rain failure). Each rule's scene_template was reinforced with an explicit precedence sentence telling the model to disregard the conflicting ambient text, but the conflicting text itself is still present in the compiled prompt (not removed, since removing it would require a per-id routing override mechanism beyond this task's scope). This should be watched specifically when ChatGPT reviews these 2 sentinel results - if the precedence sentence does not reliably win, a routing-level id-exact palette/scene_family override would be the next fix.",
+  "mechanically_ready": true,
+  "sha256_verification": "Each card prompt_sha256 recomputed from production_candidate_freeze_v2_4_v1.json; a future sentinel runner must SHA256-verify before submission using the same loadFrozenRows() pattern as every prior runner."
+}

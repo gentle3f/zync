@@ -1,0 +1,222 @@
+{
+  "version": "wave_b_48_qa_results_v1",
+  "recorded_at": "2026-09-25T07:50:59.706Z",
+  "source": "Authoritative ChatGPT visual review supplied verbatim by the user; not re-derived or inspected by Claude.",
+  "generated_wave_b": 48,
+  "visually_reviewed": 33,
+  "approved": 22,
+  "approved_with_minor": 4,
+  "qa_quarantine": 7,
+  "unreviewed_generated_pending_qa": 15,
+  "unreviewed_ids": [
+    "collecting.stamps",
+    "collecting.watches",
+    "fashion.menswear",
+    "fashion.streetwear",
+    "food.cooking",
+    "food.dessert_hunting",
+    "food.restaurant_hopping",
+    "gaming.board",
+    "gaming.tabletop_rpg",
+    "outdoors.camping",
+    "pets.cats",
+    "photography.general",
+    "photography.street",
+    "travel.general",
+    "travel.japan"
+  ],
+  "results": [
+    {
+      "canonical_id": "transport.aviation",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "business.marketing",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "lifestyle.interior_design",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "science.astronomy",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "outdoors.cycling",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "gaming.chess",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "wellness.sauna",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "wellness.yoga",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "arts.painting",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "arts.podcasting",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "food.specialty_coffee",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "wellness.weightlifting",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "lifestyle.home_decor",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "transport.railways",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "science.space",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "outdoors.mountain_biking",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "sports.tennis",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "gaming.go",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "outdoors.bouldering",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "wellness.cold_plunge",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "career.digital_marketing",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "learning.campus_radio",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "learning.model_united_nations",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "semantic_identity_minor"
+      ],
+      "finding": "Conference / diplomacy identity works, but MUN-specific identity is somewhat weaker than ideal."
+    },
+    {
+      "canonical_id": "business.coworking",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "scene_plausibility_minor"
+      ],
+      "finding": "Coworking is understandable, but the forest-like interior treatment feels somewhat gimmicky."
+    },
+    {
+      "canonical_id": "business.startup_meetups",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "semantic_identity_minor"
+      ],
+      "finding": "Meetup setup works but remains somewhat generic."
+    },
+    {
+      "canonical_id": "outdoors.surfing",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "semantic_identity_minor"
+      ],
+      "finding": "Surfboard identity is clear, but the scene drifts somewhat toward surfboard shaping / repair rather than surfing itself."
+    },
+    {
+      "canonical_id": "learning.book_genre.booktube",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "semantic_identity"
+      ],
+      "finding": "Rendered as a mechanical / conveyor / robot-library concept rather than BookTube."
+    },
+    {
+      "canonical_id": "food.coffee",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "physical_logic"
+      ],
+      "finding": "A kettle floated and performed pour-over coffee without human support. Clear invisible-human-physics failure."
+    },
+    {
+      "canonical_id": "music.singing",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "semantic_identity"
+      ],
+      "finding": "Rendered as percussion / instrument imagery rather than singing."
+    },
+    {
+      "canonical_id": "music.karaoke",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "semantic_identity"
+      ],
+      "finding": "Rendered as an isolated microphone in a rainy street-like setting; karaoke identity was not communicated."
+    },
+    {
+      "canonical_id": "learning.fiction",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "physical_logic",
+        "text_leak"
+      ],
+      "finding": "A giant pen floated and wrote by itself, with substantial pseudo-text."
+    },
+    {
+      "canonical_id": "technology.gadgets",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "semantic_identity"
+      ],
+      "finding": "Rendered as CNC / electronics manufacturing machinery rather than consumer gadgets."
+    },
+    {
+      "canonical_id": "wellness.stretching",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "semantic_identity"
+      ],
+      "finding": "Rendered as a large rehabilitation / gym machine rather than stretching."
+    }
+  ],
+  "systemic_findings": {
+    "pass": [
+      "33/33 reviewed outputs had zero real-human leakage",
+      "no recurring hands / arms / body parts",
+      "no mascot-substitution regression",
+      "scene-family diversity remained visually healthy",
+      "no broad brand/IP collapse",
+      "no broad text-control collapse"
+    ],
+    "systemic_warnings": [
+      "music semantic routing problem extends beyond genre-specific music (music.singing, music.karaoke)",
+      "human-operated-object / invisible-human physical logic still has gaps (food.coffee, learning.fiction)"
+    ]
+  },
+  "wave_c_status": "HOLD_FOR_REMEDIATION"
+}

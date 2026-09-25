@@ -36,9 +36,10 @@
     },
     "water_environment": {
       "rule_text": "Water may ripple, splash, settle after a very recent disturbance, or reflect light - all physically self-explaining states that need no person present. Where this hobby's own scene description calls for a fully static water presentation instead, follow that specific instruction rather than defaulting to a splash or entry trail.",
-      "applies_to_archetypes": ["water_outdoors", "nature_immersion", "wellness_experience", "calm_wellness"],
+      "applies_to_archetypes": ["water_outdoors", "nature_immersion", "calm_wellness"],
       "classification": "domain_specific",
-      "validated_by": ["outdoors.swimming (Validation-16 pass, Validation-8 pass)"]
+      "validated_by": ["outdoors.swimming (Validation-16 pass, Validation-8 pass)"],
+      "v2_note": "wellness_experience removed (Wave-B remediation gate) - it was a stale duplicate left over from before wellness_experience was reclassified to environment_led below; since Object.entries().find() takes the first match and this domain is defined earlier in the file, every wellness_experience row was silently getting water_environment instead of the intended environment_led classification, the same shadow-bug pattern already found and fixed twice before (solo_action/tool_sport, tech_workspace/vehicle_machine)."
     },
     "abstract_system": {
       "rule_text": "An abstract system, data structure, or automated process may animate, glow, or operate entirely under its own established power/logic - no operator, hands, or controlling body of any kind may ever be implied.",

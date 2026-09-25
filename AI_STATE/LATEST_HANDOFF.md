@@ -12,14 +12,21 @@ authorization):
 
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
-Second, separate authoritative checkpoint (Object-First V2 research is
-now CLOSED and validated as the production candidate architecture,
-version v2.3, source commit 9b031bc. Now at production ROLLOUT
-ENGINEERING - a zero-cost queue/wave/QA-policy plan, V1 above remains
-untouched and live. Canary-24 is proposed ($0.4032 if authorized) but
-NOT yet authorized or run):
+Second, separate authoritative checkpoint (Object-First V2 production
+ROLLOUT is now IN PROGRESS, currently gated. Canary-24 ($0.4032) and
+Wave-B-48 ($0.8064) were both executed and visually reviewed by ChatGPT;
+the review surfaced 9 quarantined ids and 2 systemic warnings (music
+vocal-identity semantic routing, human-operated-object physical logic).
+A new production candidate v2.4 was built zero-cost in response - NOT
+generated, NOT authorized yet. Wave-C is on HOLD_FOR_REMEDIATION_VALIDATION
+pending a future 6-card Sentinel ($0.1008, planned but not spent):
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_ROLLOUT_PLAN.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_V24_WAVEB_REMEDIATION.md`
+
+(previous checkpoint in this track, still useful for context - production
+candidate v2.3, source commit 9b031bc, rollout infrastructure built
+zero-cost:
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_ROLLOUT_PLAN.md`)
 
 (previous checkpoints in this track, still useful for context:
 `AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_READINESS_HARDENING.md`

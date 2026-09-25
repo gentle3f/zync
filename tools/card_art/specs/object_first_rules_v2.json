@@ -3,62 +3,357 @@
   "purpose": "Candidate V2 routing rules: for every eligible canonical interest, decide a default non-human-first protagonist type and an object-first readiness status, based only on catalog semantics (archetype/category/id), never on generated-image visual review. V1 (global_style_v1.json, buildPromptV1.js, production_queue_v1.json) is read-only input and is never modified by this spec or its compiler. This file is authoritative input for src/objectFirstV2Router.js, src/compileObjectFirstPromptV2.js, and src/auditObjectFirstV2.js.",
   "philosophy": "Default assumption is non-human-first: find an object/environment/animal/machine/aftermath/miniature/symbolic storytelling solution before ever treating a hobby as human-required. A hobby must NOT be classified human_exception_candidate merely because people commonly perform it in real life. Uncertain cases route to review_required, not to a human-led default lane. Every archetype_defaults entry carries an explicit `confidence` value so a reader can distinguish 'validated by a real round' from 'extrapolated with high confidence' from 'a new scene grammar written this round, not yet visually tested' - accuracy is prioritized over artificially minimizing the review_required count.",
   "changelog_v2_1": "Part B of the 2026-09-25 compiler task rerouted 6 of the 7 previously review_required archetypes (professional_world, music_listening, campus_activity, shared_workspace, campaign_planning, legal_practice) to containment_required using new, explicit positive scene grammars (see structural_containment_rules_v2.json's new rules). community_gathering was also rerouted but flagged confidence=weak_extrapolation per the task's own instruction that this specific archetype is the hardest case and should not be forced if genuinely weak. Also fixed the human_exception_keyword_scan from naive substring matching to token-aware matching plus an explicit known_false_positive_ids exclusion list for remaining lexical ambiguity (see human_exception_keyword_scan below).",
-  "protagonist_types": ["object", "environment", "machine_process", "food_drink", "animal", "miniature_game_piece", "abstract_system", "unresolved"],
-  "object_first_statuses": ["clean", "containment_required", "review_required", "human_exception_candidate", "excluded_quarantined"],
-  "confidence_values": ["validated", "extrapolated", "new_grammar_unvalidated", "weak_extrapolation"],
+  "protagonist_types": [
+    "object",
+    "environment",
+    "machine_process",
+    "food_drink",
+    "animal",
+    "miniature_game_piece",
+    "abstract_system",
+    "unresolved"
+  ],
+  "object_first_statuses": [
+    "clean",
+    "containment_required",
+    "review_required",
+    "human_exception_candidate",
+    "excluded_quarantined"
+  ],
+  "confidence_values": [
+    "validated",
+    "extrapolated",
+    "new_grammar_unvalidated",
+    "weak_extrapolation"
+  ],
   "evidence_rounds": {
-    "round1_6": ["collecting.stamps", "outdoors.mountain_biking", "crafts.pottery_wheel", "music.violin"],
-    "round1_6_failures_later_fixed": ["gaming.tabletop_rpg", "food.dish.bun_cha"],
-    "round2_8": ["gaming.tabletop_rpg", "food.dish.bun_cha", "books.reading", "outdoors.camping", "sports.badminton", "food.coffee", "technology.3d_printing", "lifestyle.home_decor"],
-    "round3_12_clean_or_near_clean": ["photography.general", "music.piano", "lifestyle.gardening", "food.baking", "travel.roadtrip"],
-    "round3_12_failed_pre_containment": ["media.movies", "sports.running", "outdoors.swimming", "sports.basketball", "gaming.board", "technology.ai", "pets.dogs"],
-    "round4_7_structural_containment_retest": ["media.movies", "sports.running", "outdoors.swimming", "sports.basketball", "gaming.board", "technology.ai", "pets.dogs"],
+    "round1_6": [
+      "collecting.stamps",
+      "outdoors.mountain_biking",
+      "crafts.pottery_wheel",
+      "music.violin"
+    ],
+    "round1_6_failures_later_fixed": [
+      "gaming.tabletop_rpg",
+      "food.dish.bun_cha"
+    ],
+    "round2_8": [
+      "gaming.tabletop_rpg",
+      "food.dish.bun_cha",
+      "books.reading",
+      "outdoors.camping",
+      "sports.badminton",
+      "food.coffee",
+      "technology.3d_printing",
+      "lifestyle.home_decor"
+    ],
+    "round3_12_clean_or_near_clean": [
+      "photography.general",
+      "music.piano",
+      "lifestyle.gardening",
+      "food.baking",
+      "travel.roadtrip"
+    ],
+    "round3_12_failed_pre_containment": [
+      "media.movies",
+      "sports.running",
+      "outdoors.swimming",
+      "sports.basketball",
+      "gaming.board",
+      "technology.ai",
+      "pets.dogs"
+    ],
+    "round4_7_structural_containment_retest": [
+      "media.movies",
+      "sports.running",
+      "outdoors.swimming",
+      "sports.basketball",
+      "gaming.board",
+      "technology.ai",
+      "pets.dogs"
+    ],
     "round4_note": "Round 4 images were generated with structural containment prompts and remained pending external visual QA (ChatGPT) at the time this V2 architecture was written. This audit treats the round-3-to-round-4 prompt REDESIGN itself (not yet a confirmed visual pass) as the evidence that structural containment is the correct mechanism; the containment rules below are written from that redesign, not from an assumed Round 4 pass/fail outcome."
   },
   "archetype_defaults": {
-    "solo_action": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "action_aftermath", "confidence": "validated", "rationale": "Validated directly: sports.running (round 3->4) required aftermath staging (shoes at rest, footprints, stopwatch) rather than shoes mid-run to avoid legs appearing." },
-    "vertical_adventure": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "action_aftermath", "confidence": "extrapolated", "rationale": "Not yet directly tested. Extrapolated from solo_action/outdoor_motion: gear (harness, chalk dust, rope) at rest on an empty wall/route can carry the same aftermath storytelling." },
-    "group_play": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "validated", "rationale": "Validated directly: gaming.board (round 3->4) required a private, empty game room instead of a social/cafe venue to stop background people appearing." },
-    "food_hero": { "protagonist_type": "food_drink", "object_first_status": "clean", "structural_containment_rule_id": "object_hero_clean", "confidence": "validated", "rationale": "Archetype's own V1 composition language already makes the food itself the hero; validated repeatedly (food.baking, food.dish.bun_cha) with no containment redesign needed beyond the baseline no-human directive." },
-    "drink_ritual": { "protagonist_type": "food_drink", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "extrapolated", "rationale": "Not directly tested under this name, but food.coffee (round 2) is semantically identical and needed an empty/private venue treatment to avoid background cafe patrons." },
-    "travel_vista": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "validated", "rationale": "Validated directly: travel.roadtrip (round 3) required an empty vehicle interior (no driver/passenger silhouette) alongside the environment." },
-    "urban_discovery": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "extrapolated", "rationale": "Not yet tested. Environment-led by its own V1 description; treated as a lower-confidence sibling of travel_vista pending a dedicated test." },
-    "performance": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "object_hero_no_performer", "confidence": "validated", "rationale": "Validated directly: music.piano (round 3) worked cleanly by making the instrument itself the hero with no performer." },
-    "creative_studio": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "action_aftermath", "confidence": "validated", "rationale": "Validated indirectly via crafts.pottery_wheel (round 1) and the general craft/process family; the making process reads through material/tool state rather than hands." },
-    "lens_perspective": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "object_hero_no_performer", "confidence": "validated", "rationale": "Validated directly: photography.general (round 3) was one of the cleanest results in the entire program using the camera/lens itself as hero." },
-    "tech_workspace": { "protagonist_type": "abstract_system", "object_first_status": "containment_required", "structural_containment_rule_id": "abstract_system_no_operator", "confidence": "validated", "rationale": "Validated as the hardest case: technology.ai failed severely in round 3 (human hands/arms/torso dominated the frame) specifically because the scene was built around a device operator; round 4 redesigned it as a pure abstract network/hardware metaphor with no operator." },
-    "collection_object_hero": { "protagonist_type": "object", "object_first_status": "clean", "structural_containment_rule_id": "object_hero_clean", "confidence": "validated", "rationale": "Archetype's own V1 composition language is already object-hero-first; requires no containment redesign beyond the baseline no-human directive." },
-    "calm_wellness": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "extrapolated", "rationale": "Not yet tested. Environment/equipment-led by nature (mat, candle, cushion); treated as containment_required by extrapolation, not review, since no interpersonal content is semantically required." },
-    "nature_immersion": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "validated", "rationale": "Validated directly: outdoors.camping (round 2) worked cleanly using tent/fire/gear with a genuinely empty campsite." },
-    "story_culture": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "screen_non_human_content", "confidence": "validated", "rationale": "Validated as a hard case: media.movies failed in round 3 (human silhouette rendered ON the screen); round 4 redesigned the rule to require non-human screen content (galaxy/ocean/landscape/abstract lights) plus a genuinely empty auditorium." },
-    "learning_exploration": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "extrapolated", "rationale": "Not yet tested under this archetype name, but its own V1 recognition language already anchors on 'concrete source, specimen, object' rather than requiring a visible learner; extrapolated from reading_world's validated pattern." },
-    "companion_bond": { "protagonist_type": "animal", "object_first_status": "containment_required", "structural_containment_rule_id": "private_environment_animal", "confidence": "validated", "rationale": "Validated directly: pets.dogs (round 3) worked well with a real-dog protagonist, but leaked small background human silhouettes through a street-facing window; round 4 redesigned the environment to be fully private (fenced garden or interior with a garden/sky-only window)." },
-    "professional_world": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "professional_material_world", "confidence": "new_grammar_unvalidated", "rationale": "Rerouted from review_required in v2.1: the profession's own material world (field-specific tools, documents, equipment, outputs of work) is a plausible non-human hero, per the archetype's own V1 language already favoring a physical tool/task over generic office scenery. Not yet visually tested." },
-    "journey_machine": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "validated", "rationale": "Validated directly: travel.roadtrip's vehicle-as-hero treatment (round 3) generalizes cleanly to any single-vehicle/machine hobby." },
-    "music_listening": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "listening_equipment_world", "confidence": "new_grammar_unvalidated", "rationale": "Rerouted from review_required in v2.1: the listening ritual can plausibly be carried by audio equipment and acoustic environment alone (headphones, turntable, listening room) without a listener present. Distinct from the validated performance/instrument case. Not yet visually tested." },
-    "reading_world": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "validated", "rationale": "Validated directly: books.reading (round 2) worked cleanly with an open book as hero and no reader." },
-    "strategy_table": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "extrapolated", "rationale": "Extrapolated directly from group_play's validated gaming.board result; near-identical composition language (tabletop, pieces, cards)." },
-    "digital_play": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "extrapolated", "rationale": "Not tested, but the archetype's own V1 language already forbids a front-facing gameplay screen and already favors the physical controller/device as recognition cue, making an object-first treatment a small, low-risk extension." },
-    "fitness_training": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "action_aftermath", "confidence": "extrapolated", "rationale": "Extrapolated directly from sports.running and sports.basketball's validated aftermath/in-flight staging." },
-    "water_outdoors": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "swimming_hard_case_no_visible_swimmer", "confidence": "validated", "rationale": "Validated as a hard case: outdoors.swimming leaked a human foot/ankle in round 3 even with an 'aftermath splash' framing; round 4 tightened the rule to forbid any narrative implying a currently- or just-departed swimmer, using only static empty-lane cues instead." },
-    "outdoor_motion": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "action_aftermath", "confidence": "extrapolated", "rationale": "Extrapolated directly from sports.running's validated aftermath treatment; outdoors.mountain_biking (round 1) also passed cleanly using a similar object/gear-led approach." },
-    "home_lifestyle": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "validated", "rationale": "Validated directly: lifestyle.gardening (round 3) and lifestyle.home_decor (round 2) both worked cleanly with no person present." },
-    "food_exploration": { "protagonist_type": "food_drink", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "validated", "rationale": "Validated directly: food.dish.bun_cha (rounds 1-2) needed an explicitly empty street/restaurant background to stop diners appearing." },
-    "campus_activity": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "campus_activity_grammar", "confidence": "new_grammar_unvalidated", "rationale": "Rerouted from review_required in v2.1: the specific campus environment, activity equipment, and event materials are a plausible non-human hero. Not yet visually tested." },
-    "community_gathering": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "community_gathering_traces", "confidence": "weak_extrapolation", "rationale": "Rerouted from review_required in v2.1, but explicitly flagged as the lowest-confidence reroute in the whole set. Uses a 'traces of community' grammar (prepared table, arranged chairs, communal objects, before/after staging) since the archetype's semantic core is interpersonal connection, which is the hardest case to fully substitute. Individual ids within this archetype that still read as weak after a future visual test should be moved back to review_required rather than kept here by default." },
-    "wellness_experience": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "generic_structural_containment", "confidence": "extrapolated", "rationale": "Not tested directly under this archetype, but is a close sibling of calm_wellness and wellness.cold_plunge/wellness.tai_chi (validated in earlier V1 recipe-fix rounds, pre-object-first) show the environment/equipment already carries most of the recognition." },
-    "creator_workflow": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "abstract_system_no_operator", "confidence": "extrapolated", "rationale": "Not tested directly, but shares technology.ai's core risk (device-operator cliche); routed to the same containment rule as a precaution." },
-    "shared_workspace": { "protagonist_type": "environment", "object_first_status": "containment_required", "structural_containment_rule_id": "shared_workspace_grammar", "confidence": "new_grammar_unvalidated", "rationale": "Rerouted from review_required in v2.1: multiple distinct, personalized desks shown side by side can plausibly communicate 'multiple independent workers' through belongings rather than bodies. Not yet visually tested - this is one of the harder reroutes since an empty-desks scene risks reading as simply unoccupied." },
-    "campaign_planning": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "campaign_planning_materials", "confidence": "new_grammar_unvalidated", "rationale": "Rerouted from review_required in v2.1: campaign materials (mockups, swatches, layout pieces) arranged on a table are a plausible non-human hero. Not yet visually tested." },
-    "legal_practice": { "protagonist_type": "object", "object_first_status": "containment_required", "structural_containment_rule_id": "legal_practice_materials", "confidence": "new_grammar_unvalidated", "rationale": "Rerouted from review_required in v2.1: case files, evidence folders, and courtroom/office architecture are a plausible non-human hero, with a restrained scales-of-justice detail as supporting texture only. Not yet visually tested." },
-    "aviation_world": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "extrapolated", "rationale": "Extrapolated directly from journey_machine's validated vehicle-as-hero pattern; aircraft is already the archetype's own V1-mandated dominant hero object." },
-    "physical_prototype": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "abstract_system_no_operator", "confidence": "extrapolated", "rationale": "Not tested, but the archetype's own V1 language already forbids all screens and favors the prototype/mechanism itself; only the 'hands adjusting it' language needs removing, a small delta from the validated technology.ai fix." },
-    "screenless_broadcast": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "extrapolated", "rationale": "Not tested, but the archetype is already screen-free by design; recognition can plausibly shift to the studio equipment (mic, light stand, camera rig) alone with no performer." },
-    "screenless_pc_play": { "protagonist_type": "machine_process", "object_first_status": "containment_required", "structural_containment_rule_id": "private_empty_venue", "confidence": "extrapolated", "rationale": "Not tested, but already screen-free by design; recognition can plausibly shift to the desktop tower/keyboard/headphones as a still-life setup with a freshly-left seat." }
+    "solo_action": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "action_aftermath",
+      "confidence": "validated",
+      "rationale": "Validated directly: sports.running (round 3->4) required aftermath staging (shoes at rest, footprints, stopwatch) rather than shoes mid-run to avoid legs appearing."
+    },
+    "vertical_adventure": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "action_aftermath",
+      "confidence": "extrapolated",
+      "rationale": "Not yet directly tested. Extrapolated from solo_action/outdoor_motion: gear (harness, chalk dust, rope) at rest on an empty wall/route can carry the same aftermath storytelling."
+    },
+    "group_play": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "validated",
+      "rationale": "Validated directly: gaming.board (round 3->4) required a private, empty game room instead of a social/cafe venue to stop background people appearing."
+    },
+    "food_hero": {
+      "protagonist_type": "food_drink",
+      "object_first_status": "clean",
+      "structural_containment_rule_id": "object_hero_clean",
+      "confidence": "validated",
+      "rationale": "Archetype's own V1 composition language already makes the food itself the hero; validated repeatedly (food.baking, food.dish.bun_cha) with no containment redesign needed beyond the baseline no-human directive."
+    },
+    "drink_ritual": {
+      "protagonist_type": "food_drink",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "extrapolated",
+      "rationale": "Not directly tested under this name, but food.coffee (round 2) is semantically identical and needed an empty/private venue treatment to avoid background cafe patrons."
+    },
+    "travel_vista": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "validated",
+      "rationale": "Validated directly: travel.roadtrip (round 3) required an empty vehicle interior (no driver/passenger silhouette) alongside the environment."
+    },
+    "urban_discovery": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "extrapolated",
+      "rationale": "Not yet tested. Environment-led by its own V1 description; treated as a lower-confidence sibling of travel_vista pending a dedicated test."
+    },
+    "performance": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "object_hero_no_performer",
+      "confidence": "validated",
+      "rationale": "Validated directly: music.piano (round 3) worked cleanly by making the instrument itself the hero with no performer."
+    },
+    "creative_studio": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "action_aftermath",
+      "confidence": "validated",
+      "rationale": "Validated indirectly via crafts.pottery_wheel (round 1) and the general craft/process family; the making process reads through material/tool state rather than hands."
+    },
+    "lens_perspective": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "object_hero_no_performer",
+      "confidence": "validated",
+      "rationale": "Validated directly: photography.general (round 3) was one of the cleanest results in the entire program using the camera/lens itself as hero."
+    },
+    "tech_workspace": {
+      "protagonist_type": "abstract_system",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "abstract_system_no_operator",
+      "confidence": "validated",
+      "rationale": "Validated as the hardest case: technology.ai failed severely in round 3 (human hands/arms/torso dominated the frame) specifically because the scene was built around a device operator; round 4 redesigned it as a pure abstract network/hardware metaphor with no operator."
+    },
+    "collection_object_hero": {
+      "protagonist_type": "object",
+      "object_first_status": "clean",
+      "structural_containment_rule_id": "object_hero_clean",
+      "confidence": "validated",
+      "rationale": "Archetype's own V1 composition language is already object-hero-first; requires no containment redesign beyond the baseline no-human directive."
+    },
+    "calm_wellness": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "extrapolated",
+      "rationale": "Not yet tested. Environment/equipment-led by nature (mat, candle, cushion); treated as containment_required by extrapolation, not review, since no interpersonal content is semantically required."
+    },
+    "nature_immersion": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "validated",
+      "rationale": "Validated directly: outdoors.camping (round 2) worked cleanly using tent/fire/gear with a genuinely empty campsite."
+    },
+    "story_culture": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "screen_non_human_content",
+      "confidence": "validated",
+      "rationale": "Validated as a hard case: media.movies failed in round 3 (human silhouette rendered ON the screen); round 4 redesigned the rule to require non-human screen content (galaxy/ocean/landscape/abstract lights) plus a genuinely empty auditorium."
+    },
+    "learning_exploration": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "extrapolated",
+      "rationale": "Not yet tested under this archetype name, but its own V1 recognition language already anchors on 'concrete source, specimen, object' rather than requiring a visible learner; extrapolated from reading_world's validated pattern."
+    },
+    "companion_bond": {
+      "protagonist_type": "animal",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_environment_animal",
+      "confidence": "validated",
+      "rationale": "Validated directly: pets.dogs (round 3) worked well with a real-dog protagonist, but leaked small background human silhouettes through a street-facing window; round 4 redesigned the environment to be fully private (fenced garden or interior with a garden/sky-only window)."
+    },
+    "professional_world": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "professional_material_world",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Rerouted from review_required in v2.1: the profession's own material world (field-specific tools, documents, equipment, outputs of work) is a plausible non-human hero, per the archetype's own V1 language already favoring a physical tool/task over generic office scenery. Not yet visually tested."
+    },
+    "journey_machine": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "validated",
+      "rationale": "Validated directly: travel.roadtrip's vehicle-as-hero treatment (round 3) generalizes cleanly to any single-vehicle/machine hobby."
+    },
+    "music_listening": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "listening_equipment_world",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Rerouted from review_required in v2.1: the listening ritual can plausibly be carried by audio equipment and acoustic environment alone (headphones, turntable, listening room) without a listener present. Distinct from the validated performance/instrument case. Not yet visually tested."
+    },
+    "reading_world": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "validated",
+      "rationale": "Validated directly: books.reading (round 2) worked cleanly with an open book as hero and no reader."
+    },
+    "strategy_table": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "extrapolated",
+      "rationale": "Extrapolated directly from group_play's validated gaming.board result; near-identical composition language (tabletop, pieces, cards)."
+    },
+    "digital_play": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "extrapolated",
+      "rationale": "Not tested, but the archetype's own V1 language already forbids a front-facing gameplay screen and already favors the physical controller/device as recognition cue, making an object-first treatment a small, low-risk extension."
+    },
+    "fitness_training": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "action_aftermath",
+      "confidence": "extrapolated",
+      "rationale": "Extrapolated directly from sports.running and sports.basketball's validated aftermath/in-flight staging."
+    },
+    "water_outdoors": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "swimming_hard_case_no_visible_swimmer",
+      "confidence": "validated",
+      "rationale": "Validated as a hard case: outdoors.swimming leaked a human foot/ankle in round 3 even with an 'aftermath splash' framing; round 4 tightened the rule to forbid any narrative implying a currently- or just-departed swimmer, using only static empty-lane cues instead."
+    },
+    "outdoor_motion": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "action_aftermath",
+      "confidence": "extrapolated",
+      "rationale": "Extrapolated directly from sports.running's validated aftermath treatment; outdoors.mountain_biking (round 1) also passed cleanly using a similar object/gear-led approach."
+    },
+    "home_lifestyle": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "validated",
+      "rationale": "Validated directly: lifestyle.gardening (round 3) and lifestyle.home_decor (round 2) both worked cleanly with no person present."
+    },
+    "food_exploration": {
+      "protagonist_type": "food_drink",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "validated",
+      "rationale": "Validated directly: food.dish.bun_cha (rounds 1-2) needed an explicitly empty street/restaurant background to stop diners appearing."
+    },
+    "campus_activity": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "campus_activity_grammar",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Rerouted from review_required in v2.1: the specific campus environment, activity equipment, and event materials are a plausible non-human hero. Not yet visually tested."
+    },
+    "community_gathering": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "community_gathering_traces",
+      "confidence": "weak_extrapolation",
+      "rationale": "Rerouted from review_required in v2.1, but explicitly flagged as the lowest-confidence reroute in the whole set. Uses a 'traces of community' grammar (prepared table, arranged chairs, communal objects, before/after staging) since the archetype's semantic core is interpersonal connection, which is the hardest case to fully substitute. Individual ids within this archetype that still read as weak after a future visual test should be moved back to review_required rather than kept here by default."
+    },
+    "wellness_experience": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "generic_structural_containment",
+      "confidence": "extrapolated",
+      "rationale": "Not tested directly under this archetype, but is a close sibling of calm_wellness and wellness.cold_plunge/wellness.tai_chi (validated in earlier V1 recipe-fix rounds, pre-object-first) show the environment/equipment already carries most of the recognition."
+    },
+    "creator_workflow": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "abstract_system_no_operator",
+      "confidence": "extrapolated",
+      "rationale": "Not tested directly, but shares technology.ai's core risk (device-operator cliche); routed to the same containment rule as a precaution."
+    },
+    "shared_workspace": {
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "shared_workspace_grammar",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Rerouted from review_required in v2.1: multiple distinct, personalized desks shown side by side can plausibly communicate 'multiple independent workers' through belongings rather than bodies. Not yet visually tested - this is one of the harder reroutes since an empty-desks scene risks reading as simply unoccupied."
+    },
+    "campaign_planning": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "campaign_planning_materials",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Rerouted from review_required in v2.1: campaign materials (mockups, swatches, layout pieces) arranged on a table are a plausible non-human hero. Not yet visually tested."
+    },
+    "legal_practice": {
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "legal_practice_materials",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Rerouted from review_required in v2.1: case files, evidence folders, and courtroom/office architecture are a plausible non-human hero, with a restrained scales-of-justice detail as supporting texture only. Not yet visually tested."
+    },
+    "aviation_world": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "extrapolated",
+      "rationale": "Extrapolated directly from journey_machine's validated vehicle-as-hero pattern; aircraft is already the archetype's own V1-mandated dominant hero object."
+    },
+    "physical_prototype": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "abstract_system_no_operator",
+      "confidence": "extrapolated",
+      "rationale": "Not tested, but the archetype's own V1 language already forbids all screens and favors the prototype/mechanism itself; only the 'hands adjusting it' language needs removing, a small delta from the validated technology.ai fix."
+    },
+    "screenless_broadcast": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "extrapolated",
+      "rationale": "Not tested, but the archetype is already screen-free by design; recognition can plausibly shift to the studio equipment (mic, light stand, camera rig) alone with no performer."
+    },
+    "screenless_pc_play": {
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "private_empty_venue",
+      "confidence": "extrapolated",
+      "rationale": "Not tested, but already screen-free by design; recognition can plausibly shift to the desktop tower/keyboard/headphones as a still-life setup with a freshly-left seat."
+    }
   },
   "id_prefix_overrides": [
     {
-      "match": { "id_prefix": "pets." },
+      "match": {
+        "id_prefix": "pets."
+      },
       "protagonist_type": "animal",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "private_environment_animal",
@@ -66,7 +361,9 @@
       "rationale": "Explicit id-level override ensuring every pets.* hobby (not only pets.dogs, which was the one directly tested) inherits the validated real-animal-protagonist + private-environment pattern, per the explicit animal carve-out (zero-HUMANS rule, not zero-living-beings)."
     },
     {
-      "match": { "id_prefix": "collecting." },
+      "match": {
+        "id_prefix": "collecting."
+      },
       "protagonist_type": "object",
       "object_first_status": "clean",
       "structural_containment_rule_id": "object_hero_clean",
@@ -74,7 +371,9 @@
       "rationale": "Validated directly: collecting.stamps (round 1) passed cleanly with no containment redesign needed; collecting.* is inherently object-hero-first."
     },
     {
-      "match": { "id": "transport.car_meets" },
+      "match": {
+        "id": "transport.car_meets"
+      },
       "protagonist_type": "machine_process",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "community_gathering_vehicles",
@@ -82,7 +381,9 @@
       "rationale": "Added during the 2026-09-25 final zero-cost gate's Part-7 community_gathering review: the archetype default's community_gathering_traces grammar (shared table, chairs, food, decorations) produces genuine nonsense for a car meet, whose actual shared object is the vehicles themselves. This override routes to the new community_gathering_vehicles rule instead. Still weak_extrapolation - not visually tested."
     },
     {
-      "match": { "id": "lifestyle.repair_workshops" },
+      "match": {
+        "id": "lifestyle.repair_workshops"
+      },
       "protagonist_type": "object",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "generic_structural_containment",
@@ -90,7 +391,9 @@
       "rationale": "Added during the 2026-09-25 final zero-cost gate's Part-7 community_gathering review: the archetype default's community_gathering_traces grammar (a 'warmly prepared for togetherness' communal table) tonally mismatches a repair workshop, whose identity is tools/materials/craft-in-progress, not a social table. This override routes to generic_structural_containment instead, which already reads correctly for a workshop-style scene (arranged tools, natural wear, an activity mid-progress). Still weak_extrapolation - not visually tested."
     },
     {
-      "match": { "id": "transport.modelrailways" },
+      "match": {
+        "id": "transport.modelrailways"
+      },
       "protagonist_type": "object",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "model_railway_miniature_scale",
@@ -98,7 +401,9 @@
       "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the generic object_hero_clean grammar rendered as a full-size real railway, losing miniature-scale identity entirely. See semantic_identity_anchors_v2.json for the full positive-anchor/anti-confusion list this rule embeds."
     },
     {
-      "match": { "id": "media.anime" },
+      "match": {
+        "id": "media.anime"
+      },
       "protagonist_type": "object",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "anime_culture_object_first",
@@ -106,7 +411,9 @@
       "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared screen_non_human_content grammar (written for cinema) rendered as a generic convention hall with pseudo-Japanese text, losing anime-specific identity. See semantic_identity_anchors_v2.json."
     },
     {
-      "match": { "id": "business.startups" },
+      "match": {
+        "id": "business.startups"
+      },
       "protagonist_type": "object",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "startup_early_stage_world",
@@ -114,7 +421,9 @@
       "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared professional_material_world grammar collapsed into a pure electronics-maker reading. See semantic_identity_anchors_v2.json."
     },
     {
-      "match": { "id": "music.pop" },
+      "match": {
+        "id": "music.pop"
+      },
       "protagonist_type": "object",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "pop_music_production_energy",
@@ -122,18 +431,101 @@
       "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared listening_equipment_world grammar read as vinyl collecting/hi-fi listening rather than pop music specifically. See semantic_identity_anchors_v2.json."
     },
     {
-      "match": { "id": "learning.mock_trial" },
+      "match": {
+        "id": "learning.mock_trial"
+      },
       "protagonist_type": "object",
       "object_first_status": "containment_required",
       "structural_containment_rule_id": "mock_trial_simulation",
       "confidence": "new_grammar_unvalidated",
       "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared legal_practice_materials grammar read as ordinary legal practice rather than a mock-trial simulation specifically. See semantic_identity_anchors_v2.json."
+    },
+    {
+      "match": {
+        "id": "food.coffee"
+      },
+      "protagonist_type": "food_drink",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "coffee_ritual_resting_scene",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: floating self-pouring kettle fix, exact-id only (food.specialty_coffee untouched)."
+    },
+    {
+      "match": {
+        "id": "learning.fiction"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "fiction_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: floating self-writing pen + pseudo-text fix."
+    },
+    {
+      "match": {
+        "id": "music.singing"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "vocal_singing_object_first",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: vocal-identity semantic hardening (Part 7)."
+    },
+    {
+      "match": {
+        "id": "music.karaoke"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "karaoke_object_first",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: vocal-identity semantic hardening (Part 7)."
+    },
+    {
+      "match": {
+        "id": "learning.book_genre.booktube"
+      },
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "booktube_creator_setup_no_presenter",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: robot-library/conveyor misfire fix, exact-id only."
+    },
+    {
+      "match": {
+        "id": "technology.gadgets"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "consumer_gadgets_object_hero",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: CNC/manufacturing misfire fix, exact-id only. protagonist_type changed from abstract_system to object."
+    },
+    {
+      "match": {
+        "id": "wellness.stretching"
+      },
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "stretching_mobility_props_no_body",
+      "confidence": "extrapolated",
+      "rationale": "Wave-B remediation: gym-machine misfire fix, exact-id only."
     }
   ],
   "human_exception_keyword_scan": {
     "purpose": "A narrow, conservative mechanism to surface candidates whose id or title suggests the hobby's identity might be inseparable from a visible human body/identity being displayed or performing directly to an audience. Every match is then programmatically CHALLENGED against object/aftermath/environment/animal/machine/miniature/symbolic alternatives before being accepted as a true human_exception_candidate; matches are downgraded to containment_required whenever a plausible non-human alternative exists. This mechanism is text-only and does not consult any generated image.",
     "matching_method_v2_1": "Token-aware matching (fixed in v2.1, was naive substring matching in v2.0). The id and title are tokenized on non-alphanumeric boundaries (so 'crafts.model_building' -> ['crafts','model','building'], 'technology.3d_modeling' -> ['technology','3d','modeling']). A single-word pattern (e.g. 'model') matches only an EXACT token, not a substring of a longer word - this alone fixed 'technology.3d_modeling' (token is 'modeling', not 'model'), 'transport.modelrailways' (token is 'modelrailways', not 'model'), 'learning.self_improvement' and 'lifestyle.home_improvement' (token is 'improvement', not 'improv'), and 'outdoors.dragon_boat'/'sports.dragon_boat_racing' (token is 'dragon', not 'drag'). A multi-word pattern (e.g. 'stand_up') matches only that exact consecutive token sequence. Token matching alone cannot resolve genuine lexical ambiguity where the whole word really is a token but means something unrelated (e.g. 'model' the noun for a scale model, not a fashion model) - those remaining cases are handled by the explicit known_false_positive_ids exclusion list below, each with a written reason.",
-    "patterns": ["model", "pageant", "runway", "public_speaking", "debate", "stand_up", "improv", "beauty_queen", "drag", "cosplay_performance"],
+    "patterns": [
+      "model",
+      "pageant",
+      "runway",
+      "public_speaking",
+      "debate",
+      "stand_up",
+      "improv",
+      "beauty_queen",
+      "drag",
+      "cosplay_performance"
+    ],
     "challenge_alternatives": {
       "model": "garment/clothing displayed on a mannequin, hanger, or dress form as the object hero (no visible face)",
       "pageant": "crown/sash/staging displayed on an empty pedestal as the object hero",

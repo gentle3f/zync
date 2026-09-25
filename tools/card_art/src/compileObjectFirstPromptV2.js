@@ -104,7 +104,8 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
   const physicalLogicSection =
     `${ctx.physicalLogicV2.rule_text} For example, never depict ${list(ctx.physicalLogicV2.forbidden_examples.slice(0, 3))}. ` +
     `Motion must have a plausible cause such as ${list(ctx.physicalLogicV2.allowed_causes_of_motion.slice(0, 6))}.` +
-    (domainNeedsPromptText ? ` ${domainDef.rule_text}` : '');
+    (domainNeedsPromptText ? ` ${domainDef.rule_text}` : '') +
+    ` ${ctx.globalStyleV2.human_operated_object_gate_v2}`;
 
   let humanSuppressionSection = ctx.globalStyleV2.non_human_protagonist_policy;
   if (STRONG_SUPPRESSION_RULE_IDS.has(routing.structural_containment_rule_id)) {
