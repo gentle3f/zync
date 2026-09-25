@@ -13,25 +13,35 @@ authorization):
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
 Second, separate authoritative checkpoint (Object-First V2 production
-ROLLOUT: Wave-C-96's 68-card QA sample has been visually reviewed by
-ChatGPT - 44 approved, 14 approved_with_minor, 10 qa_quarantine (3
-automotive brand-likeness, 5 semantic misroutes, 2 human-operated-object
-physics). Result: PASS_WITH_SYSTEMIC_REMEDIATION_REQUIRED. In response, a
-NEW production candidate v2.5 was built zero-cost: a reusable
-`interaction_support_mode` compiler-level field (36 rules tagged), 10
-id-exact grammar fixes (2 automotive morphology + 2 human-operated-object
-+ 5 semantic-misroute + gardening/chemistry), a new
-`automotive_brand_morphology_repair` hold (transport.muscle_cars,
-transport.pickup_trucks - 2 ids), and a Sentinel-8 plan (NOT executed,
-$0.1344 future cost). Steady-state remains HOLD_FOR_WAVEC_REMEDIATION_SENTINEL.
-266 rows now held (261 genre-music + 2 vocal-music + 1 wellness.stretching
-+ 2 automotive). Formal cumulative production-wave spend unchanged this
-checkpoint at $2.8224 (Canary+WaveB+WaveC) - this was a $0.00 zero-cost
-architecture checkpoint:
+ROLLOUT: Sentinel-8 was visually reviewed and ALL 8 approved -
+PASS_REMEDIATION_VALIDATED, no Sentinel-9 needed. The user explicitly
+accepted both automotive Sentinel outputs (transport.classic_cars,
+transport.supercars) under a clarified, less-strict brand-morphology
+acceptance standard (generic resemblance alone is not a failure; only
+visible logos/readable names/near-direct replication of a specific
+model are). The automotive_brand_morphology_repair hold was released
+for transport.muscle_cars/transport.pickup_trucks (2 ids), and
+transport.sports_cars was returned to generation eligibility under its
+already-repaired v2.5 prompt (not auto-approved - old v2.4 failure
+preserved). Steady-state was released and Batch-001 (120 cards)
+executed: 120/120 succeeded, $2.016 billed, 84/120 sampled for QA
+(technically validated, NOT yet visually reviewed). Formal cumulative
+production-wave spend: $4.8384 (Canary+WaveB+WaveC+Batch001).
+Validation/remediation spend stays separate at $0.6888 (adds
+Sentinel-8's $0.1344 to the prior $0.5544). 264 rows remain held (261
+genre-music + 2 vocal-music + 1 wellness.stretching) - arts.illustration
+remains qa_quarantine, repaired but not visually revalidated. Batch-002
+NOT started - requires a new explicit authorization after ChatGPT
+reviews Batch-001's QA sample:
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_V25_WAVEC_REMEDIATION.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_STEADY_STATE_BATCH001.md`
 
-(previous checkpoint in this track, still useful for context - Wave-C-96
+(previous checkpoint in this track, still useful for context - v2.5
+built, Wave-C's 68-card QA recorded, Sentinel-8 plan built but not yet
+executed:
+`AI_STATE/HANDOFF_20260925_CARD_ART_V25_WAVEC_REMEDIATION.md`)
+
+(earlier checkpoint in this track, still useful for context - Wave-C-96
 executed, 68-card QA sample prepared but not yet reviewed:
 `AI_STATE/HANDOFF_20260925_CARD_ART_WAVEC96_ROLLOUT.md`)
 

@@ -1,0 +1,1521 @@
+{
+  "version": "qa_sample_review_manifest_v1",
+  "generated_at": "2026-09-25T14:32:49.243Z",
+  "source_manifest": "qa_sample_manifest_v1.json (authoritative, committed, unchanged)",
+  "sample_size": 84,
+  "matches_committed_manifest_exactly": true,
+  "review_list": [
+    {
+      "review_order": 1,
+      "canonical_id": "transport.sports_cars",
+      "filename": "transport__sports_cars__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "automotive_hold_released_validation",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.5",
+      "prompt_sha256": "736e6fec2d29d368b99df7bedd6b1b49d3a10c6eb07c641bf71b812a2311586e"
+    },
+    {
+      "review_order": 2,
+      "canonical_id": "arts.livestreaming",
+      "filename": "arts__livestreaming__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:creator_workflow"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "853ebbd944016b203a1e58681def30efee0144d1eea7344849aa2e502f9a53e1"
+    },
+    {
+      "review_order": 3,
+      "canonical_id": "gaming.indie_games",
+      "filename": "gaming__indie_games__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ca43160d3ad5069093589f675ae9b45e59bb4f0bff4d8b1e28112e608f62f43d"
+    },
+    {
+      "review_order": 4,
+      "canonical_id": "food.cafe_hopping",
+      "filename": "food__cafe_hopping__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:drink_ritual"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "8d58078cf1f22b7f539807785fcb53f983be27d5ee3ba627ee68356a7d5211bf"
+    },
+    {
+      "review_order": 5,
+      "canonical_id": "wellness.spin_class",
+      "filename": "wellness__spin_class__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "84d65fdd0f575fd6495b6f5b808d780ba217fcccc5d00cd915dbcf7b9d2eb67c"
+    },
+    {
+      "review_order": 6,
+      "canonical_id": "lifestyle.minimalism",
+      "filename": "lifestyle__minimalism__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:home_lifestyle"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "b2ede86e327ed51763d31be7e4dec0ee781533df3f41dbfd3f16b8b30e828b12"
+    },
+    {
+      "review_order": 7,
+      "canonical_id": "transport.electric_cars",
+      "filename": "transport__electric_cars__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "7adba0e6af2e711deed08cffba6c48b9e02b5ed1df2dcfc92d942b73eac3ba7c"
+    },
+    {
+      "review_order": 8,
+      "canonical_id": "science.psychology",
+      "filename": "science__psychology__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:learning_exploration"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "07fa8a5bdaf77e1d2797267d5a8813b811102b81e6ea601483c566484dbd2eff"
+    },
+    {
+      "review_order": 9,
+      "canonical_id": "outdoors.fixed_gear_cycling",
+      "filename": "outdoors__fixed_gear_cycling__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "853bfdefbc99717c4147b836e06cd20581938bcef8ecaeeda141f6a6bc6b5da7"
+    },
+    {
+      "review_order": 10,
+      "canonical_id": "music.bass_guitar",
+      "filename": "music__bass_guitar__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:performance"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "b7576e5f87dadf1e4d224909192b411b734669c82a239d7a93a13f3be34aae97"
+    },
+    {
+      "review_order": 11,
+      "canonical_id": "business.stock_market",
+      "filename": "business__stock_market__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:professional_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "623a78ac332144486ce602a52a6d06a2f30372661c63fa09ec7ef998afe60692"
+    },
+    {
+      "review_order": 12,
+      "canonical_id": "learning.mystery_books",
+      "filename": "learning__mystery_books__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:reading_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ee0f5e77c263305c77b8f4c5027de64eef0ae414c13f213a897e6993ccb23852"
+    },
+    {
+      "review_order": 13,
+      "canonical_id": "sports.table_tennis",
+      "filename": "sports__table_tennis__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "8aa433f6cd50f345c4ba008ade8a688ab5eaa2d60428ee78c837e3350b54eaba"
+    },
+    {
+      "review_order": 14,
+      "canonical_id": "entertainment.documentaries",
+      "filename": "entertainment__documentaries__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:story_culture"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "58bb2c45a435d5b97fbb42cda177134287b44b7bafa6cd99582251b9917e5751"
+    },
+    {
+      "review_order": 15,
+      "canonical_id": "gaming.bridge",
+      "filename": "gaming__bridge__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "91deb5b2a1a64bc1745f4716109bf467345998e8a749deb4de32f27bc1e25403"
+    },
+    {
+      "review_order": 16,
+      "canonical_id": "technology.programming",
+      "filename": "technology__programming__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:tech_workspace"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "b3269f857c95f539a57fd5fbd51d200d02dc53e55e60ae161d7f72d899294dbb"
+    },
+    {
+      "review_order": 17,
+      "canonical_id": "outdoors.kayaking",
+      "filename": "outdoors__kayaking__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "e2418186d21ab99f4bdc461a6cde204b1f3c1d07c30d5b02f4a08fdcbd0b1c84"
+    },
+    {
+      "review_order": 18,
+      "canonical_id": "wellness.hot_springs",
+      "filename": "wellness__hot_springs__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "e72cc671b79f5eb091977a40c6a4450b4b0ac1794ae40e098ab482061697a52b"
+    },
+    {
+      "review_order": 19,
+      "canonical_id": "wellness.breathwork",
+      "filename": "wellness__breathwork__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:calm_wellness"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "d7e4200aa7cd6edff18877a26c381c9cbdfd2ad35a98cea3e72a4847fb2f4b08"
+    },
+    {
+      "review_order": 20,
+      "canonical_id": "learning.academic_competitions",
+      "filename": "learning__academic_competitions__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:campus_activity"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a274bae68ba088ee8cfe36ef2220e7060d1ea0bf6c88d21e96505f939e8070af"
+    },
+    {
+      "review_order": 21,
+      "canonical_id": "business.alumni_networking",
+      "filename": "business__alumni_networking__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:weak_extrapolation",
+        "semantic_risk:high",
+        "watch_family:community_gathering"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "d38e5a70d370b419391f1161d84c06d3ce9afeaea125b617b4d5da6b4b297f80"
+    },
+    {
+      "review_order": 22,
+      "canonical_id": "arts.graphic_design",
+      "filename": "arts__graphic_design__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f75ad143517141216101e41519005037c3815c577fbc9e90e7b33bf44ab4562a"
+    },
+    {
+      "review_order": 23,
+      "canonical_id": "arts.blogging",
+      "filename": "arts__blogging__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:creator_workflow"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "c9f25436027b37f37e036693924d8246d4bb761b1d6109182d12061b51015af7"
+    },
+    {
+      "review_order": 24,
+      "canonical_id": "gaming.vr_gaming",
+      "filename": "gaming__vr_gaming__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "302ffa0c88e85ddb49ebf7972b6e9c4eedfe4b9cd292b9e35310e6b5fe80e9c6"
+    },
+    {
+      "review_order": 25,
+      "canonical_id": "food.tea",
+      "filename": "food__tea__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:drink_ritual"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "99142a50089e5b8a0bb121a15b2aa3874151ce46a4db99babdf2aa5657499858"
+    },
+    {
+      "review_order": 26,
+      "canonical_id": "wellness.aerobics",
+      "filename": "wellness__aerobics__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a51775aff9097b89dd73783b32a7e64ab328a94605f796bf9f8b8d427dc9d1b0"
+    },
+    {
+      "review_order": 27,
+      "canonical_id": "lifestyle.organization",
+      "filename": "lifestyle__organization__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:home_lifestyle"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "3835efbe5b2efa6d20a8b70e3596daeaa9e4552eaf1d6738ce0b352b0135001d"
+    },
+    {
+      "review_order": 28,
+      "canonical_id": "transport.car_modification",
+      "filename": "transport__car_modification__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "667b44ed4a722200478152737fd9d7c920663eb7a292c1fe67012eec09f58aaf"
+    },
+    {
+      "review_order": 29,
+      "canonical_id": "science.neuroscience",
+      "filename": "science__neuroscience__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:learning_exploration"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "daa78ec225f8b6178171a5167f2220c2381342767762aafd268d3b026c95000d"
+    },
+    {
+      "review_order": 30,
+      "canonical_id": "outdoors.skiing",
+      "filename": "outdoors__skiing__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "636b2bcd876bcbeb991629c862ae23ed5214466c3d65c1f126642a565e9171de"
+    },
+    {
+      "review_order": 31,
+      "canonical_id": "music.violin",
+      "filename": "music__violin__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:performance"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "572dfe0cdde442300c813eedf3d91728b7ea11ccf12d234111b27dfbcc326e2a"
+    },
+    {
+      "review_order": 32,
+      "canonical_id": "business.crypto",
+      "filename": "business__crypto__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:professional_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "6d892db2711fe178cc010723e7fee814ec50d73299972fe61655aab3d4ef692d"
+    },
+    {
+      "review_order": 33,
+      "canonical_id": "learning.romance_books",
+      "filename": "learning__romance_books__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:reading_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "b5cfcf34360dfe35eb4033c928e524bed759dc34e7284f1c4b2a5b9b902f85a5"
+    },
+    {
+      "review_order": 34,
+      "canonical_id": "sports.squash",
+      "filename": "sports__squash__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "75abb76e9d974623d8cbce42def9ce4c23dc6992912316883fdc01a2e470e1cb"
+    },
+    {
+      "review_order": 35,
+      "canonical_id": "entertainment.comedy",
+      "filename": "entertainment__comedy__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:story_culture"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "454084909a42fa62e96f90679d237b0cbe03946b33a9e453be75ef5542f3f2ff"
+    },
+    {
+      "review_order": 36,
+      "canonical_id": "sports.crosswords",
+      "filename": "sports__crosswords__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "dc885fd5c1e6626121db0246608187fa8f77dff483ac2e412c2aaa5da971a657"
+    },
+    {
+      "review_order": 37,
+      "canonical_id": "technology.web_development",
+      "filename": "technology__web_development__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:tech_workspace"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "c892e6f899fad57ac10487579722638e39ba7ff79b32d568727578165872ceb1"
+    },
+    {
+      "review_order": 38,
+      "canonical_id": "outdoors.canoeing",
+      "filename": "outdoors__canoeing__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ac8b67a748c0d5b41da52586f0f710f7d9daacd2bc2501dc85eb220ae621c2bf"
+    },
+    {
+      "review_order": 39,
+      "canonical_id": "wellness.sleep",
+      "filename": "wellness__sleep__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:calm_wellness"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ab248149d34acc44ee320813abaa210d65d2d21655a73b9ec898644d1d06ae0e"
+    },
+    {
+      "review_order": 40,
+      "canonical_id": "learning.exchange_programs",
+      "filename": "learning__exchange_programs__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:campus_activity"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ee3d05f5f99860a4466c3d8871b0490bb8ecbf99a73f4c2e499ce7600ab58332"
+    },
+    {
+      "review_order": 41,
+      "canonical_id": "transport.car_meets",
+      "filename": "transport__car_meets__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:weak_extrapolation",
+        "semantic_risk:high",
+        "watch_family:community_gathering"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "50d185a86427466419006396f6ab89addbebf457e86cdac00b9d09a355b1981c"
+    },
+    {
+      "review_order": 42,
+      "canonical_id": "arts.calligraphy",
+      "filename": "arts__calligraphy__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "33b0bfa0c139345505ef7eafe974099ef499bcdb42d2f6cf14ec026d9af78bb6"
+    },
+    {
+      "review_order": 43,
+      "canonical_id": "arts.newsletter_writing",
+      "filename": "arts__newsletter_writing__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:creator_workflow"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "9f2b643de2a6e96c8d77932e378a82e0505c3b7cd6d4779a134067b471b3d4d6"
+    },
+    {
+      "review_order": 44,
+      "canonical_id": "gaming.game_development",
+      "filename": "gaming__game_development__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "32f4252ff5bc662620adbfca5fb68f639ebac0c7b84882685c29577f10ad8c44"
+    },
+    {
+      "review_order": 45,
+      "canonical_id": "food.chinese_tea",
+      "filename": "food__chinese_tea__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:drink_ritual"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ab79dab99e93a87decdd585e0b9c1647f7a58a533fc96d25f1ff45e2e02373ee"
+    },
+    {
+      "review_order": 46,
+      "canonical_id": "wellness.dance_fitness",
+      "filename": "wellness__dance_fitness__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "9b64d3225aa47c918f4f229c361f0d63da7d796e3461480c1fc2098e5d006b80"
+    },
+    {
+      "review_order": 47,
+      "canonical_id": "lifestyle.home_improvement",
+      "filename": "lifestyle__home_improvement__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:home_lifestyle"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ac7dadd4d3058af81c47ddab6a4e04fa2d2fcee9f66b6b717dea81aaa3b6e198"
+    },
+    {
+      "review_order": 48,
+      "canonical_id": "transport.car_detailing",
+      "filename": "transport__car_detailing__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "d5fa006c378d7ab51f98df5b3fe59067652f496c6d6b4943f6e5a2b8a8c059bd"
+    },
+    {
+      "review_order": 49,
+      "canonical_id": "science.geology",
+      "filename": "science__geology__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:learning_exploration"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "6c5f58ca6e23c8fe7476d2921cbcd84175b88ed4b8cc600c1ecac71a82f1aac5"
+    },
+    {
+      "review_order": 50,
+      "canonical_id": "outdoors.snowboarding",
+      "filename": "outdoors__snowboarding__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a6f37f73436a772e100aacd4842db46935e380bd0fb6bd0f6757cf68809b741b"
+    },
+    {
+      "review_order": 51,
+      "canonical_id": "music.cello",
+      "filename": "music__cello__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:performance"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "2b81a58d80ca769b518fda07ec1cd0bac3f55285e4bd0cafe161a7f69699ebc7"
+    },
+    {
+      "review_order": 52,
+      "canonical_id": "business.product_management",
+      "filename": "business__product_management__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:professional_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "d3f828afe7a687e9f72384b767743002e4f8dcb534931340e683834bc01b9c66"
+    },
+    {
+      "review_order": 53,
+      "canonical_id": "learning.biographies",
+      "filename": "learning__biographies__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:reading_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "fad6e5a317f24d23c44965fbd3d99850f679d42783c67eb0c93baf0daceb69d1"
+    },
+    {
+      "review_order": 54,
+      "canonical_id": "sports.pickleball",
+      "filename": "sports__pickleball__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "262a226909494975e8b2ab105cb3bf39cfb861b47fb4ba9ebdfd795be10558bf"
+    },
+    {
+      "review_order": 55,
+      "canonical_id": "entertainment.horror",
+      "filename": "entertainment__horror__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:story_culture"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "1895c4ca56c334155bacdc11e96ccbd41e6f1a252cca7f1a13843503f18db3c8"
+    },
+    {
+      "review_order": 56,
+      "canonical_id": "sports.sudoku",
+      "filename": "sports__sudoku__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a0182020e0738512c53abac44167012d2be3e380ecba0764915dca9db311db1e"
+    },
+    {
+      "review_order": 57,
+      "canonical_id": "technology.app_development",
+      "filename": "technology__app_development__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:tech_workspace"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f2aecc1e974046d31bc96d1b821268d50fb2fb3da91fd6b0886fb67560b80b91"
+    },
+    {
+      "review_order": 58,
+      "canonical_id": "outdoors.sailing",
+      "filename": "outdoors__sailing__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "2d8e95f48a25ed4f94f00aaa5b15223b77aa935300b6c3e6b7abea2ece6eedb5"
+    },
+    {
+      "review_order": 59,
+      "canonical_id": "wellness.nutrition",
+      "filename": "wellness__nutrition__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:calm_wellness"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "4a7a45ff26f83281160080484515089ead119407711927d919e244c9130dd663"
+    },
+    {
+      "review_order": 60,
+      "canonical_id": "learning.study_abroad",
+      "filename": "learning__study_abroad__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:campus_activity"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "7b5d0ada7c8715ebae573232daf46f3534d9b462cb2bcbb3803198db04859145"
+    },
+    {
+      "review_order": 61,
+      "canonical_id": "arts.chinese_calligraphy",
+      "filename": "arts__chinese_calligraphy__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a40731454cbcf9337d9daeb4f4ff6cb3fd301adc12116fc9aaf7425ea41f56b7"
+    },
+    {
+      "review_order": 62,
+      "canonical_id": "gaming.game_streaming",
+      "filename": "gaming__game_streaming__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:creator_workflow"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ac65d04bf2e40923792f84bb8bb168321b54011c27253ffbe7f03035a4550fc6"
+    },
+    {
+      "review_order": 63,
+      "canonical_id": "gaming.esports",
+      "filename": "gaming__esports__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f0f78797d2274bf24598a4f62cfa894c3cbaf339000fd2700a42477e8eafb077"
+    },
+    {
+      "review_order": 64,
+      "canonical_id": "food.matcha",
+      "filename": "food__matcha__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:drink_ritual"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "26f2c16dfd976d599b8a650804f65a36f7a316be52153602cee89570ec286ccf"
+    },
+    {
+      "review_order": 65,
+      "canonical_id": "wellness.jump_rope",
+      "filename": "wellness__jump_rope__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "1c7f412ebee5af706cd51890760d8cb43f5d7b2e7e2f3b9feef086cacce403d9"
+    },
+    {
+      "review_order": 66,
+      "canonical_id": "lifestyle.diy_renovation",
+      "filename": "lifestyle__diy_renovation__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:home_lifestyle"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "feea22fa802dff5c6a2279d4082100870786b30b1adab1132b5439782b0b533c"
+    },
+    {
+      "review_order": 67,
+      "canonical_id": "transport.off_roading",
+      "filename": "transport__off_roading__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "33a72944159bf1566b9f0d37cb2c1b437a2929443d8a701009f3d21b835f4844"
+    },
+    {
+      "review_order": 68,
+      "canonical_id": "science.environment",
+      "filename": "science__environment__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:learning_exploration"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "bf5dc311e12e7919b5659bc6a7763726d5a2e5a323bd439c299cbf4f04766ffb"
+    },
+    {
+      "review_order": 69,
+      "canonical_id": "outdoors.ice_skating",
+      "filename": "outdoors__ice_skating__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "9014fca41f987e9b3b6758f30f6b35beede97bda87a0d4f35eb066d7c78ce441"
+    },
+    {
+      "review_order": 70,
+      "canonical_id": "music.ukulele",
+      "filename": "music__ukulele__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:performance"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "8be63d1434a2a320c64847a1d4929e9dc88fe1b556869908e04365d2e0acf535"
+    },
+    {
+      "review_order": 71,
+      "canonical_id": "business.design_thinking",
+      "filename": "business__design_thinking__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:professional_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "9c9e2ab7e4f608401414c16185a720f044cc2539f9bf7229db0d3058e7a71804"
+    },
+    {
+      "review_order": 72,
+      "canonical_id": "learning.business_books",
+      "filename": "learning__business_books__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:reading_world"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.5",
+      "prompt_sha256": "3bdb7d51bc9774e9b3603eb072b86438299a68fe6b4c75fea365a326a27db8aa"
+    },
+    {
+      "review_order": 73,
+      "canonical_id": "sports.padel",
+      "filename": "sports__padel__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "8f3d504547a7bb764bca3509cf3d5459f98bf12030e1ab8fd0d755e9c7cc2602"
+    },
+    {
+      "review_order": 74,
+      "canonical_id": "entertainment.sci_fi",
+      "filename": "entertainment__sci_fi__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:story_culture"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a4630468c1444971bb2fb22d1c8b4256613e7bf3b9766d8857bea8768518bc00"
+    },
+    {
+      "review_order": 75,
+      "canonical_id": "sports.speedcubing",
+      "filename": "sports__speedcubing__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ceb0701faefe0041197023c370faed304a1eca95b0118f44c180d4a718a5d5bd"
+    },
+    {
+      "review_order": 76,
+      "canonical_id": "technology.python",
+      "filename": "technology__python__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "watch_family:tech_workspace"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "6225630b6bb7436baf5fbd4806814e2f880b8e54b50a089cc1a4205b7a11aade"
+    },
+    {
+      "review_order": 77,
+      "canonical_id": "outdoors.stand_up_paddleboarding",
+      "filename": "outdoors__stand_up_paddleboarding__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "6df83aec8bf141064fa90fa2b70b184ddfe8470e320e60ad0128ca5ef3a0bad7"
+    },
+    {
+      "review_order": 78,
+      "canonical_id": "wellness.healthy_eating",
+      "filename": "wellness__healthy_eating__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated",
+        "watch_family:calm_wellness"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "ccd052bcf98e68129b420845b891ae6d93048316d6da6d574a41e0b5a92bf50c"
+    },
+    {
+      "review_order": 79,
+      "canonical_id": "learning.student_volunteering",
+      "filename": "learning__student_volunteering__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "confidence:new_grammar_unvalidated",
+        "semantic_risk:high",
+        "text_risk:elevated",
+        "watch_family:campus_activity"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "high",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "6be1a8fa2e7f27f0c84b8679bd49976a4b86faf85babfe70412e8b399d3889bb"
+    },
+    {
+      "review_order": 80,
+      "canonical_id": "arts.urban_sketching",
+      "filename": "arts__urban_sketching__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "physical_logic_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "elevated"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "11c768a2fafb8dfb7aa02571a14b61718959265f35e91f7f154848bdfb4f32cf"
+    },
+    {
+      "review_order": 81,
+      "canonical_id": "arts.motion_graphics",
+      "filename": "arts__motion_graphics__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "watch_family:creator_workflow"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "low",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "cc05cf2c25c05b038a88f3fb12a1530b2ac6d1caaa4f2aa9f5aec8a9a6d750f5"
+    },
+    {
+      "review_order": 82,
+      "canonical_id": "gaming.rpg",
+      "filename": "gaming__rpg__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "text_risk:elevated",
+        "brand_risk:elevated"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "medium",
+        "text_risk_level": "elevated",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "62e50556ecc731da6a516c4867534a084a742b6d511f320c72beddfeb1290bb7"
+    },
+    {
+      "review_order": 83,
+      "canonical_id": "transport.pickup_trucks",
+      "filename": "transport__pickup_trucks__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "automotive_hold_released_validation",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "9999c0addd17ccd8d32eed85e1ae103dce7a82c21781094780997c0674aa980a"
+    },
+    {
+      "review_order": 84,
+      "canonical_id": "transport.muscle_cars",
+      "filename": "transport__muscle_cars__object_first_v2_steady_state_batch001__gemini_3_1_flash_lite_image.jpg",
+      "selection_type": "mandatory_risk_selected",
+      "reason_selected": [
+        "brand_risk:elevated",
+        "automotive_hold_released_validation",
+        "watch_family:journey_machine"
+      ],
+      "risk_flags": {
+        "semantic_risk_level": "low",
+        "text_risk_level": "low",
+        "brand_risk_level": "elevated",
+        "physical_logic_risk_level": "low"
+      },
+      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a0765742a5f0678958c99e6631d6a310e8dd9bdaaa32930d8d75dbba7d8af088"
+    }
+  ]
+}

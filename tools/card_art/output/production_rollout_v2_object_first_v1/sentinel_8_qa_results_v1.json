@@ -1,0 +1,44 @@
+{
+  "version": "sentinel_8_qa_results_v1",
+  "recorded_at": "2026-09-25T14:09:54.001Z",
+  "source": "Authoritative user acceptance supplied verbatim; user acceptance standard explicitly overrides the prior stricter ChatGPT brand-morphology threshold for the 2 automotive cards. Not re-derived or inspected by Claude.",
+  "reviewed": 8,
+  "approved": 8,
+  "results": [
+    {
+      "canonical_id": "transport.classic_cars",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "transport.supercars",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "lifestyle.gardening",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "science.chemistry",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "learning.nonfiction",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "wellness.mobility",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "media.tv",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "technology.machine_learning",
+      "disposition": "approved"
+    }
+  ],
+  "conclusion": "PASS_REMEDIATION_VALIDATED",
+  "sentinel_9_required": false,
+  "automotive_acceptance_standard_update": "A vehicle does not fail merely for conventional sports-car proportions, a general real-world automotive design language, or resemblance to a broad category (modern supercar / classic GT / sports coupe). Brand/IP concern requires stronger evidence: a visible real logo, a readable manufacturer/model name, a recognizable emblem, a clearly copied trademark graphic, near-direct replication of an especially distinctive specific production model, or an unusually exact combination of signature model-specific details. This is a QA-policy clarification only - the v2.5 automotive prompts were not rewritten because of it."
+}
