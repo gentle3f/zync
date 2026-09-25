@@ -1,0 +1,179 @@
+{
+  "version": "canary_24_qa_results_v1",
+  "recorded_at": "2026-09-25T07:08:52.363Z",
+  "source": "Authoritative ChatGPT visual review supplied verbatim by the user; not re-derived or inspected by Claude.",
+  "reviewed": 24,
+  "approved": 18,
+  "approved_with_minor": 4,
+  "quarantined": 2,
+  "results": [
+    {
+      "canonical_id": "arts.drawing",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "books.reading",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "business.founder_meetups",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "food.japanese",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "gaming.pc_gaming",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "gaming.video",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "learning.mock_trial",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "media.anime",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "media.manga",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "outdoors.rock_climbing",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "outdoors.swimming",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "pets.dogs",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "sports.badminton",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "sports.gym",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "sports.hiking",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "technology.ai",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "transport.modelrailways",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "wellness.pilates",
+      "disposition": "approved",
+      "flags": [],
+      "finding": null
+    },
+    {
+      "canonical_id": "business.branding",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "scene_plausibility_minor"
+      ],
+      "finding": "The branding identity works, but the outdoor/rainy work-table scene felt somewhat artificially diversified."
+    },
+    {
+      "canonical_id": "business.sales",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "semantic_identity_minor",
+        "physical_logic_minor"
+      ],
+      "finding": "Readable as business/sales/analytics, but somewhat generic. Some loose papers appeared implausibly airborne in an enclosed office."
+    },
+    {
+      "canonical_id": "learning.moot_court",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "semantic_identity_minor"
+      ],
+      "finding": "Legal/court identity works, but academic moot-court specificity is weaker than ideal."
+    },
+    {
+      "canonical_id": "learning.student_newspaper",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "text_leak_minor"
+      ],
+      "finding": "Student-newspaper identity is strong, but the image contains substantial pseudo-readable newspaper text."
+    },
+    {
+      "canonical_id": "music.rock",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "semantic_identity"
+      ],
+      "finding": "Rendered as generic audiophile / vinyl-listening imagery rather than clearly Rock music."
+    },
+    {
+      "canonical_id": "motorsport.cars",
+      "disposition": "qa_quarantine",
+      "flags": [
+        "brand_likeness"
+      ],
+      "finding": "The car silhouette/body design looked too close to a recognizable classic Japanese GT/sports-car design even without an explicit logo."
+    }
+  ],
+  "systemic_findings": [
+    "24/24 zero-human containment successful",
+    "no repeated hand/arm leakage",
+    "no mascot/character-substitution regression",
+    "no content blocks",
+    "scene-family anti-convergence visually successful",
+    "no broad physical-logic collapse",
+    "no broad text-control collapse"
+  ],
+  "conclusion": "PASS_WITH_ISOLATED_QUARANTINES",
+  "authorizes": "wave_b_48"
+}
