@@ -17,7 +17,8 @@
       "validated_by": [
         "sports.running (round 3 fail -> round 4 redesign)"
       ],
-      "notes": "The energy of the card must come from the aftermath details, not from an implied currently-acting body."
+      "notes": "The energy of the card must come from the aftermath details, not from an implied currently-acting body.",
+      "interaction_support_mode": "environmental_aftermath"
     },
     "private_empty_venue": {
       "applies_to_archetypes": [
@@ -39,7 +40,8 @@
         "food.dish.bun_cha (round 1 fail -> round 2 fix)",
         "travel.roadtrip (round 3, empty vehicle interior)"
       ],
-      "notes": "This is the single most impactful containment rule found across all four rounds - the venue choice, not the hero object, was the actual leak source in every case it was applied to."
+      "notes": "This is the single most impactful containment rule found across all four rounds - the venue choice, not the hero object, was the actual leak source in every case it was applied to.",
+      "interaction_support_mode": "static_resting"
     },
     "object_hero_no_performer": {
       "applies_to_archetypes": [
@@ -53,7 +55,8 @@
         "music.piano (round 3, clean pass)",
         "photography.general (round 3, clean pass)"
       ],
-      "notes": "This is a lower-risk rule than action_aftermath or private_empty_venue - both validating cases passed cleanly on the first attempt without needing a round-4 redesign."
+      "notes": "This is a lower-risk rule than action_aftermath or private_empty_venue - both validating cases passed cleanly on the first attempt without needing a round-4 redesign.",
+      "interaction_support_mode": "static_resting"
     },
     "abstract_system_no_operator": {
       "applies_to_archetypes": [
@@ -67,7 +70,8 @@
       "validated_by": [
         "technology.ai (round 3 severe fail -> round 4 redesign)"
       ],
-      "notes": "This is the highest-risk containment rule in the set - technology.ai was round 3's single worst failure. Treat any archetype routed here as needing the strongest possible explicit containment language, not the baseline policy alone."
+      "notes": "This is the highest-risk containment rule in the set - technology.ai was round 3's single worst failure. Treat any archetype routed here as needing the strongest possible explicit containment language, not the baseline policy alone.",
+      "interaction_support_mode": "automated_machine"
     },
     "screen_non_human_content": {
       "applies_to_archetypes": [
@@ -79,7 +83,8 @@
       "validated_by": [
         "media.movies (round 3 fail -> round 4 redesign)"
       ],
-      "notes": "This rule generalizes to any hobby where a screen-within-the-scene could show narrative content and should be applied proactively wherever a display surface is unavoidable."
+      "notes": "This rule generalizes to any hobby where a screen-within-the-scene could show narrative content and should be applied proactively wherever a display surface is unavoidable.",
+      "interaction_support_mode": "screen_content_only"
     },
     "private_environment_animal": {
       "applies_to_archetypes": [
@@ -91,7 +96,8 @@
       "validated_by": [
         "pets.dogs (round 3 minor fail -> round 4 redesign)"
       ],
-      "notes": "The animal itself was never the problem in any round - only the background environment. This rule should be paired with the explicit animal carve-out from object_first_rules_v2.json, not with the general containment policy alone."
+      "notes": "The animal itself was never the problem in any round - only the background environment. This rule should be paired with the explicit animal carve-out from object_first_rules_v2.json, not with the general containment policy alone.",
+      "interaction_support_mode": "not_applicable"
     },
     "swimming_hard_case_no_visible_swimmer": {
       "applies_to_archetypes": [
@@ -103,7 +109,8 @@
       "validated_by": [
         "outdoors.swimming (round 3 minor fail -> round 4 redesign, explicitly called out as a special hard case in the round-4 brief)"
       ],
-      "notes": "This is the strictest rule in the set - it is the only one that forbids the 'aftermath' storytelling device otherwise encouraged by action_aftermath, because in this specific case the aftermath device itself was the leak vector, not the fix."
+      "notes": "This is the strictest rule in the set - it is the only one that forbids the 'aftermath' storytelling device otherwise encouraged by action_aftermath, because in this specific case the aftermath device itself was the leak vector, not the fix.",
+      "interaction_support_mode": "passive_physics"
     },
     "generic_structural_containment": {
       "applies_to_archetypes": [
@@ -125,7 +132,8 @@
         "books.reading (round 2, clean pass)",
         "outdoors.camping (round 2, clean pass)"
       ],
-      "notes": "This is the default/fallback rule and is expected to cover the largest number of catalog rows. It is intentionally less prescriptive than the named rules because no round has yet found a specific leak pattern requiring a bespoke fix for these archetypes."
+      "notes": "This is the default/fallback rule and is expected to cover the largest number of catalog rows. It is intentionally less prescriptive than the named rules because no round has yet found a specific leak pattern requiring a bespoke fix for these archetypes.",
+      "interaction_support_mode": "static_resting"
     },
     "object_hero_clean": {
       "applies_to_archetypes": [
@@ -140,7 +148,8 @@
         "food.dish.bun_cha (round 1-2)",
         "collecting.stamps (round 1, clean pass)"
       ],
-      "notes": "Used for object_first_status=clean rows purely as the scene_template source; it does not imply containment_required."
+      "notes": "Used for object_first_status=clean rows purely as the scene_template source; it does not imply containment_required.",
+      "interaction_support_mode": "static_resting"
     },
     "professional_material_world": {
       "applies_to_archetypes": [
@@ -150,7 +159,8 @@
       "good_pattern": "Represent the profession through its own material world: field-specific tools, documents, equipment, neutral planning materials, architecture, and the visible outputs/results of the work, with no worker present.",
       "scene_template": "The material world of ${title} is the hero: field-specific tools, equipment, documents (with abstract, non-legible markings only), neutral planning materials, and the visible physical outputs or results of the work, arranged in a workspace clearly set up for the profession but with no worker currently present. No generic laptop-and-coffee office cliche, and no readable whiteboard or business text.",
       "validated_by": [],
-      "notes": "New in v2.1 - reroutes professional_world from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated by any round; confidence=new_grammar_unvalidated."
+      "notes": "New in v2.1 - reroutes professional_world from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated by any round; confidence=new_grammar_unvalidated.",
+      "interaction_support_mode": "static_resting"
     },
     "listening_equipment_world": {
       "applies_to_archetypes": [
@@ -160,7 +170,8 @@
       "good_pattern": "Represent the listening experience through audio equipment itself: headphones, speakers, a turntable, vinyl, an acoustically-treated listening room, and abstract ambient light or waveform-like visual texture, with no listener present.",
       "scene_template": "The listening ritual of ${title} is represented entirely through its equipment and environment: headphones, speakers, a turntable or player, physical media, and an acoustically considered listening space, with soft ambient light or abstract waveform-like visual texture suggesting sound in the air. No listener is present, and no literal floating music-note symbols are used by default.",
       "validated_by": [],
-      "notes": "New in v2.1 - reroutes music_listening from review_required to containment_required per the task's Part B scene-grammar instruction. Distinct from the already-validated performance/object_hero_no_performer rule (an instrument being played) - this is about the act of listening, not performing. Not yet visually validated; confidence=new_grammar_unvalidated."
+      "notes": "New in v2.1 - reroutes music_listening from review_required to containment_required per the task's Part B scene-grammar instruction. Distinct from the already-validated performance/object_hero_no_performer rule (an instrument being played) - this is about the act of listening, not performing. Not yet visually validated; confidence=new_grammar_unvalidated.",
+      "interaction_support_mode": "static_resting"
     },
     "campus_activity_grammar": {
       "applies_to_archetypes": [
@@ -170,7 +181,8 @@
       "good_pattern": "Use the hobby-specific campus environment itself: an empty club room, activity equipment, campus architecture, event materials, props, and non-legible noticeboard graphics, with the activity's aftermath or setup carrying the scene.",
       "scene_template": "${title} is represented through its specific campus environment and equipment: an empty club room or activity space, the activity's defining props or materials, distinctive campus architecture, and event setup details (a noticeboard with only abstract non-legible graphics, arranged chairs, or activity equipment), with no students currently present.",
       "validated_by": [],
-      "notes": "New in v2.1 - reroutes campus_activity from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+      "notes": "New in v2.1 - reroutes campus_activity from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated.",
+      "interaction_support_mode": "static_resting"
     },
     "community_gathering_traces": {
       "applies_to_archetypes": [
@@ -180,7 +192,8 @@
       "good_pattern": "Show the moment just before people arrive or just after they leave: a prepared shared table, arranged chairs in a circle or group, communal objects, food or activity materials laid out, decorations, and other tangible traces of community - the emotional feeling comes from these traces rather than from visible people.",
       "scene_template": "The scene shows ${title} in the quiet moment just before people arrive or just after they leave: a prepared shared table or circle of arranged chairs, communal objects and shared materials laid out and ready, food or activity items, and small decorative touches that make the space feel warmly prepared for togetherness, with nobody currently in the room.",
       "validated_by": [],
-      "notes": "New in v2.1. This is explicitly flagged as the single lowest-confidence reroute in the entire rule set - the task itself called this archetype 'difficult' and asked that genuinely weak individual cases be kept in review rather than forced. confidence=weak_extrapolation. A future round should visually test this rule before trusting it as strongly as the others."
+      "notes": "New in v2.1. This is explicitly flagged as the single lowest-confidence reroute in the entire rule set - the task itself called this archetype 'difficult' and asked that genuinely weak individual cases be kept in review rather than forced. confidence=weak_extrapolation. A future round should visually test this rule before trusting it as strongly as the others.",
+      "interaction_support_mode": "static_resting"
     },
     "community_gathering_vehicles": {
       "applies_to_archetypes": [
@@ -190,7 +203,8 @@
       "good_pattern": "For vehicle-gathering hobbies, show several generic unbranded vehicles parked together as the community's shared object, with no owners, drivers, or spectators present - the vehicles themselves carry the sense of a gathering, not a table.",
       "scene_template": "Several generic, unbranded vehicles related to ${title} are gathered and parked together, as if just before or just after the event - ambient or headlight glow catching their bodywork, tire tracks or fresh parking marks on the ground, no owners, drivers, or spectators present anywhere in the scene.",
       "validated_by": [],
-      "notes": "New in v2.1, added specifically to fix a disclosed grammar mismatch found during the final zero-cost gate's Part-7 community_gathering review, applied via an id-exact override for transport.car_meets only (see object_first_rules_v2.json's id_prefix_overrides). confidence=weak_extrapolation, same as the parent archetype - not yet visually tested."
+      "notes": "New in v2.1, added specifically to fix a disclosed grammar mismatch found during the final zero-cost gate's Part-7 community_gathering review, applied via an id-exact override for transport.car_meets only (see object_first_rules_v2.json's id_prefix_overrides). confidence=weak_extrapolation, same as the parent archetype - not yet visually tested.",
+      "interaction_support_mode": "static_resting"
     },
     "shared_workspace_grammar": {
       "applies_to_archetypes": [
@@ -200,7 +214,8 @@
       "good_pattern": "Show multiple distinct, personalized empty desks (different stationery, plants, mugs, notebooks, devices with blank/non-readable displays) side by side, communicating multiple independent workers through their belongings rather than their bodies.",
       "scene_template": "${title} is represented through several distinct, personalized desks shown side by side, each with different stationery, plants, mugs, notebooks, and a device with a blank or non-readable display - the visible variety of belongings communicates multiple independent workers without showing any of them. No coworkers, no code on any screen, and no readable kanban or workflow text.",
       "validated_by": [],
-      "notes": "New in v2.1 - reroutes shared_workspace from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+      "notes": "New in v2.1 - reroutes shared_workspace from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated.",
+      "interaction_support_mode": "static_resting"
     },
     "campaign_planning_materials": {
       "applies_to_archetypes": [
@@ -210,7 +225,8 @@
       "good_pattern": "Represent the planning process through its materials: blank cards, abstract sticky notes, colored nodes, neutral non-textual charts, calendar-like geometry, and mock layout pieces arranged on a table, with no presenter.",
       "scene_template": "The planning process behind ${title} is shown through its materials alone: blank or abstractly-marked cards, colored sticky notes, connecting lines or nodes, neutral chart-like shapes with no readable labels, and mock layout pieces arranged thoughtfully on a table, with no presenter or planner currently in the scene. No readable marketing copy, slogans, or brand names.",
       "validated_by": [],
-      "notes": "New in v2.1 - reroutes campaign_planning from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+      "notes": "New in v2.1 - reroutes campaign_planning from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated.",
+      "interaction_support_mode": "static_resting"
     },
     "legal_practice_materials": {
       "applies_to_archetypes": [
@@ -220,7 +236,8 @@
       "good_pattern": "Represent the work through case files, evidence folders, tabbed document stacks, unbranded law books, legal pads with abstract markings, sealed envelopes, and courtroom or office architecture, with a restrained scales-of-justice detail only as supporting texture, not the whole subject.",
       "scene_template": "${title} is represented through its material world: case files, tabbed evidence folders, stacked unbranded law books, a legal pad with only abstract non-legible markings, sealed envelopes, and courtroom or formal office architecture, arranged as if work is actively in progress but with no lawyer or client present. A scales-of-justice detail may appear only as a small supporting element, never as the sole subject. No readable case names or large blocks of legible document text.",
       "validated_by": [],
-      "notes": "New in v2.1 - reroutes legal_practice from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+      "notes": "New in v2.1 - reroutes legal_practice from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated.",
+      "interaction_support_mode": "static_resting"
     },
     "model_railway_miniature_scale": {
       "applies_to_archetypes": [
@@ -230,7 +247,8 @@
       "good_pattern": "Force unmistakable miniature scale: a tabletop model-railway layout with a miniature train on tiny-scale tracks, miniature buildings and scenery, a visible baseboard/tabletop edge framing the whole scene, and hobby tools nearby as scale cues - never a real, full-size railway.",
       "scene_template": "A tabletop model-railway diorama is the unmistakable hero of the scene: a miniature train runs on tiny-scale tracks through miniature buildings, miniature trees, and scale-model terrain (foam or scenic-ground texture typical of a handbuilt diorama), with a visible baseboard or tabletop edge framing the whole layout and a small paintbrush or scenic-scatter tool resting nearby as an unmistakable scale cue. This must read as an intentionally crafted miniature diorama, never as a real, full-size railway, a real locomotive, real urban transit, or railway photography of an actual place.",
       "validated_by": [],
-      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the previous generic object_hero_clean grammar lost scale identity entirely. confidence=new_grammar_unvalidated - not yet re-tested."
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the previous generic object_hero_clean grammar lost scale identity entirely. confidence=new_grammar_unvalidated - not yet re-tested.",
+      "interaction_support_mode": "static_resting"
     },
     "anime_culture_object_first": {
       "applies_to_archetypes": [
@@ -240,7 +258,8 @@
       "good_pattern": "Represent anime through PRODUCTION and COLLECTING culture using deliberately NON-HUMAN fictional subject matter (mecha, robots, fantasy creatures, spaceships, magical objects, stylized animals) rather than any figure described with 'character' language, to sidestep the ambiguity that triggered the safety block while still communicating anime identity clearly through physical objects.",
       "scene_template": "An anime production and collecting workspace is the hero of the scene, built entirely from non-human fictional subject matter: small collectible figurines of an original mecha, robot, fantasy creature, or stylized animal (never a human or human-shaped figure) displayed on a simple stand, animation cels or storyboard/key-frame sheets showing original mecha, creature, or spaceship designs fanned out, an animation light table glowing beneath them, and manga/anime-style art books with blank or unreadable covers. If a screen is visible, it shows only an original mecha, robot, creature, or abstract animation-style visual with no human figure and no pseudo-Japanese decorative lettering anywhere. No school uniforms, no cosplay, no youthful or human-like character imagery of any kind, no body-focused or suggestive framing, no bedroom poster-wall staging. This must immediately communicate anime and Japanese animation production/collecting culture, never a generic conference hall, a generic cinema, or an abstract aurora light show.",
       "validated_by": [],
-      "notes": "v2.2 rewrite after Validation-8 (commit c7d00b9) found the v2.1 grammar triggered IMAGE_SAFETY (no image, not billed). Rewritten to use only non-human fictional subject matter (mecha/robot/creature/spaceship) and to remove all 'character' wording, since that specific word combination is the suspected trigger. confidence=new_grammar_unvalidated - not yet re-tested, including whether the safety block itself is actually resolved."
+      "notes": "v2.2 rewrite after Validation-8 (commit c7d00b9) found the v2.1 grammar triggered IMAGE_SAFETY (no image, not billed). Rewritten to use only non-human fictional subject matter (mecha/robot/creature/spaceship) and to remove all 'character' wording, since that specific word combination is the suspected trigger. confidence=new_grammar_unvalidated - not yet re-tested, including whether the safety block itself is actually resolved.",
+      "interaction_support_mode": "static_resting"
     },
     "startup_early_stage_world": {
       "applies_to_archetypes": [
@@ -252,7 +271,8 @@
       "validated_by": [
         "business.startups (Recheck-3 partial pass - semantic identity confirmed working; hand/arm leak and readable packaging text found and targeted by this v2.3 revision)"
       ],
-      "notes": "v2.3 narrow fix after Recheck-3 (commit 7425cce) confirmed the v2.2 business-creation identity works but found a human hand/arm holding a product and a readable product name ('MINIATURE PROJECTOR') on packaging. This revision adds explicit resting/displayed-only physical-logic language and explicit blank/abstract-packaging text language on top of the already-validated v2.2 scene, without touching the parts that already worked. confidence=new_grammar_unvalidated - not yet re-tested."
+      "notes": "v2.3 narrow fix after Recheck-3 (commit 7425cce) confirmed the v2.2 business-creation identity works but found a human hand/arm holding a product and a readable product name ('MINIATURE PROJECTOR') on packaging. This revision adds explicit resting/displayed-only physical-logic language and explicit blank/abstract-packaging text language on top of the already-validated v2.2 scene, without touching the parts that already worked. confidence=new_grammar_unvalidated - not yet re-tested.",
+      "interaction_support_mode": "static_resting"
     },
     "pop_music_production_energy": {
       "applies_to_archetypes": [
@@ -262,7 +282,8 @@
       "good_pattern": "Replace the cozy listening-room mood with bold commercial stage-light color language and production tools, keeping vinyl/CD elements as small supporting objects only, never the dominant hero.",
       "scene_template": "A pop-music production and performance energy is the hero of the scene: a studio microphone on its stand (never held), synth pads or a mixing controller as supporting objects, and bold, saturated, commercial stage-light color washes (magenta, cyan, gold) rather than a warm amber listening-room glow. Vinyl, CD, or cassette elements may appear only as small supporting objects, never as the dominant subject. The mood is rhythmic, bright, and high-energy - commercial pop production, not an intimate hi-fi listening ritual or a vinyl-collecting display. No recognizable singer, celebrity likeness, copyrighted album artwork, or band logo.",
       "validated_by": [],
-      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the shared listening_equipment_world grammar defaulted to a vinyl/hi-fi reading for this specific id. confidence=new_grammar_unvalidated - not yet re-tested."
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the shared listening_equipment_world grammar defaulted to a vinyl/hi-fi reading for this specific id. confidence=new_grammar_unvalidated - not yet re-tested.",
+      "interaction_support_mode": "mechanically_supported"
     },
     "mock_trial_simulation": {
       "applies_to_archetypes": [
@@ -272,7 +293,8 @@
       "good_pattern": "Add an explicit, local anti-substitution clause on top of the (now catalog-wide) character_substitution_policy, naming the exact failure mode found (an animal mascot standing in for a courtroom participant) so the constraint is unambiguous for this specific hard case.",
       "scene_template": "An educational mock-trial simulation is staged: mirrored prosecution and defense tables face each other, an empty witness stand sits to one side, and practice-labeled evidence exhibits and a scoring rubric with only abstract non-legible marks convey a training exercise rather than a real proceeding. The architecture feels like a school or training facility, not a working law firm or a real courthouse. The tables, witness stand, and judge's bench must all be shown genuinely empty - no anthropomorphic animal, mascot, robot, or any other costumed or creature stand-in occupying any seat or position in place of a human participant. No oversized generic gavel as the sole subject, and no readable, invented real-sounding case name.",
       "validated_by": [],
-      "notes": "v2.2 rewrite after Validation-8 (commit c7d00b9) found anthropomorphic owl characters filling the courtroom-participant roles this rule left open. Added an explicit local anti-substitution clause on top of the new catalog-wide character_substitution_policy (global_style_v2_object_first.json). confidence=new_grammar_unvalidated - not yet re-tested."
+      "notes": "v2.2 rewrite after Validation-8 (commit c7d00b9) found anthropomorphic owl characters filling the courtroom-participant roles this rule left open. Added an explicit local anti-substitution clause on top of the new catalog-wide character_substitution_policy (global_style_v2_object_first.json). confidence=new_grammar_unvalidated - not yet re-tested.",
+      "interaction_support_mode": "static_resting"
     },
     "coffee_ritual_resting_scene": {
       "applies_to_archetypes": [],
@@ -280,7 +302,8 @@
       "good_pattern": "A completely static, already-finished or resting coffee setup: no vessel is shown mid-pour or mid-action, everything rests on a stable surface.",
       "scene_template": "A private, empty coffee scene for ${title} built entirely from resting, already-finished elements: coffee beans, a finished cup of coffee, a grinder, a dripper resting on its server or cup, a kettle resting on the counter (never pouring, never tilted as if mid-pour), a filter paper, gentle steam rising from the still cup as a physically self-explaining static cue, in a cozy cafe or home coffee environment with no person present. Every tool and vessel is shown at rest or as if a session just finished, never suspended, tilted, or actively pouring.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding). id-exact override for food.coffee only - food.specialty_coffee already passed and is untouched."
+      "notes": "Wave-B remediation (commit 6848b4b finding). id-exact override for food.coffee only - food.specialty_coffee already passed and is untouched.",
+      "interaction_support_mode": "static_resting"
     },
     "fiction_object_first_grammar": {
       "applies_to_archetypes": [],
@@ -288,7 +311,8 @@
       "good_pattern": "A completely static reading/writing-culture still life built from resting objects and environmental/abstract story motifs, with no pen or book performing an action by itself.",
       "scene_template": "A private, empty fiction/story scene for ${title} built entirely from resting objects: an open novel or manuscript lying flat, a stack of books, a notebook showing only non-legible abstract marks, a resting fountain pen lying beside the notebook (never held, never mid-stroke, never floating), bookmarks, index cards, and subtle genre-neutral storytelling atmosphere (soft light, warm color, a sense of imagination) carried through the environment rather than through any active writing gesture. The scene communicates fiction and narrative culture through arrangement and atmosphere alone, with no person, no floating implement, and no readable prose anywhere in frame.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding)."
+      "notes": "Wave-B remediation (commit 6848b4b finding).",
+      "interaction_support_mode": "static_resting"
     },
     "vocal_singing_object_first": {
       "applies_to_archetypes": [],
@@ -304,7 +328,8 @@
       ],
       "forbidden_palette_routes": [
         "rainy_moody"
-      ]
+      ],
+      "interaction_support_mode": "mechanically_supported"
     },
     "karaoke_object_first": {
       "applies_to_archetypes": [],
@@ -320,7 +345,8 @@
       ],
       "forbidden_palette_routes": [
         "rainy_moody"
-      ]
+      ],
+      "interaction_support_mode": "mechanically_supported"
     },
     "booktube_creator_setup_no_presenter": {
       "applies_to_archetypes": [],
@@ -328,7 +354,8 @@
       "good_pattern": "A book-creator recording setup shown as a still, resting scene - camera, books, and recording gear - communicating creator culture without any operator or mechanical-system substitution.",
       "scene_template": "A private, empty book-creator recording setup for ${title}: a stack of plain unbranded books with one open on a stand, a generic camera or phone mounted on a tripod aimed at an empty presenting spot, a small microphone and a soft ring light nearby, all resting in place as if a recording session just ended or is about to begin - with no presenter, no operator, no platform interface, no readable text, and absolutely no factory, conveyor, robotic, or industrial-manufacturing imagery of any kind.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding). Exact-ID fix only, not a rule-family change - sibling creator_workflow/tech_workspace rows using the same underlying abstract_system_no_operator rule (technology.ai) passed cleanly, confirming this is a recipe-specific mismatch, not a systemic grammar failure."
+      "notes": "Wave-B remediation (commit 6848b4b finding). Exact-ID fix only, not a rule-family change - sibling creator_workflow/tech_workspace rows using the same underlying abstract_system_no_operator rule (technology.ai) passed cleanly, confirming this is a recipe-specific mismatch, not a systemic grammar failure.",
+      "interaction_support_mode": "mechanically_supported"
     },
     "consumer_gadgets_object_hero": {
       "applies_to_archetypes": [],
@@ -336,7 +363,8 @@
       "good_pattern": "A still-life arrangement of ordinary unbranded consumer gadgets, resting in place, with no factory or manufacturing framing.",
       "scene_template": "A private, empty consumer-gadgets still life for ${title}: an assortment of generic unbranded consumer devices resting on a surface - wireless earbuds in their case, a generic smartwatch-like wearable, a portable charger, a compact speaker, a slab-shaped phone-like device with a blank screen, a small camera or its accessories, and a charging dock - arranged as if just unpacked or set down, with no person, no recognizable brand marks, and absolutely no CNC machine, factory line, circuit-board manufacturing, or robotics-workshop imagery of any kind.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding). Exact-ID fix only - technology.ai, which shares the same tech_workspace archetype and abstract_system_no_operator rule, passed cleanly, confirming this is a recipe-specific mismatch (gadgets are physical objects, not an abstract system), not a systemic grammar failure."
+      "notes": "Wave-B remediation (commit 6848b4b finding). Exact-ID fix only - technology.ai, which shares the same tech_workspace archetype and abstract_system_no_operator rule, passed cleanly, confirming this is a recipe-specific mismatch (gadgets are physical objects, not an abstract system), not a systemic grammar failure.",
+      "interaction_support_mode": "static_resting"
     },
     "stretching_mobility_props_no_body": {
       "applies_to_archetypes": [],
@@ -344,7 +372,113 @@
       "good_pattern": "Simple, recognizable stretching/mobility props in a calm, uncluttered space, with no large machine and no human body.",
       "scene_template": "A private, empty stretching/mobility scene for ${title}: a yoga or stretching mat laid flat, a resistance band, a stretching strap, a foam roller, and mobility blocks arranged naturally in an open, calm, uncluttered studio, home, or outdoor floor space - with no person, no human body of any kind, and absolutely no large gym machine, physiotherapy equipment, or weightlifting apparatus as the hero.",
       "validated_by": [],
-      "notes": "Wave-B remediation (commit 6848b4b finding). Exact-ID fix only - sibling calm_wellness rows (wellness.pilates approved, wellness.yoga generated with no comparable finding) show no equivalent failure under the same generic_structural_containment rule, confirming this is a recipe-specific prop-guidance gap, not a systemic grammar failure."
+      "notes": "Wave-B remediation (commit 6848b4b finding). Exact-ID fix only - sibling calm_wellness rows (wellness.pilates approved, wellness.yoga generated with no comparable finding) show no equivalent failure under the same generic_structural_containment rule, confirming this is a recipe-specific prop-guidance gap, not a systemic grammar failure.",
+      "interaction_support_mode": "static_resting"
+    },
+    "gardening_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "lifestyle.gardening's generic_structural_containment fallback (home_lifestyle archetype) gave no concrete prop-rest guidance, and its own recipe subject text is human-first ('a person actively...'), so the model preserved an implied active-watering action via an invisible hand - a watering can floated and watered plants by itself.",
+      "good_pattern": "A planted garden scene built entirely from resting objects - no watering can, hose, or tool shown actively pouring or operating.",
+      "scene_template": "A private, empty garden scene for ${title}: a planted garden bed with flowers, vegetables, or seedlings, visible soil, a watering can resting on the ground or a bench (never tilted as if pouring, never floating), a trowel resting naturally beside the bed, empty gardening gloves laid down, and recently-wet soil or scattered water droplets on leaves as a physically self-explaining static cue of recent watering. If a hose or sprinkler is shown, it must be visibly connected to a fixed support (a tap, a reel, a mounted sprinkler head) rather than floating or self-operating. No person, no floating tool, and no tool shown actively performing its action.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding)."
+    },
+    "chemistry_lab_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "mechanically_supported",
+      "bad_pattern": "science.chemistry's generic_structural_containment fallback (learning_exploration archetype) gave no concrete lab-equipment-rest guidance, and its own recipe subject text is human-first ('a person actively building, configuring...'), so the model preserved an implied active-pouring action via an invisible hand - a flask/lab vessel floated and poured liquid by itself.",
+      "good_pattern": "A lab scene built entirely from mechanically-supported, resting glassware - no flask, beaker, or pipette shown actively pouring or operating unsupported.",
+      "scene_template": "A private, empty chemistry lab scene for ${title}: flasks and test tubes resting upright in a rack or held by a clamp on a lab stand (never tilted as if pouring, never floating unsupported), measuring glassware resting on the bench, a burner or hotplate with a visible support base, colorful chemical solutions showing color change as a static visual property, condensation on cool glass, and a controlled reaction vessel resting in its stand. If active liquid transfer is depicted, it must be shown with a visible mechanical support (a burette clamped to a stand, a dropper resting in a holder) - otherwise show only the before or after state of the reaction, never mid-pour with no support. No person, no floating vessel, and no vessel shown actively pouring with no support.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding)."
+    },
+    "nonfiction_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "learning.nonfiction shares the same generic, human-first V1 recipe pattern as learning.fiction (fixed previously) but was never given its own concrete anchors - under generic_structural_containment's vague 'defining objects... carry the recognition' framing, the model drifted to an unrelated 'curiosity/documentary' concept (astronomy/telescope/stargazing) instead of nonfiction reading material.",
+      "good_pattern": "A nonfiction/research reading scene anchored in concrete reference-material objects, not an unrelated science-documentary subject.",
+      "scene_template": "A private, empty nonfiction/research reading scene for ${title}: reference books and factual books with blank spines resting on a desk or shelf, a bookmark ribbon, a magnifying glass resting beside an open book, folded maps or charts with non-legible detail, photographs resting face-down or with non-legible content, and a factual diagram or chart sheet lying flat - in a warm home, library, or study environment. The scene communicates real-world factual/research reading culture through arrangement alone, with no person present. The scene must NOT become an astronomy, telescope, or stargazing scene, and must NOT become a fiction/fantasy reading scene - the objects shown must read as factual reference material specifically.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding, root cause: ambiguous/under-specified semantic anchors inherited from the same generic V1 recipe pattern as learning.fiction). Added forbidden_scene_families (Wave-C remediation pre-Sentinel-8 check): the grammar requires an indoor home/library/study setting with no outdoor option, so outdoor/nature scene families are structurally excluded at the routing layer.",
+      "forbidden_scene_families": [
+        "open_daylight_outdoor",
+        "cool_night_outdoor",
+        "nature_environmental"
+      ]
+    },
+    "mobility_training_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "wellness.mobility's generic_structural_containment fallback (calm_wellness archetype) did not disambiguate the word 'mobility' from animal mobility/agility - under a zero-human policy with only generic wellness-prop guidance, the model rendered dog agility/pet obstacle equipment instead of human joint-mobility training equipment.",
+      "good_pattern": "A human joint-mobility training scene anchored in concrete mobility equipment, explicitly not an animal-agility or obstacle-course scene.",
+      "scene_template": "A private, empty human mobility-training scene for ${title}: a mobility/stretching mat laid flat, resistance bands, a foam roller, a mobility ball, a stretching strap, and mobility blocks arranged naturally in an open, calm, uncluttered studio, home, or outdoor floor space. This is HUMAN joint-mobility and range-of-motion training, not any other kind of \"mobility\" - the scene must NOT become a dog-agility course, pet obstacle equipment, a transport-mobility scene, or a wheelchair/assistive-device scene. No person, no animal, and no large obstacle-course structure.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding, root cause: word-level ambiguity in \"mobility\" never disambiguated by the generic fallback rule)."
+    },
+    "television_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "screen_content_only",
+      "bad_pattern": "media.tv's own recipe environment text explicitly lists 'cinema, theatre' alongside 'home-viewing' as acceptable venues for TV Series - a genuine content ambiguity inherited from the underlying recipe data, not a V2 routing bug. Combined with the generic screen_non_human_content rule (no venue specificity beyond 'empty of any audience'), the model rendered an outdoor projection/large-screen public event instead of television viewing.",
+      "good_pattern": "A home television-viewing scene anchored in TV-specific equipment, explicitly not a cinema or outdoor public screening.",
+      "scene_template": "A private, empty home television-viewing scene for ${title}: a television set or flat display resting on a stand or mounted on a wall, a remote control resting on a nearby surface, a media console, a couch or viewing seating, speakers, and a TV-guide or streaming interface showing only non-readable abstract tiles on the screen. This is TELEVISION specifically - the scene must NOT become a cinema, movie theatre, outdoor projection, or large public screening event; keep the setting as an ordinary home living-room or media room, never a public venue.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding). Root cause disclosed at the recipe-data level: the original V1 recipe environment field for TV Series names cinema/theatre as valid venues, which is inherited content ambiguity, not a V2 architecture bug. Added forbidden_scene_families (Wave-C remediation pre-Sentinel-8 check): a nature/terrain-dominated or open-outdoor scene_family directly contradicts the required ordinary home living-room setting, so these are structurally excluded at the routing layer.",
+      "forbidden_scene_families": [
+        "open_daylight_outdoor",
+        "cool_night_outdoor",
+        "nature_environmental"
+      ]
+    },
+    "machine_learning_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "automated_machine",
+      "bad_pattern": "abstract_system_no_operator's 'self-contained abstract or mechanical system operating on its own' framing fits technology.ai (which passed cleanly) but machine_learning's own recipe anchors ('human actively using Machine Learning, subfield-specific hardware') gave no concrete grounded-technical objects, so the model filled the abstraction with a generic sci-fi machine/totem instead of recognizable ML-technical imagery.",
+      "good_pattern": "A grounded, technical machine-learning visualization - training hardware and abstract data/model visuals - not a generic sci-fi machine.",
+      "scene_template": "A private, empty machine-learning workspace for ${title}, represented as a self-contained technical system operating entirely on its own: server or GPU compute hardware with status lights, an abstract training-pipeline or model-graph visualization glowing on a display (non-readable), dataset blocks or embedding-cluster visuals rendered as abstract geometric shapes, and an evaluation-chart geometry shown as abstract non-legible curves. The majority of the frame stays clean negative space. This must read as grounded machine-learning technical infrastructure specifically - it must NOT become a generic sci-fi machine, a giant mechanical robot or totem, a humanoid AI figure, or generic cyberpunk technology. There is no operator, no hands, no arms, and no person of any kind.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding). Exact-ID fix only - technology.ai, which shares the same tech_workspace archetype and abstract_system_no_operator rule, passed cleanly, confirming this is a recipe-specific concrete-anchor gap, not a systemic rule-family failure (the same determination already made for technology.gadgets). Added forbidden_scene_families (Wave-C remediation pre-Sentinel-8 check): a nature/terrain-dominated scene_family contradicts the required grounded server/compute-hardware setting, so these are structurally excluded at the routing layer.",
+      "forbidden_scene_families": [
+        "open_daylight_outdoor",
+        "cool_night_outdoor",
+        "nature_environmental"
+      ]
+    },
+    "illustration_object_first_grammar": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "action_aftermath's scene_template was written generically for a sports-validation case (sports.running) and uses phrasing like 'water droplets' and 'a freshly disturbed surface' with no illustration-specific concrete noun at all - combined with arts.illustration's own vague recipe anchors ('relevant tool, material, movement, or medium'), the model had almost total freedom and defaulted to an unrelated but physically-plausible 'recently finished' warm/steam/liquid scene (matcha/tea culture) rather than an art-supplies scene. This is a genuine, disclosed static cause (missing concrete anchors), not a fabricated routing bug.",
+      "good_pattern": "An illustration studio still life anchored in concrete drawing/art-supply objects, not an unrelated food/drink or tea-ceremony scene.",
+      "scene_template": "A private, empty illustration studio scene for ${title}: an open sketchbook showing only non-legible abstract marks, a drawing tablet with a stylus resting beside it, ink pens and pencils resting on the desk, brushes resting beside a finished piece of art (never held, never mid-stroke), one or two finished illustrated prints or a line-art sheet displayed, small color swatches, and a drawing desk or studio corner. The scene communicates drawn visual-art culture through these objects alone, with no person present. The scene must NOT become a tea ceremony, matcha, or any food/drink scene, must NOT become generic photography, and must NOT become printing/manufacturing machinery.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (commit f98b1fc finding). Prepared and repaired this checkpoint but the id remains qa_quarantine and is deliberately excluded from Sentinel-8 - it stays held pending a later, separate visual revalidation."
+    },
+    "classic_car_generic_morphology": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "transport.classic_cars rendered a vehicle body strongly resembling a recognizable classic Japanese sports/GT car design even with no logo present - the shared private_empty_venue rule has no morphology constraint at all.",
+      "good_pattern": "Classic-car appreciation communicated through generic vintage vehicles, period tools, and mixed-era cues rather than one identifiable real classic model.",
+      "scene_template": "A private, empty classic-car garage scene for ${title}: a generic vintage-styled vehicle body with deliberately blended, mixed-era design cues (not matching any one real historic model), period-appropriate tools resting on a workbench, vintage badges and dials with no readable brand names, and warm garage lighting. Avoid any combination of features strongly associated with a specific real manufacturer or model, even with no logo present: no signature headlight geometry, no signature grille or intake design, no trademark-like taillight arrangement, no distinctive greenhouse/window profile, no iconic fender or shoulder-line proportions, no highly recognizable side-intake layout, no model-specific rear-wing or body treatment, and no classic model-specific silhouette. Prefer original, blended body geometry with simplified forms, non-identifying headlight clusters, a novel grille/intake treatment, and mixed-era or mixed-brand design cues rather than one exact real model. No person.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (Part 6). id-exact, narrow automotive grammar."
+    },
+    "sports_car_generic_morphology": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "transport.sports_cars rendered a car silhouette strongly resembling Porsche-911-type signature morphology even with no logo present.",
+      "good_pattern": "A generic original sports coupe with deliberately non-model-specific blended geometry.",
+      "scene_template": "A private, empty scene for ${title}: a generic original sports-coupe body with deliberately blended, non-model-specific proportions parked in a clean private space, its own defining performance cues (a low stance, a simplified sport-oriented silhouette) carrying the recognition. Avoid any combination of features strongly associated with a specific real manufacturer or model, even with no logo present: no signature headlight geometry, no signature grille or intake design, no trademark-like taillight arrangement, no distinctive greenhouse/window profile, no iconic fender or shoulder-line proportions, no highly recognizable side-intake layout, no model-specific rear-wing or body treatment, and no classic model-specific silhouette. Prefer original, blended body geometry with simplified forms, non-identifying headlight clusters, a novel grille/intake treatment, and mixed-era or mixed-brand design cues rather than one exact real model. No person.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (Part 6). id-exact, narrow automotive grammar."
+    },
+    "supercar_generic_morphology": {
+      "applies_to_archetypes": [],
+      "interaction_support_mode": "static_resting",
+      "bad_pattern": "transport.supercars rendered a vehicle morphology strongly resembling a recognizable McLaren-like supercar design language even with no logo present.",
+      "good_pattern": "A fictional futuristic high-performance vehicle with deliberately original morphology, not an identifiable real supercar model.",
+      "scene_template": "A private, empty scene for ${title}: a fictional, futuristic high-performance vehicle with deliberately original, invented body geometry (not matching any real supercar manufacturer's design language) parked in a clean private space, its dramatic low stance and performance-oriented silhouette carrying the recognition on their own. Avoid any combination of features strongly associated with a specific real manufacturer or model, even with no logo present: no signature headlight geometry, no signature grille or intake design, no trademark-like taillight arrangement, no distinctive greenhouse/window profile, no iconic fender or shoulder-line proportions, no highly recognizable side-intake layout, no model-specific rear-wing or body treatment, and no classic model-specific silhouette. Prefer original, blended body geometry with simplified forms, non-identifying headlight clusters, a novel grille/intake treatment, and mixed-era or mixed-brand design cues rather than one exact real model. No person.",
+      "validated_by": [],
+      "notes": "v2.5 Wave-C remediation (Part 6). id-exact, narrow automotive grammar."
     }
   },
   "rule_id_index": [
@@ -376,6 +510,16 @@
     "karaoke_object_first",
     "booktube_creator_setup_no_presenter",
     "consumer_gadgets_object_hero",
-    "stretching_mobility_props_no_body"
+    "stretching_mobility_props_no_body",
+    "gardening_object_first_grammar",
+    "chemistry_lab_object_first_grammar",
+    "nonfiction_object_first_grammar",
+    "mobility_training_object_first_grammar",
+    "television_object_first_grammar",
+    "machine_learning_object_first_grammar",
+    "illustration_object_first_grammar",
+    "classic_car_generic_morphology",
+    "sports_car_generic_morphology",
+    "supercar_generic_morphology"
   ]
 }

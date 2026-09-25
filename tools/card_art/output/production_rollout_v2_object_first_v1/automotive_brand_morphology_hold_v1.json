@@ -1,0 +1,31 @@
+{
+  "version": "automotive_brand_morphology_hold_v1",
+  "recorded_at": "2026-09-25T11:01:47.670Z",
+  "generation_hold_reason": "automotive_brand_morphology_repair",
+  "rationale": "motorsport.cars (Canary-24 quarantine) plus 3 Wave-C failures (transport.classic_cars, transport.sports_cars, transport.supercars) all independently converged on recognizable real-manufacturer vehicle morphology despite no logo present - a repeated, systemic pattern across 2 separate production waves, not an isolated single-card issue.",
+  "classification_method": "canonical ids under runtime_category=transport whose recipe subject/recognition_anchors text explicitly calls for a complete passenger/sports/classic/supercar body silhouette (a full-body-car recognition pattern), determined from the actual recipe text - not a substring match on the word \"car\". Explicitly excludes railway, aviation, cycling, transit, and model-railway transport concepts even when they incidentally mention \"car\" (e.g. cable-car, car meets).",
+  "matched_candidates_before_status_filter": [
+    {
+      "canonical_id": "transport.muscle_cars",
+      "title": "Muscle Cars",
+      "archetype": "journey_machine"
+    },
+    {
+      "canonical_id": "transport.pickup_trucks",
+      "title": "Pickup Trucks",
+      "archetype": "journey_machine"
+    }
+  ],
+  "held_count": 2,
+  "held_ids": [
+    "transport.muscle_cars",
+    "transport.pickup_trucks"
+  ],
+  "already_decided_full_body_car_ids_not_held": [
+    "motorsport.cars",
+    "transport.classic_cars",
+    "transport.sports_cars",
+    "transport.supercars"
+  ],
+  "note": "motorsport.cars and the 3 Wave-C ids are NOT included in the hold list because they are already generated and QA-quarantined - their existing quarantine status and failed image provenance are preserved untouched, not converted into a generation hold."
+}

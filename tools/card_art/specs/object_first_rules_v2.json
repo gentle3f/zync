@@ -509,6 +509,106 @@
       "structural_containment_rule_id": "stretching_mobility_props_no_body",
       "confidence": "extrapolated",
       "rationale": "Wave-B remediation: gym-machine misfire fix, exact-id only."
+    },
+    {
+      "match": {
+        "id": "lifestyle.gardening"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "gardening_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: floating self-watering watering can fix."
+    },
+    {
+      "match": {
+        "id": "science.chemistry"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "chemistry_lab_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: floating self-pouring flask fix."
+    },
+    {
+      "match": {
+        "id": "learning.nonfiction"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "nonfiction_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: astronomy/telescope semantic misroute fix."
+    },
+    {
+      "match": {
+        "id": "wellness.mobility"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "mobility_training_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: dog-agility semantic misroute fix."
+    },
+    {
+      "match": {
+        "id": "media.tv"
+      },
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "television_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: outdoor-cinema-projection semantic misroute fix."
+    },
+    {
+      "match": {
+        "id": "technology.machine_learning"
+      },
+      "protagonist_type": "abstract_system",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "machine_learning_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: generic sci-fi machine/totem semantic misroute fix."
+    },
+    {
+      "match": {
+        "id": "arts.illustration"
+      },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "illustration_object_first_grammar",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: matcha/tea-culture semantic misroute fix. Remains qa_quarantine, excluded from Sentinel-8."
+    },
+    {
+      "match": {
+        "id": "transport.classic_cars"
+      },
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "classic_car_generic_morphology",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: brand-likeness (classic Japanese GT/sports car) fix."
+    },
+    {
+      "match": {
+        "id": "transport.sports_cars"
+      },
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "sports_car_generic_morphology",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: brand-likeness (Porsche-911-type) fix."
+    },
+    {
+      "match": {
+        "id": "transport.supercars"
+      },
+      "protagonist_type": "machine_process",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "supercar_generic_morphology",
+      "confidence": "extrapolated",
+      "rationale": "v2.5 Wave-C remediation: brand-likeness (McLaren-like) fix."
     }
   ],
   "human_exception_keyword_scan": {

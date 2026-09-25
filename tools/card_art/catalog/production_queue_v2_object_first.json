@@ -2405,10 +2405,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 76,
@@ -2461,10 +2464,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 78,
@@ -2489,10 +2495,16 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor",
+        "scene_plausibility_minor"
+      ],
+      "visual_qa_finding": "Editing identity remains understandable but the scene became overly mechanized."
     },
     {
       "queue_index": 79,
@@ -2517,10 +2529,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "scene_plausibility_minor"
+      ],
+      "visual_qa_finding": "Console-gaming identity works but the outdoor/camping-style setup is somewhat implausible."
     },
     {
       "queue_index": 80,
@@ -2545,10 +2562,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 81,
@@ -2573,10 +2593,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Reads somewhat like generic weight training rather than specifically bodybuilding."
     },
     {
       "queue_index": 82,
@@ -2685,10 +2710,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 86,
@@ -2713,10 +2741,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "brand_likeness"
+      ],
+      "visual_qa_finding": "Vehicle morphology strongly resembled a recognizable classic Japanese sports/GT car design."
     },
     {
       "queue_index": 87,
@@ -2741,10 +2774,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 88,
@@ -2769,10 +2805,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 89,
@@ -2881,10 +2920,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 93,
@@ -2909,10 +2951,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 94,
@@ -2937,10 +2982,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Reads strongly as fulfilment/logistics automation, but ecommerce identity remains acceptable."
     },
     {
       "queue_index": 95,
@@ -2965,10 +3015,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "semantic_identity"
+      ],
+      "visual_qa_finding": "Rendered as astronomy/telescope/stargazing rather than nonfiction."
     },
     {
       "queue_index": 96,
@@ -2993,10 +3048,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 97,
@@ -3021,10 +3079,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 98,
@@ -3049,10 +3110,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 99,
@@ -3077,10 +3141,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Readable as AI but somewhat generic sci-fi."
     },
     {
       "queue_index": 100,
@@ -3161,10 +3230,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 103,
@@ -3189,10 +3261,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 104,
@@ -3217,10 +3292,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 105,
@@ -3245,10 +3323,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "semantic_identity"
+      ],
+      "visual_qa_finding": "Rendered as dog agility/pet obstacle activity rather than human wellness mobility."
     },
     {
       "queue_index": 106,
@@ -3273,10 +3356,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "text_leak_minor"
+      ],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 107,
@@ -3329,10 +3417,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 109,
@@ -3385,10 +3476,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 111,
@@ -3413,10 +3507,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Drifts toward drone/video production but remains within vlogging/content creation."
     },
     {
       "queue_index": 112,
@@ -3441,10 +3540,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 113,
@@ -3469,10 +3571,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 114,
@@ -3497,10 +3602,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Bodyweight-training equipment cues exist, but calisthenics specificity is weaker than ideal."
     },
     {
       "queue_index": 115,
@@ -3609,10 +3719,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "physical_logic"
+      ],
+      "visual_qa_finding": "Watering can floated and watered plants by itself. Clear invisible-human physics failure."
     },
     {
       "queue_index": 119,
@@ -3637,10 +3752,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "brand_likeness"
+      ],
+      "visual_qa_finding": "Car silhouette strongly resembled Porsche-911-type signature morphology."
     },
     {
       "queue_index": 120,
@@ -3665,10 +3785,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "physical_logic"
+      ],
+      "visual_qa_finding": "Flask/lab vessel floated and poured liquid by itself. Clear invisible-human physics failure."
     },
     {
       "queue_index": 121,
@@ -3701,13 +3826,13 @@
     {
       "queue_index": 122,
       "canonical_id": "music.hip_hop",
-      "prompt_sha256": "4fd962ccfee5545018e55c753c9d5f2d9e57cb99882c6179229abe8070dc467a",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "b48b55df48f362f254d6adb357b9dcff1de649d85beb19d5430f39171cb706ea",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "music_listening",
       "runtime_category": "music",
       "containment_status": "containment_required",
-      "scene_family": "macro_material_scene",
+      "scene_family": "open_daylight_outdoor",
       "composition_archetype": "architectural_wide",
       "palette_lighting_route": "bright_daylight",
       "effect_level": "none",
@@ -3777,10 +3902,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 125,
@@ -3805,10 +3933,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 126,
@@ -3833,10 +3964,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 127,
@@ -3861,10 +3995,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 128,
@@ -3889,10 +4026,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 129,
@@ -3917,10 +4057,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "semantic_identity"
+      ],
+      "visual_qa_finding": "Rendered as outdoor projection/large-screen event rather than television."
     },
     {
       "queue_index": 130,
@@ -3945,10 +4090,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 131,
@@ -3973,10 +4121,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "semantic_identity"
+      ],
+      "visual_qa_finding": "Rendered as a large generic sci-fi machine/totem; machine-learning identity was lost."
     },
     {
       "queue_index": 132,
@@ -4057,10 +4210,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 135,
@@ -4085,10 +4241,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 136,
@@ -4113,10 +4272,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 137,
@@ -4141,10 +4303,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 138,
@@ -4169,10 +4334,16 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor",
+        "text_leak_minor"
+      ],
+      "visual_qa_finding": "Math/competition cues exist but Olympiad-specific identity is not very strong."
     },
     {
       "queue_index": 139,
@@ -4225,10 +4396,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 141,
@@ -4281,10 +4455,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 143,
@@ -4309,10 +4486,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Reads somewhat like general camera-production work."
     },
     {
       "queue_index": 144,
@@ -4337,10 +4519,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 145,
@@ -4365,10 +4550,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 146,
@@ -4393,10 +4581,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 147,
@@ -4505,10 +4696,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 151,
@@ -4533,10 +4727,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "brand_likeness"
+      ],
+      "visual_qa_finding": "Vehicle morphology strongly resembled recognizable McLaren-like supercar design language."
     },
     {
       "queue_index": 152,
@@ -4561,10 +4760,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 153,
@@ -4597,13 +4799,13 @@
     {
       "queue_index": 154,
       "canonical_id": "music.r_and_b",
-      "prompt_sha256": "9eb3691b720f312dcd0765e94323cc68624caab46b5611836b7f85b0722276c8",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f71c21c9ef10cb108de3200e3668cce327092d8a1d3d4a50c0940a23fe5882c6",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "music_listening",
       "runtime_category": "music",
       "containment_status": "containment_required",
-      "scene_family": "open_daylight_outdoor",
+      "scene_family": "nature_environmental",
       "composition_archetype": "minimal_iconic",
       "palette_lighting_route": "dusk_transition",
       "effect_level": "restrained",
@@ -4673,10 +4875,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 157,
@@ -4701,10 +4906,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 158,
@@ -4729,10 +4937,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Drifts toward accounting/calculator imagery but remains recognizably finance-related."
     },
     {
       "queue_index": 159,
@@ -4757,10 +4970,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 160,
@@ -4785,10 +5001,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 161,
@@ -4813,10 +5032,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Performance/stage environment works, but specific concert identity is weaker than ideal."
     },
     {
       "queue_index": 162,
@@ -4841,10 +5065,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 163,
@@ -4869,10 +5096,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 164,
@@ -4953,10 +5183,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 167,
@@ -4981,10 +5214,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 168,
@@ -5009,10 +5245,13 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved",
+      "visual_qa_flags": [],
+      "visual_qa_finding": null
     },
     {
       "queue_index": 169,
@@ -5037,10 +5276,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "semantic_identity_minor"
+      ],
+      "visual_qa_finding": "Drifts toward robotics/engineering challenge imagery but remains competition/science adjacent."
     },
     {
       "queue_index": 170,
@@ -5093,10 +5337,16 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "approved_with_minor",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "approved_with_minor",
+      "visual_qa_flags": [
+        "scene_plausibility_minor",
+        "semantic_specificity_minor"
+      ],
+      "visual_qa_finding": "Reads as repair activity but became an overly specific large clock/watch-style workshop in an unusual environment."
     },
     {
       "queue_index": 172,
@@ -5149,10 +5399,15 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "generated_pending_qa",
+      "generation_status": "qa_quarantine",
       "failure_status": null,
-      "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "quarantine_status": "qa_quarantine",
+      "generation_hold_reason": null,
+      "visual_qa_disposition": "qa_quarantine",
+      "visual_qa_flags": [
+        "semantic_identity"
+      ],
+      "visual_qa_finding": "Rendered as matcha/tea culture instead of illustration. Severe cross-domain semantic miss."
     },
     {
       "queue_index": 174,
@@ -6333,13 +6588,13 @@
     {
       "queue_index": 216,
       "canonical_id": "music.blues",
-      "prompt_sha256": "de9c0c49174f8407d7b8207dc7d72291ed735fbecb50a581a061eebaf5264fdd",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f40bea652d939c15d77eab1e7efd1fc5624295638d21362ba4bc31b94f8ebbd2",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "music_listening",
       "runtime_category": "music",
       "containment_status": "containment_required",
-      "scene_family": "warm_intimate_interior",
+      "scene_family": "macro_material_scene",
       "composition_archetype": "architectural_wide",
       "palette_lighting_route": "dusk_transition",
       "effect_level": "none",
@@ -8125,13 +8380,13 @@
     {
       "queue_index": 280,
       "canonical_id": "learning.business_books",
-      "prompt_sha256": "ccb8b895ab2ed684cff65bd303a7f6d2817e60db63d652e2c42d19beada34616",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "3bdb7d51bc9774e9b3603eb072b86438299a68fe6b4c75fea365a326a27db8aa",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "reading_world",
       "runtime_category": "learning",
       "containment_status": "containment_required",
-      "scene_family": "cool_night_outdoor",
+      "scene_family": "minimal_studio",
       "composition_archetype": "elevated_three_quarter",
       "palette_lighting_route": "studio_dark",
       "effect_level": "none",
@@ -9581,13 +9836,13 @@
     {
       "queue_index": 332,
       "canonical_id": "music.alternative",
-      "prompt_sha256": "557d430a2b9d314cbb0fc1072cde988ddb93cb21d728edfd242eae2217e7e483",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "b8d43f6d2347647049a43bf99bec5253c2f2c52434afcb42bd2cce64e8d43a93",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "music_listening",
       "runtime_category": "music",
       "containment_status": "containment_required",
-      "scene_family": "macro_material_scene",
+      "scene_family": "nature_environmental",
       "composition_archetype": "low_angle_kinetic",
       "palette_lighting_route": "warm_intimate",
       "effect_level": "restrained",
@@ -11877,13 +12132,13 @@
     {
       "queue_index": 414,
       "canonical_id": "music.techno",
-      "prompt_sha256": "e52843bcae1e5bfb2e04a21e496b9ce93c7d4c9a90c90a347574c8ff34851d31",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "a67e5367ee857b42c9cdf748cda2f8d9292723aa0f016cc25bd79e288a641c1b",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "music_listening",
       "runtime_category": "music",
       "containment_status": "containment_required",
-      "scene_family": "nature_environmental",
+      "scene_family": "dark_cinematic_interior",
       "composition_archetype": "low_angle_kinetic",
       "palette_lighting_route": "warm_intimate",
       "effect_level": "none",
@@ -12633,13 +12888,13 @@
     {
       "queue_index": 441,
       "canonical_id": "music.trance",
-      "prompt_sha256": "ec90e30ed266f4b8c4713fcd908c3fbd4df3f583803ff3dfce03c378961d2ca2",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "19c6443f05ca8f04faa37028eae5a71846044002f9d5b52c95115df9f4baedd0",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "music_listening",
       "runtime_category": "music",
       "containment_status": "containment_required",
-      "scene_family": "minimal_studio",
+      "scene_family": "macro_material_scene",
       "composition_archetype": "architectural_wide",
       "palette_lighting_route": "dusk_transition",
       "effect_level": "none",
@@ -20776,7 +21031,7 @@
       "generation_status": "pending_generation",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": "automotive_brand_morphology_repair"
     },
     {
       "queue_index": 732,
@@ -21364,7 +21619,7 @@
       "generation_status": "pending_generation",
       "failure_status": null,
       "quarantine_status": "not_quarantined",
-      "generation_hold_reason": null
+      "generation_hold_reason": "automotive_brand_morphology_repair"
     },
     {
       "queue_index": 753,

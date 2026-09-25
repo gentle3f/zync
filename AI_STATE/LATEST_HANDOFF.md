@@ -13,22 +13,29 @@ authorization):
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
 Second, separate authoritative checkpoint (Object-First V2 production
-ROLLOUT is now IN PROGRESS. Canary-24 ($0.4032), Wave-B-48 ($0.8064),
-Sentinel-6 remediation validation ($0.1008), and Wave-C-96 ($1.6128) have
-all executed and (except Wave-C, awaiting review) been visually reviewed
-by ChatGPT. Sentinel-6 PASS_REMEDIATION_VALIDATED released Wave-C from
-HOLD. Formal cumulative production-wave spend: $2.8224 (Canary+WaveB+WaveC).
-Validation/remediation spend tracked separately: $0.5544 (Validation-16 +
-Validation-8 + Recheck-3 + startups-recheck + Sentinel-6). 264 rows remain
-on a temporary generation hold (261 genre-music + 2 vocal-music + 1
-wellness.stretching). Wave-C's 96 outputs are technically validated,
-NOT yet visually reviewed - awaiting ChatGPT QA on a 68-card risk-
-stratified sample before steady-state (120-card batches) can be
-authorized:
+ROLLOUT: Wave-C-96's 68-card QA sample has been visually reviewed by
+ChatGPT - 44 approved, 14 approved_with_minor, 10 qa_quarantine (3
+automotive brand-likeness, 5 semantic misroutes, 2 human-operated-object
+physics). Result: PASS_WITH_SYSTEMIC_REMEDIATION_REQUIRED. In response, a
+NEW production candidate v2.5 was built zero-cost: a reusable
+`interaction_support_mode` compiler-level field (36 rules tagged), 10
+id-exact grammar fixes (2 automotive morphology + 2 human-operated-object
++ 5 semantic-misroute + gardening/chemistry), a new
+`automotive_brand_morphology_repair` hold (transport.muscle_cars,
+transport.pickup_trucks - 2 ids), and a Sentinel-8 plan (NOT executed,
+$0.1344 future cost). Steady-state remains HOLD_FOR_WAVEC_REMEDIATION_SENTINEL.
+266 rows now held (261 genre-music + 2 vocal-music + 1 wellness.stretching
++ 2 automotive). Formal cumulative production-wave spend unchanged this
+checkpoint at $2.8224 (Canary+WaveB+WaveC) - this was a $0.00 zero-cost
+architecture checkpoint:
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_WAVEC96_ROLLOUT.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_V25_WAVEC_REMEDIATION.md`
 
-(previous checkpoint in this track, still useful for context - v2.4.1
+(previous checkpoint in this track, still useful for context - Wave-C-96
+executed, 68-card QA sample prepared but not yet reviewed:
+`AI_STATE/HANDOFF_20260925_CARD_ART_WAVEC96_ROLLOUT.md`)
+
+(earlier checkpoint in this track, still useful for context - v2.4.1
 narrow fix, Sentinel-6 plan built but not yet executed:
 `AI_STATE/HANDOFF_20260925_CARD_ART_V241_PRE_SENTINEL_CLEANUP.md`)
 

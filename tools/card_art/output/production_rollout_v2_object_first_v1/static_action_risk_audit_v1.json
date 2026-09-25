@@ -1,0 +1,12 @@
+{
+  "version": "static_action_risk_audit_v1",
+  "generated_at": "2026-09-25T11:12:26.208Z",
+  "total_matches": 277,
+  "by_classification": {
+    "supported": 209,
+    "static_result_state": 66,
+    "automated_or_passive": 2
+  },
+  "residual_risky_manual_action_count": 0,
+  "residual_risky_manual_action_entries": []
+}
