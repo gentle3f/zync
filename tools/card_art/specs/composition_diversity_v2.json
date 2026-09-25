@@ -1,7 +1,26 @@
 {
   "version": "v2",
   "purpose": "Deterministic composition/palette/effects diversity router for candidate V2 object-first cards. Reuses the proven hashing pattern from src/diversityLayer.js (stable per-dimension hash of the canonical id, so the same id always routes to the same values across regenerations) but with a new, independent set of dimensions suited to object-first/non-human-led scenes rather than V1's human-presentation dimensions (gender/body/hair etc, which do not apply here). Round 3 validated that this kind of router is necessary and effective: 11/12 archetype-compliant results and a genuine break from the golden-hour/cozy/centered/sparkle sameness pattern.",
+  "scene_family_note": "Added post-Validation-16 (starting commit 53f72d2). Real generated images showed visible convergence on one repeated rendered pattern - dark/blue-toned indoor scene + warm practical lamp + empty desk/table/workspace + cozy polished atmosphere - even though composition_archetype/palette_lighting_route distributions were statistically healthy. scene_family is an independent dimension controlling the overall experiential STRUCTURE of the image (not a synonym for composition or palette), specifically to stop that one scene type from being the default fallback. It is NOT a claim that rendered visual diversity is now proven - only that prompt-level scene-family diversity is deterministic and audited; see audit_summary_v2.json's rendered_diversity_disclaimer.",
   "dimensions": {
+    "scene_family": {
+      "description": "The overall experiential scene structure - independent of and orthogonal to composition_archetype (camera/framing) and palette_lighting_route (color/time-of-day). Deterministically assigned per id, then adjusted by a sliding-window de-collision pass over catalog order so the same family does not repeat too densely in any local run of the catalog.",
+      "values": {
+        "open_daylight_outdoor": "An open outdoor space in clear daylight, un-enclosed by walls.",
+        "cool_night_outdoor": "An outdoor space at night or dusk, cool-toned ambient/artificial light.",
+        "bright_clean_interior": "A bright, high-key interior with even, unmoody lighting.",
+        "dark_cinematic_interior": "A dark or dim interior with one strong, dramatic light source.",
+        "warm_intimate_interior": "A warm-lit, cozy interior with a single practical light (lamp, spotlight).",
+        "industrial_workshop": "A workshop/maker/craft space with visible tools, materials, and work-in-progress texture.",
+        "technical_lab": "A clinical, technical, or laboratory-like environment - clean, precise, equipment-forward.",
+        "architectural_grand": "A large-scale architectural space where the structure itself is a major visual element.",
+        "overhead_tabletop_scene": "A scene viewed from directly above a table or flat surface, the surface itself forming the composition.",
+        "macro_material_scene": "An extreme close-up scene where material texture and surface detail dominate over any wider environment.",
+        "nature_environmental": "A scene dominated by natural terrain, plants, water, or weather rather than any built structure.",
+        "minimal_studio": "A deliberately sparse, mostly-empty studio-like space with negative space as a compositional tool.",
+        "exhibition_display": "A display/showcase/exhibition-like arrangement - shelving, cases, or curated presentation of objects."
+      }
+    },
     "composition_archetype": {
       "description": "Camera angle, object scale, and framing treatment.",
       "values": {

@@ -1,0 +1,43 @@
+{
+  "version": "v1",
+  "purpose": "Post-Validation-16 fix (starting commit 53f72d2). The generic global 'no invisible-human physics' sentence in physical_logic_v1.json was conceptually correct but proved operationally insufficient: food.japanese still rendered chopsticks lifting noodles in mid-air with no hand and no support. This spec adds reusable, DOMAIN-specific physical-logic rules (not hobby-by-hobby manual negatives) mapped from archetype, so every row gets both the shared generic rule (physical_logic_v1.json, unchanged) AND a domain-specific rule matched to what kind of object/tool its scene actually involves.",
+  "domains": {
+    "food_utensils": {
+      "rule_text": "Utensils and vessels rest naturally on a physical support surface: chopsticks rest on a chopstick holder, the bowl's edge, or the table - never gripping or lifting food in mid-air with no hand. A fork rests on the plate or table, never suspended in food. A spoon rests inside or beside the bowl, never floating. A cup or kettle rests on its base, never hovering. For noodle or similar dishes, prefer noodles arranged naturally in the bowl, with steam and ingredient placement carrying the appetizing energy - never a 'noodles being lifted' composition, since that specific device is the one proven to reintroduce an invisible diner.",
+      "applies_to_archetypes": ["food_hero", "food_exploration", "drink_ritual"],
+      "validated_by": ["food.japanese (Validation-16 fail - floating chopsticks lifting noodles)"]
+    },
+    "tool_sport": {
+      "rule_text": "Sport and craft tools (rackets, bats, clubs, brushes, needles, hammers) may rest on the ground, a bench, or a stand as part of an aftermath scene, or be shown mid-flight/mid-impact only when propelled by a prior action already implied by physical traces (a ball already in motion, a divot, a splash) - never actively swinging, striking, or working a material with no hand and no established mechanism.",
+      "applies_to_archetypes": ["solo_action", "vertical_adventure", "fitness_training", "outdoor_motion", "creative_studio"],
+      "validated_by": ["sports.badminton (Validation-16 pass)"]
+    },
+    "instrument": {
+      "rule_text": "A musical instrument may show physical resonance cues (a faint suggestion of string vibration, a key catching light) only as a static visual effect, never as if actively being played - no depressed keys with moving fingers implied, no bow actively drawn, no strings actively plucked by anything. The instrument is a still, resting object with a hint of recent or ambient resonance, not a performance in progress.",
+      "applies_to_archetypes": ["performance", "music_listening"],
+      "validated_by": ["music.piano (Round 3 pass, prior checkpoint)"]
+    },
+    "vehicle_machine": {
+      "rule_text": "A vehicle or machine may be shown parked, mid-automatic-operation (a 3D printer head moving via its own established mechanism, a self-driving-adjacent state implied only by headlights/motion blur with no visible driver), or in believable physical motion (a car with headlights cutting through darkness) without requiring a visible driver or operator - motion must read as machine-driven or environmental (a road disappearing ahead, wheels already turning), never as though an invisible hand is steering or operating a manual control.",
+      "applies_to_archetypes": ["journey_machine", "aviation_world", "physical_prototype", "tech_workspace", "creator_workflow", "digital_play", "screenless_broadcast", "screenless_pc_play"],
+      "validated_by": ["travel.roadtrip (Round 3 pass, prior checkpoint)"]
+    },
+    "ball_object_flight": {
+      "rule_text": "A ball or thrown/launched object may be shown mid-flight, mid-bounce, or just after impact (a rippling net, a fresh divot, splashing water) as an already-in-motion state from a prior, unseen action - this is allowed and encouraged, not a violation, since the object's own established physics (gravity, momentum, elasticity) explains the motion without any hand needed.",
+      "applies_to_archetypes": ["solo_action", "group_play", "strategy_table"],
+      "validated_by": ["sports.basketball (Round 3->4, prior checkpoint)"]
+    },
+    "water_environment": {
+      "rule_text": "Water may ripple, splash, settle after a very recent disturbance, or reflect light - all physically self-explaining states that need no person present. Where this hobby's own scene description calls for a fully static water presentation instead, follow that specific instruction rather than defaulting to a splash or entry trail.",
+      "applies_to_archetypes": ["water_outdoors", "nature_immersion", "wellness_experience", "calm_wellness"],
+      "validated_by": ["outdoors.swimming (Validation-16 pass)"]
+    },
+    "abstract_system": {
+      "rule_text": "An abstract system, data structure, or automated process may animate, glow, or operate entirely under its own established power/logic (already covered by the abstract_system_no_operator containment rule) - no additional domain constraint needed beyond ensuring no operator, hands, or controlling body is ever implied.",
+      "applies_to_archetypes": ["tech_workspace"],
+      "validated_by": ["technology.ai (Validation-16 pass)"]
+    }
+  },
+  "default_domain_for_unmapped_archetypes": null,
+  "compiler_integration_note": "src/compileObjectFirstPromptV2.js selects at most one domain rule per row (the first domain whose applies_to_archetypes includes the row's archetype) and appends its rule_text as a dedicated section immediately after the shared physical_logic_v1.json section. Archetypes with no matching domain (the majority of the catalog) receive only the shared generic rule, unchanged - this spec is additive, not a replacement."
+}

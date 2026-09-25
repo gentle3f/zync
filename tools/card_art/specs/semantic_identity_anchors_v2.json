@@ -1,0 +1,94 @@
+{
+  "version": "v1",
+  "purpose": "Post-Validation-16 fix (starting commit 53f72d2). Answers, per flagged id: what visual cues MUST be present so a viewer identifies THIS hobby rather than a visually-adjacent one (positive_anchors), and what nearby concept must the scene NOT accidentally become (anti_confusions). Applied via id-exact overrides in object_first_rules_v2.json routing to dedicated containment rules in structural_containment_rules_v2.json whose scene_template embeds these anchors directly, since generic archetype-level grammar was proven by real visual QA to be too broad for these 5 ids.",
+  "authoritative_visual_findings_source": "ChatGPT visual review of the paid Validation-16 batch, commit 53f72d2 - supplied as authoritative input, never re-derived by Claude, no image opened this checkpoint.",
+  "entries": {
+    "transport.modelrailways": {
+      "validation16_finding": "SUBSTANTIVE FAIL - image read as a full-size real steam railway in a city, not a model railway. Scale identity was lost.",
+      "positive_anchors": [
+        "a tabletop model-railway layout, not a real railway",
+        "a miniature train on tiny-scale tracks",
+        "miniature buildings and miniature trees/scenery built at model scale",
+        "a visible model-layout base, baseboard, or tabletop edge framing the whole scene",
+        "scale-model terrain construction (foam, plaster, or scenic-ground texture typical of a diorama)",
+        "an intentionally crafted diorama appearance, not a photographed real place",
+        "hobby tools (small paintbrush, glue, scenic scatter material) resting nearby as scale cues",
+        "a deliberate size contrast where the miniature buildings/trees read as small relative to the framing"
+      ],
+      "anti_confusions": [
+        "a real, full-size railway",
+        "an actual full-size locomotive",
+        "real urban transit or a real train station",
+        "photographic railway photography of an actual place"
+      ]
+    },
+    "media.anime": {
+      "validation16_finding": "SUBSTANTIVE FAIL - read as an empty convention/presentation hall with aurora-like screen content plus pseudo-Japanese text; did not communicate anime specifically.",
+      "positive_anchors": [
+        "original, unbranded anime-style figurines clearly visible as small physical collectible objects on a shelf or desk",
+        "animation cels or storyboard/key-frame sheets as physical printed objects",
+        "acrylic-style collectible display stands with original, generic (non-copyrighted) character silhouette designs",
+        "manga/anime-style art books with blank or unreadable covers",
+        "an animation light table or light box as a physical prop",
+        "frame strips or cel layers stacked or fanned out",
+        "vivid, original, clearly Japanese-animation-styled illustrated imagery (fantasy/mecha/creature) rendered AS printed artwork, a cel, or a figurine - never as a physically-present human character in the scene",
+        "a monitor or screen (if present) showing clearly stylized ORIGINAL animation-style imagery with no real human figure on it"
+      ],
+      "anti_confusions": [
+        "a generic conference hall or presentation venue",
+        "a generic cinema (that is media.movies' territory, not anime's)",
+        "an aurora/abstract light show with no anime-specific object present",
+        "general illustration or fine art with no anime-specific stylistic or object cue",
+        "any recognizable copyrighted franchise character, and any pseudo-Japanese or Japanese-look-alike decorative lettering used as filler text"
+      ]
+    },
+    "business.startups": {
+      "validation16_finding": "MINOR - collapsed into an electronics maker/prototyping-workshop reading, too narrow for the broader concept of an early-stage company.",
+      "positive_anchors": [
+        "an early-stage product prototype (not limited to electronics - could be physical goods, packaging, or a service-adjacent physical artifact)",
+        "planning artifacts (blank/abstract sticky notes, index cards, a whiteboard with only abstract non-legible marks)",
+        "a launch/preparation environment feel - boxes ready to ship, a small stack of packaging mockups, a product sitting mid-iteration",
+        "multiple distinct prototype iterations or categories side by side, suggesting experimentation rather than one single engineering bench",
+        "small-team workspace traces (a couple of distinct desk setups, not one lone maker's bench)",
+        "a general sense of 'early-stage company building and iterating on something', not 'hobbyist electronics tinkering'"
+      ],
+      "anti_confusions": [
+        "a pure electronics/maker prototyping hobby scene (that is technology's/physical_prototype's territory, not startups')",
+        "a readable pitch deck, slide, or any legible business-plan text"
+      ]
+    },
+    "music.pop": {
+      "validation16_finding": "MINOR - read as vinyl collecting / hi-fi listening / general music appreciation rather than specifically pop music.",
+      "positive_anchors": [
+        "bold, saturated stage-light color language (magenta/cyan/gold stage-wash gels, not a warm vinyl-lounge glow)",
+        "a polished, commercial pop-production environment feel",
+        "a studio microphone shown purely as an object (on a stand, not held)",
+        "synth pads, a mixing controller, or other music-production tools as supporting objects",
+        "bright, graphic, high-energy lighting rather than a cozy amber listening-room mood",
+        "vinyl/CD/cassette elements allowed only as small supporting objects, never as the dominant hero",
+        "a rhythmic, commercial, high-energy visual feel distinct from an intimate listening ritual"
+      ],
+      "anti_confusions": [
+        "vinyl collecting as the dominant subject (that is a distinct, already-validated sibling concept, not pop music)",
+        "a generic hi-fi/audiophile listening-room mood",
+        "any recognizable singer, celebrity likeness, copyrighted album artwork, or band logo"
+      ]
+    },
+    "learning.mock_trial": {
+      "validation16_finding": "MINOR - read as general legal practice / case preparation rather than specifically a mock trial simulation.",
+      "positive_anchors": [
+        "an educational/simulation courtroom setup, distinctly staged for practice rather than a real proceeding",
+        "clearly arranged, mirrored prosecution and defense tables facing each other",
+        "an empty witness stand as a distinct visible element",
+        "practice/training-style evidence exhibits (labeled generically as practice materials, not real case evidence)",
+        "training or rehearsal cues - a stopwatch, a scoring rubric sheet with only abstract non-legible marks, or a 'practice round' feel",
+        "a school or training-facility architectural feel rather than a working law firm or real courthouse"
+      ],
+      "anti_confusions": [
+        "ordinary legal practice or real case preparation (that is legal_practice's default territory for other ids, not mock trial specifically)",
+        "an oversized generic gavel used as the sole subject (a stock-art cliche explicitly to avoid)",
+        "any readable, invented real-sounding case name"
+      ]
+    }
+  }
+}

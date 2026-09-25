@@ -1,30 +1,30 @@
 {
-  "version": "v2",
-  "generated_at": "2026-09-24T17:03:51.836Z",
-  "baseline_checkpoint": "a369058",
-  "scope": "Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics and rules, not visual findings.",
+  "version": "v3",
+  "generated_at": "2026-09-25T03:45:10.804Z",
+  "baseline_checkpoint": "53f72d2",
+  "scope": "Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit, post-Validation-16 architecture fix. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics, rules, and the authoritative ChatGPT visual findings supplied for Validation-16 - not re-derived visual findings.",
   "total_catalog": 4053,
   "total_eligible": 2210,
   "total_blocked": 1843,
   "total_quarantined_excluded": 2,
   "total_compiled": 2208,
   "protagonist_type_distribution": {
-    "object": 1017,
-    "environment": 553,
+    "object": 1018,
+    "environment": 552,
     "machine_process": 224,
     "food_drink": 332,
     "abstract_system": 53,
     "animal": 29
   },
   "object_first_status_distribution": {
-    "containment_required": 1920,
+    "containment_required": 1921,
     "excluded_quarantined": 2,
-    "clean": 288
+    "clean": 287
   },
   "confidence_distribution": {
-    "validated": 1341,
+    "validated": 1339,
     "extrapolated": 487,
-    "new_grammar_unvalidated": 372,
+    "new_grammar_unvalidated": 374,
     "weak_extrapolation": 8
   },
   "composition_archetype_distribution": {
@@ -56,9 +56,73 @@
     "restrained": 902,
     "expressive": 325
   },
+  "scene_family_distribution": {
+    "macro_material_scene": 166,
+    "bright_clean_interior": 171,
+    "overhead_tabletop_scene": 176,
+    "dark_cinematic_interior": 171,
+    "exhibition_display": 168,
+    "nature_environmental": 163,
+    "cool_night_outdoor": 187,
+    "architectural_grand": 160,
+    "warm_intimate_interior": 169,
+    "industrial_workshop": 181,
+    "open_daylight_outdoor": 158,
+    "minimal_studio": 173,
+    "technical_lab": 165
+  },
+  "text_mode_distribution": {
+    "text_none": 1513,
+    "text_incidental_nonlegible": 695
+  },
+  "physical_logic_domain_distribution": {
+    "tool_sport": 210,
+    "water_environment": 101,
+    "ball_object_flight": 73,
+    "vehicle_machine": 276,
+    "null": 895,
+    "instrument": 321,
+    "food_utensils": 332
+  },
   "physical_logic_risk_count": 545,
   "text_risk_count": 695,
   "brand_risk_count": 427,
+  "semantic_fix_regression": {
+    "pass": true,
+    "ids_checked": [
+      "transport.modelrailways",
+      "media.anime",
+      "business.startups",
+      "music.pop",
+      "learning.mock_trial"
+    ]
+  },
+  "physical_logic_domain_regression": {
+    "id": "food.japanese",
+    "expected_domain": "food_utensils",
+    "actual_domain": "food_utensils",
+    "domain_rule_text_present": true,
+    "pass": true
+  },
+  "preserved_successes_regression": {
+    "pass": true,
+    "ids_checked": [
+      "sports.badminton",
+      "outdoors.swimming",
+      "pets.dogs",
+      "technology.ai",
+      "business.public_speaking",
+      "business.founder_meetups",
+      "business.coworking"
+    ]
+  },
+  "scene_family_sliding_window_audit": {
+    "window_size": 6,
+    "total_windows_checked": 2203,
+    "windows_with_a_repeat": 0,
+    "windows_with_a_repeat_pct": 0
+  },
+  "rendered_diversity_disclaimer": "Prompt-level scene_family/composition/palette diversity is deterministic and audited here. This does NOT prove rendered visual diversity - only a future paid image validation batch can confirm the Validation-16-observed rendered convergence (dark/blue interior + warm lamp + empty table + cozy atmosphere) is actually reduced.",
   "human_exception_candidate_count": 0,
   "human_exception_candidate_rate_pct": 0,
   "review_required_count": 0,
@@ -68,11 +132,11 @@
     "total_checked": 2208,
     "all_clean": true,
     "length_stats": {
-      "min": 10852,
-      "median": 11205,
-      "p90": 11505,
-      "p95": 11667,
-      "max": 11786
+      "min": 10675,
+      "median": 11412,
+      "p90": 11693,
+      "p95": 11763,
+      "max": 12208
     },
     "empty_count": 0,
     "positive_human_role_leak_count": 0,
@@ -104,7 +168,14 @@
     "v15_review_required_reduction_reported_honestly": true,
     "v16_every_compiled_row_has_final_prompt": true,
     "v17_static_prompt_qa_clean": true,
-    "concentration_problems": []
+    "v18_semantic_identity_fixes_pass": true,
+    "v19_physical_logic_domain_routing_works": true,
+    "v20_every_compiled_row_has_text_mode": true,
+    "v21_every_compiled_row_has_scene_family": true,
+    "v22_no_brand_policy_regression": true,
+    "v23_no_zero_human_containment_regression": true,
+    "concentration_problems": [],
+    "scene_family_concentration_problems": []
   },
   "all_validations_pass": true,
   "v1_guard_file_hashes_before": {
@@ -124,6 +195,5 @@
     "catalog\\production_batch_plan_v1.json": "e009d66469b5724d40a97d78b54cec7ae68c507acd011955dd8b61f09152add2"
   },
   "image_generation_calls_made": 0,
-  "api_cost_usd": 0,
-  "validation_16_plan_expected_cost_usd": 0.2688
+  "api_cost_usd": 0
 }

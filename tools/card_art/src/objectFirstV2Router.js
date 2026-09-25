@@ -116,6 +116,9 @@ export function routeHobbyV2(row, ctx) {
       composition_archetype: null,
       palette_lighting_route: null,
       effect_level: null,
+      scene_family: null,
+      text_mode: null,
+      physical_logic_domain: null,
       physical_logic_risk: false,
       text_risk: false,
       brand_risk: false,
@@ -169,6 +172,21 @@ export function routeHobbyV2(row, ctx) {
   const composition_archetype = uniformPick(id, 'composition_archetype', ctx.composition.dimensions.composition_archetype.values);
   const palette_lighting_route = uniformPick(id, 'palette_lighting_route', ctx.composition.dimensions.palette_lighting_route.values);
   const effect_level = weightedPick(id, 'effect_level', ctx.composition.dimensions.effect_level.weights);
+  // Initial deterministic pick only - a separate sliding-window
+  // de-collision pass (deconflictSceneFamilies(), run once over the full
+  // ordered catalog by the audit script, not per-row here) may reassign
+  // this to a different value to prevent local repetition. See
+  // composition_diversity_v2.json's scene_family_note.
+  const scene_family = uniformPick(id, 'scene_family', ctx.composition.dimensions.scene_family.values);
+
+  const text_mode = ctx.textModes?.id_overrides?.[id]?.mode
+    || ctx.textModes?.default_mode_by_archetype?.[archetype]
+    || ctx.textModes?.default_mode_fallback
+    || 'text_none';
+
+  const physical_logic_domain = ctx.physicalLogicDomains
+    ? Object.entries(ctx.physicalLogicDomains.domains || {}).find(([, d]) => d.applies_to_archetypes.includes(archetype))?.[0] || null
+    : null;
 
   return {
     ...base,
@@ -178,6 +196,9 @@ export function routeHobbyV2(row, ctx) {
     composition_archetype,
     palette_lighting_route,
     effect_level,
+    scene_family,
+    text_mode,
+    physical_logic_domain,
     physical_logic_risk: PHYSICAL_LOGIC_RISK_ARCHETYPES.has(archetype),
     text_risk: TEXT_RISK_ARCHETYPES.has(archetype),
     brand_risk: BRAND_RISK_ARCHETYPES.has(archetype),
@@ -185,4 +206,39 @@ export function routeHobbyV2(row, ctx) {
     confidence,
     routing_note,
   };
+}
+
+// Deterministic sliding-window de-collision pass for scene_family, run
+// once over the FULL ORDERED list of routed rows (catalog order, or
+// whatever order a future batch would submit in). If the same
+// scene_family appears more than once within `window` consecutive rows,
+// the later occurrence is deterministically reassigned to the next
+// candidate (by hash rank) that does not collide, so no accidental
+// heavy local clustering survives even though each row's INITIAL pick
+// is already independently distributed. This does not touch any other
+// routing field and never mutates the input array.
+export function deconflictSceneFamilies(rows, sceneFamilyValues, window = 6, maxRepeatsInWindow = 1) {
+  const familyKeys = Object.keys(sceneFamilyValues);
+  const out = rows.map(r => ({ ...r }));
+  for (let i = 0; i < out.length; i++) {
+    if (out[i].scene_family === null || out[i].scene_family === undefined) continue;
+    const windowStart = Math.max(0, i - window + 1);
+    const recent = out.slice(windowStart, i).map(r => r.scene_family);
+    const countInWindow = recent.filter(f => f === out[i].scene_family).length;
+    if (countInWindow < maxRepeatsInWindow) continue;
+    // Collision: deterministically rank the remaining candidates by hash
+    // of (id + attempt index) and pick the first one not already
+    // over-represented in the window.
+    const id = out[i].canonical_interest_id;
+    let chosen = null;
+    for (let attempt = 0; attempt < familyKeys.length && !chosen; attempt++) {
+      const idx = stableHash(`${id}::v2::scene_family::retry${attempt}`) % familyKeys.length;
+      const candidate = familyKeys[idx];
+      const candidateCount = recent.filter(f => f === candidate).length;
+      if (candidateCount < maxRepeatsInWindow) chosen = candidate;
+    }
+    out[i].scene_family = chosen || out[i].scene_family;
+    out[i].scene_family_deconflicted = chosen !== null && chosen !== rows[i].scene_family;
+  }
+  return out;
 }

@@ -21,7 +21,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { buildCatalogRecipeBridge } from './catalogRecipeBridge.js';
-import { routeHobbyV2, findKeywordMatch } from './objectFirstV2Router.js';
+import { routeHobbyV2, findKeywordMatch, deconflictSceneFamilies } from './objectFirstV2Router.js';
 import { compileObjectFirstPromptV2 } from './compileObjectFirstPromptV2.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -62,12 +62,15 @@ function loadCtx() {
   const containmentV2 = readJson(path.join(SPECS, 'structural_containment_rules_v2.json'));
   const compositionV2 = readJson(path.join(SPECS, 'composition_diversity_v2.json'));
   const physicalLogicV2 = readJson(path.join(SPECS, 'physical_logic_v1.json'));
+  const physicalLogicDomainsV2 = readJson(path.join(SPECS, 'physical_logic_domains_v2.json'));
+  const textModesV2 = readJson(path.join(SPECS, 'text_modes_v2.json'));
+  const semanticAnchorsV2 = readJson(path.join(SPECS, 'semantic_identity_anchors_v2.json'));
   const globalStyleV2 = readJson(path.join(SPECS, 'global_style_v2_object_first.json'));
   const globalStyleV1 = readJson(path.join(SPECS, 'global_style_v1.json'));
   const archetypesSpec = readJson(path.join(SPECS, 'archetypes_v1.json'));
   const guardrails = readJson(path.join(SPECS, 'generation_guardrails_v1.json'));
   const quarantinedIds = new Set(Object.keys(guardrails.quarantined || {}));
-  return { rulesV2, containmentV2, compositionV2, physicalLogicV2, globalStyleV2, globalStyleV1, archetypesSpec, quarantinedIds };
+  return { rulesV2, containmentV2, compositionV2, physicalLogicV2, physicalLogicDomainsV2, textModesV2, semanticAnchorsV2, globalStyleV2, globalStyleV1, archetypesSpec, quarantinedIds };
 }
 
 function validateRuleSpecReferences(ctx) {
@@ -105,7 +108,33 @@ function toRow(bridgeRow) {
 }
 
 function compileAll(bridge, ctx) {
-  return bridge.eligible.map(bridgeRow => compileObjectFirstPromptV2(toRow(bridgeRow), ctx, routeHobbyV2));
+  const rows = bridge.eligible.map(bridgeRow => compileObjectFirstPromptV2(toRow(bridgeRow), ctx, routeHobbyV2));
+  // Scene-family sliding-window de-collision pass (Part D): run once over
+  // the full ordered catalog (bridge.eligible's deterministic order) so
+  // the same scene_family doesn't cluster locally, even though each row's
+  // initial pick is already independently hash-distributed. This changes
+  // scene_family only - it does not touch or recompile any other field,
+  // and the routing/prompt were already finalized above, so a
+  // reassignment here would leave a stale scene_family reference inside
+  // an already-compiled prompt. To keep the compiled prompt consistent
+  // with its own recorded scene_family, we recompile just the affected
+  // rows' scene-family text/prompt after deconfliction.
+  const deconflicted = deconflictSceneFamilies(rows, ctx.compositionV2.dimensions.scene_family.values);
+  for (let i = 0; i < rows.length; i++) {
+    if (!deconflicted[i].scene_family_deconflicted || !rows[i].compiled) continue;
+    const oldFamily = rows[i].scene_family;
+    const newFamily = deconflicted[i].scene_family;
+    const oldText = ctx.compositionV2.dimensions.scene_family.values[oldFamily];
+    const newText = ctx.compositionV2.dimensions.scene_family.values[newFamily];
+    rows[i] = {
+      ...rows[i],
+      scene_family: newFamily,
+      final_compiled_prompt: oldText
+        ? rows[i].final_compiled_prompt.replace(`Overall scene structure: ${oldText}`, `Overall scene structure: ${newText}`)
+        : rows[i].final_compiled_prompt,
+    };
+  }
+  return rows;
 }
 
 function tally(rows, field) {
@@ -297,59 +326,13 @@ function runKeywordScanRegressionTests(bridge, rulesV2) {
   return results;
 }
 
-// --- Validation-16 plan (proposed, NOT generated) ---------------------
-function buildValidation16Plan(rows) {
-  const byArchetypeAndStatus = (archetype, status, extra = () => true) =>
-    rows.find(r => r.archetype === archetype && r.object_first_status === status && r.compiled && extra(r));
-
-  const picks = [];
-  const add = (label, row, reason) => { if (row) picks.push({ label, id: row.canonical_interest_id, title: row.title, archetype: row.archetype, object_first_status: row.object_first_status, structural_containment_rule_id: row.structural_containment_rule_id, protagonist_type: row.protagonist_type, composition_archetype: row.composition_archetype, palette_lighting_route: row.palette_lighting_route, effect_level: row.effect_level, physical_logic_risk: row.physical_logic_risk, text_risk: row.text_risk, brand_risk: row.brand_risk, reason }); };
-
-  add('clean_object', byArchetypeAndStatus('collection_object_hero', 'clean'), 'clean status, object protagonist - sanity-check the already-clean bucket');
-  add('clean_food_drink', byArchetypeAndStatus('food_hero', 'clean'), 'clean status, food_drink protagonist - sanity-check the other clean archetype');
-  add('sport_validated', byArchetypeAndStatus('solo_action', 'containment_required'), 'validated action_aftermath rule, sport family, untested specific id');
-  add('water_hard_case', byArchetypeAndStatus('water_outdoors', 'containment_required'), 'strictest validated rule (swimming_hard_case_no_visible_swimmer), physical-logic-risk-adjacent');
-  add('animal', byArchetypeAndStatus('companion_bond', 'containment_required'), 'validated private_environment_animal rule, animal protagonist, generalizes beyond the one tested dog case');
-  add('abstract_system', byArchetypeAndStatus('tech_workspace', 'containment_required'), 'highest-risk validated rule (abstract_system_no_operator), the single worst round-3 failure');
-  add('screen_story', byArchetypeAndStatus('story_culture', 'containment_required'), 'validated screen_non_human_content rule, media/screen risk');
-  add('professional_new_grammar', byArchetypeAndStatus('professional_world', 'containment_required', r => r.human_exception_keyword_matched), '3 true-positive human-exception-keyword match, downgraded this round - tests whether the downgrade holds visually');
-  add('professional_new_grammar_plain', byArchetypeAndStatus('professional_world', 'containment_required', r => !r.human_exception_keyword_matched), 'new professional_material_world grammar, unvalidated, no keyword-scan involvement');
-  add('music_listening_new_grammar', byArchetypeAndStatus('music_listening', 'containment_required'), 'new listening_equipment_world grammar, unvalidated, distinct from the validated instrument-performance case');
-  add('campus_new_grammar', byArchetypeAndStatus('campus_activity', 'containment_required'), 'new campus_activity_grammar, unvalidated');
-  add('community_weak_extrapolation', byArchetypeAndStatus('community_gathering', 'containment_required'), 'lowest-confidence reroute in the whole rule set (weak_extrapolation) - the task explicitly asked this be stress-tested visually');
-  add('shared_workspace_new_grammar', byArchetypeAndStatus('shared_workspace', 'containment_required'), 'new shared_workspace_grammar, unvalidated, risk of reading as simply unoccupied');
-  add('campaign_planning_new_grammar', byArchetypeAndStatus('campaign_planning', 'containment_required'), 'new campaign_planning_materials grammar, unvalidated');
-  add('legal_practice_new_grammar', byArchetypeAndStatus('legal_practice', 'containment_required'), 'new legal_practice_materials grammar, unvalidated, risk of gavel/scales cliche');
-  const tripleRiskRow = rows.find(r => r.compiled && r.physical_logic_risk && r.text_risk && r.brand_risk);
-  if (tripleRiskRow) {
-    add('physical_text_brand_combo', tripleRiskRow, 'stress-tests physical-logic, text, and brand risk flags simultaneously on one card');
-  } else {
-    // No row exists with all three risk flags at once (verified: 0 rows -
-    // the risk-flag archetype sets don't fully overlap). Prefer a
-    // machine_process + two-risk-flag row over a same-protagonist-type
-    // combo: the first full audit of this list found machine_process was
-    // the only protagonist_type with zero coverage across the 16 cards,
-    // and gaming.video (digital_play: text_risk + brand_risk) fixes that
-    // gap in the same slot rather than needing a second swap elsewhere -
-    // see the 2026-09-25 final zero-cost gate handoff for the full
-    // before/after coverage comparison.
-    const machineProcessCombo = rows.find(r => r.compiled && r.protagonist_type === 'machine_process' && r.text_risk && r.brand_risk);
-    if (machineProcessCombo) {
-      add('machine_process_text_brand_combo', machineProcessCombo, 'fills the machine_process coverage gap found in this list\'s first coverage report while keeping a genuine two-flag risk combo (text_risk + brand_risk)');
-    } else {
-      add('physical_and_brand_risk_combo', rows.find(r => r.compiled && r.physical_logic_risk && r.brand_risk), 'fallback: no machine_process + 2-risk-flag row found either; closest available two-flag combo (physical-logic + brand risk)');
-    }
-  }
-
-  return {
-    version: 'v1',
-    purpose: 'Proposed (NOT executed) small validation batch for the V2 compiler, per the task Part-after-audit instruction. Every id below was selected programmatically from the real compiled V2 output, guaranteeing it exists and routes exactly as described.',
-    count: picks.length,
-    expected_cost_usd: Number((picks.length * 0.0168).toFixed(4)),
-    guardrail: 'DO NOT GENERATE. Planning only. Requires a separate, explicit future user authorization before any Gemini Batch API call is made against this list.',
-    cards: picks,
-  };
-}
+// Note: the Validation-16 plan builder that used to live here was removed
+// this checkpoint - Validation-16 has already been executed and paid for
+// (commit 53f72d2), so this script no longer regenerates that historical
+// plan file. The Validation-8 hard-sentinel plan (see the post-Validation
+// architecture fix handoff) is now built by a separate, one-off script
+// since it targets a fixed, task-specified list of 8 ids rather than a
+// programmatic selection.
 
 function main() {
   const beforeHashes = hashGuardFiles();
@@ -407,6 +390,117 @@ function main() {
 
   const promptQa = staticPromptQa(rows);
 
+  // --- Post-Validation-16 targeted checks -----------------------------
+  const byId = new Map(rows.map(r => [r.canonical_interest_id, r]));
+
+  const SEMANTIC_FIX_IDS = {
+    // mustNotContain intentionally empty for this id: the scene_template
+    // correctly mentions "railway photography of an actual place" as
+    // part of its own "never as..." negation clause, so its presence is
+    // expected and desired, not a leak to test against.
+    'transport.modelrailways': { rule: 'model_railway_miniature_scale', mustContain: ['miniature', 'baseboard'], mustNotContain: [] },
+    'media.anime': { rule: 'anime_culture_object_first', mustContain: ['figurine', 'animation cel'], mustNotContain: [] },
+    'business.startups': { rule: 'startup_early_stage_world', mustContain: ['early-stage', 'prototypes or iterations'], mustNotContain: [] },
+    'music.pop': { rule: 'pop_music_production_energy', mustContain: ['stage-light', 'commercial pop production'], mustNotContain: [] },
+    'learning.mock_trial': { rule: 'mock_trial_simulation', mustContain: ['witness stand', 'training facility'], mustNotContain: [] },
+  };
+  const semanticFixResults = Object.entries(SEMANTIC_FIX_IDS).map(([id, spec]) => {
+    const row = byId.get(id);
+    const p = row?.final_compiled_prompt || '';
+    const ruleMatches = row?.structural_containment_rule_id === spec.rule;
+    const containsAll = spec.mustContain.every(s => p.toLowerCase().includes(s.toLowerCase()));
+    const containsNone = spec.mustNotContain.every(s => !p.toLowerCase().includes(s.toLowerCase()));
+    return { id, expected_rule: spec.rule, actual_rule: row?.structural_containment_rule_id, rule_matches: ruleMatches, anchor_phrases_present: containsAll, anti_confusion_clean: containsNone, pass: ruleMatches && containsAll && containsNone };
+  });
+  const semanticFixAllPass = semanticFixResults.every(r => r.pass);
+
+  const foodJapaneseRow = byId.get('food.japanese');
+  const physicalLogicDomainCheck = {
+    id: 'food.japanese',
+    expected_domain: 'food_utensils',
+    actual_domain: foodJapaneseRow?.physical_logic_domain,
+    domain_rule_text_present: Boolean(foodJapaneseRow?.final_compiled_prompt?.includes('chopsticks rest on a chopstick holder')),
+    pass: foodJapaneseRow?.physical_logic_domain === 'food_utensils' && Boolean(foodJapaneseRow?.final_compiled_prompt?.includes('chopsticks rest on a chopstick holder')),
+  };
+
+  const missingTextMode = compiled.filter(r => !r.text_mode);
+  const missingSceneFamily = compiled.filter(r => !r.scene_family);
+
+  // Do NOT destabilize validated successes: these 7 ids must keep their
+  // pre-existing containment_rule_id unchanged by this checkpoint's work.
+  const PRESERVED_SUCCESSES = {
+    'sports.badminton': 'action_aftermath',
+    'outdoors.swimming': 'swimming_hard_case_no_visible_swimmer',
+    'pets.dogs': 'private_environment_animal',
+    'technology.ai': 'abstract_system_no_operator',
+    'business.public_speaking': 'private_empty_venue',
+    'business.founder_meetups': 'community_gathering_traces',
+    'business.coworking': 'shared_workspace_grammar',
+  };
+  const preservedSuccessResults = Object.entries(PRESERVED_SUCCESSES).map(([id, expectedRule]) => {
+    const row = byId.get(id);
+    return { id, expected_rule: expectedRule, actual_rule: row?.structural_containment_rule_id, pass: row?.structural_containment_rule_id === expectedRule };
+  });
+  const preservedSuccessAllPass = preservedSuccessResults.every(r => r.pass);
+
+  // --- Scene-family / anti-convergence audit (Part D) -----------------
+  const sceneFamilyDistribution = tally(compiled, 'scene_family');
+  const sceneFamilyProblems = [];
+  checkConcentration(sceneFamilyDistribution, 100 / Object.keys(ctx.compositionV2.dimensions.scene_family.values).length, 'scene_family', sceneFamilyProblems);
+
+  function crossTally(rowsIn, fieldA, fieldB) {
+    const counts = {};
+    for (const r of rowsIn) {
+      const key = `${r[fieldA]}__x__${r[fieldB]}`;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    return counts;
+  }
+  const sceneFamilyXPalette = crossTally(compiled, 'scene_family', 'palette_lighting_route');
+  const sceneFamilyXComposition = crossTally(compiled, 'scene_family', 'composition_archetype');
+  const tripleCounts = {};
+  for (const r of compiled) {
+    const key = `${r.scene_family}__x__${r.composition_archetype}__x__${r.palette_lighting_route}`;
+    tripleCounts[key] = (tripleCounts[key] || 0) + 1;
+  }
+  const topTriples = Object.entries(tripleCounts).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([key, count]) => ({ key, count }));
+
+  const MAJOR_ARCHETYPE_GROUPS = {
+    business: ['professional_world', 'campaign_planning', 'shared_workspace', 'community_gathering', 'drink_ritual'],
+    learning: ['learning_exploration', 'campus_activity'],
+    social_community: ['community_gathering', 'group_play'],
+    professional: ['professional_world'],
+    legal: ['legal_practice'],
+    gaming_media: ['digital_play', 'story_culture', 'screenless_pc_play', 'screenless_broadcast'],
+  };
+  const perGroupSceneFamilyDistribution = {};
+  for (const [group, archetypes] of Object.entries(MAJOR_ARCHETYPE_GROUPS)) {
+    const groupRows = compiled.filter(r => archetypes.includes(r.archetype));
+    perGroupSceneFamilyDistribution[group] = { row_count: groupRows.length, distribution: tally(groupRows, 'scene_family') };
+  }
+
+  // Sliding-window audit using the actual catalog order (the same order
+  // buildProductionQueue.js/a future batch would submit in) - reports how
+  // many windows still contain a repeat AFTER the deconfliction pass
+  // already applied in compileAll(). A non-zero remainder here is
+  // expected in rare cases (deconflictSceneFamilies uses a bounded number
+  // of retry attempts) and is reported honestly rather than hidden.
+  const WINDOW = 6;
+  let windowsWithRepeat = 0, totalWindows = 0;
+  for (let i = 0; i + WINDOW <= compiled.length; i++) {
+    totalWindows += 1;
+    const windowFamilies = compiled.slice(i, i + WINDOW).map(r => r.scene_family);
+    const counts = {};
+    for (const f of windowFamilies) counts[f] = (counts[f] || 0) + 1;
+    if (Object.values(counts).some(c => c > 1)) windowsWithRepeat += 1;
+  }
+  const slidingWindowAudit = {
+    window_size: WINDOW,
+    total_windows_checked: totalWindows,
+    windows_with_a_repeat: windowsWithRepeat,
+    windows_with_a_repeat_pct: totalWindows ? Number(((windowsWithRepeat / totalWindows) * 100).toFixed(2)) : 0,
+  };
+
   const validations = {
     v1_all_2210_compile: rows.length === 2210,
     v2_no_duplicate_ids: ids.length === new Set(ids).size,
@@ -425,11 +519,16 @@ function main() {
     v15_review_required_reduction_reported_honestly: true,
     v16_every_compiled_row_has_final_prompt: missingPrompt.length === 0,
     v17_static_prompt_qa_clean: promptQa.all_clean,
+    v18_semantic_identity_fixes_pass: semanticFixAllPass,
+    v19_physical_logic_domain_routing_works: physicalLogicDomainCheck.pass,
+    v20_every_compiled_row_has_text_mode: missingTextMode.length === 0,
+    v21_every_compiled_row_has_scene_family: missingSceneFamily.length === 0,
+    v22_no_brand_policy_regression: promptQa.brand_name_leak.length === 0,
+    v23_no_zero_human_containment_regression: preservedSuccessAllPass,
     concentration_problems: concentrationProblems,
+    scene_family_concentration_problems: sceneFamilyProblems,
   };
   const allPass = Object.entries(validations).filter(([k]) => /^v\d+_/.test(k)).every(([, v]) => v === true);
-
-  const validation16Plan = buildValidation16Plan(rows);
 
   // Manifest without the full prompt (kept small/diffable); prompts live
   // in a separate file so the manifest stays easy to scan.
@@ -449,12 +548,24 @@ function main() {
     archetypes_represented: [...new Set(reviewRequired.map(r => r.archetype))],
     rows: reviewRequired.map(r => ({ id: r.canonical_interest_id, title: r.title, archetype: r.archetype, routing_note: r.routing_note })),
   });
-  writeJson(path.join(CATALOG, 'object_first_v2_validation_16_plan_v1.json'), validation16Plan);
+  writeJson(path.join(OUT_DIR, 'semantic_fix_regression_v1.json'), { pass: semanticFixAllPass, results: semanticFixResults });
+  writeJson(path.join(OUT_DIR, 'physical_logic_domain_regression_v1.json'), physicalLogicDomainCheck);
+  writeJson(path.join(OUT_DIR, 'preserved_successes_regression_v1.json'), { pass: preservedSuccessAllPass, results: preservedSuccessResults, note: 'Confirms Validation-16\'s 7 PASS cards were not destabilized by this checkpoint\'s architecture changes - each must keep its exact pre-existing structural_containment_rule_id.' });
+  writeJson(path.join(OUT_DIR, 'scene_family_anti_convergence_audit_v1.json'), {
+    rendered_diversity_disclaimer: 'This audit proves PROMPT-LEVEL scene_family diversity only (deterministic assignment + sliding-window de-collision across catalog order). It CANNOT prove rendered visual diversity - only a future image validation batch can do that. Do not treat a healthy distribution here as evidence the rendered-image convergence found in Validation-16 (dark/blue interior + warm lamp + empty table + cozy atmosphere) is actually fixed.',
+    scene_family_distribution: sceneFamilyDistribution,
+    scene_family_x_palette_lighting_route: sceneFamilyXPalette,
+    scene_family_x_composition_archetype: sceneFamilyXComposition,
+    top_10_repeated_triples: topTriples,
+    per_archetype_group_scene_family_distribution: perGroupSceneFamilyDistribution,
+    sliding_window_audit: slidingWindowAudit,
+    concentration_problems: sceneFamilyProblems,
+  });
   writeJson(path.join(OUT_DIR, 'audit_summary_v1.json'), {
-    version: 'v2',
+    version: 'v3',
     generated_at: new Date().toISOString(),
-    baseline_checkpoint: 'a369058',
-    scope: 'Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics and rules, not visual findings.',
+    baseline_checkpoint: '53f72d2',
+    scope: 'Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit, post-Validation-16 architecture fix. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics, rules, and the authoritative ChatGPT visual findings supplied for Validation-16 - not re-derived visual findings.',
     total_catalog: bridge.catalog.length,
     total_eligible: bridge.eligible.length,
     total_blocked: bridge.blocked.length,
@@ -466,9 +577,17 @@ function main() {
     composition_archetype_distribution: compositionDistribution,
     palette_lighting_route_distribution: paletteDistribution,
     effect_level_distribution: effectDistribution,
+    scene_family_distribution: sceneFamilyDistribution,
+    text_mode_distribution: tally(compiled, 'text_mode'),
+    physical_logic_domain_distribution: tally(compiled, 'physical_logic_domain'),
     physical_logic_risk_count: physicalLogicRiskCount,
     text_risk_count: textRiskCount,
     brand_risk_count: brandRiskCount,
+    semantic_fix_regression: { pass: semanticFixAllPass, ids_checked: semanticFixResults.map(r => r.id) },
+    physical_logic_domain_regression: physicalLogicDomainCheck,
+    preserved_successes_regression: { pass: preservedSuccessAllPass, ids_checked: Object.keys(PRESERVED_SUCCESSES) },
+    scene_family_sliding_window_audit: slidingWindowAudit,
+    rendered_diversity_disclaimer: 'Prompt-level scene_family/composition/palette diversity is deterministic and audited here. This does NOT prove rendered visual diversity - only a future paid image validation batch can confirm the Validation-16-observed rendered convergence (dark/blue interior + warm lamp + empty table + cozy atmosphere) is actually reduced.',
     human_exception_candidate_count: humanExceptionCandidates.length,
     human_exception_candidate_rate_pct: Number(humanExceptionRatePct.toFixed(3)),
     review_required_count: reviewRequired.length,
@@ -492,7 +611,6 @@ function main() {
     v1_guard_file_hashes_after: afterHashes,
     image_generation_calls_made: 0,
     api_cost_usd: 0,
-    validation_16_plan_expected_cost_usd: validation16Plan.expected_cost_usd,
   });
 
   console.log(`V2 compiler audit complete: ${rows.length} rows, ${compiled.length} compiled. All validations pass: ${allPass}. review_required: 376 -> ${reviewRequired.length}. human_exception: ${humanExceptionCandidates.length}. static prompt QA clean: ${promptQa.all_clean}. keyword regression pass: ${keywordRegression.pass}. Cost: $0.00.`);

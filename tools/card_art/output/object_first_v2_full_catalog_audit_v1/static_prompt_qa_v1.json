@@ -2220,11 +2220,11 @@
   "excessive_human_negation_repeats_over_3": [],
   "incomplete_scene_sections": [],
   "length_stats": {
-    "min": 10852,
-    "median": 11205,
-    "p90": 11505,
-    "p95": 11667,
-    "max": 11786
+    "min": 10675,
+    "median": 11412,
+    "p90": 11693,
+    "p95": 11763,
+    "max": 12208
   },
   "all_clean": true
 }

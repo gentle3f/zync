@@ -1,0 +1,50 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "id": "transport.modelrailways",
+      "expected_rule": "model_railway_miniature_scale",
+      "actual_rule": "model_railway_miniature_scale",
+      "rule_matches": true,
+      "anchor_phrases_present": true,
+      "anti_confusion_clean": true,
+      "pass": true
+    },
+    {
+      "id": "media.anime",
+      "expected_rule": "anime_culture_object_first",
+      "actual_rule": "anime_culture_object_first",
+      "rule_matches": true,
+      "anchor_phrases_present": true,
+      "anti_confusion_clean": true,
+      "pass": true
+    },
+    {
+      "id": "business.startups",
+      "expected_rule": "startup_early_stage_world",
+      "actual_rule": "startup_early_stage_world",
+      "rule_matches": true,
+      "anchor_phrases_present": true,
+      "anti_confusion_clean": true,
+      "pass": true
+    },
+    {
+      "id": "music.pop",
+      "expected_rule": "pop_music_production_energy",
+      "actual_rule": "pop_music_production_energy",
+      "rule_matches": true,
+      "anchor_phrases_present": true,
+      "anti_confusion_clean": true,
+      "pass": true
+    },
+    {
+      "id": "learning.mock_trial",
+      "expected_rule": "mock_trial_simulation",
+      "actual_rule": "mock_trial_simulation",
+      "rule_matches": true,
+      "anchor_phrases_present": true,
+      "anti_confusion_clean": true,
+      "pass": true
+    }
+  ]
+}

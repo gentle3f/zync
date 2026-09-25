@@ -1,0 +1,48 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "id": "sports.badminton",
+      "expected_rule": "action_aftermath",
+      "actual_rule": "action_aftermath",
+      "pass": true
+    },
+    {
+      "id": "outdoors.swimming",
+      "expected_rule": "swimming_hard_case_no_visible_swimmer",
+      "actual_rule": "swimming_hard_case_no_visible_swimmer",
+      "pass": true
+    },
+    {
+      "id": "pets.dogs",
+      "expected_rule": "private_environment_animal",
+      "actual_rule": "private_environment_animal",
+      "pass": true
+    },
+    {
+      "id": "technology.ai",
+      "expected_rule": "abstract_system_no_operator",
+      "actual_rule": "abstract_system_no_operator",
+      "pass": true
+    },
+    {
+      "id": "business.public_speaking",
+      "expected_rule": "private_empty_venue",
+      "actual_rule": "private_empty_venue",
+      "pass": true
+    },
+    {
+      "id": "business.founder_meetups",
+      "expected_rule": "community_gathering_traces",
+      "actual_rule": "community_gathering_traces",
+      "pass": true
+    },
+    {
+      "id": "business.coworking",
+      "expected_rule": "shared_workspace_grammar",
+      "actual_rule": "shared_workspace_grammar",
+      "pass": true
+    }
+  ],
+  "note": "Confirms Validation-16's 7 PASS cards were not destabilized by this checkpoint's architecture changes - each must keep its exact pre-existing structural_containment_rule_id."
+}

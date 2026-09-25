@@ -1,0 +1,49 @@
+{
+  "version": "v1",
+  "purpose": "Post-Validation-16 fix (starting commit 53f72d2). Replaces the previous binary text handling (a single shared text_policy_v2 paragraph applied identically everywhere) with 3 explicit text modes, so text-risk hobbies get a mode matched to how much text their identity genuinely needs, rather than one-size-fits-all suppression language.",
+  "modes": {
+    "text_none": {
+      "description": "Text is unnecessary for this hobby's identity. The prompt strongly avoids readable generated text of any kind.",
+      "guidance": "Avoid any readable generated text entirely - no labels, no signage, no packaging copy, no incidental text-like marks. If a natural surface could carry writing, keep it blank."
+    },
+    "text_incidental_nonlegible": {
+      "description": "Text-like marks may exist naturally on objects in the scene, but must never be readable.",
+      "guidance": "Text-like marks, diagrams, or notation may appear naturally on books, packaging, posters, boards, or documents, but must always be abstract, blurred, or non-legible - unlabeled diagram blocks, decorative symbols, gestural non-word marks. Never render a complete readable word, sentence, slogan, title, or brand name."
+    },
+    "text_constrained_literal": {
+      "description": "A very small, explicitly whitelisted amount of short, simple readable text materially contributes to this hobby's identity. Used rarely and only where the whitelist below defines it.",
+      "guidance": "Only the specific short strings explicitly whitelisted for this hobby may appear as readable text, at small scale, never as a paragraph, a fake UI, or uncontrolled generated copy. No text beyond the whitelist may be readable."
+    }
+  },
+  "default_mode_by_archetype": {
+    "reading_world": "text_incidental_nonlegible",
+    "learning_exploration": "text_incidental_nonlegible",
+    "strategy_table": "text_incidental_nonlegible",
+    "digital_play": "text_incidental_nonlegible",
+    "creator_workflow": "text_incidental_nonlegible",
+    "campaign_planning": "text_incidental_nonlegible",
+    "legal_practice": "text_incidental_nonlegible",
+    "story_culture": "text_incidental_nonlegible",
+    "professional_world": "text_incidental_nonlegible",
+    "campus_activity": "text_incidental_nonlegible",
+    "shared_workspace": "text_incidental_nonlegible"
+  },
+  "default_mode_fallback": "text_none",
+  "id_overrides": {
+    "learning.model_united_nations": {
+      "mode": "text_incidental_nonlegible",
+      "decision": "Chose the NON-literal route (flags/placards/semicircle desk arrangement) over text_constrained_literal, per the task's explicit 'alternative valid route' option. Rationale: asking Gemini to render specific, accurate country names or committee abbreviations as literal text is exactly the kind of uncontrolled-generated-copy risk this architecture exists to avoid (misspellings, invented/incorrect country names, inconsistent results) - the diplomatic-conference identity is fully carried by non-textual cues (a semicircular delegate-desk arrangement, generic unlabeled placards, generic multi-colored flag fabric with no readable emblem, a world-map motif with no readable place names) without requesting any literal country label at all.",
+      "guidance": "Placards on delegate desks must be blank or carry only abstract non-legible marks - never an actual or invented country name. Flags may appear as generic colorful fabric/banner shapes with no readable text or real national emblem. A world map, if shown, must use abstract line/shape work only, no readable place names."
+    },
+    "business.marketing": {
+      "mode": "text_incidental_nonlegible",
+      "decision": "Reinforces the existing campaign_planning_materials containment rule (already text_incidental_nonlegible-equivalent) with explicit anti-KPI/anti-slogan language after Validation-16 found pseudo-text/pseudo-diagrams still leaking through.",
+      "guidance": "No fake KPI numbers, no fake slogans, no pseudo-marketing-copy of any kind, even in abstract-looking form - chart shapes and card layouts must read as clearly non-textual geometry, not text-shaped scribbles."
+    },
+    "gaming.video": {
+      "mode": "text_incidental_nonlegible",
+      "decision": "Reinforces the existing generic_structural_containment default with explicit anti-pseudo-Japanese-poster language after Validation-16 found excessive pseudo-Japanese/text on posters, books, and screens.",
+      "guidance": "Posters, book spines, and screens visible in the scene must carry no pseudo-Japanese lettering, no fake logographic decoration, and no invented readable game titles - keep all such surfaces blank or abstractly patterned only."
+    }
+  }
+}

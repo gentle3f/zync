@@ -1,0 +1,7 @@
+{
+  "id": "food.japanese",
+  "expected_domain": "food_utensils",
+  "actual_domain": "food_utensils",
+  "domain_rule_text_present": true,
+  "pass": true
+}

@@ -1,0 +1,222 @@
+{
+  "version": "v1",
+  "purpose": "Proposed (NOT executed) hard-sentinel validation batch, 8 cards, per explicit task instruction. Targets the exact ids Validation-16 visual QA flagged as substantive/minor failures, testing whether the post-Validation-16 architecture fix (semantic identity anchors, domain physical logic, text modes, scene-family routing) actually resolves them.",
+  "count": 8,
+  "expected_cost_usd": 0.1344,
+  "guardrail": "DO NOT GENERATE. Planning only. Requires a separate, explicit future user authorization before any Gemini Batch API call is made against this list.",
+  "why_these_8": "3 substantive Validation-16 failures (transport.modelrailways, food.japanese, media.anime) + semantic-neighbor-confusion cases (business.startups, music.pop, learning.mock_trial) + a controlled-text challenge (learning.model_united_nations) + a social/business text-risk reinforcement case (business.marketing). Deliberately NOT an easy-pass batch.",
+  "cards": [
+    {
+      "id": "transport.modelrailways",
+      "title": "Model Railways",
+      "archetype": "collection_object_hero",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "model_railway_miniature_scale",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "low_angle_kinetic",
+      "palette_lighting_route": "cool_daylight_shade",
+      "effect_level": "none",
+      "scene_family": "dark_cinematic_interior",
+      "text_mode": "text_none",
+      "physical_logic_domain": null
+    },
+    {
+      "id": "food.japanese",
+      "title": "Japanese Food",
+      "archetype": "food_hero",
+      "protagonist_type": "food_drink",
+      "object_first_status": "clean",
+      "structural_containment_rule_id": "object_hero_clean",
+      "confidence": "validated",
+      "composition_archetype": "dense_detail",
+      "palette_lighting_route": "cool_night",
+      "effect_level": "expressive",
+      "scene_family": "industrial_workshop",
+      "text_mode": "text_none",
+      "physical_logic_domain": "food_utensils",
+      "scene_family_deconflicted_for_validation8": true
+    },
+    {
+      "id": "media.anime",
+      "title": "Anime",
+      "archetype": "story_culture",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "anime_culture_object_first",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "restrained",
+      "scene_family": "cool_night_outdoor",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": null
+    },
+    {
+      "id": "business.startups",
+      "title": "Startups",
+      "archetype": "professional_world",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "startup_early_stage_world",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "low_angle_kinetic",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "restrained",
+      "scene_family": "macro_material_scene",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": null,
+      "scene_family_deconflicted_for_validation8": true
+    },
+    {
+      "id": "music.pop",
+      "title": "Pop Music",
+      "archetype": "music_listening",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "pop_music_production_energy",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "rainy_moody_window",
+      "palette_lighting_route": "cool_daylight_shade",
+      "effect_level": "restrained",
+      "scene_family": "architectural_grand",
+      "text_mode": "text_none",
+      "physical_logic_domain": "instrument"
+    },
+    {
+      "id": "learning.model_united_nations",
+      "title": "Model United Nations",
+      "archetype": "campus_activity",
+      "protagonist_type": "environment",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "campus_activity_grammar",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "none",
+      "scene_family": "open_daylight_outdoor",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": null,
+      "scene_family_deconflicted_for_validation8": true
+    },
+    {
+      "id": "business.marketing",
+      "title": "Marketing",
+      "archetype": "campaign_planning",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "campaign_planning_materials",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "cool_daylight_shade",
+      "effect_level": "restrained",
+      "scene_family": "technical_lab",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": null,
+      "scene_family_deconflicted_for_validation8": true
+    },
+    {
+      "id": "learning.mock_trial",
+      "title": "Mock Trial",
+      "archetype": "legal_practice",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "mock_trial_simulation",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "quiet_atmospheric",
+      "palette_lighting_route": "neutral_overcast",
+      "effect_level": "restrained",
+      "scene_family": "bright_clean_interior",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": null,
+      "scene_family_deconflicted_for_validation8": true
+    }
+  ],
+  "diversity_check": {
+    "scene_family": {
+      "unique_count": 8,
+      "total": 8,
+      "values": [
+        "dark_cinematic_interior",
+        "industrial_workshop",
+        "cool_night_outdoor",
+        "macro_material_scene",
+        "architectural_grand",
+        "open_daylight_outdoor",
+        "technical_lab",
+        "bright_clean_interior"
+      ]
+    },
+    "composition_archetype": {
+      "unique_count": 5,
+      "total": 8,
+      "values": [
+        "low_angle_kinetic",
+        "dense_detail",
+        "strong_diagonal",
+        "low_angle_kinetic",
+        "rainy_moody_window",
+        "strong_diagonal",
+        "strong_diagonal",
+        "quiet_atmospheric"
+      ]
+    },
+    "palette_lighting_route": {
+      "unique_count": 4,
+      "total": 8,
+      "values": [
+        "cool_daylight_shade",
+        "cool_night",
+        "warm_intimate",
+        "warm_intimate",
+        "cool_daylight_shade",
+        "warm_intimate",
+        "cool_daylight_shade",
+        "neutral_overcast"
+      ]
+    },
+    "effect_level": {
+      "unique_count": 3,
+      "total": 8,
+      "values": [
+        "none",
+        "expressive",
+        "restrained",
+        "restrained",
+        "restrained",
+        "none",
+        "restrained",
+        "restrained"
+      ]
+    },
+    "text_mode": {
+      "unique_count": 2,
+      "total": 8,
+      "values": [
+        "text_none",
+        "text_none",
+        "text_incidental_nonlegible",
+        "text_incidental_nonlegible",
+        "text_none",
+        "text_incidental_nonlegible",
+        "text_incidental_nonlegible",
+        "text_incidental_nonlegible"
+      ]
+    },
+    "physical_logic_domain": {
+      "unique_count": 3,
+      "total": 8,
+      "values": [
+        null,
+        "food_utensils",
+        null,
+        null,
+        "instrument",
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "scene_family_deconfliction_note": "A local sliding-window de-collision pass (window=8, same deterministic algorithm as the full-catalog pass) was applied to this fixed 8-card set after the initial diversity check found 3/8 cards independently hashed to dark_cinematic_interior. This reassigns ONLY the scene_family field (and its corresponding Overall scene structure line in the compiled prompt) - it does not touch the positive scene construction, semantic anchors, containment rule, or any other routing field, so semantic quality is unaffected."
+}

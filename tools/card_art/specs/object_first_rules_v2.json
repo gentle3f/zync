@@ -88,6 +88,46 @@
       "structural_containment_rule_id": "generic_structural_containment",
       "confidence": "weak_extrapolation",
       "rationale": "Added during the 2026-09-25 final zero-cost gate's Part-7 community_gathering review: the archetype default's community_gathering_traces grammar (a 'warmly prepared for togetherness' communal table) tonally mismatches a repair workshop, whose identity is tools/materials/craft-in-progress, not a social table. This override routes to generic_structural_containment instead, which already reads correctly for a workshop-style scene (arranged tools, natural wear, an activity mid-progress). Still weak_extrapolation - not visually tested."
+    },
+    {
+      "match": { "id": "transport.modelrailways" },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "model_railway_miniature_scale",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the generic object_hero_clean grammar rendered as a full-size real railway, losing miniature-scale identity entirely. See semantic_identity_anchors_v2.json for the full positive-anchor/anti-confusion list this rule embeds."
+    },
+    {
+      "match": { "id": "media.anime" },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "anime_culture_object_first",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared screen_non_human_content grammar (written for cinema) rendered as a generic convention hall with pseudo-Japanese text, losing anime-specific identity. See semantic_identity_anchors_v2.json."
+    },
+    {
+      "match": { "id": "business.startups" },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "startup_early_stage_world",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared professional_material_world grammar collapsed into a pure electronics-maker reading. See semantic_identity_anchors_v2.json."
+    },
+    {
+      "match": { "id": "music.pop" },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "pop_music_production_energy",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared listening_equipment_world grammar read as vinyl collecting/hi-fi listening rather than pop music specifically. See semantic_identity_anchors_v2.json."
+    },
+    {
+      "match": { "id": "learning.mock_trial" },
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "mock_trial_simulation",
+      "confidence": "new_grammar_unvalidated",
+      "rationale": "Added post-Validation-16 (real visual finding, commit 53f72d2): the shared legal_practice_materials grammar read as ordinary legal practice rather than a mock-trial simulation specifically. See semantic_identity_anchors_v2.json."
     }
   ],
   "human_exception_keyword_scan": {

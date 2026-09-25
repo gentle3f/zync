@@ -54,7 +54,7 @@ const CARD_UI_SUPPRESSION =
 
 /**
  * @param {{canonical_interest_id:string, title:string, runtime_category:string, runtime_cluster:string, recipe:object, source_recipe_id:string|null}} row
- * @param {{globalStyleV1:object, globalStyleV2:object, physicalLogicV2:object, rulesV2:object, containmentV2:object, compositionV2:object, quarantinedIds:Set<string>}} ctx
+ * @param {{globalStyleV1:object, globalStyleV2:object, physicalLogicV2:object, rulesV2:object, containmentV2:object, compositionV2:object, quarantinedIds:Set<string>, textModesV2:object, physicalLogicDomainsV2:object}} ctx
  * @param {function} routeFn - routeHobbyV2, injected for testability
  */
 export function compileObjectFirstPromptV2(row, ctx, routeFn) {
@@ -64,7 +64,7 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
     runtime_category: row.runtime_category,
     runtime_cluster: row.runtime_cluster,
     archetype: row.recipe.archetype,
-  }, { rules: ctx.rulesV2, containment: ctx.containmentV2, composition: ctx.compositionV2, quarantinedIds: ctx.quarantinedIds });
+  }, { rules: ctx.rulesV2, containment: ctx.containmentV2, composition: ctx.compositionV2, quarantinedIds: ctx.quarantinedIds, textModes: ctx.textModesV2, physicalLogicDomains: ctx.physicalLogicDomainsV2 });
 
   if (routing.object_first_status === 'excluded_quarantined') {
     return { ...routing, semantic_recipe_id: row.canonical_interest_id, source_recipe_id: row.source_recipe_id || null, final_compiled_prompt: null, compiled: false };
@@ -77,15 +77,28 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
   const compositionText = ctx.compositionV2.dimensions.composition_archetype.values[routing.composition_archetype];
   const paletteText = ctx.compositionV2.dimensions.palette_lighting_route.values[routing.palette_lighting_route];
   const effectText = ctx.compositionV2.dimensions.effect_level.semantic_guidance[routing.effect_level];
+  const sceneFamilyText = routing.scene_family ? ctx.compositionV2.dimensions.scene_family.values[routing.scene_family] : null;
 
-  const textPolicy = ctx.globalStyleV2.text_policy_v2;
-  const textPolicySection =
-    `${textPolicy.principle} Suppress generated text when it is ${list(textPolicy.suppress_when)}. ` +
-    `Non-legible or abstract marks are fine when semantically natural, for example ${list(textPolicy.allow_when_semantically_natural.slice(0, 4))}.`;
+  // Text mode (Part C, post-Validation-16): replaces the single shared
+  // text_policy_v2 paragraph with a mode matched to this row's actual
+  // text-risk level, plus any id-specific guidance (e.g. the MUN
+  // non-literal-country-name decision, or the marketing/gaming.video
+  // reinforcement language).
+  const modeDef = ctx.textModesV2?.modes?.[routing.text_mode];
+  const idTextOverride = ctx.textModesV2?.id_overrides?.[row.canonical_interest_id];
+  const textPolicySection = modeDef
+    ? `${ctx.globalStyleV2.text_policy_v2.principle} ${modeDef.guidance}${idTextOverride ? ' ' + idTextOverride.guidance : ''}`
+    : `${ctx.globalStyleV2.text_policy_v2.principle} Suppress generated text when it is ${list(ctx.globalStyleV2.text_policy_v2.suppress_when)}.`;
 
+  // Physical logic (Part B, post-Validation-16): the shared generic rule
+  // is always present, plus a domain-specific rule appended when this
+  // row's archetype maps to one (physical_logic_domains_v2.json) - e.g.
+  // food_utensils fixes food.japanese's floating-chopsticks failure.
+  const domainDef = routing.physical_logic_domain ? ctx.physicalLogicDomainsV2?.domains?.[routing.physical_logic_domain] : null;
   const physicalLogicSection =
     `${ctx.physicalLogicV2.rule_text} For example, never depict ${list(ctx.physicalLogicV2.forbidden_examples.slice(0, 3))}. ` +
-    `Motion must have a plausible cause such as ${list(ctx.physicalLogicV2.allowed_causes_of_motion.slice(0, 6))}.`;
+    `Motion must have a plausible cause such as ${list(ctx.physicalLogicV2.allowed_causes_of_motion.slice(0, 6))}.` +
+    (domainDef ? ` ${domainDef.rule_text}` : '');
 
   let humanSuppressionSection = ctx.globalStyleV2.non_human_protagonist_policy;
   if (STRONG_SUPPRESSION_RULE_IDS.has(routing.structural_containment_rule_id)) {
@@ -113,6 +126,7 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
     ctx.globalStyleV2.anti_sameness_policy,
     physicalLogicSection,
     `Depict this activity: ${sceneText}`,
+    sceneFamilyText ? `Overall scene structure: ${sceneFamilyText}` : null,
     `Use this composition: ${compositionText}`,
     `Use this lighting and palette: ${paletteText}`,
     `Effects guidance: ${effectText}`,
@@ -128,6 +142,7 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
   const internalIds = [
     routing.protagonist_type, routing.object_first_status, routing.structural_containment_rule_id,
     routing.composition_archetype, routing.palette_lighting_route, routing.effect_level,
+    routing.scene_family, routing.text_mode, routing.physical_logic_domain,
   ].filter(v => v && v.includes('_'));
   for (const id of new Set(internalIds)) {
     if (compiledPrompt.includes(id)) {

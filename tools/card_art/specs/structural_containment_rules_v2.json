@@ -138,7 +138,47 @@
       "scene_template": "${title} is represented through its material world: case files, tabbed evidence folders, stacked unbranded law books, a legal pad with only abstract non-legible markings, sealed envelopes, and courtroom or formal office architecture, arranged as if work is actively in progress but with no lawyer or client present. A scales-of-justice detail may appear only as a small supporting element, never as the sole subject. No readable case names or large blocks of legible document text.",
       "validated_by": [],
       "notes": "New in v2.1 - reroutes legal_practice from review_required to containment_required per the task's Part B scene-grammar instruction. Not yet visually validated; confidence=new_grammar_unvalidated."
+    },
+    "model_railway_miniature_scale": {
+      "applies_to_archetypes": ["collection_object_hero"],
+      "bad_pattern": "Validation-16 found transport.modelrailways rendered as a full-size real steam railway in a city - the generic object_hero_clean grammar carried no scale-identity cue at all.",
+      "good_pattern": "Force unmistakable miniature scale: a tabletop model-railway layout with a miniature train on tiny-scale tracks, miniature buildings and scenery, a visible baseboard/tabletop edge framing the whole scene, and hobby tools nearby as scale cues - never a real, full-size railway.",
+      "scene_template": "A tabletop model-railway diorama is the unmistakable hero of the scene: a miniature train runs on tiny-scale tracks through miniature buildings, miniature trees, and scale-model terrain (foam or scenic-ground texture typical of a handbuilt diorama), with a visible baseboard or tabletop edge framing the whole layout and a small paintbrush or scenic-scatter tool resting nearby as an unmistakable scale cue. This must read as an intentionally crafted miniature diorama, never as a real, full-size railway, a real locomotive, real urban transit, or railway photography of an actual place.",
+      "validated_by": [],
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the previous generic object_hero_clean grammar lost scale identity entirely. confidence=new_grammar_unvalidated - not yet re-tested."
+    },
+    "anime_culture_object_first": {
+      "applies_to_archetypes": ["story_culture"],
+      "bad_pattern": "Validation-16 found media.anime rendered as an empty convention/presentation hall with aurora-like screen content plus pseudo-Japanese text - the generic screen_non_human_content grammar (written for cinema) does not carry anime-specific identity.",
+      "good_pattern": "Anchor the scene on physical anime-culture objects - original unbranded figurines, animation cels, storyboard sheets, acrylic stands with generic character silhouettes, art books with blank covers, a light table - rather than an empty venue or a screen alone.",
+      "scene_template": "A collection of original, unbranded anime-style physical objects is the hero of the scene: small collectible figurines with generic (non-copyrighted) character designs displayed on acrylic stands, animation cels or storyboard/key-frame sheets fanned out, an animation light table glowing beneath them, and manga/anime-style art books with blank or unreadable covers. Any illustrated character imagery must appear only as printed artwork, a cel, or a figurine - never as a physically-present human character in the scene. If a screen is visible, it shows only clearly stylized ORIGINAL animation-style imagery with no real human figure and no pseudo-Japanese decorative lettering anywhere. This must immediately communicate anime and Japanese animation culture, never a generic conference hall, a generic cinema, or an abstract aurora light show.",
+      "validated_by": [],
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the shared screen_non_human_content grammar (built for media.movies) too generic for anime specifically. confidence=new_grammar_unvalidated - not yet re-tested."
+    },
+    "startup_early_stage_world": {
+      "applies_to_archetypes": ["professional_world"],
+      "bad_pattern": "Validation-16 found business.startups collapsed into a pure electronics maker/prototyping-workshop reading, too narrow for the broader concept of an early-stage company.",
+      "good_pattern": "Broaden beyond one engineering bench: show multiple distinct early-stage product prototypes/iterations, planning artifacts, and small-team workspace variety, evoking 'a company building and iterating', not 'a hobbyist tinkering'.",
+      "scene_template": "The material world of an early-stage startup is the hero: several distinct product prototypes or iterations shown side by side (not limited to electronics - physical goods, packaging mockups, or service-adjacent artifacts are equally valid), blank or abstractly-marked planning cards and sticky notes, a couple of visibly different small-team desk setups suggesting more than one person's work, and packaging or shipping materials suggesting a product nearing launch. No readable pitch deck, slide, or business-plan text. This must read as 'an early-stage company building and iterating on something', not as a single hobbyist's electronics workbench.",
+      "validated_by": [],
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the shared professional_material_world grammar defaulted to reading as pure electronics prototyping for this specific id. confidence=new_grammar_unvalidated - not yet re-tested."
+    },
+    "pop_music_production_energy": {
+      "applies_to_archetypes": ["music_listening"],
+      "bad_pattern": "Validation-16 found music.pop read as vinyl collecting / hi-fi listening / general music appreciation rather than specifically pop music.",
+      "good_pattern": "Replace the cozy listening-room mood with bold commercial stage-light color language and production tools, keeping vinyl/CD elements as small supporting objects only, never the dominant hero.",
+      "scene_template": "A pop-music production and performance energy is the hero of the scene: a studio microphone on its stand (never held), synth pads or a mixing controller as supporting objects, and bold, saturated, commercial stage-light color washes (magenta, cyan, gold) rather than a warm amber listening-room glow. Vinyl, CD, or cassette elements may appear only as small supporting objects, never as the dominant subject. The mood is rhythmic, bright, and high-energy - commercial pop production, not an intimate hi-fi listening ritual or a vinyl-collecting display. No recognizable singer, celebrity likeness, copyrighted album artwork, or band logo.",
+      "validated_by": [],
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the shared listening_equipment_world grammar defaulted to a vinyl/hi-fi reading for this specific id. confidence=new_grammar_unvalidated - not yet re-tested."
+    },
+    "mock_trial_simulation": {
+      "applies_to_archetypes": ["legal_practice"],
+      "bad_pattern": "Validation-16 found learning.mock_trial read as ordinary legal practice / case preparation rather than specifically a mock-trial simulation exercise.",
+      "good_pattern": "Add explicit simulation/training cues (mirrored practice tables, an empty witness stand, training-labeled materials, a rehearsal feel) distinct from the shared legal_practice_materials grammar's working-law-firm framing.",
+      "scene_template": "An educational mock-trial simulation is staged: mirrored prosecution and defense tables face each other, an empty witness stand sits to one side, and practice-labeled evidence exhibits and a scoring rubric with only abstract non-legible marks convey a training exercise rather than a real proceeding. The architecture feels like a school or training facility, not a working law firm or a real courthouse. No oversized generic gavel as the sole subject, and no readable, invented real-sounding case name.",
+      "validated_by": [],
+      "notes": "New id-exact fix added after Validation-16 (commit 53f72d2) found the shared legal_practice_materials grammar (written for real legal practice) too close to ordinary case preparation for this specific mock-trial id. confidence=new_grammar_unvalidated - not yet re-tested."
     }
   },
-  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment", "object_hero_clean", "professional_material_world", "listening_equipment_world", "campus_activity_grammar", "community_gathering_traces", "community_gathering_vehicles", "shared_workspace_grammar", "campaign_planning_materials", "legal_practice_materials"]
+  "rule_id_index": ["action_aftermath", "private_empty_venue", "object_hero_no_performer", "abstract_system_no_operator", "screen_non_human_content", "private_environment_animal", "swimming_hard_case_no_visible_swimmer", "generic_structural_containment", "object_hero_clean", "professional_material_world", "listening_equipment_world", "campus_activity_grammar", "community_gathering_traces", "community_gathering_vehicles", "shared_workspace_grammar", "campaign_planning_materials", "legal_practice_materials", "model_railway_miniature_scale", "anime_culture_object_first", "startup_early_stage_world", "pop_music_production_energy", "mock_trial_simulation"]
 }
