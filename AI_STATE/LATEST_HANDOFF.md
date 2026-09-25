@@ -5,6 +5,13 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+
+Separate Card FX checkpoint (isolated Flutter runtime-effects lab; no production
+pack/draw integration, no paid generation, no CI/Vercel, and no new package
+dependency; standalone entrypoint `mobile/lib/main_card_fx_lab.dart`):
+
+`AI_STATE/HANDOFF_20260925_CARD_FX_LAB_V1.md`
+
 Authoritative continuation checkpoint (production V1/D4 track - Batch-1
 repair and Batch-2 work are PAUSED pending explicit user instruction, per
 a standing STOP directive; do not resume without a new explicit
