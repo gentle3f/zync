@@ -1,0 +1,92 @@
+{
+  "version": "object_first_v24_sentinel6_v1",
+  "generated_at": "2026-09-25T08:41:15.112Z",
+  "total_cards": 6,
+  "expected_max_cost_usd": 0.1008,
+  "cards": [
+    {
+      "id": "food.coffee",
+      "title": "food.coffee",
+      "archetype": "drink_ritual",
+      "production_candidate_version": "v2.4",
+      "structural_containment_rule_id": "coffee_ritual_resting_scene",
+      "confidence": "extrapolated",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "restrained",
+      "scene_family": "warm_intimate_interior",
+      "text_mode": "text_none",
+      "prompt_sha256": "824e2c561a0d08cd43a4928695828ed87f235da8b23535a98939e8af08a7aca4"
+    },
+    {
+      "id": "learning.fiction",
+      "title": "learning.fiction",
+      "archetype": "reading_world",
+      "production_candidate_version": "v2.4",
+      "structural_containment_rule_id": "fiction_object_first_grammar",
+      "confidence": "extrapolated",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "none",
+      "scene_family": "macro_material_scene",
+      "text_mode": "text_incidental_nonlegible",
+      "prompt_sha256": "54974d380ff60a904bf26bb577d50e6f307b85849339354c75fd53dcdf6d3c34"
+    },
+    {
+      "id": "music.singing",
+      "title": "music.singing",
+      "archetype": "performance",
+      "production_candidate_version": "v2.4.1",
+      "structural_containment_rule_id": "vocal_singing_object_first",
+      "confidence": "extrapolated",
+      "composition_archetype": "architectural_wide",
+      "palette_lighting_route": "dusk_transition",
+      "effect_level": "none",
+      "scene_family": "warm_intimate_interior",
+      "text_mode": "text_none",
+      "prompt_sha256": "044064dd0a1ea944fa4d3ade975c927f1522e923461503dfcd6164235a59a74b"
+    },
+    {
+      "id": "music.karaoke",
+      "title": "music.karaoke",
+      "archetype": "performance",
+      "production_candidate_version": "v2.4.1",
+      "structural_containment_rule_id": "karaoke_object_first",
+      "confidence": "extrapolated",
+      "composition_archetype": "action_aftermath_frame",
+      "palette_lighting_route": "cool_daylight_shade",
+      "effect_level": "none",
+      "scene_family": "architectural_grand",
+      "text_mode": "text_none",
+      "prompt_sha256": "d8ee0ca47086e89cd4faf0059edad0c186c441c37eec43987d3585c7571f9120"
+    },
+    {
+      "id": "learning.book_genre.booktube",
+      "title": "learning.book_genre.booktube",
+      "archetype": "creator_workflow",
+      "production_candidate_version": "v2.4",
+      "structural_containment_rule_id": "booktube_creator_setup_no_presenter",
+      "confidence": "extrapolated",
+      "composition_archetype": "minimal_iconic",
+      "palette_lighting_route": "bright_daylight",
+      "effect_level": "restrained",
+      "scene_family": "architectural_grand",
+      "text_mode": "text_incidental_nonlegible",
+      "prompt_sha256": "ea2726c6ebd1a505ee9fea3e7518269b39dd0ccdb72a592999c12a307e821c1c"
+    },
+    {
+      "id": "technology.gadgets",
+      "title": "technology.gadgets",
+      "archetype": "tech_workspace",
+      "production_candidate_version": "v2.4",
+      "structural_containment_rule_id": "consumer_gadgets_object_hero",
+      "confidence": "extrapolated",
+      "composition_archetype": "elevated_three_quarter",
+      "palette_lighting_route": "rainy_moody",
+      "effect_level": "expressive",
+      "scene_family": "macro_material_scene",
+      "text_mode": "text_none",
+      "prompt_sha256": "fd7569875d22c748a7577e69b11d29e56d5bfa39e43a46308d0d96ed9c5fcad9"
+    }
+  ]
+}

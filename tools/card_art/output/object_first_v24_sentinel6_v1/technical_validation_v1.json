@@ -1,0 +1,76 @@
+{
+  "version": "object_first_v24_sentinel6_technical_validation_v1",
+  "generated_at": "2026-09-25T08:47:39.216Z",
+  "expected_count": 6,
+  "succeeded": 6,
+  "content_blocked": 0,
+  "technical_failed": 0,
+  "retries": 0,
+  "unique_file_hashes": 6,
+  "duplicate_hashes": [],
+  "dimensions_check": "848x1264 JPEG, 6/6 (verified via PIL before this run)",
+  "billed_count": 6,
+  "actual_cost_usd": 0.1008,
+  "entries": [
+    {
+      "canonical_id": "food.coffee",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "06942c56e1b2ae8bc7494fee60bab5c48adb4eb0ce0309d6411900e20250b6a2",
+      "output_filename": "food__coffee__object_first_v24_sentinel6__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.fiction",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "ec41e5eec26fed0fef577ea3fcd055a84187262aeb5815c05a1f85e2f3d4b9a5",
+      "output_filename": "learning__fiction__object_first_v24_sentinel6__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "music.singing",
+      "production_candidate_version": "v2.4.1",
+      "status": "succeeded",
+      "file_sha256": "6c373ccf55c7b39216b3124ed59683ff2e19fe47bb60fb5c536132d390d2c270",
+      "output_filename": "music__singing__object_first_v24_sentinel6__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "music.karaoke",
+      "production_candidate_version": "v2.4.1",
+      "status": "succeeded",
+      "file_sha256": "32ec81b425395e933ec02f5a2457d4a76ae3fc9ede7da95eedac5c1fdabe067f",
+      "output_filename": "music__karaoke__object_first_v24_sentinel6__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.book_genre.booktube",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "50ad26f43392c264fa5f795f30f77f7a93c591f3d5eefdbaf33e60c7c1b8ed23",
+      "output_filename": "learning__book_genre__booktube__object_first_v24_sentinel6__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "technology.gadgets",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "c379555116b3e3e028420edfd8dad53d3f35530bb96b9d695abc2e0eaae40941",
+      "output_filename": "technology__gadgets__object_first_v24_sentinel6__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    }
+  ]
+}
