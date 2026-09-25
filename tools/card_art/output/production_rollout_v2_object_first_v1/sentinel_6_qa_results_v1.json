@@ -1,0 +1,54 @@
+{
+  "version": "sentinel_6_qa_results_v1",
+  "recorded_at": "2026-09-25T09:04:04.624Z",
+  "source": "Authoritative ChatGPT visual review supplied verbatim by the user; not re-derived or inspected by Claude.",
+  "reviewed": 6,
+  "approved": 5,
+  "approved_with_minor": 1,
+  "failed": 0,
+  "content_blocked": 0,
+  "results": [
+    {
+      "canonical_id": "food.coffee",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "music.singing",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "music.karaoke",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "learning.book_genre.booktube",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "technology.gadgets",
+      "disposition": "approved"
+    },
+    {
+      "canonical_id": "learning.fiction",
+      "disposition": "approved_with_minor",
+      "flags": [
+        "text_leak_minor"
+      ],
+      "finding": "Floating-pen/invisible-human physics is solved, pen rests naturally, fiction/manuscript identity is clear. Remaining pseudo-handwriting functions mostly as manuscript texture; some text-like leakage remains but is acceptable."
+    }
+  ],
+  "systemic_findings": {
+    "pass": [
+      "human-operated-object physical logic repaired for coffee/fiction",
+      "vocal semantic grammar repaired for singing/karaoke",
+      "BookTube semantic repair successful",
+      "gadgets semantic repair successful",
+      "no zero-human regression",
+      "no content block",
+      "no prompt-conflict regression"
+    ]
+  },
+  "conclusion": "PASS_REMEDIATION_VALIDATED",
+  "authorizes": "wave_c_96",
+  "provenance_note": "Each of these 6 ids now carries a superseded_assets entry on its queue row recording the OLD v2.3 Wave-B QA-quarantined asset (status: superseded_by_remediation_asset) - never deleted, never overwritten, never retroactively approved. The row's live generation_status/visual_qa_* fields now reflect the NEW Sentinel-6 (v2.4/v2.4.1) approved asset. Neither image file was touched."
+}

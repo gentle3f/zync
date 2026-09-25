@@ -1,0 +1,976 @@
+{
+  "version": "object_first_v2_production_waveC96_technical_validation_v1",
+  "generated_at": "2026-09-25T09:59:41.842Z",
+  "expected_count": 96,
+  "succeeded": 96,
+  "content_blocked": 0,
+  "technical_failed": 0,
+  "retries": 0,
+  "unique_file_hashes": 96,
+  "duplicate_hashes": [],
+  "dimensions_check": "848x1264 JPEG, 96/96 (verified via PIL before this run)",
+  "billed_count": 96,
+  "actual_cost_usd": 1.6128,
+  "entries": [
+    {
+      "canonical_id": "business.tech_meetups",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "a5b5cab5d1a2706b53e81b8fe952bfae9f38b055291bb2f275b236a4b9e788c2",
+      "output_filename": "business__tech_meetups__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "pets.birds",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "df44cdb13e147db48c767473dc07e03f27c95953bc400fb0bc94088f1fd04115",
+      "output_filename": "pets__birds__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.watercolor",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "c1aa711bbfb35f2e9f73d3745a2656d9896d911d44adbb0871d24180d22735bd",
+      "output_filename": "arts__watercolor__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.video_editing",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "c70d1309a5fc7afbce988478be49cccd2a555d4eb406de1a9f64b0e845ea7d50",
+      "output_filename": "arts__video_editing__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.console_gaming",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "bc1aaaa146fff3e813300b8b81f42d15692662cce6274014306e4da9d933d1aa",
+      "output_filename": "gaming__console_gaming__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.espresso",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "9b89ef4aab5bfd5772b668e108868ae16224d34df1f548e712fd9bc80ef48a5e",
+      "output_filename": "food__espresso__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.bodybuilding",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "727a136bf8455cf1a5da2637120a4ed1e60e084ff2b30e58123663fbf9dffa10",
+      "output_filename": "wellness__bodybuilding__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.food_markets",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "3234fcb72484bf3bb6571e3f5a4d6d19926de826559ac53f497f14c32dc7757c",
+      "output_filename": "food__food_markets__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.chinese",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "288d2cdaa306ceb9a2f3ef5cb8435b918beae0e421c9666273bddc8aef499a58",
+      "output_filename": "food__chinese__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.tabletop_style.abstract_strategy_games",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "01371ac2670d5f32fd65f35b4de56c01217df6e5e14f91164912db9fc191e74b",
+      "output_filename": "gaming__tabletop_style__abstract_strategy_games__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.houseplants",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "5c963655167fb2a53283b32095106fa527cbcf5bdc10067d15748f88284f9035",
+      "output_filename": "lifestyle__houseplants__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "transport.classic_cars",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "43a36cad3564c5022ea56e6144e24d5ea05acdc656d7ebcade1aa61347083f69",
+      "output_filename": "transport__classic_cars__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "science.physics",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "7a9465aad361665af366745fc9a536b3bb625781bd32fdae94d269a39d354f06",
+      "output_filename": "science__physics__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "career.legal_profession",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "2486186de81254721457d69450e0827be1287956f93d60770bc543aeffdffc87",
+      "output_filename": "career__legal_profession__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.portrait_photography",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "e131877bafa37b472b9767d9b4a7b68e79ac67676e7b866fccc897a017f66530",
+      "output_filename": "arts__portrait_photography__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.backpacking",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "77ae1c63646239be914157df29ebd878addf9ee1ca758fd3910468f8401909dc",
+      "output_filename": "outdoors__backpacking__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.road_cycling",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "b9676a7b7bd0490790a9497d9dfe2fe5bece18a0457c9bff98162fdf782635ae",
+      "output_filename": "outdoors__road_cycling__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "music.guitar",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "5c8ba0398479868da0a3e62f51a403262804502c1e3a36259bec6827e140a1ec",
+      "output_filename": "music__guitar__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "business.ecommerce",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "ec49a6939d1b6024ddac78b762e1f2eef8c024c5f71cc6d4afd21c7fed50e1c5",
+      "output_filename": "business__ecommerce__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.nonfiction",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "9a08d61f0640e78f90f5d269f60f307c0a795de172524b0959cefc23aa890fe4",
+      "output_filename": "learning__nonfiction__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "sports.running",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "0067e703268a1c3f5c2e47bcbd83548a13190d4da8dbd6b4516ef316ab822869",
+      "output_filename": "sports__running__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "media.movies",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "03ad5dba336d83eed1815473d03253cd75e497ba32c03ae0e129b3f823917e33",
+      "output_filename": "media__movies__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.xiangqi",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "4152d058d2750b1afa74ddfc008ecc8934ed5d25dbea4af8e86eb548d47c4615",
+      "output_filename": "gaming__xiangqi__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "technology.generative_ai",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "cfbd054165dcf33feff0b1ef6380a360f3d2684948a01b0f9b162f5f4d74f0be",
+      "output_filename": "technology__generative_ai__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "travel.roadtrip",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "208f2c2f454bbfcf231f83015d4b7bf601aa30d832da63d88f97480108b42b24",
+      "output_filename": "travel__roadtrip__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "fashion.womenswear",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "d4243510f0dbfc91ec9658d1e2f86fbf08f6eed10041618c2f706399646d3491",
+      "output_filename": "fashion__womenswear__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.sport_climbing",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "500b9c222aa64901a9c01d0c8767670b03b054cefb6881e048014c89bca63c2f",
+      "output_filename": "outdoors__sport_climbing__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.scuba_diving",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "3ac3696f79b2fe7f6fa65e3800ed3ac9dbb0b5335ab084dd04ef7d21dfa71c40",
+      "output_filename": "outdoors__scuba_diving__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.massage",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "cda172dd7c53fbf2f158dbf932545204b78835c6be538e1d568081e2780f3d55",
+      "output_filename": "wellness__massage__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.mobility",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "d63e465ee533be33086773aaf5a9805203115846c3a99571050acd682aeeb611",
+      "output_filename": "wellness__mobility__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.yearbook",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "2d9751df99871d4f9dcaded2efb50f3735b4c1c845dbc6285fc985773f5f3bd1",
+      "output_filename": "learning__yearbook__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "collecting.coins",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "a959a16af8a6f89d64ba1657a211dec0149e3a62b574d14ebdbd17dc473c512f",
+      "output_filename": "collecting__coins__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.book_swaps",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "9fdf30bcf40caeaeb609266285907404fa6fb2d54def596f4531cf9ffb1ff920",
+      "output_filename": "lifestyle__book_swaps__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "pets.fish",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "c95c211383739843bad75cb1c82c9e1617e2c1144b5f7b9a228343969be36c33",
+      "output_filename": "pets__fish__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.oil_painting",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "9b4a0542bb22f087d1c8ea338f6dd79d57bca9cf8984b04beb9a85203ea98601",
+      "output_filename": "arts__oil_painting__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.vlogging",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "82d12af3fa33153ac13067c6497747e8e25432190facbb302dc0c255099d7c03",
+      "output_filename": "arts__vlogging__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.mobile_gaming",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "317637c7204711c2bf16b9a1e76ee10664cdd9fce4e3068daa27ae21d876c001",
+      "output_filename": "gaming__mobile_gaming__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.pour_over",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "bcb21aed1402afc3553fb71a6939de4bc448ccc178dfdf20231178625cc2c99d",
+      "output_filename": "food__pour_over__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.calisthenics",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "30f33b3109a31fb28cdb047ffb5396c0fa4e14920b10ee1afbff17c6bc8ceb87",
+      "output_filename": "wellness__calisthenics__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.potlucks",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "ecda5c2a3bc490cb3730a1c96424c10443b9e3a8f7185183d8026cd1a8406498",
+      "output_filename": "food__potlucks__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.cantonese",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "428b7c42d487a0fccf84be43a3cd1e3a3ced2f88ddfe83c7986d96273535f942",
+      "output_filename": "food__cantonese__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.tabletop_style.area_control_games",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "346daa6d9ee4633c4928d91a499c8eef423d4f89a9b1644137e3474e335ce2a9",
+      "output_filename": "gaming__tabletop_style__area_control_games__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.gardening",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "ab36c6f8ec38dce7638df70f025363b056fc1da5d7d8b740297dfe27fe51b84f",
+      "output_filename": "lifestyle__gardening__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "transport.sports_cars",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "da79f69766f567f81a4b8777e5dd48f203e0688995a7e05efcdf7f476da163c1",
+      "output_filename": "transport__sports_cars__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "science.chemistry",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "a4759b4f0bc3170a3081a58703c143aecbbc883e15b762ffa1b392b44683ab98",
+      "output_filename": "science__chemistry__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.landscape_photography",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "df6e8038c3c7054e1086b1e11304c872e46d7af4d9982bb2f5ce977d77565c38",
+      "output_filename": "arts__landscape_photography__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.mountaineering",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "e1459f7427613b292a3106596b443e06e87ecf29f3795c0aecb8def790790160",
+      "output_filename": "outdoors__mountaineering__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.bmx",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "717f7fddfd5124358f9c15150eb84e004b3c17f86e00e3b147bc11efdc19b003",
+      "output_filename": "outdoors__bmx__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "music.piano",
+      "production_candidate_version": "v2.4.1",
+      "status": "succeeded",
+      "file_sha256": "bf35ab1222934be3a2940c6d8d1a5653acfe3544c6d9cf25f802dd1bbfb0205b",
+      "output_filename": "music__piano__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "business.real_estate",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "5570ab57931c2ea4d3ea0608cc4303023a82c8b73f956c0da19d64e165792b8e",
+      "output_filename": "business__real_estate__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.science_fiction_books",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "f345b65d76366bf2204832ce57180a15018fdafb2e02b7761f4c4b16ee3be5d3",
+      "output_filename": "learning__science_fiction_books__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "sports.football",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "80038a447b91f7092d54d24e91e079523f3bd399f9af58ed9d15cb8654fbebe9",
+      "output_filename": "sports__football__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "media.tv",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "89391b9521246abe81a359307d31b4d7da7aa70aef0d1a9ffc1d249049eae4a9",
+      "output_filename": "media__tv__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.mahjong",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "76b1942ce7fbe586ac6bb19fdff65765d8e2301389f7001fa6454fb79732f16a",
+      "output_filename": "gaming__mahjong__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "technology.machine_learning",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "b3ad76d8700e9351ca759f72126be0702d6289fefc7fb742ff1e7087a08e5d1e",
+      "output_filename": "technology__machine_learning__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "travel.solo",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "35043850ffe2b9912db62d07a11bd3e99cecc731cbf2d20557d2cc9b1f9d38c1",
+      "output_filename": "travel__solo__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "fashion.vintage_fashion",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "bb44a0dd253772e305a5d26ed4fe3f3b8d2bfb018b1034359d32c58150fd8aa7",
+      "output_filename": "fashion__vintage_fashion__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.trad_climbing",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "817fa668cc030f8df52bbc2b55bd8a1508a9b616dd3a44bd845afdf9548e4701",
+      "output_filename": "outdoors__trad_climbing__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.freediving",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "396d4ba428c35675c94541e32147e5a20e82be5f3c7408507c0c742737dda42e",
+      "output_filename": "outdoors__freediving__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.spa",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "0447bc06a4e4ceaf26afd948284226f5f21a6b1acf80443a68dc3a7e26ed186d",
+      "output_filename": "wellness__spa__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.meditation",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "60fa48d144df025b6c62c292c108fed2e7a05e580958a2d19e2d3628ab3971c8",
+      "output_filename": "wellness__meditation__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.math_olympiad",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "bdf187af8e74c21d05acec3097a75bcac70f7629346c94f0c7e43d831d518834",
+      "output_filename": "learning__math_olympiad__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "collecting.trading_cards",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "bef4610470796a9d23cfd7371d826444b6a466e971c5f2e9064ae71b4cb39896",
+      "output_filename": "collecting__trading_cards__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.clothing_swaps",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "ac18bf08ca17cb0619ae64c16070e3f2e7a87e93ee4d76d6336191a857638298",
+      "output_filename": "lifestyle__clothing_swaps__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "pets.reptiles",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "bdfeb2d5d06ee0c9612daa1d6ad73f7c80bbd0eb612d043903207049eb14e74f",
+      "output_filename": "pets__reptiles__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.digital_art",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "6dd4fcac6210cdce7d02d557c6d638f99de517bd206b8693dd0cb2ac42d3c5ab",
+      "output_filename": "arts__digital_art__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.content_creation",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "dd0b0f42996867b7188a6a5c75c47d7603be6cd3c992279e6599426d94c6f68d",
+      "output_filename": "arts__content_creation__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.retro_gaming",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "785aa73101284a02eade5589178c081db8aa924f0381e3c24ea2ea49fd67477a",
+      "output_filename": "gaming__retro_gaming__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.latte_art",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "8732de2024ab9160caefda8212b85cebf82f924ab70dafce0cbdffe0ce350fc7",
+      "output_filename": "food__latte_art__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.hiit",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "878a1c6b307d8e352754cd89b95aa68bcc5e5f8925613409bc93aa70781f5371",
+      "output_filename": "wellness__hiit__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.omakase",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "888587e72e8a2c5a0bc529f34b4378815403875e08d341a530df722fc4589bcf",
+      "output_filename": "food__omakase__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "food.sichuan",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "becc735069a5f0805b1dd1855ebc816a132c929f4dcb89cb5cadf2656881657c",
+      "output_filename": "food__sichuan__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.tabletop_style.auction_games",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "11e13749b4222fc22b1f2627e5fabee12653c0d9f952bdf9a2be14a42727097e",
+      "output_filename": "gaming__tabletop_style__auction_games__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.aquariums",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "fa091c7bf7deacb4169975b4e131d3f63456fb28bb2f8bd1b206f31a676f8ad7",
+      "output_filename": "lifestyle__aquariums__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "transport.supercars",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "3472c710d9af20a231aa47af4a7f982c28c724686876d37570674f33c7a1d363",
+      "output_filename": "transport__supercars__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "science.biology",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "a72936e64a69e38047de3b77b800b77588502f2b4576c8571add8fabfc39f83b",
+      "output_filename": "science__biology__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.travel_photography",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "0fc8cb0c841d9a51d1417f8b6045e00b0c28825ed7cc9f7fb42acd84f77551f5",
+      "output_filename": "arts__travel_photography__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.via_ferrata",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "19940a303c7a071b424596db4660b846d577ea71d6bba9e9d20e47e4300e7105",
+      "output_filename": "outdoors__via_ferrata__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.bikepacking",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "ac14101b65bfd0c5e28117a721022893e11c2d82d46dfab472d1c13d5d33b24b",
+      "output_filename": "outdoors__bikepacking__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "music.drums",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "39b3a5c4ebcd57d8568d5230ac054e1fc9f924f2974f53365cce662412e7a577",
+      "output_filename": "music__drums__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "business.finance",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "2a0776240f7bee2c7762ff458308165f04cd11f0fb9fdfaa32c670df0d308b6d",
+      "output_filename": "business__finance__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.fantasy_books",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "47d2e9eb84baf3d5fb914400bc7432b45ae55b5d7c5e01391dc86760cc0d196f",
+      "output_filename": "learning__fantasy_books__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "sports.basketball",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "8399b47c627aed88e1be6d77bbbd9c1edd159c7dcffa1f8ce84d1946b606854a",
+      "output_filename": "sports__basketball__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "music.concerts",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "efa42bd6fc6a4ad59fd83e8071646ae067cbb46d1f2e5d5df02fe24ecc40c331",
+      "output_filename": "music__concerts__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "gaming.poker",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "6d5bb54d55270e8f372eef92321bed46425e556f9253c52c7208a06b68ea6426",
+      "output_filename": "gaming__poker__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "technology.computer_vision",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "c622aee32a2c3af6ea386db03912153701d0293e6bf5e51d6827d9d468e7d96a",
+      "output_filename": "technology__computer_vision__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "travel.family",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "9749f45ed907ea046aef06ec381b01eceece804b4dfa6a80bed3caf832dfea85",
+      "output_filename": "travel__family__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "fashion.luxury_fashion",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "d9e9770868f4365b0d9a8d8553cf9b4c85cb8d4b0dafabf7629835726aa32e56",
+      "output_filename": "fashion__luxury_fashion__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "outdoors.snorkeling",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "36a07aaaae882d072aad6ee2183e3711e9c069ccc60f07dc43f0ab5e772aac29",
+      "output_filename": "outdoors__snorkeling__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.sound_bath",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "fb4e3647aeaec38558508ed53f396c27521e52a137bba40c0e85d85ed2596a29",
+      "output_filename": "wellness__sound_bath__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.mindfulness",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "e4f172a30b8813a8c68717fecb8de36dbf3d16badf9e7c4cd3bedc6028933ca8",
+      "output_filename": "wellness__mindfulness__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.science_olympiad",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "00a93c4a724d06a8ac4a73e299704df8f733f8d43710d73a4b7083c502f941ef",
+      "output_filename": "learning__science_olympiad__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "collecting.sneakers",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "766d3504208ce6ac25aa4cb879a501127e2345f853c1df6e85dd7ffb3dd6f66c",
+      "output_filename": "collecting__sneakers__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.repair_workshops",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "4b342234bceebfff4c3150692274e3106d7d5f07e66239fc48fa2eb98cb6561d",
+      "output_filename": "lifestyle__repair_workshops__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "pets.rabbits",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "b90f27e3201202bd5313b3d82329c88c61090c003f77e2abf392116be76cc3b0",
+      "output_filename": "pets__rabbits__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "arts.illustration",
+      "production_candidate_version": "v2.4",
+      "status": "succeeded",
+      "file_sha256": "66994673f79a8dd846ca476ab5cca2514e17921ae5b5c1852e64cc5e6a1aa687",
+      "output_filename": "arts__illustration__object_first_v2_production_wavec96__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    }
+  ]
+}
