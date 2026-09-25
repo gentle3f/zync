@@ -42,7 +42,31 @@
       "expected_rule": "shared_workspace_grammar",
       "actual_rule": "shared_workspace_grammar",
       "pass": true
+    },
+    {
+      "id": "transport.modelrailways",
+      "expected_rule": "model_railway_miniature_scale",
+      "actual_rule": "model_railway_miniature_scale",
+      "pass": true
+    },
+    {
+      "id": "music.pop",
+      "expected_rule": "pop_music_production_energy",
+      "actual_rule": "pop_music_production_energy",
+      "pass": true
+    },
+    {
+      "id": "learning.model_united_nations",
+      "expected_rule": "campus_activity_grammar",
+      "actual_rule": "campus_activity_grammar",
+      "pass": true
+    },
+    {
+      "id": "business.marketing",
+      "expected_rule": "campaign_planning_materials",
+      "actual_rule": "campaign_planning_materials",
+      "pass": true
     }
   ],
-  "note": "Confirms Validation-16's 7 PASS cards were not destabilized by this checkpoint's architecture changes - each must keep its exact pre-existing structural_containment_rule_id."
+  "note": "Confirms Validation-16's 7 PASS cards and Validation-8's 4 confirmed PASS/MINOR cards were not destabilized by this checkpoint's architecture changes - each must keep its exact pre-existing structural_containment_rule_id."
 }

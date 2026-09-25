@@ -13,14 +13,17 @@ authorization):
 `AI_STATE/HANDOFF_20260924_CARD_ART_HOBBY_FIX_REVALIDATION_5_RESULTS.md`
 
 Second, separate authoritative checkpoint (isolated object-first visual-
-direction research track, now post-Validation-16 targeted architecture
-fix - candidate V2, not yet promoted to production, V1 above remains
-untouched and live. A Validation-8 hard-sentinel plan is proposed
-($0.1344 if authorized) but NOT yet authorized or run):
+direction research track, now at final production-readiness hardening -
+candidate V2, not yet promoted to production, V1 above remains untouched
+and live. A Recheck-3 plan is proposed ($0.0504 if authorized) but NOT
+yet authorized or run):
 
-`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_POST_VALIDATION_ARCHITECTURE_FIX.md`
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_PRODUCTION_READINESS_HARDENING.md`
 
 (previous checkpoints in this track, still useful for context:
+`AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_POST_VALIDATION_ARCHITECTURE_FIX.md`
+(semantic identity/physical-logic/text-mode/scene-family architecture,
+post-Validation-16),
 `AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_FINAL_ZERO_COST_GATE.md`
 (eliminated 2 disclosed style conflicts; audited the exact Validation-16
 prompts before they were paid-executed),
@@ -28,10 +31,10 @@ prompts before they were paid-executed),
 (prompt compiler built, review_required 376->0),
 `AI_STATE/HANDOFF_20260925_CARD_ART_OBJECT_FIRST_V2_ARCHITECTURE.md`
 (routing/audit architecture before the prompt compiler existed).
-Validation-16 (16 real images, $0.2688, commit 53f72d2) was executed and
-visually reviewed by ChatGPT; its findings are the authoritative input to
-the post-Validation checkpoint above - Claude has not opened those
-images.)
+Validation-16 (16 real images, $0.2688, commit 53f72d2) and Validation-8
+hard-sentinels (7 billed images, $0.1176, commit c7d00b9) were executed
+and visually reviewed by ChatGPT; their findings are the authoritative
+input to the checkpoints above - Claude has not opened those images.)
 
 (previous checkpoint, still useful for context:
 `AI_STATE/HANDOFF_20260924_CARD_ART_FINAL_HYGIENE_TEST_8_RESULTS.md`)

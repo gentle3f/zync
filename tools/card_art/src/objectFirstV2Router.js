@@ -119,6 +119,7 @@ export function routeHobbyV2(row, ctx) {
       scene_family: null,
       text_mode: null,
       physical_logic_domain: null,
+      physical_logic_classification: 'no_physical_logic_needed',
       physical_logic_risk: false,
       text_risk: false,
       brand_risk: false,
@@ -184,9 +185,11 @@ export function routeHobbyV2(row, ctx) {
     || ctx.textModes?.default_mode_fallback
     || 'text_none';
 
-  const physical_logic_domain = ctx.physicalLogicDomains
-    ? Object.entries(ctx.physicalLogicDomains.domains || {}).find(([, d]) => d.applies_to_archetypes.includes(archetype))?.[0] || null
+  const matchedDomainEntry = ctx.physicalLogicDomains
+    ? Object.entries(ctx.physicalLogicDomains.domains || {}).find(([, d]) => d.applies_to_archetypes.includes(archetype))
     : null;
+  const physical_logic_domain = matchedDomainEntry?.[0] || null;
+  const physical_logic_classification = matchedDomainEntry?.[1]?.classification || 'residual_review';
 
   return {
     ...base,
@@ -199,6 +202,7 @@ export function routeHobbyV2(row, ctx) {
     scene_family,
     text_mode,
     physical_logic_domain,
+    physical_logic_classification,
     physical_logic_risk: PHYSICAL_LOGIC_RISK_ARCHETYPES.has(archetype),
     text_risk: TEXT_RISK_ARCHETYPES.has(archetype),
     brand_risk: BRAND_RISK_ARCHETYPES.has(archetype),

@@ -1,6 +1,6 @@
 {
   "version": "v3",
-  "generated_at": "2026-09-25T03:45:10.804Z",
+  "generated_at": "2026-09-25T04:51:42.756Z",
   "baseline_checkpoint": "53f72d2",
   "scope": "Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit, post-Validation-16 architecture fix. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics, rules, and the authoritative ChatGPT visual findings supplied for Validation-16 - not re-derived visual findings.",
   "total_catalog": 4053,
@@ -79,11 +79,22 @@
     "tool_sport": 210,
     "water_environment": 101,
     "ball_object_flight": 73,
-    "vehicle_machine": 276,
-    "null": 895,
+    "vehicle_machine": 223,
+    "environment_led": 608,
     "instrument": 321,
-    "food_utensils": 332
+    "food_utensils": 332,
+    "abstract_system": 53,
+    "optical_device": 16,
+    "generic_static_object": 242,
+    "animal_protagonist": 29
   },
+  "physical_logic_classification_distribution": {
+    "domain_specific": 1313,
+    "generic_static_safe": 895
+  },
+  "physical_logic_residual_review_pct": 0,
+  "physical_logic_risk_verb_scan_flagged_count": 0,
+  "character_substitution_policy_present_catalog_wide": true,
   "physical_logic_risk_count": 545,
   "text_risk_count": 695,
   "brand_risk_count": 427,
@@ -113,7 +124,11 @@
       "technology.ai",
       "business.public_speaking",
       "business.founder_meetups",
-      "business.coworking"
+      "business.coworking",
+      "transport.modelrailways",
+      "music.pop",
+      "learning.model_united_nations",
+      "business.marketing"
     ]
   },
   "scene_family_sliding_window_audit": {
@@ -132,11 +147,11 @@
     "total_checked": 2208,
     "all_clean": true,
     "length_stats": {
-      "min": 10675,
-      "median": 11412,
-      "p90": 11693,
-      "p95": 11763,
-      "max": 12208
+      "min": 11795,
+      "median": 12532,
+      "p90": 12791,
+      "p95": 12851,
+      "max": 13328
     },
     "empty_count": 0,
     "positive_human_role_leak_count": 0,
@@ -174,6 +189,10 @@
     "v21_every_compiled_row_has_scene_family": true,
     "v22_no_brand_policy_regression": true,
     "v23_no_zero_human_containment_regression": true,
+    "v24_character_substitution_policy_present_catalog_wide": true,
+    "v25_physical_logic_fully_classified": true,
+    "v26_residual_physical_logic_review_reported_honestly": true,
+    "v27_no_unresolved_placeholders": true,
     "concentration_problems": [],
     "scene_family_concentration_problems": []
   },

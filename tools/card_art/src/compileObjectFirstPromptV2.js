@@ -94,16 +94,26 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
   // is always present, plus a domain-specific rule appended when this
   // row's archetype maps to one (physical_logic_domains_v2.json) - e.g.
   // food_utensils fixes food.japanese's floating-chopsticks failure.
+  // Only inject extra prompt text for genuine physics-risk domains
+  // (classification=domain_specific) - the 4 lightweight
+  // "generic_static_safe" domains added in v2 exist for audit/
+  // classification completeness only and must not bloat every prompt
+  // with unnecessary reassurance text.
   const domainDef = routing.physical_logic_domain ? ctx.physicalLogicDomainsV2?.domains?.[routing.physical_logic_domain] : null;
+  const domainNeedsPromptText = domainDef?.classification === 'domain_specific';
   const physicalLogicSection =
     `${ctx.physicalLogicV2.rule_text} For example, never depict ${list(ctx.physicalLogicV2.forbidden_examples.slice(0, 3))}. ` +
     `Motion must have a plausible cause such as ${list(ctx.physicalLogicV2.allowed_causes_of_motion.slice(0, 6))}.` +
-    (domainDef ? ` ${domainDef.rule_text}` : '');
+    (domainNeedsPromptText ? ` ${domainDef.rule_text}` : '');
 
   let humanSuppressionSection = ctx.globalStyleV2.non_human_protagonist_policy;
   if (STRONG_SUPPRESSION_RULE_IDS.has(routing.structural_containment_rule_id)) {
     humanSuppressionSection += ' ' + STRONG_SUPPRESSION_ADDENDUM;
   }
+  // Always-on, post-Validation-8: prevents the model from filling an
+  // excluded human's role with an anthropomorphic/mascot/robot substitute
+  // (the exact failure found in learning.mock_trial's owl-lawyer render).
+  humanSuppressionSection += ' ' + ctx.globalStyleV2.character_substitution_policy;
 
   // V2 base style: uses globalStyleV2.v2_native_style, an explicitly
   // authorized human-language-free fork of V1's D4 rendering-language
@@ -142,7 +152,7 @@ export function compileObjectFirstPromptV2(row, ctx, routeFn) {
   const internalIds = [
     routing.protagonist_type, routing.object_first_status, routing.structural_containment_rule_id,
     routing.composition_archetype, routing.palette_lighting_route, routing.effect_level,
-    routing.scene_family, routing.text_mode, routing.physical_logic_domain,
+    routing.scene_family, routing.text_mode, routing.physical_logic_domain, routing.physical_logic_classification,
   ].filter(v => v && v.includes('_'));
   for (const id of new Set(internalIds)) {
     if (compiledPrompt.includes(id)) {

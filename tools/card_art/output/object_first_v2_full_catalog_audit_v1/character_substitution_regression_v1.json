@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "missing_ids": [],
+  "note": "The catalog-wide character_substitution_policy (global_style_v2_object_first.json) is now appended unconditionally by the compiler to every compiled prompt - this confirms its presence in all 2208, not just the 3 ids it was written to fix."
+}

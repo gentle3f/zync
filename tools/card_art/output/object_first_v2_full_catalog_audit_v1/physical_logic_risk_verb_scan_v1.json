@@ -1,0 +1,445 @@
+{
+  "total_flagged_mentions": 73,
+  "flagged_needing_review": 0,
+  "all_findings": [
+    {
+      "id": "technology.ai",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.gadgets",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.generative_ai",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.machine_learning",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.computer_vision",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.programming",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.web_development",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.app_development",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.python",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.javascript",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.open_source",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.cybersecurity",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.linux",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.cloud_computing",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.data_science",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.smartphones",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.smart_home",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.drones",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.3d_printing",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.mechanical_keyboards",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.headphones",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.cameras",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.wearables",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "gaming.subgenre.modding_games",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "learning.book_genre.booktube",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.pc_building",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.electronics",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.soldering",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.microcontrollers",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.home_automation",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.internet_of_things",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.homelab",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.self_hosting",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.devops",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.data_visualization",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.databases",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.sql",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.ux_design",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.ui_design",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.3d_modeling",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.laser_cutting",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.cnc_machining",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.fpv_drones",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.amateur_radio",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.software_defined_radio",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.retro_computing",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.podcasting",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.video_editing",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.vlogging",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.content_creation",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.livestreaming",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.blogging",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.newsletter_writing",
+      "verb": "writing",
+      "machine_context_nearby": true,
+      "excerpt": "Newsletter Writing is represented as a self-contained abstract or mecha"
+    },
+    {
+      "id": "arts.newsletter_writing",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "gaming.game_streaming",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.motion_graphics",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.animation_production",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.webcomics",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.zine_making",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.sticker_making",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.sound_design",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.audio_editing",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.voiceover",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.online_video_creation",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "arts.short_form_video",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.makerspaces",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.hackathons",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.rc_cars",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.rc_planes",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.rc_boats",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.drone_building",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.keyboard_building",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    },
+    {
+      "id": "technology.cad",
+      "verb": "operating",
+      "machine_context_nearby": true,
+      "excerpt": "presented as a self-contained abstract or mechanical system operating entirely on its own - structure, mechanism, data-f"
+    }
+  ],
+  "note": "Informational scan, not a hard gate - context matters, per explicit instruction. machine_context_nearby=false flags a verb occurrence that did not have an obvious machine/automation cue within ~60 characters and may warrant a manual read; it does not by itself mean the sentence requests human-implied action (e.g. \"resting on a chopstick holder, never gripping...\" is a negation, already excluded above)."
+}
