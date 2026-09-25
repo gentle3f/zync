@@ -1,0 +1,96 @@
+{
+  "version": "object_first_v25_wavec_remediation_sentinel8_technical_validation_v1",
+  "generated_at": "2026-09-25T12:33:47.359Z",
+  "expected_count": 8,
+  "succeeded": 8,
+  "content_blocked": 0,
+  "technical_failed": 0,
+  "retries": 0,
+  "unique_file_hashes": 8,
+  "duplicate_hashes": [],
+  "dimensions_check": "848x1264 JPEG, 8/8 (verified via PIL before this run)",
+  "billed_count": 8,
+  "actual_cost_usd": 0.1344,
+  "entries": [
+    {
+      "canonical_id": "transport.classic_cars",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "89b44963fe96be206a9cfb3fade073199de19e4c1279116ccd490bed0dc66e48",
+      "output_filename": "transport__classic_cars__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "transport.supercars",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "1425a53e017d4409dd6566fcc820f98d4e717551be9bb4f5e503c01aae351d22",
+      "output_filename": "transport__supercars__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "lifestyle.gardening",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "70eeae14b2c729e43c6619aaaf45175462e90ad4b8b82bf46415e7d179033a1f",
+      "output_filename": "lifestyle__gardening__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "science.chemistry",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "5bdc41ff456777993ce8e515fcaba870a30d41b31638bb735f8c04d6d6bc031c",
+      "output_filename": "science__chemistry__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "learning.nonfiction",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "562e25cdc5f0a70e1de7da1f43d509606d347741d2348d4d223f20aeb7945783",
+      "output_filename": "learning__nonfiction__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "wellness.mobility",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "38ed6b02c369318332158492885cee024aaf5728d4f385dab794bb79cd22eae2",
+      "output_filename": "wellness__mobility__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "media.tv",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "c2725000ae131f811008fece8d7d980b83d76ee265f0f34bf360be12838746ad",
+      "output_filename": "media__tv__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    },
+    {
+      "canonical_id": "technology.machine_learning",
+      "production_candidate_version": "v2.5",
+      "status": "succeeded",
+      "file_sha256": "6c371f2553364ef42128f00681a94f185c031f757932cef2445b5ab65f40e3b6",
+      "output_filename": "technology__machine_learning__object_first_v25_wavec_remediation_sentinel8__gemini_3_1_flash_lite_image.jpg",
+      "mime_type": "image/jpeg",
+      "billed": true,
+      "estimated_cost_usd": 0.0168
+    }
+  ]
+}

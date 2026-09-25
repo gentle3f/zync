@@ -1,0 +1,22 @@
+{
+  "name": "batches/zeihx3dyuy9y9aazo7si6s0psw56hby5o63n",
+  "metadata": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatch",
+    "model": "models/gemini-3.1-flash-lite-image",
+    "displayName": "zync-object-first-v25-wavec-remediation-sentinel8-v1",
+    "output": {},
+    "createTime": "2026-09-25T12:13:48.635404394Z",
+    "endTime": "2026-09-25T12:26:59.368614624Z",
+    "updateTime": "2026-09-25T12:26:59.368614654Z",
+    "batchStats": {
+      "requestCount": "8",
+      "successfulRequestCount": "8"
+    },
+    "state": "BATCH_STATE_SUCCEEDED",
+    "name": "batches/zeihx3dyuy9y9aazo7si6s0psw56hby5o63n"
+  },
+  "done": true,
+  "response": {
+    "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.GenerateContentBatchOutput"
+  }
+}

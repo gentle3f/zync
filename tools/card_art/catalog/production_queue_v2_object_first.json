@@ -2721,8 +2721,8 @@
     {
       "queue_index": 86,
       "canonical_id": "transport.classic_cars",
-      "prompt_sha256": "ee8cbb860013d17751fce4083702707e76d4d979aa861a230776c60dad9fd5e1",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "c1e9f602850070e3c99a15dbd406c1c7d12e62359663a43df6a8ab2a104f4d52",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "machine_process",
       "archetype": "journey_machine",
       "runtime_category": "transport",
@@ -2741,7 +2741,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -2749,7 +2749,25 @@
       "visual_qa_flags": [
         "brand_likeness"
       ],
-      "visual_qa_finding": "Vehicle morphology strongly resembled a recognizable classic Japanese sports/GT car design."
+      "visual_qa_finding": "Vehicle morphology strongly resembled a recognizable classic Japanese sports/GT car design.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#transport.classic_cars",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "brand_likeness"
+          ],
+          "visual_qa_finding": "Vehicle morphology strongly resembled a recognizable classic Japanese sports/GT car design.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 87,
@@ -2995,8 +3013,8 @@
     {
       "queue_index": 95,
       "canonical_id": "learning.nonfiction",
-      "prompt_sha256": "9131a23f7e0aa50f0a473d52afdd4fcbf29bb6742d62dec11ac4f8936d0f3a09",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f95bdaa7f55e268d4f5e4a359d0e21916e88c570aa11c156b7dd81614eff9f99",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "reading_world",
       "runtime_category": "learning",
@@ -3015,7 +3033,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -3023,7 +3041,25 @@
       "visual_qa_flags": [
         "semantic_identity"
       ],
-      "visual_qa_finding": "Rendered as astronomy/telescope/stargazing rather than nonfiction."
+      "visual_qa_finding": "Rendered as astronomy/telescope/stargazing rather than nonfiction.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#learning.nonfiction",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "semantic_identity"
+          ],
+          "visual_qa_finding": "Rendered as astronomy/telescope/stargazing rather than nonfiction.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 96,
@@ -3303,8 +3339,8 @@
     {
       "queue_index": 105,
       "canonical_id": "wellness.mobility",
-      "prompt_sha256": "e07a854a74d6fdb720cfa846830f1fd072e9e252d6ff43e8a5d8c96a718ea9db",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "bb6411612e7ab8dd4dc890cf61035a0e2bd1cfc94c2ba7d58ce3da12f0ff845c",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "environment",
       "archetype": "calm_wellness",
       "runtime_category": "wellness",
@@ -3323,7 +3359,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -3331,7 +3367,25 @@
       "visual_qa_flags": [
         "semantic_identity"
       ],
-      "visual_qa_finding": "Rendered as dog agility/pet obstacle activity rather than human wellness mobility."
+      "visual_qa_finding": "Rendered as dog agility/pet obstacle activity rather than human wellness mobility.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#wellness.mobility",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "semantic_identity"
+          ],
+          "visual_qa_finding": "Rendered as dog agility/pet obstacle activity rather than human wellness mobility.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 106,
@@ -3699,8 +3753,8 @@
     {
       "queue_index": 118,
       "canonical_id": "lifestyle.gardening",
-      "prompt_sha256": "c45a817eb7fd31bda2632a92481563f660290c8b44480aa217518079ce3ee6b7",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "6e80ec5e3c3b47025859152d10c8bbb1f051e30d6a1049fb48a33d15242ce7d7",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "home_lifestyle",
       "runtime_category": "lifestyle",
@@ -3719,7 +3773,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -3727,7 +3781,25 @@
       "visual_qa_flags": [
         "physical_logic"
       ],
-      "visual_qa_finding": "Watering can floated and watered plants by itself. Clear invisible-human physics failure."
+      "visual_qa_finding": "Watering can floated and watered plants by itself. Clear invisible-human physics failure.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#lifestyle.gardening",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "physical_logic"
+          ],
+          "visual_qa_finding": "Watering can floated and watered plants by itself. Clear invisible-human physics failure.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 119,
@@ -3765,8 +3837,8 @@
     {
       "queue_index": 120,
       "canonical_id": "science.chemistry",
-      "prompt_sha256": "5ae54637a0487a8a9699c79859e91a7d1e73ab8f14cea84720e0b0b7a47d40d1",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "eaf8b137056ed7b2c6d7bfcd227fa26e2415b53c0190311ff699b5591572bf3c",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "object",
       "archetype": "learning_exploration",
       "runtime_category": "science",
@@ -3785,7 +3857,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -3793,7 +3865,25 @@
       "visual_qa_flags": [
         "physical_logic"
       ],
-      "visual_qa_finding": "Flask/lab vessel floated and poured liquid by itself. Clear invisible-human physics failure."
+      "visual_qa_finding": "Flask/lab vessel floated and poured liquid by itself. Clear invisible-human physics failure.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#science.chemistry",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "physical_logic"
+          ],
+          "visual_qa_finding": "Flask/lab vessel floated and poured liquid by itself. Clear invisible-human physics failure.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 121,
@@ -4037,8 +4127,8 @@
     {
       "queue_index": 129,
       "canonical_id": "media.tv",
-      "prompt_sha256": "525ca3f058fab180591cd2111e04eb25b93f1e53e9ac82afc3b080697fbb2bb6",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "405865e0ae6cd08c247bb2a6888b8a8032017994283df34a2bbfacf4f07aed98",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "environment",
       "archetype": "story_culture",
       "runtime_category": "entertainment",
@@ -4057,7 +4147,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -4065,7 +4155,25 @@
       "visual_qa_flags": [
         "semantic_identity"
       ],
-      "visual_qa_finding": "Rendered as outdoor projection/large-screen event rather than television."
+      "visual_qa_finding": "Rendered as outdoor projection/large-screen event rather than television.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#media.tv",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "semantic_identity"
+          ],
+          "visual_qa_finding": "Rendered as outdoor projection/large-screen event rather than television.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 130,
@@ -4101,8 +4209,8 @@
     {
       "queue_index": 131,
       "canonical_id": "technology.machine_learning",
-      "prompt_sha256": "d7c285b4d0da22348ffae04d17a09520cfb15248a44b1acb22e6210204452c4d",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "279b1edae78e1253485f585c53518cc2c23a8ebeddb079e448fb0c64cd859aab",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "abstract_system",
       "archetype": "tech_workspace",
       "runtime_category": "technology",
@@ -4121,7 +4229,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -4129,7 +4237,25 @@
       "visual_qa_flags": [
         "semantic_identity"
       ],
-      "visual_qa_finding": "Rendered as a large generic sci-fi machine/totem; machine-learning identity was lost."
+      "visual_qa_finding": "Rendered as a large generic sci-fi machine/totem; machine-learning identity was lost.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#technology.machine_learning",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "semantic_identity"
+          ],
+          "visual_qa_finding": "Rendered as a large generic sci-fi machine/totem; machine-learning identity was lost.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 132,
@@ -4707,8 +4833,8 @@
     {
       "queue_index": 151,
       "canonical_id": "transport.supercars",
-      "prompt_sha256": "bc43db87a0d80b17cbc77219fba9739409f3927374b0805ca1885b0c6004d6ac",
-      "production_candidate_version": "v2.4",
+      "prompt_sha256": "f63eb04b4a8ac2bbddd068f99bb6c21a270003098edc64bd248356bd168f9318",
+      "production_candidate_version": "v2.5",
       "protagonist_type": "machine_process",
       "archetype": "journey_machine",
       "runtime_category": "transport",
@@ -4727,7 +4853,7 @@
       "reusable_existing_asset": false,
       "rollout_wave": "wave_c_96",
       "qa_sampling_status": "not_yet_selected",
-      "generation_status": "qa_quarantine",
+      "generation_status": "generated_pending_remediation_qa",
       "failure_status": null,
       "quarantine_status": "qa_quarantine",
       "generation_hold_reason": null,
@@ -4735,7 +4861,25 @@
       "visual_qa_flags": [
         "brand_likeness"
       ],
-      "visual_qa_finding": "Vehicle morphology strongly resembled recognizable McLaren-like supercar design language."
+      "visual_qa_finding": "Vehicle morphology strongly resembled recognizable McLaren-like supercar design language.",
+      "superseded_assets": [
+        {
+          "source": "tools/card_art/output/object_first_v2_production_waveC96_v1",
+          "production_candidate_version": "v2.4",
+          "prompt_sha256_ref": "output/production_rollout_v2_object_first_v1/production_candidate_freeze_v2_4_v1.json#transport.supercars",
+          "visual_qa_disposition": "qa_quarantine",
+          "visual_qa_flags": [
+            "brand_likeness"
+          ],
+          "visual_qa_finding": "Vehicle morphology strongly resembled recognizable McLaren-like supercar design language.",
+          "status": "superseded_by_remediation_asset",
+          "superseded_by": {
+            "sentinel_source_commit": "this_commit_see_git_log",
+            "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
+          }
+        }
+      ],
+      "canonical_asset_source": "tools/card_art/output/object_first_v25_wavec_remediation_sentinel8_v1"
     },
     {
       "queue_index": 152,
