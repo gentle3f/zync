@@ -1,0 +1,83 @@
+{
+  "version": "v1",
+  "purpose": "Authorized paid execution of the FINAL Object-First V2 Recheck-3 batch. Uses the EXACT frozen final_compiled_prompt strings recorded in output/object_first_v2_full_catalog_audit_v1/recheck_3_exact_prompts_v1.json at commit 4c8791c (post-effect_level-deconfliction) - no recompilation, no manual edits. Frozen SHA256 hashes recorded below are computed directly from that committed file and verified again at submission time.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "production_files_touched": false,
+  "frozen_prompt_source": "tools/card_art/output/object_first_v2_full_catalog_audit_v1/recheck_3_exact_prompts_v1.json",
+  "frozen_plan_source": "tools/card_art/catalog/object_first_v2_recheck_3_plan_v1.json",
+  "source_commit": "4c8791c",
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 3,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.0504
+  },
+  "hard_guardrails": [
+    "exactly 3 images this run, no rerolls under any circumstance including content-policy blocks",
+    "no recompilation - prompts loaded verbatim from the frozen file, SHA256-verified before submission",
+    "no production file writes, no production queue changes, no launch-gate file changes, no quarantine changes",
+    "no visual QA performed by Claude on the resulting images",
+    "no fal.ai, no other image model, no reference images, no image-to-image",
+    "no fixes to V2 specs/compiler regardless of what this batch produces",
+    "scene_family/composition/palette/effects/text_mode/physical_logic preserved exactly as committed, never locally reassigned again",
+    "a content-policy block (e.g. IMAGE_SAFETY) is preserved as evidence, never retried, never billed"
+  ],
+  "cards": [
+    {
+      "id": "business.startups",
+      "title": "Startups",
+      "archetype": "professional_world",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "startup_early_stage_world",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "low_angle_kinetic",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "restrained",
+      "scene_family": "dark_cinematic_interior",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": "environment_led",
+      "physical_logic_classification": "generic_static_safe",
+      "prompt_sha256": "74a53a1f68440c82212b1a4990e669a184aa6bd6f52a6088ebe04c70e50a713e"
+    },
+    {
+      "id": "media.anime",
+      "title": "Anime",
+      "archetype": "story_culture",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "anime_culture_object_first",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "strong_diagonal",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "expressive",
+      "scene_family": "cool_night_outdoor",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": "environment_led",
+      "physical_logic_classification": "generic_static_safe",
+      "prompt_sha256": "6df2b8eb4763fca37269e4686a83768bae3b4758f0607903df1ddc0701290572"
+    },
+    {
+      "id": "learning.mock_trial",
+      "title": "Mock Trial",
+      "archetype": "legal_practice",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "mock_trial_simulation",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "quiet_atmospheric",
+      "palette_lighting_route": "neutral_overcast",
+      "effect_level": "none",
+      "scene_family": "industrial_workshop",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": "environment_led",
+      "physical_logic_classification": "generic_static_safe",
+      "prompt_sha256": "aa0f65de445e19ed601796532b67dee88076cc60176be4141c9d5ddd969bb2ca"
+    }
+  ]
+}
