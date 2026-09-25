@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/card_fx/card_fx_spec.dart';
+import 'package:zync/screens/card_fx_lab_screen.dart';
+
+void main() {
+  test('rarity profiles scale visual intensity monotonically', () {
+    final profiles = ZyncFxRarity.values
+        .map(ZyncCardFxProfile.forRarity)
+        .toList(growable: false);
+
+    for (var i = 1; i < profiles.length; i++) {
+      expect(
+        profiles[i].edgeGlowOpacity,
+        greaterThanOrEqualTo(profiles[i - 1].edgeGlowOpacity),
+      );
+      expect(
+        profiles[i].foilOpacity,
+        greaterThanOrEqualTo(profiles[i - 1].foilOpacity),
+      );
+      expect(
+        profiles[i].particleCount,
+        greaterThanOrEqualTo(profiles[i - 1].particleCount),
+      );
+    }
+  });
+
+  test('lab samples use three distinct accepted production artworks', () {
+    expect(cardFxLabSamples, hasLength(3));
+    expect(
+      cardFxLabSamples.map((item) => item.id).toSet(),
+      {
+        'books.reading',
+        'technology.ai',
+        'food.coffee',
+      },
+    );
+    expect(
+      cardFxLabSamples.map((item) => item.artworkAsset).toSet().length,
+      3,
+    );
+  });
+
+  testWidgets('Card FX Lab exposes inspect, reveal and tuning controls',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: CardFxLabScreen(),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Card FX Lab'), findsOneWidget);
+    expect(find.text('Inspect'), findsOneWidget);
+    expect(find.text('Draw reveal'), findsOneWidget);
+    expect(find.text('Coffee · LEGENDARY'), findsOneWidget);
+    expect(find.text('FX Debug Panel'), findsOneWidget);
+    expect(find.text('Foil intensity'), findsOneWidget);
+
+    await tester.tap(find.text('Artificial Intelligence · RARE'));
+    await tester.pump();
+
+    expect(find.text('RARE PROFILE'), findsOneWidget);
+
+    await tester.tap(find.text('Draw reveal'));
+    await tester.pump(const Duration(milliseconds: 20));
+
+    expect(find.text('Replay reveal'), findsOneWidget);
+  });
+}
