@@ -1,0 +1,41 @@
+{
+  "version": "v1",
+  "validated_at": "2026-09-25",
+  "scope": "Technical/metadata validation only. No visual inspection performed, per the standing operating rule. No PASS/MINOR/FAIL, hand-leak, product-text, semantic, or quality judgment made. Visual review performed separately by the user via ChatGPT.",
+  "batch_name": "batches/cauio11qufq0mpguncfk2ut8edx160yr7gqn",
+  "batch_state": "BATCH_STATE_SUCCEEDED",
+  "batch_request_count": 1,
+  "frozen_prompt_source": "tools/card_art/output/object_first_v2_startups_final_recheck_v1/frozen_prompt_v1.json (v2.3 narrow rule fix on top of commit 7425cce)",
+  "sha256_cross_check": "The prompt was SHA256-verified against the recorded reference in catalog/object_first_v2_startups_final_recheck_v1.json immediately before submission (enforced in loadFrozenRows(), would throw and abort submission on any mismatch). Verified identical.",
+  "anime_mock_trial_unchanged_confirmation": "Verified before this task touched any spec file: media.anime and learning.mock_trial compiled-prompt SHA256 unchanged from commit 7425cce (byte-identical). This task modified only the startup_early_stage_world containment rule and added a business.startups text_modes_v2.json override.",
+  "no_reroll_confirmation": "No prompt mutation, retry, or reroll was performed. The single request succeeded on first submission.",
+  "entry": {
+    "canonical_interest_id": "business.startups",
+    "output_filename": "business__startups__object_first_v2_startups_final_recheck__gemini_3_1_flash_lite_image.jpg",
+    "file_exists": true,
+    "prompt_sha256": "f28dc353f3aac8f62e7e5f0a47008bdd443a6c95f4e8867a480420d98b400c40",
+    "scene_family": "dark_cinematic_interior",
+    "composition_archetype": "low_angle_kinetic",
+    "palette_lighting_route": "warm_intimate",
+    "effect_level": "restrained",
+    "text_mode": "text_incidental_nonlegible",
+    "physical_logic_domain": "environment_led",
+    "dimensions": "848x1264",
+    "format": "jpeg",
+    "file_size_bytes": 743305,
+    "file_sha256": "6b7bf1c610aaee1930fae706e68063901cb96fc3aebe354915fa99b6150d4835",
+    "api_status": "succeeded",
+    "billed": true,
+    "estimated_cost_usd": 0.0168
+  },
+  "aggregate": {
+    "expected_count": 1,
+    "succeeded_count": 1,
+    "failed_content_count": 0,
+    "failed_transient_count": 0,
+    "total_billed_requests": 1,
+    "total_billed_cost_usd": 0.0168,
+    "reroll_count": 0,
+    "retry_count": 0
+  }
+}

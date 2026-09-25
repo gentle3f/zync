@@ -1,0 +1,47 @@
+{
+  "version": "v1",
+  "purpose": "Authorized paid execution of the FINAL single-sentinel business.startups recheck (v2.3 narrow fix: hard zero-human containment for product-holding gesture + blank/abstract packaging text control). Uses the EXACT frozen final_compiled_prompt for business.startups recorded in output/object_first_v2_full_catalog_audit_v1/compiled_prompts_v1.jsonl at commit built on top of 7425cce - no recompilation after hash verification, no manual edits.",
+  "model": "gemini-3.1-flash-lite-image",
+  "provider": "Google Gemini API direct",
+  "api_mode": "Batch API inline requests",
+  "fal_ai": false,
+  "production_files_touched": false,
+  "frozen_prompt_source": "tools/card_art/output/object_first_v2_full_catalog_audit_v1/compiled_prompts_v1.jsonl",
+  "source_baseline_commit": "7425cce",
+  "image": {
+    "aspect_ratio": "2:3"
+  },
+  "expected": {
+    "requests": 1,
+    "batch_output_price_usd_per_image": 0.0168,
+    "estimated_image_output_cost_usd": 0.0168
+  },
+  "hard_guardrails": [
+    "exactly 1 image this run, no rerolls under any circumstance",
+    "no recompilation after SHA256 verification - prompt loaded verbatim, hash-checked before submission",
+    "no production file writes, no production queue changes, no launch-gate file changes, no quarantine changes",
+    "no visual QA performed by Claude on the resulting image",
+    "no fal.ai, no other image model, no reference images, no image-to-image",
+    "a content-policy block is preserved as evidence and this run STOPS, never retried",
+    "media.anime and learning.mock_trial are untouched by this task and their prompt hashes were verified unchanged before this run"
+  ],
+  "cards": [
+    {
+      "id": "business.startups",
+      "title": "Startups",
+      "archetype": "professional_world",
+      "protagonist_type": "object",
+      "object_first_status": "containment_required",
+      "structural_containment_rule_id": "startup_early_stage_world",
+      "confidence": "new_grammar_unvalidated",
+      "composition_archetype": "low_angle_kinetic",
+      "palette_lighting_route": "warm_intimate",
+      "effect_level": "restrained",
+      "scene_family": "dark_cinematic_interior",
+      "text_mode": "text_incidental_nonlegible",
+      "physical_logic_domain": "environment_led",
+      "physical_logic_classification": "generic_static_safe",
+      "prompt_sha256": "f28dc353f3aac8f62e7e5f0a47008bdd443a6c95f4e8867a480420d98b400c40"
+    }
+  ]
+}

@@ -4,6 +4,20 @@ Branch: `card-art-pilot-v1-20260921`
 Starting commit: `c7d00b9`
 Scope: architecture-only, $0.00 image-generation cost. No image was generated or visually inspected this checkpoint.
 
+## Addendum (2026-09-25): Recheck-3 results + v2.3 single-sentinel fix
+
+Recheck-3 (commit `7425cce`, authorized paid batch, ChatGPT-reviewed) found:
+
+- `media.anime`: **PASS** - anime production/collecting grammar worked, no `IMAGE_SAFETY` block. Not modified further.
+- `learning.mock_trial`: **PASS/MINOR** - character-substitution problem solved. Not modified further.
+- `business.startups`: **semantically improved but visual FAIL** - the v2.2 grammar correctly stopped collapsing into an electronics-hobby reading, but the generated image showed (1) a real human arm/hand holding a product box, and (2) readable generated product text ("MINIATURE PROJECTOR") on packaging.
+
+**v2.3 narrow fix (commit that follows `7425cce`)**, scoped to `business.startups` only: `structural_containment_rules_v2.json`'s `startup_early_stage_world` rule gained explicit resting/stacked/displayed-only physical-logic language (no product may be held, lifted, handed over, carried, or opened by any hand/arm/finger, no cropped limb/silhouette/reflection anywhere in frame) and explicit blank/abstract-packaging text language (no readable product name, model number, feature list, slogan, or brand name, including invented ones), on top of the already-working v2.2 business-creation identity, which was left untouched. `text_modes_v2.json` gained an explicit `business.startups` id override reinforcing the same no-product-name constraint (the archetype default already used `text_incidental_nonlegible`, but the generic guidance alone wasn't specific enough for a packaging context).
+
+Verified before submission: `media.anime` and `learning.mock_trial` compiled-prompt SHA256 unchanged (byte-identical) from `7425cce`; full 2208-row zero-cost audit re-run, all validations pass; `business.startups` semantic-fix regression test still passes (rule id unchanged, anchor phrases present, anti-confusion clean).
+
+A single authorized image was generated for `business.startups` only (`$0.0168`, 1/1 succeeded) to test the v2.3 fix - see `tools/card_art/output/object_first_v2_startups_final_recheck_v1/` for the exact prompt, SHA256, routing metadata, and technical validation report. No visual QA was performed by Claude; the result is pending ChatGPT review.
+
 ## Authoritative visual findings (Validation-8, input, not re-derived)
 
 - **PASS, do not destabilize:** `transport.modelrailways`, `sports.badminton`, `outdoors.swimming`, `pets.dogs`, `technology.ai`, `music.pop`, `learning.model_united_nations`, `business.marketing` (minor).

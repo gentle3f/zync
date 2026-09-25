@@ -44,6 +44,11 @@
       "mode": "text_incidental_nonlegible",
       "decision": "Reinforces the existing generic_structural_containment default with explicit anti-pseudo-Japanese-poster language after Validation-16 found excessive pseudo-Japanese/text on posters, books, and screens.",
       "guidance": "Posters, book spines, and screens visible in the scene must carry no pseudo-Japanese lettering, no fake logographic decoration, and no invented readable game titles - keep all such surfaces blank or abstractly patterned only."
+    },
+    "business.startups": {
+      "mode": "text_incidental_nonlegible",
+      "decision": "Was already text_incidental_nonlegible via the professional_world archetype default, but Recheck-3 (commit 7425cce) found a readable invented product name ('MINIATURE PROJECTOR') on packaging anyway - the archetype-level guidance alone was not specific enough for a product-packaging context. This explicit id override makes the constraint unambiguous for this id rather than relying on the generic default.",
+      "guidance": "Every product package, box, or sample surface must show only blank panels, abstract geometric graphics, color blocks, or tiny non-legible placeholder marks - never a readable product name, model number, feature list, slogan, or brand name of any kind, including an invented one."
     }
   }
 }

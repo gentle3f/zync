@@ -1,6 +1,6 @@
 {
   "version": "v3",
-  "generated_at": "2026-09-25T04:51:42.756Z",
+  "generated_at": "2026-09-25T05:19:58.478Z",
   "baseline_checkpoint": "53f72d2",
   "scope": "Zero-cost, text/catalog-only V2 object-first routing + prompt-compilation audit, post-Validation-16 architecture fix. No image generation, no API calls. Routing predictions are risk assessments derived from catalog semantics, rules, and the authoritative ChatGPT visual findings supplied for Validation-16 - not re-derived visual findings.",
   "total_catalog": 4053,
@@ -151,7 +151,7 @@
       "median": 12532,
       "p90": 12791,
       "p95": 12851,
-      "max": 13328
+      "max": 13935
     },
     "empty_count": 0,
     "positive_human_role_leak_count": 0,
