@@ -33,8 +33,8 @@ void main() {
     expect(assets, hasLength(5));
     expect(assets.toSet(), hasLength(5));
     for (final asset in assets) {
-      expect(asset, startsWith('assets/card_fx/frames/'));
-      expect(asset, endsWith('.webp'));
+      expect(asset, startsWith('assets/card_fx/frames/master/'));
+      expect(asset, endsWith('_master_v1.png'));
     }
     for (final sample in cardFxLabSamples) {
       expect(
@@ -87,14 +87,26 @@ void main() {
     expect(find.text('RARE PROFILE'), findsOneWidget);
 
     await tester.tap(find.text('Draw reveal'));
-    await tester.pump(const Duration(milliseconds: 20));
+    await tester.pump();
 
     final replayButton = find.byKey(const ValueKey('fx-replay-button'));
     expect(replayButton, findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-3')),
+      findsOneWidget,
+    );
 
     await tester.tap(replayButton);
-    await tester.pump(const Duration(milliseconds: 20));
+    await tester.pump();
 
+    expect(
+      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-3')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-4')),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 }

@@ -7,12 +7,17 @@ CI, Vercel, deployment or external-infrastructure action.
 
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-browser review completed; icon placement accepted; Replay still has no visible
-response in real Chrome despite passing the weak widget tap test; repo frames
-are confirmed 96x144 WebP derivatives and are visibly blurred when enlarged.
-Next chat must fix Replay first, then replace derivatives with the original
-1024x1536 transparent locked PNG masters. No production pack/draw integration,
-paid generation, CI/Vercel, or new package dependency is needed:
+real-browser Replay bug FIXED and re-verified in Chrome; all five 96x144 WebP
+frame derivatives replaced by the exact original 1024x1536 transparent locked
+PNG masters (5/5 SHA-256 match against the prepared Library bundle). Common,
+Rare and Legendary were visually reviewed sharp in the real Lab; accepted icon
+placement remains unchanged. Card FX browser-review blockers are CLOSED; next
+runtime phase is gyro/real-device tilt, then pack-opening integration/polish.
+No paid generation, CI/Vercel, release or production draw/server change was used:
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_REPLAY_PNG_COMPLETE.md`
+
+Previous Card FX browser-review checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_BROWSER_REVIEW.md`
 

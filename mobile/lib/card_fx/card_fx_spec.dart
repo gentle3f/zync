@@ -5,11 +5,16 @@ enum ZyncFxRarity { common, uncommon, rare, epic, legendary }
 enum ZyncAmbientFx { none, dust, steam, digitalPulse }
 
 abstract final class ZyncFrameAssets {
-  static const common = 'assets/card_fx/frames/common.webp';
-  static const uncommon = 'assets/card_fx/frames/uncommon.webp';
-  static const rare = 'assets/card_fx/frames/rare.webp';
-  static const epic = 'assets/card_fx/frames/epic.webp';
-  static const legendary = 'assets/card_fx/frames/legendary.webp';
+  static const common =
+      'assets/card_fx/frames/master/zync_frame_common_master_v1.png';
+  static const uncommon =
+      'assets/card_fx/frames/master/zync_frame_uncommon_master_v1.png';
+  static const rare =
+      'assets/card_fx/frames/master/zync_frame_rare_master_v1.png';
+  static const epic =
+      'assets/card_fx/frames/master/zync_frame_epic_master_v1.png';
+  static const legendary =
+      'assets/card_fx/frames/master/zync_frame_legendary_master_v1.png';
 
   static String forRarity(ZyncFxRarity rarity) => switch (rarity) {
         ZyncFxRarity.common => common,

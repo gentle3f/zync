@@ -116,7 +116,9 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
                     tuning: _tuning,
                   )
                 : ZyncFxRevealStage(
-                    key: ValueKey('fx-reveal-${_spec.id}-${_spec.rarity.name}'),
+                    key: ValueKey(
+                      'fx-reveal-${_spec.id}-${_spec.rarity.name}-$_revealToken',
+                    ),
                     spec: _spec,
                     tuning: _tuning,
                     revealToken: _revealToken,
@@ -424,8 +426,8 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
         const SizedBox(height: 10),
         Text(
           isZh
-              ? '下一步：locked PNG frame → gyro tilt → 真正pack-opening接入。'
-              : 'Next: locked PNG frames → gyro tilt → pack-opening integration.',
+              ? '下一步：gyro tilt → 真正 pack-opening 接入。'
+              : 'Next: gyro tilt → pack-opening integration.',
           style: Theme.of(context)
               .textTheme
               .bodySmall

@@ -32,4 +32,4 @@ flutter:
   generate: true
   assets:
     - assets/card_fx/art/
-    - assets/card_fx/frames/
+    - assets/card_fx/frames/master/
