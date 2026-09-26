@@ -6,15 +6,20 @@ Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-A shared sensory event layer is now implemented across pack pick, A/B/C/D
-break/unlock, hidden omen, card extraction, flip, rarity hit and Legendary
-finale. Local synthetic WAV prototype assets were generated in-repo and
-`audioplayers` was added; no downloaded/copyrighted sound files were used.
-Targeted analyze passes and Card FX Lab tests are 4/4 PASS. Real-browser audio
-verification is NOT complete because the user needed to shut the computer down.
-Resume from the isolated `lib/main_card_fx_lab.dart` entrypoint and verify WAV
-loading + timing before calling sensory work complete. Do not debug the unrelated
-normal-app InterestSetupScreen web type-cast error as a Card FX regression.
+The shared sensory event layer is now real-browser validated in the isolated
+Card FX Lab. Chrome successfully loaded the expected local WAV cues for A Tear
+Up, B Split Open, C Charge Burst and D Seal Slide, followed by card extraction,
+flip, rarity hit and Legendary finale. A deterministic low-frequency Legendary
+hidden-omen case was also exercised and confirmed to cue after seal break but
+before extraction. Cache-disabled browser checks showed successful WAV requests
+with no missing-asset/plugin/console errors. Targeted analyze remains clean and
+Card FX Lab tests remain 4/4 PASS. A/B/C/D are still intentionally preserved for
+the user and his wife to compare as complete visual + sensory experiences.
+No GitHub Actions, Vercel, deployment, release or paid generation was used.
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_SENSORY_BROWSER_VALIDATED.md`
+
+Previous sensory implementation checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_SENSORY_LAYER_CHECKPOINT.md`
 
