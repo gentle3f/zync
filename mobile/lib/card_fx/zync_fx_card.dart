@@ -309,11 +309,10 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
 
   Widget _labels(Size size) {
     final profile = widget.spec.profile;
-    final isDark = widget.spec.rarity == ZyncFxRarity.epic;
-    final titleColor = isDark ? Colors.white : const Color(0xFF111722);
-    final subColor = isDark
-        ? Colors.white.withValues(alpha: 0.72)
-        : const Color(0xFF111722).withValues(alpha: 0.62);
+    // All locked masters use a light/silver information panel. Dark copy keeps
+    // the title readable instead of letting white text disappear into it.
+    const titleColor = Color(0xFF101722);
+    final subColor = const Color(0xFF101722).withValues(alpha: 0.68);
 
     return IgnorePointer(
       child: Stack(
@@ -570,8 +569,8 @@ class _AmbientFxPainter extends CustomPainter {
   void _steam(Canvas canvas, Size size) {
     for (var i = 0; i < 3; i++) {
       final phase = (progress + i * 0.27) % 1.0;
-      final fade = math.pow(math.sin(phase * math.pi).clamp(0.0, 1.0), 1.5)
-          .toDouble();
+      final fade =
+          math.pow(math.sin(phase * math.pi).clamp(0.0, 1.0), 1.5).toDouble();
       if (fade < 0.02) continue;
 
       final drift = math.sin(progress * math.pi * 2 + i * 1.9);

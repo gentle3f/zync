@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../card_fx/card_fx_spec.dart';
 import '../card_fx/zync_fx_card.dart';
-import '../card_fx/zync_fx_reveal.dart';
+import '../card_fx/zync_pack_opening.dart';
 
 enum _FxLabMode { inspect, reveal }
 
@@ -20,6 +20,7 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
   ZyncFxRarity? _rarityOverride;
   ZyncFxTuning _tuning = const ZyncFxTuning();
   double _revealSpeed = 1.0;
+  ZyncOpeningPrototype _openingPrototype = ZyncOpeningPrototype.tearUp;
 
   void _restartReveal() {
     setState(() {
@@ -112,6 +113,10 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
         _sampleSelector(),
         const SizedBox(height: 14),
         _modeSelector(isZh),
+        if (_mode == _FxLabMode.reveal) ...[
+          const SizedBox(height: 10),
+          _openingPrototypeSelector(),
+        ],
         const SizedBox(height: 12),
         _raritySelector(isZh),
         const SizedBox(height: 18),
@@ -126,13 +131,14 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
                   tuning: _tuning,
                   respectReduceMotion: false,
                 )
-              : ZyncFxRevealStage(
+              : ZyncPackOpeningStage(
                   key: ValueKey(
-                    'fx-reveal-${_spec.id}-${_spec.rarity.name}-$_revealToken',
+                    'fx-opening-${_spec.id}-${_spec.rarity.name}-${_openingPrototype.name}-$_revealToken',
                   ),
                   spec: _spec,
                   tuning: _tuning,
-                  revealToken: _revealToken,
+                  prototype: _openingPrototype,
+                  openToken: _revealToken,
                   speed: _revealSpeed,
                   respectReduceMotion: false,
                 ),
@@ -144,8 +150,8 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
                   ? '用手指拖張卡：試 3D tilt、parallax、foil 同 ambient FX。'
                   : 'Drag the card to test 3D tilt, parallax, foil and ambient FX.')
               : (isZh
-                  ? 'Reveal mode 只測動畫節奏；唔會改卡、rarity 或任何server結果。'
-                  : 'Reveal mode tests animation timing only. It cannot change card results or rarity.'),
+                  ? 'Opening Lab：揀包 → 做手勢 → reveal；唔會改卡、rarity 或任何 server 結果。'
+                  : 'Opening Lab: choose a pack, perform the gesture, then reveal. It cannot change card results or rarity.'),
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .textTheme
@@ -210,7 +216,7 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
           key: const ValueKey('fx-draw-reveal-button'),
           onPressed: _restartReveal,
           icon: const Icon(Icons.auto_awesome_rounded),
-          label: Text(isZh ? '抽卡 Reveal' : 'Draw reveal'),
+          label: Text(isZh ? '開包' : 'Open pack'),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.white,
             backgroundColor: _mode == _FxLabMode.reveal
@@ -229,6 +235,42 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
             onPressed: _restartReveal,
             icon: const Icon(Icons.replay_rounded),
             label: Text(isZh ? '再播' : 'Replay'),
+          ),
+      ],
+    );
+  }
+
+  Widget _openingPrototypeSelector() {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 7,
+      runSpacing: 7,
+      children: [
+        for (final prototype in ZyncOpeningPrototype.values)
+          ChoiceChip(
+            key: ValueKey('opening-prototype-${prototype.name}'),
+            selected: _openingPrototype == prototype,
+            onSelected: (_) {
+              setState(() {
+                _openingPrototype = prototype;
+                _revealToken++;
+              });
+            },
+            avatar: CircleAvatar(
+              radius: 11,
+              backgroundColor: _openingPrototype == prototype
+                  ? _spec.profile.accentColor.withValues(alpha: 0.26)
+                  : Colors.white10,
+              child: Text(
+                prototype.code,
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            label: Text(prototype.label),
           ),
       ],
     );

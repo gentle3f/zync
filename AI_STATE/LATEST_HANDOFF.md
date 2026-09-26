@@ -7,17 +7,21 @@ CI, Vercel, deployment or external-infrastructure action.
 
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-real no-response root cause found in the user's visible Chrome session:
-Flutter/Windows reported MediaQuery.disableAnimations=true. First this made
-reveal/replay jump straight to the final frame; after bypassing that explicit
-skip, Flutter AnimationController's default AnimationBehavior.normal still
-compressed the reveal into a near-instant flash. The isolated Card FX Lab now
-uses respectReduceMotion=false plus AnimationBehavior.preserve, while production
-still respects accessibility normally. Real Chrome wall-clock verification now
-shows 250ms/750ms = Z card back, 1250ms = front + rarity burst, 1900ms = settle,
-2500ms = complete. Reveal is deliberately more obvious and steam is softened.
-Locked 1024x1536 PNG masters + accepted icon placement remain unchanged. No paid
-generation, CI/Vercel, release or production draw/server change was used:
+A/B/C/D pack-opening comparison Lab is now implemented and real-browser tested:
+A Tear Up, B Split Open, C Charge Burst, D Seal Slide. Open pack first presents
+three gently moving packs, then the chosen gesture feeds into the preserved
+card-back/reveal animation. All five rarity profiles scale opening/reveal energy;
+Legendary now has a materially stronger two-stage finale with large shockwaves,
+28 long rays, particles and flash. Hidden omen is deliberately low-frequency
+(~1/7 Legendary), with rare Epic false-positive/near-miss (~1/20), and appears
+only after the opening gesture. Coffee/info-panel copy was changed to dark text
+for readability; accepted lower-right icon position is unchanged. Production
+result/RNG/backend remain untouched. No paid generation, CI/Vercel, release or
+deployment was used. Keep all four prototypes until the user and his wife choose:
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_OPENING_PROTOTYPES_A_D.md`
+
+Previous Card FX reduced-motion root-cause checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_REDUCE_MOTION_ROOT_CAUSE.md`
 

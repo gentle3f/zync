@@ -73,7 +73,7 @@ void main() {
 
     expect(find.text('Card FX Lab'), findsOneWidget);
     expect(find.text('Inspect'), findsOneWidget);
-    expect(find.text('Draw reveal'), findsOneWidget);
+    expect(find.text('Open pack'), findsOneWidget);
     expect(find.text('Coffee · LEGENDARY'), findsOneWidget);
     expect(find.text('FX Debug Panel'), findsOneWidget);
     expect(find.text('Foil intensity'), findsOneWidget);
@@ -94,36 +94,39 @@ void main() {
         find.byKey(const ValueKey('fx-draw-reveal-button'));
     await tester.tap(drawRevealButton);
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(find.text('Tear Up'), findsOneWidget);
+    expect(find.text('Split Open'), findsOneWidget);
+    expect(find.text('Charge Burst'), findsOneWidget);
+    expect(find.text('Seal Slide'), findsOneWidget);
+    expect(find.byKey(const ValueKey('pack-choice-0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('pack-choice-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('pack-choice-2')), findsOneWidget);
+
+    final middlePack = find.byKey(const ValueKey('pack-choice-1'));
+    await tester.ensureVisible(middlePack);
+    await tester.pump();
+    await tester.tap(middlePack);
+    await tester.pump();
+    final tearGesture = find.byKey(const ValueKey('opening-gesture-tear-up'));
+    expect(tearGesture, findsOneWidget);
+    await tester.ensureVisible(tearGesture);
+    await tester.pump();
+
+    await tester.drag(tearGesture, const Offset(0, -180));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 360));
 
     // The Lab must still animate even when the host OS reports reduced motion.
     expect(find.text('Z'), findsOneWidget);
 
     final replayButton = find.byKey(const ValueKey('fx-replay-button'));
     expect(replayButton, findsOneWidget);
-    expect(
-      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-3')),
-      findsOneWidget,
-    );
-
-    await tester.tap(drawRevealButton);
+    await tester.ensureVisible(replayButton);
     await tester.pump();
-    expect(
-      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-4')),
-      findsOneWidget,
-    );
-
     await tester.tap(replayButton);
     await tester.pump();
-
-    expect(
-      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-4')),
-      findsNothing,
-    );
-    expect(
-      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-5')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey('pack-choice-0')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

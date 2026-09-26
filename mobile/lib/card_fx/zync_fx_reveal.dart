@@ -132,9 +132,22 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
         final hitT = ((p - 0.50) / 0.34).clamp(0.0, 1.0);
         final hit = math.sin(hitT * math.pi).clamp(0.0, 1.0) *
             widget.spec.profile.revealImpact;
+        final legendaryFinaleT = ((p - 0.64) / 0.26).clamp(0.0, 1.0);
+        final legendaryFinale = widget.spec.rarity == ZyncFxRarity.legendary
+            ? math.sin(legendaryFinaleT * math.pi).clamp(0.0, 1.0) * 1.18
+            : 0.0;
+        final impact = math.max(hit, legendaryFinale);
+        final finaleFlash = widget.spec.rarity == ZyncFxRarity.legendary
+            ? math
+                .sin(
+                  ((p - 0.66) / 0.13).clamp(0.0, 1.0) * math.pi,
+                )
+                .clamp(0.0, 1.0)
+            : 0.0;
 
-        final scale = 0.72 + entrance * 0.20 + settle * 0.08;
-        final y = 96 * (1 - entrance) - 10 * hit;
+        final scale =
+            0.72 + entrance * 0.20 + settle * 0.08 + legendaryFinale * 0.032;
+        final y = 96 * (1 - entrance) - 10 * hit - 5 * legendaryFinale;
         final z = (1 - entrance) * -0.085 + hit * 0.028;
 
         final matrix = Matrix4.identity()
@@ -168,13 +181,23 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
                   ),
                 ),
               ),
-            if (showFront && hit > 0.001)
+            if (finaleFlash > 0.001)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: ColoredBox(
+                    color: Colors.white.withValues(
+                      alpha: 0.16 * finaleFlash,
+                    ),
+                  ),
+                ),
+              ),
+            if (showFront && impact > 0.001)
               Positioned.fill(
                 child: IgnorePointer(
                   child: CustomPaint(
                     painter: _RarityRevealHaloPainter(
                       rarity: widget.spec.rarity,
-                      impact: hit,
+                      impact: impact,
                       accent: widget.spec.profile.accentColor,
                       secondary: widget.spec.profile.secondaryColor,
                     ),
@@ -193,7 +216,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
                           spec: widget.spec,
                           tuning: widget.tuning,
                           enableDragTilt: p > 0.98,
-                          revealImpact: hit,
+                          revealImpact: impact,
                           respectReduceMotion: widget.respectReduceMotion,
                         )
                       : _CardBack(accent: widget.spec.profile.accentColor),
@@ -257,7 +280,7 @@ class _RarityRevealHaloPainter extends CustomPainter {
       ZyncFxRarity.uncommon => 1,
       ZyncFxRarity.rare => 2,
       ZyncFxRarity.epic => 2,
-      ZyncFxRarity.legendary => 3,
+      ZyncFxRarity.legendary => 5,
       ZyncFxRarity.common => 0,
     };
 
@@ -269,21 +292,44 @@ class _RarityRevealHaloPainter extends CustomPainter {
       canvas.drawCircle(center, radius, ring);
     }
 
+    if (rarity == ZyncFxRarity.legendary) {
+      for (var i = 0; i < 2; i++) {
+        final radius = shortest *
+            (0.58 + i * 0.20) *
+            (0.78 + impact.clamp(0.0, 1.18) * 0.22);
+        canvas.drawCircle(
+          center,
+          radius,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 3.0 - i * 0.8
+            ..blendMode = BlendMode.screen
+            ..color = (i == 0 ? secondary : accent).withValues(
+              alpha: (impact * (0.32 - i * 0.09)).clamp(0.0, 0.42),
+            )
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5),
+        );
+      }
+    }
+
     if (rarity.index < ZyncFxRarity.epic.index) return;
 
-    final rayCount = rarity == ZyncFxRarity.legendary ? 16 : 10;
+    final isLegendary = rarity == ZyncFxRarity.legendary;
+    final rayCount = isLegendary ? 28 : 10;
     final ray = Paint()
       ..strokeCap = StrokeCap.round
       ..blendMode = BlendMode.screen;
 
     for (var i = 0; i < rayCount; i++) {
       final angle = (i / rayCount) * math.pi * 2 + 0.17;
-      final inner = shortest * 0.43;
-      final outer = shortest * (0.53 + (i % 3) * 0.045) * impact;
+      final inner = shortest * (isLegendary ? 0.32 : 0.43);
+      final outerBase =
+          isLegendary ? 0.82 + (i % 4) * 0.065 : 0.53 + (i % 3) * 0.045;
+      final outer = shortest * outerBase * impact.clamp(0.0, 1.08);
       ray
-        ..strokeWidth = 1.0 + (i % 2) * 0.7
+        ..strokeWidth = isLegendary ? 1.4 + (i % 3) * 0.65 : 1.0 + (i % 2) * 0.7
         ..color = (i.isEven ? accent : secondary).withValues(
-          alpha: impact * (rarity == ZyncFxRarity.legendary ? 0.34 : 0.24),
+          alpha: (impact * (isLegendary ? 0.52 : 0.24)).clamp(0.0, 0.62),
         );
       canvas.drawLine(
         center + Offset(math.cos(angle), math.sin(angle)) * inner,
