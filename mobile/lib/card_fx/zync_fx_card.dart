@@ -309,9 +309,9 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
       child: Stack(
         children: [
           Positioned(
-            left: size.width * 0.092,
-            right: size.width * 0.23,
-            top: size.height * 0.790,
+            left: size.width * 0.115,
+            right: size.width * 0.30,
+            top: size.height * 0.775,
             child: Text(
               widget.spec.title,
               maxLines: 1,
@@ -326,9 +326,9 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
             ),
           ),
           Positioned(
-            left: size.width * 0.094,
-            right: size.width * 0.23,
-            top: size.height * 0.853,
+            left: size.width * 0.115,
+            right: size.width * 0.30,
+            top: size.height * 0.835,
             child: Text(
               widget.spec.subtitle,
               maxLines: 1,
@@ -342,23 +342,17 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
             ),
           ),
           Positioned(
-            right: size.width * 0.074,
-            top: size.height * 0.820,
-            child: Container(
-              width: size.width * 0.135,
-              height: size.width * 0.135,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF101722).withValues(alpha: 0.92),
-                border: Border.all(
-                  color: profile.accentColor.withValues(alpha: 0.88),
-                  width: 2,
-                ),
-              ),
+            left: size.width * 0.761,
+            top: size.height * 0.773,
+            width: size.width * 0.125,
+            height: size.width * 0.125,
+            child: Center(
               child: Icon(
                 _ambientIcon(widget.spec.ambientFx),
-                color: profile.secondaryColor,
-                size: size.width * 0.062,
+                color: profile.rarity == ZyncFxRarity.epic
+                    ? profile.secondaryColor
+                    : const Color(0xFF202733),
+                size: size.width * 0.058,
               ),
             ),
           ),

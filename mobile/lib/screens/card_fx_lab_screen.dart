@@ -17,10 +17,23 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
   int _sampleIndex = 2;
   int _revealToken = 0;
   _FxLabMode _mode = _FxLabMode.inspect;
+  ZyncFxRarity? _rarityOverride;
   ZyncFxTuning _tuning = const ZyncFxTuning();
   double _revealSpeed = 1.0;
 
-  ZyncFxCardSpec get _spec => cardFxLabSamples[_sampleIndex];
+  ZyncFxCardSpec get _spec {
+    final base = cardFxLabSamples[_sampleIndex];
+    final rarity = _rarityOverride ?? base.rarity;
+    if (rarity == base.rarity) return base;
+    return ZyncFxCardSpec(
+      id: base.id,
+      title: base.title,
+      subtitle: base.subtitle,
+      artworkAsset: base.artworkAsset,
+      rarity: rarity,
+      ambientFx: base.ambientFx,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +56,10 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
               child: Text(
                 'V1 · LOCAL',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.white54,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.0,
-                ),
+                      color: Colors.white54,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.0,
+                    ),
               ),
             ),
           ),
@@ -88,6 +101,8 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
         _sampleSelector(),
         const SizedBox(height: 14),
         _modeSelector(isZh),
+        const SizedBox(height: 12),
+        _raritySelector(isZh),
         const SizedBox(height: 18),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 390),
@@ -95,12 +110,13 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
             duration: const Duration(milliseconds: 220),
             child: _mode == _FxLabMode.inspect
                 ? ZyncFxCard(
-                    key: ValueKey('fx-inspect-' + _spec.id),
+                    key:
+                        ValueKey('fx-inspect-${_spec.id}-${_spec.rarity.name}'),
                     spec: _spec,
                     tuning: _tuning,
                   )
                 : ZyncFxRevealStage(
-                    key: ValueKey('fx-reveal-' + _spec.id),
+                    key: ValueKey('fx-reveal-${_spec.id}-${_spec.rarity.name}'),
                     spec: _spec,
                     tuning: _tuning,
                     revealToken: _revealToken,
@@ -112,13 +128,15 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
         Text(
           _mode == _FxLabMode.inspect
               ? (isZh
-                    ? '用手指拖張卡：試 3D tilt、parallax、foil 同 ambient FX。'
-                    : 'Drag the card to test 3D tilt, parallax, foil and ambient FX.')
+                  ? '用手指拖張卡：試 3D tilt、parallax、foil 同 ambient FX。'
+                  : 'Drag the card to test 3D tilt, parallax, foil and ambient FX.')
               : (isZh
-                    ? 'Reveal mode 只測動畫節奏；唔會改卡、rarity 或任何server結果。'
-                    : 'Reveal mode tests animation timing only. It cannot change card results or rarity.'),
+                  ? 'Reveal mode 只測動畫節奏；唔會改卡、rarity 或任何server結果。'
+                  : 'Reveal mode tests animation timing only. It cannot change card results or rarity.'),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
               ?.copyWith(color: Colors.white60, height: 1.4),
         ),
         if (_mode == _FxLabMode.reveal) ...[
@@ -145,6 +163,7 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
             onSelected: (_) {
               setState(() {
                 _sampleIndex = i;
+                _rarityOverride = null;
                 _revealToken++;
               });
             },
@@ -194,6 +213,39 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
     );
   }
 
+  Widget _raritySelector(bool isZh) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 7,
+      runSpacing: 7,
+      children: [
+        ChoiceChip(
+          key: const ValueKey('fx-rarity-default'),
+          label: Text(isZh ? '原本' : 'Default'),
+          selected: _rarityOverride == null,
+          onSelected: (_) {
+            setState(() {
+              _rarityOverride = null;
+              _revealToken++;
+            });
+          },
+        ),
+        for (final rarity in ZyncFxRarity.values)
+          ChoiceChip(
+            key: ValueKey('fx-rarity-${rarity.name}'),
+            label: Text(ZyncCardFxProfile.forRarity(rarity).label),
+            selected: _rarityOverride == rarity,
+            onSelected: (_) {
+              setState(() {
+                _rarityOverride = rarity;
+                _revealToken++;
+              });
+            },
+          ),
+      ],
+    );
+  }
+
   Widget _controls(bool isZh) {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
@@ -212,9 +264,9 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
               Text(
                 isZh ? 'FX Debug Panel' : 'FX Debug Panel',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
               ),
               const Spacer(),
               TextButton(
@@ -230,8 +282,12 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            isZh ? '呢啲slider只係 Lab tuning；搵到啱feel先freeze做rarity profile。' : 'Lab tuning only. Once it feels right, these values become the rarity profile.',
-            style: Theme.of(context).textTheme.bodySmall
+            isZh
+                ? '呢啲slider只係 Lab tuning；搵到啱feel先freeze做rarity profile。'
+                : 'Lab tuning only. Once it feels right, these values become the rarity profile.',
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
                 ?.copyWith(color: Colors.white54, height: 1.35),
           ),
           const SizedBox(height: 16),
@@ -360,8 +416,12 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
         _fact('Particles', profile.particleCount.toString()),
         const SizedBox(height: 10),
         Text(
-          isZh ? '下一步：locked PNG frame → gyro tilt → 真正pack-opening接入。' : 'Next: locked PNG frames → gyro tilt → pack-opening integration.',
-          style: Theme.of(context).textTheme.bodySmall
+          isZh
+              ? '下一步：locked PNG frame → gyro tilt → 真正pack-opening接入。'
+              : 'Next: locked PNG frames → gyro tilt → pack-opening integration.',
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
               ?.copyWith(color: Colors.white54),
         ),
       ],

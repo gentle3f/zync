@@ -37,7 +37,8 @@ void main() {
       expect(asset, endsWith('.webp'));
     }
     for (final sample in cardFxLabSamples) {
-      expect(sample.resolvedFrameAsset, ZyncFrameAssets.forRarity(sample.rarity));
+      expect(
+          sample.resolvedFrameAsset, ZyncFrameAssets.forRarity(sample.rarity));
     }
   });
 
@@ -72,6 +73,13 @@ void main() {
     expect(find.text('Coffee · LEGENDARY'), findsOneWidget);
     expect(find.text('FX Debug Panel'), findsOneWidget);
     expect(find.text('Foil intensity'), findsOneWidget);
+    expect(find.text('Default'), findsOneWidget);
+    expect(find.text('COMMON'), findsOneWidget);
+
+    await tester.tap(find.text('COMMON'));
+    await tester.pump();
+
+    expect(find.text('COMMON PROFILE'), findsOneWidget);
 
     await tester.tap(find.text('Artificial Intelligence · RARE'));
     await tester.pump();
