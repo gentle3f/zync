@@ -5,8 +5,21 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
+A shared sensory event layer is now implemented across pack pick, A/B/C/D
+break/unlock, hidden omen, card extraction, flip, rarity hit and Legendary
+finale. Local synthetic WAV prototype assets were generated in-repo and
+`audioplayers` was added; no downloaded/copyrighted sound files were used.
+Targeted analyze passes and Card FX Lab tests are 4/4 PASS. Real-browser audio
+verification is NOT complete because the user needed to shut the computer down.
+Resume from the isolated `lib/main_card_fx_lab.dart` entrypoint and verify WAV
+loading + timing before calling sensory work complete. Do not debug the unrelated
+normal-app InterestSetupScreen web type-cast error as a Card FX regression.
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_SENSORY_LAYER_CHECKPOINT.md`
+
+
+Previous Card FX extraction checkpoint:
 The true shared booster-wrapper master now feeds into a physical card-extraction
 bridge before the preserved reveal animation. After A/B/C/D commits, the wrapper
 is visibly open, the real Z card back rises from behind/inside it, the wrapper

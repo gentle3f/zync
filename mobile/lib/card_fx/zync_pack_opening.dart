@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'card_fx_spec.dart';
 import 'zync_fx_reveal.dart';
+import 'zync_fx_sensory.dart';
 
 enum ZyncOpeningPrototype { tearUp, splitOpen, chargeBurst, sealSlide }
 
@@ -75,6 +75,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
   bool _revealing = false;
 
   Timer? _revealTimer;
+  Timer? _omenTimer;
   late final AnimationController _idleController;
   late final AnimationController _burstController;
   late final AnimationController _extractController;
@@ -145,6 +146,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
 
   void _reset() {
     _revealTimer?.cancel();
+    _omenTimer?.cancel();
     _selectedPack = null;
     _gestureProgress = 0;
     _dragValue = 0;
@@ -189,7 +191,10 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
 
   void _selectPack(int index) {
     if (_opening || _revealing) return;
-    HapticFeedback.selectionClick();
+    ZyncFxSensory.play(
+      ZyncFxSensoryEvent.packPick,
+      rarity: widget.spec.rarity,
+    );
     setState(() {
       _selectedPack = index;
       _gestureProgress = 0;
@@ -230,7 +235,11 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
   void _chargeDown(TapDownDetails _) {
     if (_opening || _revealing) return;
     _chargeController.forward();
-    HapticFeedback.selectionClick();
+    ZyncFxSensory.play(
+      ZyncFxSensoryEvent.chargeArm,
+      rarity: widget.spec.rarity,
+      sound: false,
+    );
   }
 
   void _chargeUp([TapUpDetails? _]) {
@@ -248,7 +257,15 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     _chargeController.stop();
     _gestureProgress = math.max(_gestureProgress, 0.82);
     _opening = true;
-    HapticFeedback.mediumImpact();
+    ZyncFxSensory.play(
+      switch (widget.prototype) {
+        ZyncOpeningPrototype.tearUp => ZyncFxSensoryEvent.tearBreak,
+        ZyncOpeningPrototype.splitOpen => ZyncFxSensoryEvent.splitBreak,
+        ZyncOpeningPrototype.chargeBurst => ZyncFxSensoryEvent.chargeBurst,
+        ZyncOpeningPrototype.sealSlide => ZyncFxSensoryEvent.sealUnlock,
+      },
+      rarity: widget.spec.rarity,
+    );
     _burstController.forward(from: 0);
     setState(() {});
 
@@ -260,9 +277,21 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
       ZyncFxRarity.legendary => 430,
     };
     final revealDelay = _hasHiddenOmen ? 820 : normalDelay;
+    if (_hasHiddenOmen) {
+      _omenTimer = Timer(const Duration(milliseconds: 290), () {
+        if (!mounted || !_opening) return;
+        ZyncFxSensory.play(
+          ZyncFxSensoryEvent.hiddenOmen,
+          rarity: widget.spec.rarity,
+        );
+      });
+    }
     _revealTimer = Timer(Duration(milliseconds: revealDelay), () {
       if (!mounted) return;
-      HapticFeedback.heavyImpact();
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.cardExtract,
+        rarity: widget.spec.rarity,
+      );
       setState(() => _extracting = true);
       _extractController.forward(from: 0);
     });
@@ -271,6 +300,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
   @override
   void dispose() {
     _revealTimer?.cancel();
+    _omenTimer?.cancel();
     _idleController.dispose();
     _burstController.dispose();
     _extractController.dispose();

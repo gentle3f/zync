@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'card_fx_spec.dart';
 import 'zync_fx_card.dart';
+import 'zync_fx_sensory.dart';
 
 class ZyncFxRevealStage extends StatefulWidget {
   const ZyncFxRevealStage({
@@ -35,8 +35,9 @@ class ZyncFxRevealStage extends StatefulWidget {
 class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  Timer? _flipHapticTimer;
-  Timer? _legendaryHapticTimer;
+  Timer? _flipCueTimer;
+  Timer? _rarityHitTimer;
+  Timer? _legendaryFinaleTimer;
 
   @override
   void initState() {
@@ -77,38 +78,58 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     _controller.stop();
     final start = widget.startFromSettledBack ? 0.22 : 0.0;
     _controller.value = start;
-    unawaited(HapticFeedback.selectionClick());
+    if (!widget.startFromSettledBack) {
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.revealEntrance,
+        rarity: widget.spec.rarity,
+        sound: false,
+      );
+    }
 
     final totalMs = _duration.inMilliseconds;
-    _flipHapticTimer?.cancel();
-    _legendaryHapticTimer?.cancel();
-    _flipHapticTimer = Timer(
+    _flipCueTimer?.cancel();
+    _rarityHitTimer?.cancel();
+    _legendaryFinaleTimer?.cancel();
+    _flipCueTimer = Timer(
       Duration(milliseconds: (totalMs * (0.48 - start)).round()),
       () {
         if (!mounted) return;
-        if (widget.spec.rarity.index >= ZyncFxRarity.rare.index) {
-          HapticFeedback.mediumImpact();
-        } else {
-          HapticFeedback.lightImpact();
-        }
+        ZyncFxSensory.play(
+          ZyncFxSensoryEvent.cardFlip,
+          rarity: widget.spec.rarity,
+        );
       },
     );
-    _legendaryHapticTimer = Timer(
+    _rarityHitTimer = Timer(
       Duration(milliseconds: (totalMs * (0.64 - start)).round()),
       () {
-        if (!mounted || widget.spec.rarity != ZyncFxRarity.legendary) {
-          return;
-        }
-        HapticFeedback.heavyImpact();
+        if (!mounted) return;
+        ZyncFxSensory.play(
+          ZyncFxSensoryEvent.rarityHit,
+          rarity: widget.spec.rarity,
+        );
       },
     );
+    if (widget.spec.rarity == ZyncFxRarity.legendary) {
+      _legendaryFinaleTimer = Timer(
+        Duration(milliseconds: (totalMs * (0.78 - start)).round()),
+        () {
+          if (!mounted) return;
+          ZyncFxSensory.play(
+            ZyncFxSensoryEvent.legendaryFinale,
+            rarity: widget.spec.rarity,
+          );
+        },
+      );
+    }
     await _controller.forward();
   }
 
   @override
   void dispose() {
-    _flipHapticTimer?.cancel();
-    _legendaryHapticTimer?.cancel();
+    _flipCueTimer?.cancel();
+    _rarityHitTimer?.cancel();
+    _legendaryFinaleTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
