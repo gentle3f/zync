@@ -25,6 +25,22 @@ void main() {
     }
   });
 
+  test('all five rarities resolve to distinct locked frame assets', () {
+    final assets = ZyncFxRarity.values
+        .map(ZyncFrameAssets.forRarity)
+        .toList(growable: false);
+
+    expect(assets, hasLength(5));
+    expect(assets.toSet(), hasLength(5));
+    for (final asset in assets) {
+      expect(asset, startsWith('assets/card_fx/frames/'));
+      expect(asset, endsWith('.webp'));
+    }
+    for (final sample in cardFxLabSamples) {
+      expect(sample.resolvedFrameAsset, ZyncFrameAssets.forRarity(sample.rarity));
+    }
+  });
+
   test('lab samples use three distinct accepted production artworks', () {
     expect(cardFxLabSamples, hasLength(3));
     expect(

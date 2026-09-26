@@ -4,6 +4,22 @@ enum ZyncFxRarity { common, uncommon, rare, epic, legendary }
 
 enum ZyncAmbientFx { none, dust, steam, digitalPulse }
 
+abstract final class ZyncFrameAssets {
+  static const common = 'assets/card_fx/frames/common.webp';
+  static const uncommon = 'assets/card_fx/frames/uncommon.webp';
+  static const rare = 'assets/card_fx/frames/rare.webp';
+  static const epic = 'assets/card_fx/frames/epic.webp';
+  static const legendary = 'assets/card_fx/frames/legendary.webp';
+
+  static String forRarity(ZyncFxRarity rarity) => switch (rarity) {
+        ZyncFxRarity.common => common,
+        ZyncFxRarity.uncommon => uncommon,
+        ZyncFxRarity.rare => rare,
+        ZyncFxRarity.epic => epic,
+        ZyncFxRarity.legendary => legendary,
+      };
+}
+
 @immutable
 class ZyncFrameGeometry {
   const ZyncFrameGeometry({
@@ -180,6 +196,9 @@ class ZyncFxCardSpec {
   /// Exact locked frame PNG. V1 can run with the procedural fallback while
   /// the immutable master binaries are being moved into the app asset bundle.
   final String? frameAsset;
+
+  String get resolvedFrameAsset =>
+      frameAsset ?? ZyncFrameAssets.forRarity(rarity);
 
   ZyncCardFxProfile get profile => ZyncCardFxProfile.forRarity(rarity);
 }

@@ -285,19 +285,14 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
   }
 
   Widget _frame(Size size) {
-    final frameAsset = widget.spec.frameAsset;
-    if (frameAsset != null && frameAsset.isNotEmpty) {
-      return IgnorePointer(
-        child: Image.asset(
-          frameAsset,
-          fit: BoxFit.fill,
-          filterQuality: FilterQuality.high,
-        ),
-      );
-    }
     return IgnorePointer(
-      child: CustomPaint(
-        painter: _FrameFallbackPainter(profile: widget.spec.profile),
+      child: Image.asset(
+        widget.spec.resolvedFrameAsset,
+        fit: BoxFit.fill,
+        filterQuality: FilterQuality.high,
+        errorBuilder: (context, error, stackTrace) => CustomPaint(
+          painter: _FrameFallbackPainter(profile: widget.spec.profile),
+        ),
       ),
     );
   }
