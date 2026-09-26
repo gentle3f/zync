@@ -6,22 +6,30 @@ Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-B — Split Open is now the chosen product direction. The real card back exists
-behind the wrapper before commit and is exposed physically through a widening
-center clip while the user is still pulling: early seam/tension only, then dark
-interior, then partial/wider card-back visibility, followed by the existing
-extraction/flip/reveal after commit. The shared booster wrapper received a
-premium-foil pass (directional speculars, deeper ridge crimps, side seams,
-embossed wrinkles and foil-integrated print). B also gained progressive foil
-tension audio, a rebuilt tear+snap+low-body split break, stronger extraction /
-flip / rarity cues and a substantially heavier stereo Legendary hit + delayed
-finale. Fresh real Chrome review verified the early/mid/late B visuals and the
-complete cache-disabled B Legendary request chain with no relevant audio errors.
-Targeted tests remain 4/4 PASS and analyze is clean. RNG, rarity behavior,
-hidden-omen frequency, reduced-motion Lab override, accepted icon position,
-locked PNG masters and non-B logic remain unchanged. A/C/D are reference only;
-focus future polish on B. No GitHub Actions, Vercel, deployment, release or paid
+B — Split Open remains the chosen production direction. Based on fresh real
+Chrome feedback, the old ~30% pre-commit card-reveal gate is gone: the first
+~12% remains seam/tension only, but once the foil physically separates the real
+card back is immediately visible through the actual widening center clip. At
+~14% pull the regression now requires >10 px of visible card clip, and Chrome
+held review shows the card occupying most of the opening while still showing
+`KEEP GOING`; the 70% commit threshold is unchanged and there is no fade cheat.
+Pack-selection audio was rebuilt as a short stereo tactile foil/tick cue, and all
+five rarity payoff WAVs were rebuilt into one premium physical-impact / metal /
+air family. Epic/Legendary tails are now shorter and cleaner; Legendary keeps
+its existing stronger two-stage hit + delayed finale. The accepted B tear,
+card extraction and card flip cues were not redesigned this round. Fresh Chrome
+runs reached Common, Uncommon, Rare, Epic and Legendary payoff files with no
+relevant runtime/audio errors; the clean Legendary chain is pack_pick ->
+foil_tension -> split_open -> card_extract -> card_flip -> rarity_legendary ->
+legendary_finale. Targeted tests are 4/4 PASS, analyze is clean and diff-check is
+clean. RNG, rarity behavior, hidden omen, reduced-motion override, accepted icon
+position, locked PNG masters, card-art pipeline, backend and A/C/D reference
+mechanics remain unchanged. No Actions, Vercel deployment, release or paid
 generation was used.
+
+`AI_STATE/HANDOFF_20260927_CARD_FX_B_EARLY_REVEAL_AUDIO_PAYOFF.md`
+
+Previous B split-polish checkpoint:
 
 `AI_STATE/HANDOFF_20260927_CARD_FX_B_SPLIT_POLISH.md`
 

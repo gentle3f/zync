@@ -467,12 +467,12 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     final splitInteriorFraction = splitSeparation <= 0
         ? 0.0
         : (0.018 + splitSeparation * 0.46).clamp(0.0, 0.48).toDouble();
-    final splitCardReveal = Curves.easeOutCubic.transform(
-      ((splitEffectiveProgress - 0.30) / 0.58).clamp(0.0, 1.0).toDouble(),
-    );
-    final splitCardFraction = splitInteriorFraction *
-        math.pow(splitCardReveal, 0.72).toDouble() *
-        0.92;
+    final splitCardReveal = splitSeparation <= 0
+        ? 0.0
+        : (0.62 + 0.38 * math.pow(splitSeparation, 0.45).toDouble())
+            .clamp(0.0, 1.0)
+            .toDouble();
+    final splitCardFraction = splitInteriorFraction * splitCardReveal * 0.98;
 
     Widget wrapper = SizedBox(
       width: 390,

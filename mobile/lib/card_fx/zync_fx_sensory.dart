@@ -108,7 +108,7 @@ abstract final class ZyncFxSensory {
     const root = 'card_fx/sfx/';
     return switch (event) {
       ZyncFxSensoryEvent.packPick =>
-        const _SoundSpec('$root' 'pack_pick.wav', 0.26),
+        const _SoundSpec('$root' 'pack_pick.wav', 0.34),
       ZyncFxSensoryEvent.revealEntrance => null,
       ZyncFxSensoryEvent.chargeArm => null,
       ZyncFxSensoryEvent.tearBreak =>

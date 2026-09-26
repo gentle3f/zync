@@ -161,10 +161,40 @@ void main() {
       findsNothing,
     );
 
-    final splitPointer =
-        await tester.startGesture(tester.getCenter(splitGesture));
-    await splitPointer.moveBy(const Offset(62, 0));
+    final splitWindow = find.byKey(const ValueKey('opening-split-card-window'));
+    Rect currentSplitClip() {
+      final clip = tester.widget<ClipRect>(splitWindow);
+      return clip.clipper!.getClip(const Size(390, 620));
+    }
+
+    expect(currentSplitClip().width, 0);
+    final splitDetector = tester.widget<GestureDetector>(splitGesture);
+    splitDetector.onHorizontalDragStart?.call(
+      DragStartDetails(globalPosition: tester.getCenter(splitGesture)),
+    );
+    // Apply an actual ~14% B pull: just beyond the foil-separation threshold.
+    splitDetector.onHorizontalDragUpdate?.call(
+      DragUpdateDetails(
+        delta: const Offset(20, 0),
+        primaryDelta: 20,
+        globalPosition: tester.getCenter(splitGesture) + const Offset(20, 0),
+      ),
+    );
     await tester.pump();
+    final earlyClip = currentSplitClip();
+    expect(earlyClip.width, greaterThan(10));
+    expect(earlyClip.width, lessThan(40));
+
+    splitDetector.onHorizontalDragUpdate?.call(
+      DragUpdateDetails(
+        delta: const Offset(42, 0),
+        primaryDelta: 42,
+        globalPosition: tester.getCenter(splitGesture) + const Offset(62, 0),
+      ),
+    );
+    await tester.pump();
+    final widerClip = currentSplitClip();
+    expect(widerClip.width, greaterThan(earlyClip.width));
     expect(
       find.byKey(const ValueKey('opening-split-preextract-back')),
       findsOneWidget,
@@ -173,7 +203,7 @@ void main() {
       find.byKey(const ValueKey('opening-card-extraction-back')),
       findsNothing,
     );
-    await splitPointer.up();
+    splitDetector.onHorizontalDragEnd?.call(DragEndDetails());
     await tester.pump();
 
     expect(tester.takeException(), isNull);
