@@ -11,6 +11,7 @@ class ZyncFxCard extends StatefulWidget {
     this.tuning = const ZyncFxTuning(),
     this.enableDragTilt = true,
     this.revealImpact = 0.0,
+    this.respectReduceMotion = true,
   });
 
   final ZyncFxCardSpec spec;
@@ -19,6 +20,10 @@ class ZyncFxCard extends StatefulWidget {
 
   /// 0 = calm inspect state, 1 = peak reveal hit.
   final double revealImpact;
+
+  /// Keep true in production. The isolated FX Lab sets this false so system
+  /// accessibility settings cannot silently disable the animation preview.
+  final bool respectReduceMotion;
 
   @override
   State<ZyncFxCard> createState() => _ZyncFxCardState();
@@ -47,8 +52,8 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final reduceMotion =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reduceMotion = widget.respectReduceMotion &&
+        (MediaQuery.maybeOf(context)?.disableAnimations ?? false);
     if (reduceMotion) {
       _surfaceController.stop();
       _surfaceController.value = 0.28;

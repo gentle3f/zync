@@ -14,12 +14,14 @@ class ZyncFxRevealStage extends StatefulWidget {
     required this.tuning,
     required this.revealToken,
     this.speed = 1.0,
+    this.respectReduceMotion = true,
   });
 
   final ZyncFxCardSpec spec;
   final ZyncFxTuning tuning;
   final int revealToken;
   final double speed;
+  final bool respectReduceMotion;
 
   @override
   State<ZyncFxRevealStage> createState() => _ZyncFxRevealStageState();
@@ -39,7 +41,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
   }
 
   Duration get _duration =>
-      Duration(milliseconds: (1550 / widget.speed.clamp(0.55, 1.8)).round());
+      Duration(milliseconds: (2400 / widget.speed.clamp(0.55, 1.8)).round());
 
   @override
   void didUpdateWidget(covariant ZyncFxRevealStage oldWidget) {
@@ -54,8 +56,8 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
   }
 
   Future<void> _play() async {
-    final reduceMotion =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reduceMotion = widget.respectReduceMotion &&
+        (MediaQuery.maybeOf(context)?.disableAnimations ?? false);
     if (reduceMotion) {
       _controller.value = 1;
       return;
@@ -105,34 +107,61 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
       animation: _controller,
       builder: (context, _) {
         final p = _controller.value;
-        final lift = Curves.easeOutCubic.transform(
-          ((p - 0.00) / 0.34).clamp(0.0, 1.0),
+        final entrance = Curves.easeOutBack.transform(
+          (p / 0.22).clamp(0.0, 1.0),
         );
         final flip = Curves.easeInOutCubic.transform(
-          ((p - 0.16) / 0.48).clamp(0.0, 1.0),
+          ((p - 0.22) / 0.40).clamp(0.0, 1.0),
         );
         final settle = Curves.easeOutBack.transform(
-          ((p - 0.60) / 0.40).clamp(0.0, 1.0),
+          ((p - 0.62) / 0.38).clamp(0.0, 1.0),
         );
         final angle = math.pi * (1 - flip);
         final showFront = angle <= math.pi / 2;
         final displayAngle = showFront ? angle : math.pi - angle;
 
-        final hitT = ((p - 0.54) / 0.34).clamp(0.0, 1.0);
+        final flashT = ((p - 0.40) / 0.18).clamp(0.0, 1.0);
+        final flash = math.sin(flashT * math.pi).clamp(0.0, 1.0) *
+            widget.spec.profile.revealImpact;
+        final hitT = ((p - 0.50) / 0.34).clamp(0.0, 1.0);
         final hit = math.sin(hitT * math.pi).clamp(0.0, 1.0) *
             widget.spec.profile.revealImpact;
 
-        final scale = 0.82 + lift * 0.11 + settle * 0.07;
-        final y = 72 * (1 - lift) - 8 * hit;
+        final scale = 0.72 + entrance * 0.20 + settle * 0.08;
+        final y = 96 * (1 - entrance) - 10 * hit;
+        final z = (1 - entrance) * -0.085 + hit * 0.028;
 
         final matrix = Matrix4.identity()
-          ..setEntry(3, 2, 0.0015)
-          ..rotateY(displayAngle);
+          ..setEntry(3, 2, 0.0017)
+          ..rotateY(displayAngle)
+          ..rotateZ(z);
 
         return Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
           children: [
+            if (flash > 0.001)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.22 * flash),
+                          widget.spec.profile.secondaryColor.withValues(
+                            alpha: 0.18 * flash,
+                          ),
+                          widget.spec.profile.accentColor.withValues(
+                            alpha: 0.10 * flash,
+                          ),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.28, 0.56, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (showFront && hit > 0.001)
               Positioned.fill(
                 child: IgnorePointer(
@@ -159,6 +188,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
                           tuning: widget.tuning,
                           enableDragTilt: p > 0.98,
                           revealImpact: hit,
+                          respectReduceMotion: widget.respectReduceMotion,
                         )
                       : _CardBack(accent: widget.spec.profile.accentColor),
                 ),

@@ -61,8 +61,12 @@ void main() {
   testWidgets('Card FX Lab exposes inspect, reveal and tuning controls',
       (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: CardFxLabScreen(),
+      MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
+        home: const CardFxLabScreen(),
       ),
     );
     await tester.pump();
@@ -90,6 +94,10 @@ void main() {
         find.byKey(const ValueKey('fx-draw-reveal-button'));
     await tester.tap(drawRevealButton);
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    // The Lab must still animate even when the host OS reports reduced motion.
+    expect(find.text('Z'), findsOneWidget);
 
     final replayButton = find.byKey(const ValueKey('fx-replay-button'));
     expect(replayButton, findsOneWidget);

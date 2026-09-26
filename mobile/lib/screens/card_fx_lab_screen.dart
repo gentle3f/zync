@@ -117,25 +117,25 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
         const SizedBox(height: 18),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 390),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 220),
-            child: _mode == _FxLabMode.inspect
-                ? ZyncFxCard(
-                    key:
-                        ValueKey('fx-inspect-${_spec.id}-${_spec.rarity.name}'),
-                    spec: _spec,
-                    tuning: _tuning,
-                  )
-                : ZyncFxRevealStage(
-                    key: ValueKey(
-                      'fx-reveal-${_spec.id}-${_spec.rarity.name}-$_revealToken',
-                    ),
-                    spec: _spec,
-                    tuning: _tuning,
-                    revealToken: _revealToken,
-                    speed: _revealSpeed,
+          child: _mode == _FxLabMode.inspect
+              ? ZyncFxCard(
+                  key: ValueKey(
+                    'fx-inspect-${_spec.id}-${_spec.rarity.name}',
                   ),
-          ),
+                  spec: _spec,
+                  tuning: _tuning,
+                  respectReduceMotion: false,
+                )
+              : ZyncFxRevealStage(
+                  key: ValueKey(
+                    'fx-reveal-${_spec.id}-${_spec.rarity.name}-$_revealToken',
+                  ),
+                  spec: _spec,
+                  tuning: _tuning,
+                  revealToken: _revealToken,
+                  speed: _revealSpeed,
+                  respectReduceMotion: false,
+                ),
         ),
         const SizedBox(height: 16),
         Text(

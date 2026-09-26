@@ -7,13 +7,20 @@ CI, Vercel, deployment or external-infrastructure action.
 
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-real-browser Replay bug FIXED and re-verified in Chrome; all five 96x144 WebP
-frame derivatives replaced by the exact original 1024x1536 transparent locked
-PNG masters (5/5 SHA-256 match against the prepared Library bundle). Common,
-Rare and Legendary were visually reviewed sharp in the real Lab; accepted icon
-placement remains unchanged. Card FX browser-review blockers are CLOSED; next
-runtime phase is gyro/real-device tilt, then pack-opening integration/polish.
-No paid generation, CI/Vercel, release or production draw/server change was used:
+real no-response root cause found in the user's visible Chrome session:
+Flutter/Windows reported MediaQuery.disableAnimations=true, so reveal/replay
+was deliberately jumping straight to its final frame while drag tilt still
+worked. Production still respects reduced motion, but the isolated Card FX Lab
+now forces motion on for inspect/reveal preview; the widget test explicitly
+runs under disableAnimations=true and verifies the Z card-back animation still
+appears. Reveal was also made more obvious (longer card-back hold, stronger 3D
+flip/flash) and steam softened. Locked 1024x1536 PNG masters + accepted icon
+placement remain unchanged. No paid generation, CI/Vercel, release or
+production draw/server change was used:
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_REDUCE_MOTION_ROOT_CAUSE.md`
+
+Previous Card FX Replay/PNG checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_REPLAY_PNG_COMPLETE.md`
 
