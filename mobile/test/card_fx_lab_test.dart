@@ -136,6 +136,46 @@ void main() {
     await tester.tap(replayButton);
     await tester.pump();
     expect(find.byKey(const ValueKey('pack-choice-0')), findsOneWidget);
+
+    // B keeps the physical card back behind the wrapper before commit, then
+    // reveals it only through the widening center clip while the drag is held.
+    await tester.tap(find.text('Split Open'));
+    await tester.pump();
+    final splitPack = find.byKey(const ValueKey('pack-choice-1'));
+    await tester.tap(splitPack);
+    await tester.pump();
+
+    final splitGesture =
+        find.byKey(const ValueKey('opening-gesture-split-open'));
+    expect(splitGesture, findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('opening-split-preextract-back')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('opening-split-card-window')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsNothing,
+    );
+
+    final splitPointer =
+        await tester.startGesture(tester.getCenter(splitGesture));
+    await splitPointer.moveBy(const Offset(62, 0));
+    await tester.pump();
+    expect(
+      find.byKey(const ValueKey('opening-split-preextract-back')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsNothing,
+    );
+    await splitPointer.up();
+    await tester.pump();
+
     expect(tester.takeException(), isNull);
   });
 }

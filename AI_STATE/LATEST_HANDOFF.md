@@ -6,16 +6,26 @@ Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-The shared sensory event layer is now real-browser validated in the isolated
-Card FX Lab. Chrome successfully loaded the expected local WAV cues for A Tear
-Up, B Split Open, C Charge Burst and D Seal Slide, followed by card extraction,
-flip, rarity hit and Legendary finale. A deterministic low-frequency Legendary
-hidden-omen case was also exercised and confirmed to cue after seal break but
-before extraction. Cache-disabled browser checks showed successful WAV requests
-with no missing-asset/plugin/console errors. Targeted analyze remains clean and
-Card FX Lab tests remain 4/4 PASS. A/B/C/D are still intentionally preserved for
-the user and his wife to compare as complete visual + sensory experiences.
-No GitHub Actions, Vercel, deployment, release or paid generation was used.
+B — Split Open is now the chosen product direction. The real card back exists
+behind the wrapper before commit and is exposed physically through a widening
+center clip while the user is still pulling: early seam/tension only, then dark
+interior, then partial/wider card-back visibility, followed by the existing
+extraction/flip/reveal after commit. The shared booster wrapper received a
+premium-foil pass (directional speculars, deeper ridge crimps, side seams,
+embossed wrinkles and foil-integrated print). B also gained progressive foil
+tension audio, a rebuilt tear+snap+low-body split break, stronger extraction /
+flip / rarity cues and a substantially heavier stereo Legendary hit + delayed
+finale. Fresh real Chrome review verified the early/mid/late B visuals and the
+complete cache-disabled B Legendary request chain with no relevant audio errors.
+Targeted tests remain 4/4 PASS and analyze is clean. RNG, rarity behavior,
+hidden-omen frequency, reduced-motion Lab override, accepted icon position,
+locked PNG masters and non-B logic remain unchanged. A/C/D are reference only;
+focus future polish on B. No GitHub Actions, Vercel, deployment, release or paid
+generation was used.
+
+`AI_STATE/HANDOFF_20260927_CARD_FX_B_SPLIT_POLISH.md`
+
+Previous real-browser sensory checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_SENSORY_BROWSER_VALIDATED.md`
 

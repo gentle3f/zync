@@ -10,6 +10,7 @@ enum ZyncFxSensoryEvent {
   revealEntrance,
   chargeArm,
   tearBreak,
+  foilTension,
   splitBreak,
   chargeBurst,
   sealUnlock,
@@ -22,7 +23,7 @@ enum ZyncFxSensoryEvent {
 
 abstract final class ZyncFxSensory {
   static final List<AudioPlayer> _players =
-      List.generate(6, (_) => AudioPlayer());
+      List.generate(8, (_) => AudioPlayer());
   static int _nextPlayer = 0;
 
   static void play(
@@ -61,6 +62,7 @@ abstract final class ZyncFxSensory {
       case ZyncFxSensoryEvent.packPick:
       case ZyncFxSensoryEvent.revealEntrance:
       case ZyncFxSensoryEvent.chargeArm:
+      case ZyncFxSensoryEvent.foilTension:
       case ZyncFxSensoryEvent.hiddenOmen:
         await HapticFeedback.selectionClick();
       case ZyncFxSensoryEvent.tearBreak:
@@ -111,8 +113,10 @@ abstract final class ZyncFxSensory {
       ZyncFxSensoryEvent.chargeArm => null,
       ZyncFxSensoryEvent.tearBreak =>
         const _SoundSpec('$root' 'tear_up.wav', 0.58),
+      ZyncFxSensoryEvent.foilTension =>
+        const _SoundSpec('$root' 'foil_tension.wav', 0.34),
       ZyncFxSensoryEvent.splitBreak =>
-        const _SoundSpec('$root' 'split_open.wav', 0.62),
+        const _SoundSpec('$root' 'split_open.wav', 0.84),
       ZyncFxSensoryEvent.chargeBurst =>
         const _SoundSpec('$root' 'charge_burst.wav', 0.70),
       ZyncFxSensoryEvent.sealUnlock =>
@@ -120,22 +124,22 @@ abstract final class ZyncFxSensory {
       ZyncFxSensoryEvent.hiddenOmen =>
         const _SoundSpec('$root' 'hidden_omen.wav', 0.36),
       ZyncFxSensoryEvent.cardExtract =>
-        const _SoundSpec('$root' 'card_extract.wav', 0.48),
+        const _SoundSpec('$root' 'card_extract.wav', 0.82),
       ZyncFxSensoryEvent.cardFlip =>
-        const _SoundSpec('$root' 'card_flip.wav', 0.56),
+        const _SoundSpec('$root' 'card_flip.wav', 0.74),
       ZyncFxSensoryEvent.legendaryFinale =>
-        const _SoundSpec('$root' 'legendary_finale.wav', 0.82),
+        const _SoundSpec('$root' 'legendary_finale.wav', 0.96),
       ZyncFxSensoryEvent.rarityHit => switch (rarity) {
           ZyncFxRarity.common =>
-            const _SoundSpec('$root' 'rarity_common.wav', 0.42),
+            const _SoundSpec('$root' 'rarity_common.wav', 0.48),
           ZyncFxRarity.uncommon =>
-            const _SoundSpec('$root' 'rarity_uncommon.wav', 0.48),
+            const _SoundSpec('$root' 'rarity_uncommon.wav', 0.56),
           ZyncFxRarity.rare =>
-            const _SoundSpec('$root' 'rarity_rare.wav', 0.58),
+            const _SoundSpec('$root' 'rarity_rare.wav', 0.68),
           ZyncFxRarity.epic =>
-            const _SoundSpec('$root' 'rarity_epic.wav', 0.68),
+            const _SoundSpec('$root' 'rarity_epic.wav', 0.82),
           ZyncFxRarity.legendary =>
-            const _SoundSpec('$root' 'rarity_legendary.wav', 0.78),
+            const _SoundSpec('$root' 'rarity_legendary.wav', 0.98),
         },
     };
   }
