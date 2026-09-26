@@ -86,7 +86,9 @@ void main() {
 
     expect(find.text('RARE PROFILE'), findsOneWidget);
 
-    await tester.tap(find.text('Draw reveal'));
+    final drawRevealButton =
+        find.byKey(const ValueKey('fx-draw-reveal-button'));
+    await tester.tap(drawRevealButton);
     await tester.pump();
 
     final replayButton = find.byKey(const ValueKey('fx-replay-button'));
@@ -96,15 +98,22 @@ void main() {
       findsOneWidget,
     );
 
+    await tester.tap(drawRevealButton);
+    await tester.pump();
+    expect(
+      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-4')),
+      findsOneWidget,
+    );
+
     await tester.tap(replayButton);
     await tester.pump();
 
     expect(
-      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-3')),
+      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-4')),
       findsNothing,
     );
     expect(
-      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-4')),
+      find.byKey(const ValueKey('fx-reveal-technology.ai-rare-5')),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);

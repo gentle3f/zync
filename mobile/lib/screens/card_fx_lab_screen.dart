@@ -21,6 +21,17 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
   ZyncFxTuning _tuning = const ZyncFxTuning();
   double _revealSpeed = 1.0;
 
+  void _restartReveal() {
+    setState(() {
+      _mode = _FxLabMode.reveal;
+      _revealToken++;
+    });
+  }
+
+  void _showInspect() {
+    setState(() => _mode = _FxLabMode.inspect);
+  }
+
   ZyncFxCardSpec get _spec {
     final base = cardFxLabSamples[_sampleIndex];
     final rarity = _rarityOverride ?? base.rarity;
@@ -178,43 +189,44 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
       spacing: 10,
       runSpacing: 8,
       children: [
-        SegmentedButton<_FxLabMode>(
-          segments: [
-            ButtonSegment(
-              value: _FxLabMode.inspect,
-              icon: const Icon(Icons.threesixty_rounded),
-              label: Text(isZh ? 'Inspect' : 'Inspect'),
+        OutlinedButton.icon(
+          key: const ValueKey('fx-inspect-button'),
+          onPressed: _showInspect,
+          icon: const Icon(Icons.threesixty_rounded),
+          label: const Text('Inspect'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: _mode == _FxLabMode.inspect
+                ? _spec.profile.accentColor.withValues(alpha: 0.32)
+                : Colors.white.withValues(alpha: 0.06),
+            side: BorderSide(
+              color: _mode == _FxLabMode.inspect
+                  ? _spec.profile.secondaryColor.withValues(alpha: 0.72)
+                  : Colors.white24,
             ),
-            ButtonSegment(
-              value: _FxLabMode.reveal,
-              icon: const Icon(Icons.auto_awesome_rounded),
-              label: Text(isZh ? '抽卡 Reveal' : 'Draw reveal'),
-            ),
-          ],
-          selected: {_mode},
-          onSelectionChanged: (value) {
-            setState(() {
-              _mode = value.first;
-              if (_mode == _FxLabMode.reveal) _revealToken++;
-            });
-          },
-          style: ButtonStyle(
-            foregroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.selected)
-                  ? Colors.white
-                  : Colors.white70,
-            ),
-            backgroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.selected)
-                  ? _spec.profile.accentColor.withValues(alpha: 0.32)
-                  : Colors.white.withValues(alpha: 0.06),
+          ),
+        ),
+        OutlinedButton.icon(
+          key: const ValueKey('fx-draw-reveal-button'),
+          onPressed: _restartReveal,
+          icon: const Icon(Icons.auto_awesome_rounded),
+          label: Text(isZh ? '抽卡 Reveal' : 'Draw reveal'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: _mode == _FxLabMode.reveal
+                ? _spec.profile.accentColor.withValues(alpha: 0.32)
+                : Colors.white.withValues(alpha: 0.06),
+            side: BorderSide(
+              color: _mode == _FxLabMode.reveal
+                  ? _spec.profile.secondaryColor.withValues(alpha: 0.72)
+                  : Colors.white24,
             ),
           ),
         ),
         if (_mode == _FxLabMode.reveal)
           FilledButton.icon(
             key: const ValueKey('fx-replay-button'),
-            onPressed: () => setState(() => _revealToken++),
+            onPressed: _restartReveal,
             icon: const Icon(Icons.replay_rounded),
             label: Text(isZh ? '再播' : 'Replay'),
           ),

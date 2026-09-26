@@ -558,25 +558,38 @@ class _AmbientFxPainter extends CustomPainter {
   }
 
   void _steam(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.28 * intensity)
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = size.width * 0.007;
     for (var i = 0; i < 3; i++) {
-      final phase = (progress + i * 0.18) % 1.0;
-      final baseX = size.width * (0.64 + i * 0.055) + tilt.dx * 3;
-      final top = size.height * (0.22 - phase * 0.025);
+      final phase = (progress + i * 0.27) % 1.0;
+      final fade = math.pow(math.sin(phase * math.pi).clamp(0.0, 1.0), 1.5)
+          .toDouble();
+      if (fade < 0.02) continue;
+
+      final drift = math.sin(progress * math.pi * 2 + i * 1.9);
+      final baseX = size.width * (0.555 + i * 0.030) +
+          drift * size.width * 0.010 +
+          tilt.dx * 2.0;
+      final baseY = size.height * (0.355 - phase * 0.035);
+      final rise = size.height * (0.105 + phase * 0.055);
+      final sway = size.width * (0.014 + (i % 2) * 0.006);
+      final topY = baseY - rise;
+
       final path = Path()
-        ..moveTo(baseX, size.height * 0.49)
+        ..moveTo(baseX, baseY)
         ..cubicTo(
-          baseX - size.width * 0.055,
-          size.height * 0.40,
-          baseX + size.width * 0.055,
-          size.height * 0.32,
-          baseX,
-          top,
+          baseX - sway,
+          baseY - rise * 0.30,
+          baseX + sway * 1.2,
+          baseY - rise * 0.68,
+          baseX + drift * size.width * 0.012,
+          topY,
         );
+
+      final paint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.11 * intensity * fade)
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = size.width * 0.010
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width * 0.006);
       canvas.drawPath(path, paint);
     }
   }
