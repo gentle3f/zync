@@ -15,6 +15,7 @@ class ZyncFxRevealStage extends StatefulWidget {
     required this.revealToken,
     this.speed = 1.0,
     this.respectReduceMotion = true,
+    this.startFromSettledBack = false,
   });
 
   final ZyncFxCardSpec spec;
@@ -22,6 +23,10 @@ class ZyncFxRevealStage extends StatefulWidget {
   final int revealToken;
   final double speed;
   final bool respectReduceMotion;
+
+  /// Used by pack-opening flow after the card back has already been physically
+  /// extracted from the wrapper. Direct reveal keeps the original entrance.
+  final bool startFromSettledBack;
 
   @override
   State<ZyncFxRevealStage> createState() => _ZyncFxRevealStageState();
@@ -70,14 +75,15 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     }
 
     _controller.stop();
-    _controller.value = 0;
+    final start = widget.startFromSettledBack ? 0.22 : 0.0;
+    _controller.value = start;
     unawaited(HapticFeedback.selectionClick());
 
     final totalMs = _duration.inMilliseconds;
     _flipHapticTimer?.cancel();
     _legendaryHapticTimer?.cancel();
     _flipHapticTimer = Timer(
-      Duration(milliseconds: (totalMs * 0.48).round()),
+      Duration(milliseconds: (totalMs * (0.48 - start)).round()),
       () {
         if (!mounted) return;
         if (widget.spec.rarity.index >= ZyncFxRarity.rare.index) {
@@ -88,7 +94,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
       },
     );
     _legendaryHapticTimer = Timer(
-      Duration(milliseconds: (totalMs * 0.64).round()),
+      Duration(milliseconds: (totalMs * (0.64 - start)).round()),
       () {
         if (!mounted || widget.spec.rarity != ZyncFxRarity.legendary) {
           return;
@@ -219,7 +225,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
                           revealImpact: impact,
                           respectReduceMotion: widget.respectReduceMotion,
                         )
-                      : _CardBack(accent: widget.spec.profile.accentColor),
+                      : ZyncFxCardBack(accent: widget.spec.profile.accentColor),
                 ),
               ),
             ),
@@ -347,8 +353,8 @@ class _RarityRevealHaloPainter extends CustomPainter {
       oldDelegate.secondary != secondary;
 }
 
-class _CardBack extends StatelessWidget {
-  const _CardBack({required this.accent});
+class ZyncFxCardBack extends StatelessWidget {
+  const ZyncFxCardBack({super.key, required this.accent});
 
   final Color accent;
 

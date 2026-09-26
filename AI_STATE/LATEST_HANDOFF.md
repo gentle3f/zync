@@ -7,19 +7,23 @@ CI, Vercel, deployment or external-infrastructure action.
 
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-The fake card-back-like pack has now been replaced by one shared true
-booster-pack / foil-wrapper master across A/B/C/D. The wrapper has a flexible
-foil silhouette, top/bottom crimp seals, side seams, wrinkles/reflections and a
-dedicated booster label; selected wrapper is also physically rendered slightly
-larger than the revealed card. Card back appears only after the wrapper-opening
-gesture commits. A tears the top seal, B splits the same printed wrapper from
-the middle, C charges then bursts the wrapper apart, and D slides a physical
-seal/sleeve with a pull tab. A real-Chrome B split text-duplication defect was
-found and fixed during review. All four prototypes, rarity behavior, low-
-frequency hidden omen, reduced-motion Lab override, accepted icon position and
-locked PNG masters remain preserved. Production result/RNG/backend remain
-untouched. No paid generation, GitHub Actions, Vercel, release or deployment
-was used. Keep all four prototypes until the user and his wife choose:
+The true shared booster-wrapper master now feeds into a physical card-extraction
+bridge before the preserved reveal animation. After A/B/C/D commits, the wrapper
+is visibly open, the real Z card back rises from behind/inside it, the wrapper
+moves down/out and fades only late, then the existing flip/reveal continues from
+its already-settled card-back state instead of replaying the old entrance. The
+first Chrome pass exposed wrapper-print ghosting over the card; this was fixed
+by keeping wrapper material substantially opaque while physically translating it
+away. Final real-Chrome A/B/C/D review is clean. The opening and reveal stages
+now share the exact same exported ZyncFxCardBack visual. A/B/C/D mechanics,
+rarity behavior, low-frequency omen, reduced-motion Lab override, accepted icon
+position and locked PNG masters remain unchanged. No paid generation, GitHub
+Actions, Vercel, release or deployment was used. Keep all four prototypes until
+the user and his wife choose:
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_CARD_EXTRACTION_TRANSITION.md`
+
+Previous true-wrapper-master checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_TRUE_BOOSTER_WRAPPER_MASTER.md`
 

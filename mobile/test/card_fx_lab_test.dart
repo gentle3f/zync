@@ -110,6 +110,10 @@ void main() {
     await tester.pump();
     final tearGesture = find.byKey(const ValueKey('opening-gesture-tear-up'));
     expect(tearGesture, findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsNothing,
+    );
     await tester.ensureVisible(tearGesture);
     await tester.pump();
 
@@ -117,6 +121,11 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 360));
 
+    // The wrapper opens first; only then may the real card back emerge.
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsOneWidget,
+    );
     // The Lab must still animate even when the host OS reports reduced motion.
     expect(find.text('Z'), findsOneWidget);
 

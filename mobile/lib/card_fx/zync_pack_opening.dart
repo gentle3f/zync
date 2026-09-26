@@ -71,11 +71,13 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
   double _gestureProgress = 0;
   double _dragValue = 0;
   bool _opening = false;
+  bool _extracting = false;
   bool _revealing = false;
 
   Timer? _revealTimer;
   late final AnimationController _idleController;
   late final AnimationController _burstController;
+  late final AnimationController _extractController;
   late final AnimationController _chargeController;
 
   AnimationBehavior get _behavior => widget.respectReduceMotion
@@ -95,6 +97,20 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
       duration: const Duration(milliseconds: 620),
       animationBehavior: _behavior,
     )..addListener(_tick);
+    _extractController = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: (560 / widget.speed.clamp(0.55, 1.8)).round(),
+      ),
+      animationBehavior: _behavior,
+    )
+      ..addListener(_tick)
+      ..addStatusListener((status) {
+        if (!mounted || !_extracting || status != AnimationStatus.completed) {
+          return;
+        }
+        setState(() => _revealing = true);
+      });
     _chargeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1350),
@@ -110,6 +126,11 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
   @override
   void didUpdateWidget(covariant ZyncPackOpeningStage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.speed != widget.speed) {
+      _extractController.duration = Duration(
+        milliseconds: (560 / widget.speed.clamp(0.55, 1.8)).round(),
+      );
+    }
     if (oldWidget.openToken != widget.openToken ||
         oldWidget.spec.id != widget.spec.id ||
         oldWidget.spec.rarity != widget.spec.rarity ||
@@ -128,8 +149,10 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     _gestureProgress = 0;
     _dragValue = 0;
     _opening = false;
+    _extracting = false;
     _revealing = false;
     _burstController.reset();
+    _extractController.reset();
     _chargeController.reset();
     if (mounted) setState(() {});
   }
@@ -172,6 +195,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
       _gestureProgress = 0;
       _dragValue = 0;
       _burstController.reset();
+      _extractController.reset();
       _chargeController.reset();
     });
   }
@@ -239,7 +263,8 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     _revealTimer = Timer(Duration(milliseconds: revealDelay), () {
       if (!mounted) return;
       HapticFeedback.heavyImpact();
-      setState(() => _revealing = true);
+      setState(() => _extracting = true);
+      _extractController.forward(from: 0);
     });
   }
 
@@ -248,6 +273,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     _revealTimer?.cancel();
     _idleController.dispose();
     _burstController.dispose();
+    _extractController.dispose();
     _chargeController.dispose();
     super.dispose();
   }
@@ -264,6 +290,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
         revealToken: widget.openToken,
         speed: widget.speed,
         respectReduceMotion: widget.respectReduceMotion,
+        startFromSettledBack: true,
       );
     }
 
@@ -356,12 +383,21 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
 
   Widget _buildInteraction(double idle) {
     final burst = Curves.easeOutCubic.transform(_burstController.value);
+    final extraction = Curves.easeOutCubic.transform(_extractController.value);
+    final cardOpacity = Curves.easeIn.transform(
+      (extraction / 0.28).clamp(0.0, 1.0),
+    );
     final chargePulse =
         1 + math.sin(idle * math.pi * 2) * 0.012 * _gestureProgress;
     final openingScale = 1.06 * (_opening ? 1 + burst * 0.16 : chargePulse);
-    final openingOpacity = _opening ? (1 - burst * 0.86).clamp(0.0, 1.0) : 1.0;
+    final wrapperExit = Curves.easeIn.transform(
+      ((extraction - 0.58) / 0.42).clamp(0.0, 1.0),
+    );
+    final wrapperOpacity = _opening
+        ? (1 - burst * 0.12 - wrapperExit * 0.80).clamp(0.08, 1.0)
+        : 1.0;
 
-    Widget pack = SizedBox(
+    Widget wrapper = SizedBox(
       width: 390,
       height: 620,
       child: CustomPaint(
@@ -379,9 +415,42 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
       ),
     );
 
-    pack = Transform.scale(
-      scale: openingScale,
-      child: Opacity(opacity: openingOpacity, child: pack),
+    wrapper = Transform.translate(
+      offset: Offset(0, extraction * 240),
+      child: Transform.scale(
+        scale: openingScale,
+        child: Opacity(opacity: wrapperOpacity, child: wrapper),
+      ),
+    );
+
+    Widget pack = SizedBox(
+      width: 390,
+      height: 620,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          if (_extracting)
+            Transform.translate(
+              offset: Offset(0, 128 * (1 - extraction)),
+              child: Transform.scale(
+                scale: 0.82 + extraction * 0.10,
+                child: Opacity(
+                  opacity: cardOpacity,
+                  child: SizedBox(
+                    key: const ValueKey('opening-card-extraction-back'),
+                    width: 390,
+                    height: 585,
+                    child: ZyncFxCardBack(
+                      accent: widget.spec.profile.accentColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          wrapper,
+        ],
+      ),
     );
 
     pack = switch (widget.prototype) {
@@ -502,7 +571,11 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
         ),
         const SizedBox(height: 7),
         Text(
-          _opening ? (_hasHiddenOmen ? '...' : 'OPENING') : progressLabel,
+          _opening
+              ? (_extracting
+                  ? 'DRAWING CARD'
+                  : (_hasHiddenOmen ? '...' : 'OPENING'))
+              : progressLabel,
           style: TextStyle(
             color: (_opening && _hasHiddenOmen)
                 ? widget.spec.profile.secondaryColor
