@@ -8,7 +8,12 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint (isolated Flutter runtime-effects lab; no production
 pack/draw integration, no paid generation, no CI/Vercel, and no new package
-dependency; standalone entrypoint `mobile/lib/main_card_fx_lab.dart`):
+dependency; safe-shutdown state after real production artwork integration and
+frame-window geometry validation):
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_SAFE_SHUTDOWN.md`
+
+Previous Card FX foundation checkpoint:
 
 `AI_STATE/HANDOFF_20260925_CARD_FX_LAB_V1.md`
 
