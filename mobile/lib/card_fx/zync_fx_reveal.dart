@@ -36,7 +36,13 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: _duration);
+    _controller = AnimationController(
+      vsync: this,
+      duration: _duration,
+      animationBehavior: widget.respectReduceMotion
+          ? AnimationBehavior.normal
+          : AnimationBehavior.preserve,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => _play());
   }
 

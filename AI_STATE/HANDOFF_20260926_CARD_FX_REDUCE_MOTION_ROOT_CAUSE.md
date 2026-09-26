@@ -26,8 +26,16 @@ Production behavior still respects reduced-motion accessibility by default.
 The isolated Card FX Lab now explicitly sets `respectReduceMotion: false` for
 both inspect cards and reveal stages, so OS accessibility state cannot silently
 disable the FX preview.
-The same override is propagated into the card rendered inside the reveal stage,
-so foil/steam/surface animation are also testable in the Lab.
+
+A second accessibility layer was then found from the user's next manual test:
+after bypassing the explicit skip, reveal/replay became extremely fast. Flutter
+`AnimationController` itself defaults to `AnimationBehavior.normal`, which
+compresses/skips motion when platform accessibility reports animations disabled.
+The Lab controllers now use `AnimationBehavior.preserve` whenever
+`respectReduceMotion` is false. Production keeps `AnimationBehavior.normal`.
+
+The same Lab override is propagated into the card rendered inside the reveal
+stage, so foil/steam/surface animation are also testable at normal speed.
 
 Reveal UX was also made deliberately more visible:
 - removed AnimatedSwitcher crossfade masking
@@ -48,6 +56,9 @@ visible 250ms after Draw Reveal. This directly guards the real failure mode.
 QA:
 - `flutter test test/card_fx_lab_test.dart` -> 4/4 PASS
 - targeted `flutter analyze` -> No issues found
+- real Chrome timing verification with platform disable-animations active:
+  250ms = full Z card back; 750ms = still card back; 1250ms = front + rarity
+  burst; 1900ms = settle; 2500ms = complete
 
 Do not remove the Lab override unless the preview gets an explicit motion-mode
 control. Production defaults should continue respecting accessibility settings.

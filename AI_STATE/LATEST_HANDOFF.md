@@ -8,15 +8,16 @@ CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
 real no-response root cause found in the user's visible Chrome session:
-Flutter/Windows reported MediaQuery.disableAnimations=true, so reveal/replay
-was deliberately jumping straight to its final frame while drag tilt still
-worked. Production still respects reduced motion, but the isolated Card FX Lab
-now forces motion on for inspect/reveal preview; the widget test explicitly
-runs under disableAnimations=true and verifies the Z card-back animation still
-appears. Reveal was also made more obvious (longer card-back hold, stronger 3D
-flip/flash) and steam softened. Locked 1024x1536 PNG masters + accepted icon
-placement remain unchanged. No paid generation, CI/Vercel, release or
-production draw/server change was used:
+Flutter/Windows reported MediaQuery.disableAnimations=true. First this made
+reveal/replay jump straight to the final frame; after bypassing that explicit
+skip, Flutter AnimationController's default AnimationBehavior.normal still
+compressed the reveal into a near-instant flash. The isolated Card FX Lab now
+uses respectReduceMotion=false plus AnimationBehavior.preserve, while production
+still respects accessibility normally. Real Chrome wall-clock verification now
+shows 250ms/750ms = Z card back, 1250ms = front + rarity burst, 1900ms = settle,
+2500ms = complete. Reveal is deliberately more obvious and steam is softened.
+Locked 1024x1536 PNG masters + accepted icon placement remain unchanged. No paid
+generation, CI/Vercel, release or production draw/server change was used:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_REDUCE_MOTION_ROOT_CAUSE.md`
 

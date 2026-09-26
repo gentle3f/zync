@@ -39,13 +39,18 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    final animationBehavior = widget.respectReduceMotion
+        ? AnimationBehavior.normal
+        : AnimationBehavior.preserve;
     _surfaceController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 4200),
+      animationBehavior: animationBehavior,
     )..addListener(_tick);
     _settleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 360),
+      animationBehavior: animationBehavior,
     )..addListener(_tick);
   }
 
