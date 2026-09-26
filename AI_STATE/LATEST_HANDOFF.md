@@ -6,14 +6,21 @@ Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
 
-Separate Card FX checkpoint (isolated Flutter runtime-effects lab; no production
-pack/draw integration, no paid generation, no CI/Vercel, and no new package
-dependency; safe-shutdown state after real production artwork integration and
-frame-window geometry validation):
+Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
+browser review completed; icon placement accepted; Replay still has no visible
+response in real Chrome despite passing the weak widget tap test; repo frames
+are confirmed 96x144 WebP derivatives and are visibly blurred when enlarged.
+Next chat must fix Replay first, then replace derivatives with the original
+1024x1536 transparent locked PNG masters. No production pack/draw integration,
+paid generation, CI/Vercel, or new package dependency is needed:
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_BROWSER_REVIEW.md`
+
+Previous Card FX safe-shutdown checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_SAFE_SHUTDOWN.md`
 
-Previous Card FX foundation checkpoint:
+Earlier Card FX foundation checkpoint:
 
 `AI_STATE/HANDOFF_20260925_CARD_FX_LAB_V1.md`
 

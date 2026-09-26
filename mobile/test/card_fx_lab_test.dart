@@ -89,6 +89,12 @@ void main() {
     await tester.tap(find.text('Draw reveal'));
     await tester.pump(const Duration(milliseconds: 20));
 
-    expect(find.text('Replay reveal'), findsOneWidget);
+    final replayButton = find.byKey(const ValueKey('fx-replay-button'));
+    expect(replayButton, findsOneWidget);
+
+    await tester.tap(replayButton);
+    await tester.pump(const Duration(milliseconds: 20));
+
+    expect(tester.takeException(), isNull);
   });
 }

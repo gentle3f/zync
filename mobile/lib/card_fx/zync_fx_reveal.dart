@@ -129,27 +129,140 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
           ..setEntry(3, 2, 0.0015)
           ..rotateY(displayAngle);
 
-        return Transform.translate(
-          offset: Offset(0, y),
-          child: Transform.scale(
-            scale: scale,
-            child: Transform(
-              alignment: Alignment.center,
-              transform: matrix,
-              child: showFront
-                  ? ZyncFxCard(
-                      spec: widget.spec,
-                      tuning: widget.tuning,
-                      enableDragTilt: p > 0.98,
-                      revealImpact: hit,
-                    )
-                  : _CardBack(accent: widget.spec.profile.accentColor),
+        return Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            if (showFront && hit > 0.001)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: CustomPaint(
+                    painter: _RarityRevealHaloPainter(
+                      rarity: widget.spec.rarity,
+                      impact: hit,
+                      accent: widget.spec.profile.accentColor,
+                      secondary: widget.spec.profile.secondaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            Transform.translate(
+              offset: Offset(0, y),
+              child: Transform.scale(
+                scale: scale,
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: matrix,
+                  child: showFront
+                      ? ZyncFxCard(
+                          spec: widget.spec,
+                          tuning: widget.tuning,
+                          enableDragTilt: p > 0.98,
+                          revealImpact: hit,
+                        )
+                      : _CardBack(accent: widget.spec.profile.accentColor),
+                ),
+              ),
             ),
-          ),
+          ],
         );
       },
     );
   }
+}
+
+class _RarityRevealHaloPainter extends CustomPainter {
+  const _RarityRevealHaloPainter({
+    required this.rarity,
+    required this.impact,
+    required this.accent,
+    required this.secondary,
+  });
+
+  final ZyncFxRarity rarity;
+  final double impact;
+  final Color accent;
+  final Color secondary;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (impact <= 0.001) return;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final shortest = size.shortestSide;
+    final level = rarity.index;
+    final strength = (0.10 + level * 0.055) * impact;
+
+    final haloRect = Rect.fromCenter(
+      center: center,
+      width: size.width * 1.28,
+      height: size.height * 1.14,
+    );
+    final halo = Paint()
+      ..blendMode = BlendMode.screen
+      ..shader = RadialGradient(
+        colors: [
+          secondary.withValues(alpha: strength),
+          accent.withValues(alpha: strength * 0.62),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.46, 1.0],
+      ).createShader(haloRect);
+    canvas.drawOval(haloRect, halo);
+
+    if (rarity == ZyncFxRarity.common) return;
+
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.3 + level * 0.35
+      ..blendMode = BlendMode.screen;
+
+    final ringCount = switch (rarity) {
+      ZyncFxRarity.uncommon => 1,
+      ZyncFxRarity.rare => 2,
+      ZyncFxRarity.epic => 2,
+      ZyncFxRarity.legendary => 3,
+      ZyncFxRarity.common => 0,
+    };
+
+    for (var i = 0; i < ringCount; i++) {
+      final radius = shortest * (0.34 + i * 0.11 + (1 - impact) * 0.10);
+      ring.color = (i.isEven ? accent : secondary).withValues(
+        alpha: impact * (0.18 + level * 0.045) / (i + 1),
+      );
+      canvas.drawCircle(center, radius, ring);
+    }
+
+    if (rarity.index < ZyncFxRarity.epic.index) return;
+
+    final rayCount = rarity == ZyncFxRarity.legendary ? 16 : 10;
+    final ray = Paint()
+      ..strokeCap = StrokeCap.round
+      ..blendMode = BlendMode.screen;
+
+    for (var i = 0; i < rayCount; i++) {
+      final angle = (i / rayCount) * math.pi * 2 + 0.17;
+      final inner = shortest * 0.43;
+      final outer = shortest * (0.53 + (i % 3) * 0.045) * impact;
+      ray
+        ..strokeWidth = 1.0 + (i % 2) * 0.7
+        ..color = (i.isEven ? accent : secondary).withValues(
+          alpha: impact * (rarity == ZyncFxRarity.legendary ? 0.34 : 0.24),
+        );
+      canvas.drawLine(
+        center + Offset(math.cos(angle), math.sin(angle)) * inner,
+        center + Offset(math.cos(angle), math.sin(angle)) * outer,
+        ray,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _RarityRevealHaloPainter oldDelegate) =>
+      oldDelegate.rarity != rarity ||
+      oldDelegate.impact != impact ||
+      oldDelegate.accent != accent ||
+      oldDelegate.secondary != secondary;
 }
 
 class _CardBack extends StatelessWidget {

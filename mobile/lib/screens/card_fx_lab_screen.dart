@@ -139,14 +139,6 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
               .bodySmall
               ?.copyWith(color: Colors.white60, height: 1.4),
         ),
-        if (_mode == _FxLabMode.reveal) ...[
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: () => setState(() => _revealToken++),
-            icon: const Icon(Icons.replay_rounded),
-            label: Text(isZh ? '再播 Reveal' : 'Replay reveal'),
-          ),
-        ],
       ],
     );
   }
@@ -178,38 +170,53 @@ class _CardFxLabScreenState extends State<CardFxLabScreen> {
   }
 
   Widget _modeSelector(bool isZh) {
-    return SegmentedButton<_FxLabMode>(
-      segments: [
-        ButtonSegment(
-          value: _FxLabMode.inspect,
-          icon: const Icon(Icons.threesixty_rounded),
-          label: Text(isZh ? 'Inspect' : 'Inspect'),
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 10,
+      runSpacing: 8,
+      children: [
+        SegmentedButton<_FxLabMode>(
+          segments: [
+            ButtonSegment(
+              value: _FxLabMode.inspect,
+              icon: const Icon(Icons.threesixty_rounded),
+              label: Text(isZh ? 'Inspect' : 'Inspect'),
+            ),
+            ButtonSegment(
+              value: _FxLabMode.reveal,
+              icon: const Icon(Icons.auto_awesome_rounded),
+              label: Text(isZh ? '抽卡 Reveal' : 'Draw reveal'),
+            ),
+          ],
+          selected: {_mode},
+          onSelectionChanged: (value) {
+            setState(() {
+              _mode = value.first;
+              if (_mode == _FxLabMode.reveal) _revealToken++;
+            });
+          },
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? Colors.white
+                  : Colors.white70,
+            ),
+            backgroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? _spec.profile.accentColor.withValues(alpha: 0.32)
+                  : Colors.white.withValues(alpha: 0.06),
+            ),
+          ),
         ),
-        ButtonSegment(
-          value: _FxLabMode.reveal,
-          icon: const Icon(Icons.auto_awesome_rounded),
-          label: Text(isZh ? '抽卡 Reveal' : 'Draw reveal'),
-        ),
+        if (_mode == _FxLabMode.reveal)
+          FilledButton.icon(
+            key: const ValueKey('fx-replay-button'),
+            onPressed: () => setState(() => _revealToken++),
+            icon: const Icon(Icons.replay_rounded),
+            label: Text(isZh ? '再播' : 'Replay'),
+          ),
       ],
-      selected: {_mode},
-      onSelectionChanged: (value) {
-        setState(() {
-          _mode = value.first;
-          if (_mode == _FxLabMode.reveal) _revealToken++;
-        });
-      },
-      style: ButtonStyle(
-        foregroundColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected)
-              ? Colors.white
-              : Colors.white70,
-        ),
-        backgroundColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected)
-              ? _spec.profile.accentColor.withValues(alpha: 0.32)
-              : Colors.white.withValues(alpha: 0.06),
-        ),
-      ),
     );
   }
 
