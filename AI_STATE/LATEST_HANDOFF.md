@@ -7,17 +7,23 @@ CI, Vercel, deployment or external-infrastructure action.
 
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-A/B/C/D pack-opening comparison Lab is now implemented and real-browser tested:
-A Tear Up, B Split Open, C Charge Burst, D Seal Slide. Open pack first presents
-three gently moving packs, then the chosen gesture feeds into the preserved
-card-back/reveal animation. All five rarity profiles scale opening/reveal energy;
-Legendary now has a materially stronger two-stage finale with large shockwaves,
-28 long rays, particles and flash. Hidden omen is deliberately low-frequency
-(~1/7 Legendary), with rare Epic false-positive/near-miss (~1/20), and appears
-only after the opening gesture. Coffee/info-panel copy was changed to dark text
-for readability; accepted lower-right icon position is unchanged. Production
-result/RNG/backend remain untouched. No paid generation, CI/Vercel, release or
-deployment was used. Keep all four prototypes until the user and his wife choose:
+The fake card-back-like pack has now been replaced by one shared true
+booster-pack / foil-wrapper master across A/B/C/D. The wrapper has a flexible
+foil silhouette, top/bottom crimp seals, side seams, wrinkles/reflections and a
+dedicated booster label; selected wrapper is also physically rendered slightly
+larger than the revealed card. Card back appears only after the wrapper-opening
+gesture commits. A tears the top seal, B splits the same printed wrapper from
+the middle, C charges then bursts the wrapper apart, and D slides a physical
+seal/sleeve with a pull tab. A real-Chrome B split text-duplication defect was
+found and fixed during review. All four prototypes, rarity behavior, low-
+frequency hidden omen, reduced-motion Lab override, accepted icon position and
+locked PNG masters remain preserved. Production result/RNG/backend remain
+untouched. No paid generation, GitHub Actions, Vercel, release or deployment
+was used. Keep all four prototypes until the user and his wife choose:
+
+`AI_STATE/HANDOFF_20260926_CARD_FX_TRUE_BOOSTER_WRAPPER_MASTER.md`
+
+Previous A/B/C/D opening-prototype checkpoint:
 
 `AI_STATE/HANDOFF_20260926_CARD_FX_OPENING_PROTOTYPES_A_D.md`
 

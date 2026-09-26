@@ -318,8 +318,8 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
                         key: ValueKey('pack-choice-$i'),
                         onTap: () => _selectPack(i),
                         child: SizedBox(
-                          width: 96,
-                          height: 154,
+                          width: 108,
+                          height: 166,
                           child: CustomPaint(
                             painter: _PackPainter(
                               profile: widget.spec.profile,
@@ -358,12 +358,12 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     final burst = Curves.easeOutCubic.transform(_burstController.value);
     final chargePulse =
         1 + math.sin(idle * math.pi * 2) * 0.012 * _gestureProgress;
-    final openingScale = _opening ? 1 + burst * 0.16 : chargePulse;
+    final openingScale = 1.06 * (_opening ? 1 + burst * 0.16 : chargePulse);
     final openingOpacity = _opening ? (1 - burst * 0.86).clamp(0.0, 1.0) : 1.0;
 
     Widget pack = SizedBox(
-      width: 232,
-      height: 350,
+      width: 390,
+      height: 620,
       child: CustomPaint(
         painter: _PackPainter(
           profile: widget.spec.profile,
@@ -489,7 +489,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
         pack,
         const SizedBox(height: 12),
         SizedBox(
-          width: 232,
+          width: 300,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(99),
             child: LinearProgressIndicator(
@@ -549,7 +549,9 @@ class _PackPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (prototype == ZyncOpeningPrototype.splitOpen && selected) {
+    if (prototype == ZyncOpeningPrototype.chargeBurst && selected && opening) {
+      _paintChargeBurstWrapper(canvas, size);
+    } else if (prototype == ZyncOpeningPrototype.splitOpen && selected) {
       _paintSplit(canvas, size);
     } else if (prototype == ZyncOpeningPrototype.tearUp && selected) {
       _paintTear(canvas, size);
@@ -575,173 +577,426 @@ class _PackPainter extends CustomPainter {
   }
 
   void _paintFace(Canvas canvas, Size size) {
-    final rect = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(size.width * 0.075),
-    );
     final pulse = 0.5 + 0.5 * math.sin(idle * math.pi * 2);
     final reveal = selected ? progress : 0.0;
+    final body = Path()
+      ..moveTo(size.width * 0.025, size.height * 0.02)
+      ..quadraticBezierTo(
+        size.width * 0.008,
+        size.height * 0.15,
+        size.width * 0.020,
+        size.height * 0.29,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.008,
+        size.height * 0.52,
+        size.width * 0.025,
+        size.height * 0.72,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.008,
+        size.height * 0.86,
+        size.width * 0.030,
+        size.height * 0.98,
+      )
+      ..lineTo(size.width * 0.97, size.height * 0.98)
+      ..quadraticBezierTo(
+        size.width * 0.992,
+        size.height * 0.86,
+        size.width * 0.975,
+        size.height * 0.72,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.992,
+        size.height * 0.52,
+        size.width * 0.980,
+        size.height * 0.29,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.992,
+        size.height * 0.15,
+        size.width * 0.975,
+        size.height * 0.02,
+      )
+      ..close();
 
-    final base = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color(0xFF111824),
-          Color(0xFF28364A),
-          Color(0xFF0D1118),
-          Color(0xFF1E2938),
-        ],
-        stops: [0.0, 0.34, 0.68, 1.0],
-      ).createShader(Offset.zero & size);
-    canvas.drawRRect(rect, base);
+    final foilBounds = Rect.fromLTWH(
+      size.width * 0.015,
+      size.height * 0.015,
+      size.width * 0.97,
+      size.height * 0.97,
+    );
+    canvas.drawPath(
+      body,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF08101A),
+            Color(0xFF394A5F),
+            Color(0xFF111A27),
+            Color(0xFF607187),
+            Color(0xFF0B111A),
+          ],
+          stops: [0.0, 0.20, 0.48, 0.68, 1.0],
+        ).createShader(foilBounds),
+    );
+
+    canvas.save();
+    canvas.clipPath(body);
 
     final sheen = Paint()
       ..blendMode = BlendMode.screen
       ..shader = LinearGradient(
-        begin: Alignment(-1 + idle * 2, -1),
-        end: Alignment(1 + idle * 2, 1),
+        begin: Alignment(-1.5 + idle * 2.4, -1),
+        end: Alignment(0.4 + idle * 2.4, 1),
         colors: [
           Colors.transparent,
-          Colors.white.withValues(alpha: 0.06 + pulse * 0.04),
+          Colors.white.withValues(alpha: 0.05 + pulse * 0.055),
           profile.accentColor.withValues(
-            alpha: 0.025 + reveal * 0.13 * energy,
+            alpha: 0.035 + reveal * 0.12 * energy,
           ),
+          Colors.white.withValues(alpha: 0.035),
           Colors.transparent,
         ],
-        stops: const [0.0, 0.43, 0.58, 1.0],
-      ).createShader(Offset.zero & size);
-    canvas.drawRRect(rect, sheen);
+        stops: const [0.0, 0.36, 0.49, 0.58, 1.0],
+      ).createShader(foilBounds);
+    canvas.drawRect(foilBounds, sheen);
 
-    final border = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = selected ? 2.2 : 1.3
-      ..color = Color.lerp(
-        const Color(0xFF9EAABD),
-        profile.accentColor,
-        selected ? 0.35 + reveal * 0.45 : 0.08,
-      )!
-          .withValues(alpha: selected ? 0.90 : 0.64);
-    canvas.drawRRect(rect.deflate(1), border);
-
-    final topSealY = size.height * 0.105;
-    final seal = Paint()
-      ..color = Colors.white.withValues(alpha: 0.10)
-      ..strokeWidth = 1;
-    canvas.drawLine(
-      Offset(size.width * 0.08, topSealY),
-      Offset(size.width * 0.92, topSealY),
-      seal,
+    final label = Path()
+      ..moveTo(size.width * 0.10, size.height * 0.30)
+      ..lineTo(size.width * 0.90, size.height * 0.235)
+      ..lineTo(size.width * 0.90, size.height * 0.665)
+      ..lineTo(size.width * 0.10, size.height * 0.72)
+      ..close();
+    canvas.drawPath(
+      label,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF07111D).withValues(alpha: 0.94),
+            const Color(0xFF111D2C).withValues(alpha: 0.94),
+            profile.accentColor.withValues(alpha: 0.18 + reveal * 0.12),
+          ],
+        ).createShader(foilBounds),
     );
-    canvas.drawLine(
-      Offset(size.width * 0.08, size.height * 0.89),
-      Offset(size.width * 0.92, size.height * 0.89),
-      seal,
+    canvas.drawPath(
+      label,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..color = profile.accentColor.withValues(
+          alpha: 0.34 + reveal * 0.28 * energy,
+        ),
     );
 
-    for (var i = 0; i < 8; i++) {
-      final x = size.width * (0.10 + i * 0.115);
+    final topCrimp = Rect.fromLTWH(
+      size.width * 0.020,
+      size.height * 0.020,
+      size.width * 0.96,
+      size.height * 0.105,
+    );
+    final bottomCrimp = Rect.fromLTWH(
+      size.width * 0.025,
+      size.height * 0.875,
+      size.width * 0.95,
+      size.height * 0.105,
+    );
+    final crimpPaint = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF77879A),
+          Color(0xFF202C3A),
+          Color(0xFF68798D),
+        ],
+      ).createShader(foilBounds);
+    canvas.drawRect(topCrimp, crimpPaint);
+    canvas.drawRect(bottomCrimp, crimpPaint);
+
+    final crimpLine = Paint()
+      ..strokeWidth = 0.9
+      ..color = Colors.white.withValues(alpha: 0.18);
+    for (var i = 0; i < 15; i++) {
+      final x = size.width * (0.075 + i * 0.061);
       canvas.drawLine(
-        Offset(x, size.height * 0.035),
-        Offset(x + size.width * 0.05, size.height * 0.075),
-        Paint()
-          ..strokeWidth = 1
-          ..color = Colors.white.withValues(alpha: 0.045),
+        Offset(x, size.height * 0.030),
+        Offset(x - size.width * 0.022, size.height * 0.112),
+        crimpLine,
       );
+      canvas.drawLine(
+        Offset(x, size.height * 0.888),
+        Offset(x + size.width * 0.022, size.height * 0.970),
+        crimpLine,
+      );
+    }
+
+    final sideSeam = Paint()
+      ..strokeWidth = size.width * 0.014
+      ..color = const Color(0xFF02060B).withValues(alpha: 0.42);
+    canvas.drawLine(
+      Offset(size.width * 0.035, size.height * 0.135),
+      Offset(size.width * 0.040, size.height * 0.865),
+      sideSeam,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.965, size.height * 0.135),
+      Offset(size.width * 0.960, size.height * 0.865),
+      sideSeam,
+    );
+    final seamLight = Paint()
+      ..strokeWidth = 1
+      ..color = Colors.white.withValues(alpha: 0.16);
+    canvas.drawLine(
+      Offset(size.width * 0.052, size.height * 0.14),
+      Offset(size.width * 0.055, size.height * 0.86),
+      seamLight,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.948, size.height * 0.14),
+      Offset(size.width * 0.945, size.height * 0.86),
+      seamLight,
+    );
+
+    final wrinkle = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0
+      ..strokeCap = StrokeCap.round
+      ..color = Colors.white.withValues(alpha: 0.10);
+    final wrinkleDark = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.15
+      ..strokeCap = StrokeCap.round
+      ..color = Colors.black.withValues(alpha: 0.18);
+    final wrinkles = <Path>[
+      Path()
+        ..moveTo(size.width * 0.08, size.height * 0.20)
+        ..quadraticBezierTo(
+          size.width * 0.19,
+          size.height * 0.24,
+          size.width * 0.28,
+          size.height * 0.31,
+        ),
+      Path()
+        ..moveTo(size.width * 0.92, size.height * 0.19)
+        ..quadraticBezierTo(
+          size.width * 0.80,
+          size.height * 0.25,
+          size.width * 0.70,
+          size.height * 0.34,
+        ),
+      Path()
+        ..moveTo(size.width * 0.07, size.height * 0.76)
+        ..quadraticBezierTo(
+          size.width * 0.19,
+          size.height * 0.72,
+          size.width * 0.30,
+          size.height * 0.67,
+        ),
+      Path()
+        ..moveTo(size.width * 0.93, size.height * 0.77)
+        ..quadraticBezierTo(
+          size.width * 0.82,
+          size.height * 0.72,
+          size.width * 0.70,
+          size.height * 0.68,
+        ),
+      Path()
+        ..moveTo(size.width * 0.16, size.height * 0.17)
+        ..quadraticBezierTo(
+          size.width * 0.42,
+          size.height * 0.19,
+          size.width * 0.55,
+          size.height * 0.16,
+        ),
+      Path()
+        ..moveTo(size.width * 0.44, size.height * 0.82)
+        ..quadraticBezierTo(
+          size.width * 0.58,
+          size.height * 0.78,
+          size.width * 0.84,
+          size.height * 0.81,
+        ),
+    ];
+    for (var i = 0; i < wrinkles.length; i++) {
+      canvas.drawPath(wrinkles[i], i.isEven ? wrinkle : wrinkleDark);
     }
 
     _paintText(
       canvas,
       'ZYNC',
-      Offset(size.width * 0.14, size.height * 0.19),
-      size.width * 0.18,
+      Offset(size.width * 0.17, size.height * 0.365),
+      size.width * 0.235,
       Colors.white,
       FontWeight.w900,
-      letterSpacing: 1.6,
+      letterSpacing: 2.2,
     );
     _paintText(
       canvas,
-      'ACTIVITY CARD',
-      Offset(size.width * 0.145, size.height * 0.31),
-      size.width * 0.055,
-      Colors.white.withValues(alpha: 0.54),
-      FontWeight.w700,
-      letterSpacing: 1.5,
+      'ACTIVITY BOOSTER',
+      Offset(size.width * 0.175, size.height * 0.525),
+      size.width * 0.057,
+      Colors.white.withValues(alpha: 0.70),
+      FontWeight.w800,
+      letterSpacing: 1.35,
     );
 
-    final emblemCenter = Offset(size.width * 0.50, size.height * 0.58);
-    final emblem = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.012
-      ..color = profile.accentColor.withValues(
-        alpha: 0.18 + reveal * 0.46 * energy,
-      );
-    canvas.drawCircle(emblemCenter, size.width * 0.20, emblem);
-    canvas.drawCircle(
-      emblemCenter,
-      size.width * 0.125,
+    final accentY = size.height * 0.625;
+    canvas.drawLine(
+      Offset(size.width * 0.18, accentY),
+      Offset(size.width * 0.82, accentY),
+      Paint()
+        ..strokeWidth = 2
+        ..color = profile.accentColor.withValues(
+          alpha: 0.44 + reveal * 0.32 * energy,
+        ),
+    );
+    _paintText(
+      canvas,
+      'OPEN / DISCOVER / DO',
+      Offset(size.width * 0.19, size.height * 0.665),
+      size.width * 0.038,
+      Colors.white.withValues(alpha: 0.47),
+      FontWeight.w700,
+      letterSpacing: 0.65,
+    );
+
+    canvas.restore();
+
+    canvas.drawPath(
+      body,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = size.width * 0.006
-        ..color = Colors.white.withValues(alpha: 0.12),
-    );
-
-    _paintText(
-      canvas,
-      'Z',
-      Offset(size.width * 0.425, size.height * 0.505),
-      size.width * 0.20,
-      Colors.white.withValues(alpha: 0.92),
-      FontWeight.w900,
-      fontStyle: FontStyle.italic,
-    );
-
-    _paintText(
-      canvas,
-      'HOLD · OPEN · DISCOVER',
-      Offset(size.width * 0.145, size.height * 0.81),
-      size.width * 0.043,
-      Colors.white.withValues(alpha: 0.45),
-      FontWeight.w700,
-      letterSpacing: 0.8,
+        ..strokeWidth = selected ? 1.8 : 1.25
+        ..color = Color.lerp(
+          const Color(0xFF94A4B9),
+          profile.accentColor,
+          selected ? 0.30 + reveal * 0.42 : 0.08,
+        )!
+            .withValues(alpha: selected ? 0.88 : 0.62),
     );
   }
 
   void _paintTear(Canvas canvas, Size size) {
-    final tearY = size.height * 0.072;
+    final tearY = size.height * 0.145;
+    final tearProgress = opening
+        ? (progress + (1 - progress) * burst).clamp(0.0, 1.0)
+        : progress;
     canvas.save();
     canvas.clipRect(Rect.fromLTWH(0, tearY, size.width, size.height - tearY));
     _paintFace(canvas, size);
     canvas.restore();
 
     canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, 0, size.width, tearY + 2));
-    canvas.translate(0, -progress * size.height * 0.20);
-    canvas.rotate(-progress * 0.035);
+    canvas.clipRect(Rect.fromLTWH(0, 0, size.width, tearY + 3));
+    canvas.translate(
+      tearProgress * size.width * 0.045,
+      -tearProgress * size.height * 0.23,
+    );
+    canvas.rotate(-tearProgress * 0.075);
     _paintFace(canvas, size);
     canvas.restore();
+
+    if (tearProgress > 0.18) {
+      final rip = Paint()
+        ..strokeWidth = 1.4
+        ..strokeCap = StrokeCap.round
+        ..color = Colors.white.withValues(alpha: 0.32);
+      for (var i = 0; i < 12; i++) {
+        final x1 = size.width * (0.055 + i * 0.075);
+        final dy = (i.isEven ? 1 : -1) * size.height * 0.008;
+        canvas.drawLine(
+          Offset(x1, tearY + dy),
+          Offset(x1 + size.width * 0.045, tearY - dy),
+          rip,
+        );
+      }
+    }
   }
 
   void _paintSplit(Canvas canvas, Size size) {
-    final shift = progress * size.width * 0.19;
+    final splitProgress = opening
+        ? (progress + (1 - progress) * burst).clamp(0.0, 1.0)
+        : progress;
+    final shift = splitProgress * size.width * 0.24;
+
+    if (splitProgress > 0.08) {
+      final gap = Rect.fromCenter(
+        center: Offset(size.width / 2, size.height * 0.51),
+        width: size.width * (0.025 + splitProgress * 0.18),
+        height: size.height * 0.70,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(gap, Radius.circular(size.width * 0.025)),
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF05070A), Color(0xFF111923), Color(0xFF030405)],
+          ).createShader(gap),
+      );
+    }
 
     canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, 0, size.width / 2, size.height));
     canvas.translate(-shift, 0);
+    canvas.rotate(-splitProgress * 0.018);
+    canvas.clipRect(Rect.fromLTWH(0, 0, size.width / 2, size.height));
     _paintFace(canvas, size);
     canvas.restore();
 
     canvas.save();
+    canvas.translate(shift, 0);
+    canvas.rotate(splitProgress * 0.018);
     canvas.clipRect(
       Rect.fromLTWH(size.width / 2, 0, size.width / 2, size.height),
     );
-    canvas.translate(shift, 0);
     _paintFace(canvas, size);
     canvas.restore();
   }
 
+  void _paintChargeBurstWrapper(Canvas canvas, Size size) {
+    final spread = Curves.easeOutCubic.transform(burst);
+    final shift = size.width * (0.06 + spread * 0.42);
+
+    canvas.save();
+    canvas.translate(-shift, -spread * size.height * 0.035);
+    canvas.rotate(-spread * 0.11);
+    canvas.clipRect(Rect.fromLTWH(0, 0, size.width / 2, size.height));
+    _paintFace(canvas, size);
+    canvas.restore();
+
+    canvas.save();
+    canvas.translate(shift, -spread * size.height * 0.02);
+    canvas.rotate(spread * 0.11);
+    canvas.clipRect(
+      Rect.fromLTWH(size.width / 2, 0, size.width / 2, size.height),
+    );
+    _paintFace(canvas, size);
+    canvas.restore();
+
+    final shardPaint = Paint()
+      ..color = Colors.white.withValues(alpha: (1 - spread) * 0.34);
+    for (var i = 0; i < 8; i++) {
+      final dir = i.isEven ? -1.0 : 1.0;
+      final x =
+          size.width * 0.5 + dir * size.width * (0.06 + i * 0.018) * spread;
+      final y = size.height * (0.24 + (i % 4) * 0.15) -
+          spread * size.height * (0.03 + (i % 3) * 0.02);
+      final shard = Path()
+        ..moveTo(x, y)
+        ..lineTo(x + dir * size.width * 0.05, y - size.height * 0.018)
+        ..lineTo(x + dir * size.width * 0.025, y + size.height * 0.025)
+        ..close();
+      canvas.drawPath(shard, shardPaint);
+    }
+  }
+
   void _paintTearGuide(Canvas canvas, Size size) {
-    final y = size.height * 0.072;
+    final y = size.height * 0.145;
     final glow = Paint()
       ..strokeWidth = 2.0
       ..color = profile.accentColor.withValues(
@@ -771,11 +1026,14 @@ class _PackPainter extends CustomPainter {
       ..strokeWidth = 2.1
       ..color = profile.accentColor.withValues(alpha: alpha)
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width * 0.01);
-    canvas.drawLine(
-      Offset(centerX, size.height * 0.10),
-      Offset(centerX, size.height * 0.90),
-      seam,
-    );
+    final splitPath = Path()
+      ..moveTo(centerX, size.height * 0.16)
+      ..lineTo(centerX - size.width * 0.018, size.height * 0.30)
+      ..lineTo(centerX + size.width * 0.016, size.height * 0.43)
+      ..lineTo(centerX - size.width * 0.012, size.height * 0.58)
+      ..lineTo(centerX + size.width * 0.018, size.height * 0.72)
+      ..lineTo(centerX, size.height * 0.84);
+    canvas.drawPath(splitPath, seam);
 
     final arrow = Paint()
       ..strokeWidth = 2
@@ -836,45 +1094,93 @@ class _PackPainter extends CustomPainter {
   }
 
   void _paintSealSlide(Canvas canvas, Size size) {
-    final x = size.width * 0.80;
-    final top = size.height * 0.16;
-    final bottom = size.height * 0.80;
-    final y = top + (bottom - top) * progress;
+    final startY = size.height * 0.60;
+    final travel = size.height * 0.22;
+    final y = startY + travel * progress;
+    final bandHeight = size.height * 0.078;
+    final bandRect = Rect.fromLTWH(
+      size.width * 0.035,
+      y - bandHeight / 2,
+      size.width * 0.93,
+      bandHeight,
+    );
 
-    final track = Paint()
-      ..strokeWidth = size.width * 0.018
-      ..strokeCap = StrokeCap.round
-      ..color = Colors.white.withValues(alpha: 0.10);
-    canvas.drawLine(Offset(x, top), Offset(x, bottom), track);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        bandRect,
+        Radius.circular(size.width * 0.022),
+      ),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color(0xFF75869A).withValues(alpha: 0.90),
+            const Color(0xFF121B27).withValues(alpha: 0.96),
+            profile.accentColor.withValues(alpha: 0.34 + progress * 0.28),
+          ],
+        ).createShader(bandRect),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        bandRect,
+        Radius.circular(size.width * 0.022),
+      ),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.3
+        ..color = profile.accentColor.withValues(alpha: 0.62),
+    );
 
-    final unlocked = Paint()
-      ..strokeWidth = size.width * 0.012
-      ..strokeCap = StrokeCap.round
-      ..color = profile.accentColor.withValues(
-        alpha: 0.20 + progress * 0.65 * energy,
+    for (var i = 0; i < 7; i++) {
+      final cx = size.width * (0.16 + i * 0.11);
+      canvas.drawLine(
+        Offset(cx, y - bandHeight * 0.19),
+        Offset(cx + size.width * 0.028, y),
+        Paint()
+          ..strokeWidth = 1.1
+          ..strokeCap = StrokeCap.round
+          ..color = Colors.white.withValues(alpha: 0.26),
       );
-    canvas.drawLine(Offset(x, top), Offset(x, y), unlocked);
+      canvas.drawLine(
+        Offset(cx + size.width * 0.028, y),
+        Offset(cx, y + bandHeight * 0.19),
+        Paint()
+          ..strokeWidth = 1.1
+          ..strokeCap = StrokeCap.round
+          ..color = Colors.white.withValues(alpha: 0.26),
+      );
+    }
 
+    final tabCenter = Offset(size.width * 0.91, y);
     final tabRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
-        center: Offset(x, y),
-        width: size.width * 0.15,
-        height: size.height * 0.055,
+        center: tabCenter,
+        width: size.width * 0.19,
+        height: bandHeight * 1.22,
       ),
-      Radius.circular(size.width * 0.04),
+      Radius.circular(size.width * 0.025),
     );
     canvas.drawRRect(
       tabRect,
-      Paint()
-        ..color = const Color(0xFF101722)
-        ..style = PaintingStyle.fill,
+      Paint()..color = const Color(0xFF08101A),
     );
     canvas.drawRRect(
       tabRect,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5
-        ..color = profile.accentColor.withValues(alpha: 0.70),
+        ..color = profile.accentColor.withValues(alpha: 0.80),
+    );
+
+    final unlockTrack = Paint()
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round
+      ..color = profile.accentColor.withValues(alpha: 0.28 + progress * 0.34);
+    canvas.drawLine(
+      Offset(size.width * 0.91, startY - bandHeight),
+      Offset(size.width * 0.91, y - bandHeight * 0.72),
+      unlockTrack,
     );
   }
 
