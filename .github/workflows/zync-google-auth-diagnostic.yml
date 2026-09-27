@@ -37,44 +37,11 @@ jobs:
       - name: Generate one-off Android diagnostic wrapper
         shell: bash
         run: |
-          rm -rf build_app
-          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
-          rm -rf build_app/lib build_app/test
-          cp -R mobile/lib build_app/lib
-          cp -R mobile/test build_app/test
-          cp mobile/pubspec.yaml build_app/pubspec.yaml
-          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 mobile/tool/generate_mobile_wrapper.py android build_app
           python3 mobile/tool/apply_android_branding.py build_app
-
-          python3 - <<'PY'
-          from pathlib import Path
-          root = Path("build_app")
-          manifest = root / "android/app/src/main/AndroidManifest.xml"
-          text = manifest.read_text(encoding="utf-8")
-          text = text.replace('android:label="Zync"', 'android:label="Zync QA Reward Loop"', 1)
-          manifest.write_text(text, encoding="utf-8")
-
-          for path in [root / "android/app/build.gradle.kts", root / "android/app/build.gradle"]:
-              if not path.exists():
-                  continue
-              text = path.read_text(encoding="utf-8")
-              original = text
-              text = text.replace(
-                  'applicationId = "com.gmail.gentle3f.myproject"',
-                  'applicationId = "com.gmail.gentle3f.myproject.qa"',
-              )
-              text = text.replace(
-                  'applicationId "com.gmail.gentle3f.myproject"',
-                  'applicationId "com.gmail.gentle3f.myproject.qa"',
-              )
-              if text == original:
-                  raise SystemExit(f"Could not patch QA applicationId in {path}")
-              path.write_text(text, encoding="utf-8")
-              break
-          else:
-              raise SystemExit("Android app Gradle file not found")
-          PY
-
+          python3 mobile/tool/apply_android_variant_identity.py build_app \
+            --application-id com.gmail.gentle3f.myproject.qa \
+            --label "Zync QA Reward Loop"
           python3 mobile/tool/apply_android_google_identity.py build_app
 
       - name: Install Flutter dependencies

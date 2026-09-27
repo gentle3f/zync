@@ -34,7 +34,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
       Localizations.localeOf(context).toLanguageTag().startsWith('zh');
 
   bool get _googleLinkAvailable =>
-      GoogleIdentityRuntime.nativeAndroidBridgeAvailable;
+      GoogleIdentityRuntime.nativeGoogleLinkAvailable;
 
   @override
   void initState() {
@@ -101,11 +101,11 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
               ? '你取消咗 Google 登入。'
               : 'Google sign-in was cancelled.',
           'google_sign_in_platform_unsupported' => _isZh
-              ? '呢個版本暫時只支援 Android Google linking；Chrome／Web 未有 identity bridge。'
-              : 'This build currently supports Google linking on Android only; the Chrome/web identity bridge is not implemented.',
+              ? '呢個版本暫時只支援 Android／iOS Google linking；Chrome／Web 未有 identity bridge。'
+              : 'This build currently supports Google linking on Android and iOS; the Chrome/web identity bridge is not implemented.',
           'google_sign_in_native_bridge_missing' => _isZh
-              ? 'Android Google identity bridge 未載入；請用已套用 Zync Android wrapper 嘅 build。'
-              : 'The Android Google identity bridge is missing from this build. Use a build generated with the Zync Android wrapper.',
+              ? 'Google identity bridge 未載入；請用已套用 Zync mobile wrapper 嘅 build。'
+              : 'The Google identity bridge is missing from this build. Use a build generated with the Zync mobile wrapper.',
           'google_sign_in_configuration_invalid' => _isZh
               ? 'Google 登入設定無效；請檢查 Web Client ID。'
               : 'Google sign-in configuration is invalid. Check the Web client ID.',
@@ -315,15 +315,15 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Icon(
-                                    Icons.phone_android_rounded,
+                                    Icons.devices_rounded,
                                     color: ZyncPalette.plum,
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       _isZh
-                                          ? 'Google 連結目前使用 Android 原生 Credential Manager；Chrome／Web 呢個 build 未實作 Google identity。請喺 Android build 連結帳戶。'
-                                          : 'Google linking currently uses Android Credential Manager. This build has no Chrome/web Google identity flow; link the account from an Android build.',
+                                          ? 'Google 連結支援 Zync Android／iOS 原生 build；Chrome／Web 呢個 build 未實作 Google identity。'
+                                          : 'Google linking is supported in native Zync Android/iOS builds. This build has no Chrome/web Google identity flow.',
                                     ),
                                   ),
                                 ],

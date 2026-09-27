@@ -191,13 +191,7 @@ jobs:
 
       - name: Generate Android wrapper with legacy Play identity
         run: |
-          rm -rf build_app
-          flutter create --platforms=android --org com.gmail.gentle3f --project-name myproject build_app
-          rm -rf build_app/lib build_app/test
-          cp -R mobile/lib build_app/lib
-          cp -R mobile/test build_app/test
-          cp mobile/pubspec.yaml build_app/pubspec.yaml
-          cp mobile/l10n.yaml build_app/l10n.yaml
+          python3 mobile/tool/generate_mobile_wrapper.py android build_app
           python3 mobile/tool/apply_android_branding.py build_app
           python3 mobile/tool/apply_android_google_identity.py build_app
 
@@ -219,6 +213,8 @@ jobs:
           grep -R -E 'targetSdk( =)? 36' build_app/android/app/build.gradle* >/dev/null
           grep -R 'com.google.android.libraries.identity.googleid:googleid:1.2.1' build_app/android/app/build.gradle* >/dev/null
           grep -R 'setNonce(nonce)' build_app/android/app/src/main/kotlin >/dev/null
+          test -f build_app/assets/card_fx/frames/master/zync_frame_legendary_master_v1.png
+          test -f build_app/assets/card_fx/sfx/pixabay_rarity_legendary_light_478379.mp3
 
       - name: Install Flutter dependencies
         working-directory: build_app

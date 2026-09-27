@@ -5,6 +5,35 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — REPRODUCIBLE MOBILE PACKAGING + iOS:
+Zync now has one reproducible generated-wrapper path for Android and iOS. The
+shared generator copies lib/test/config **and mobile/assets**, closing the old
+Android packaging gap that could omit locked Card FX frames and SFX. The Android
+QA/CI/release wrappers now use this generator, representative Card FX assets are
+explicitly checked, and QA package/label variants use a reusable source-controlled
+patcher instead of duplicated inline workflow code. iOS now has deterministic
+Zync AppIcon/LaunchScreen, camera permission and bundle identity. Google identity
+on iOS uses the official `google_sign_in_ios` plugin from Dart with a dedicated
+iOS client ID, the Web/server client ID and the exact Cardverse one-time nonce;
+the generated AppDelegate stays Flutter-default and Android keeps its Credential
+Manager MethodChannel. Web remains fail-closed. A macOS unsigned iOS compile-smoke
+workflow exists as manual `workflow_dispatch` only and was not run. Cardverse's
+backend lineage already supports Apple issuer/JWKS/audience + nonce challenges,
+so Sign in with Apple is the next major iOS auth milestone. Validation: fresh
+Android/iOS wrapper probes PASS; fresh generated-iOS identity tests 7/7 PASS;
+repo identity tests 7/7 PASS; full Flutter analyze No issues; workflow YAML
+parses; an earlier complete non-golden suite passed 360/360. A final rerun reached
+253 tests without failure but its background shell ended without an exit marker,
+so it is not counted as a completed pass. A current local Android debug build
+also reached assembleDebug but ended without an exit marker and emitted no APK,
+so local APK compile proof remains open. The missing legacy Card Art golden
+baseline remains untouched. Stable Android QA signing/OAuth SHA-1 and real iOS
+OAuth/Apple signing remain release gates.
+
+`AI_STATE/HANDOFF_20260928_MOBILE_PACKAGING_IOS_FOUNDATION.md`
+
+Previous product checkpoint — REWARD REVEAL TURN + RARITY SFX:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — REWARD REVEAL TURN + RARITY SFX:
 The formal locked-frame reward renderer remains authoritative, but the production
 reveal flows are now reconnected to the previously accepted Card FX reveal stage

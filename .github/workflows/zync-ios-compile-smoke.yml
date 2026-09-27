@@ -1,0 +1,112 @@
+name: Zync iOS Compile Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ios-unsigned-compile:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      QA_API_BASE: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app
+      QA_PRIVACY_URL: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app/privacy
+      QA_GOOGLE_SERVER_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_SERVER_CLIENT_ID }}
+      QA_GOOGLE_IOS_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_IOS_CLIENT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Require iOS identity configuration
+        shell: bash
+        run: |
+          test -n "$QA_GOOGLE_SERVER_CLIENT_ID"
+          test -n "$QA_GOOGLE_IOS_CLIENT_ID"
+          case "$QA_GOOGLE_SERVER_CLIENT_ID" in
+            *.apps.googleusercontent.com) ;;
+            *) echo "Invalid Google Web/server client ID"; exit 1 ;;
+          esac
+          case "$QA_GOOGLE_IOS_CLIENT_ID" in
+            *.apps.googleusercontent.com) ;;
+            *) echo "Invalid Google iOS client ID"; exit 1 ;;
+          esac
+          if [ "$QA_GOOGLE_SERVER_CLIENT_ID" = "$QA_GOOGLE_IOS_CLIENT_ID" ]; then
+            echo "Use a dedicated iOS OAuth client ID; do not reuse the Web/server client ID."
+            exit 1
+          fi
+
+      - name: Generate Zync iOS wrapper
+        run: |
+          python3 mobile/tool/generate_mobile_wrapper.py ios build_app
+          python3 mobile/tool/apply_ios_branding.py build_app
+          python3 mobile/tool/apply_ios_google_identity.py             build_app             --ios-client-id "$QA_GOOGLE_IOS_CLIENT_ID"
+          python3 mobile/tool/apply_ios_google_identity.py             build_app             --check-template
+
+      - name: Verify iOS package contents
+        shell: bash
+        run: |
+          test -f build_app/assets/card_fx/frames/master/zync_frame_legendary_master_v1.png
+          test -f build_app/assets/card_fx/sfx/pixabay_rarity_legendary_light_478379.mp3
+          /usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName"             build_app/ios/Runner/Info.plist | grep -qx "Zync"
+          /usr/libexec/PlistBuddy -c "Print :GIDClientID"             build_app/ios/Runner/Info.plist | grep -qx "$QA_GOOGLE_IOS_CLIENT_ID"
+          grep -q 'GeneratedPluginRegistrant.register' build_app/ios/Runner/AppDelegate.swift
+          grep -q 'google_sign_in_ios:' build_app/pubspec.yaml
+          grep -q 'InitParameters(' build_app/lib/core/google_identity_bridge.dart
+          grep -q 'nonce: nonce' build_app/lib/core/google_identity_bridge.dart
+
+      - name: Install Flutter dependencies
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: build_app
+        run: flutter gen-l10n
+
+      - name: Analyze
+        working-directory: build_app
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test shared Google identity contract
+        working-directory: build_app
+        run: >-
+          flutter test
+          test/google_identity_bridge_test.dart
+          test/cardverse_google_auth_test.dart
+
+      - name: Compile unsigned iOS release
+        working-directory: build_app
+        run: >-
+          flutter build ios --release --no-codesign
+          "--dart-define=ZYNC_API_BASE=${QA_API_BASE}"
+          "--dart-define=ZYNC_PRIVACY_URL=${QA_PRIVACY_URL}"
+          "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
+          "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
+          "--dart-define=ZYNC_GOOGLE_SERVER_CLIENT_ID=${QA_GOOGLE_SERVER_CLIENT_ID}"
+          "--dart-define=ZYNC_GOOGLE_IOS_CLIENT_ID=${QA_GOOGLE_IOS_CLIENT_ID}"
+          "--dart-define=ZYNC_QA_DEBUG=true"
+
+      - name: Package compile-smoke app
+        shell: bash
+        run: |
+          test -d build_app/build/ios/iphoneos/Runner.app
+          ditto -c -k --sequesterRsrc --keepParent             build_app/build/ios/iphoneos/Runner.app             Zync-iOS-unsigned-compile-smoke.zip
+          shasum -a 256 Zync-iOS-unsigned-compile-smoke.zip             | tee Zync-iOS-unsigned-compile-smoke.sha256.txt
+
+      - name: Upload compile-smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-ios-unsigned-compile-smoke
+          path: |
+            Zync-iOS-unsigned-compile-smoke.zip
+            Zync-iOS-unsigned-compile-smoke.sha256.txt
+          if-no-files-found: error
+          retention-days: 7

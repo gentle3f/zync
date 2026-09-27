@@ -190,16 +190,16 @@ class _CardverseAccountLabScreenState
             : 'A Google sign-in request is already active.';
       case 'google_sign_in_platform_unsupported':
         return _isZh
-            ? '呢個 build 嘅 Google identity bridge 只支援 Android；Chrome／Web 未實作。'
-            : 'This build has an Android-only Google identity bridge; Chrome/web is not implemented.';
+            ? '呢個 build 嘅 Google identity bridge 支援 Android／iOS；Chrome／Web 未實作。'
+            : 'This build supports the Google identity bridge on Android and iOS; Chrome/web is not implemented.';
       case 'google_sign_in_native_bridge_missing':
         return _isZh
-            ? 'Android Google identity bridge 未載入；請確認 build 經 Zync Android wrapper 生成。'
-            : 'The Android Google identity bridge is missing; build with the Zync Android wrapper.';
+            ? 'Google identity bridge 未載入；請確認 build 經 Zync mobile wrapper 生成。'
+            : 'The Google identity bridge is missing; build with the Zync mobile wrapper.';
       default:
         return _isZh
-            ? 'Google 登入失敗。請確認 Android OAuth 設定。'
-            : 'Google sign-in failed. Check the Android OAuth configuration.';
+            ? 'Google 登入失敗。請確認目前平台 OAuth 設定。'
+            : 'Google sign-in failed. Check the OAuth configuration for this platform.';
     }
   }
 
@@ -257,12 +257,20 @@ class _CardverseAccountLabScreenState
                       'native_android_bridge_available='
                       '${GoogleIdentityRuntime.nativeAndroidBridgeAvailable}',
                     ),
+                    Text(
+                      'native_ios_bridge_available='
+                      '${GoogleIdentityRuntime.nativeIosBridgeAvailable}',
+                    ),
+                    Text(
+                      'google_ios_client_configured='
+                      '${GoogleIdentityRuntime.iosClientConfigured}',
+                    ),
                     if (kIsWeb) ...[
                       const SizedBox(height: 8),
                       Text(
                         'Chrome can exercise UI, but Google linking is not '
-                        'implemented on web in this build. Use an Android wrapper '
-                        'for the native Credential Manager smoke.',
+                        'implemented on web in this build. Use a native Android '
+                        'or iOS wrapper for identity smoke testing.',
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall
@@ -300,7 +308,7 @@ class _CardverseAccountLabScreenState
                 key: const ValueKey('cardverse-google-sign-in'),
                 onPressed: _busy ||
                         _signedIn ||
-                        !GoogleIdentityRuntime.nativeAndroidBridgeAvailable
+                        !GoogleIdentityRuntime.nativeGoogleLinkAvailable
                     ? null
                     : _signIn,
                 icon: _busy && !_signedIn
