@@ -5,6 +5,23 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — FIRST-RUN PRODUCT PROMISE:
+The connected real-world loop is now taught during first-run Interest Setup
+without adding another onboarding screen. A compact localized panel says, in
+essence, that Zync starts on the phone but the point happens outside it, then
+shows Connect -> Choose -> Go do it -> Come back & grow. The panel exists only
+during quick-start onboarding, not profile editing, and collapses as soon as
+interest search starts so search results remain usable on normal phones. Copy
+is localized for all eight launch locales. No fake reward walkthrough, extra
+persistence or forced tutorial was introduced. Validation: onboarding/taxonomy
+tests PASS; canonical non-golden mobile suite 340/340 PASS; full flutter analyze
+No issues found. No Actions, Vercel, Production, Play, release, paid generation,
+economy/RNG/backend or Card FX changes.
+
+`AI_STATE/HANDOFF_20260927_FIRST_RUN_PRODUCT_PROMISE.md`
+
+Previous product checkpoint:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — WORLD HUB + SINGLE DRAW:
 My Zync World is now the central continuation hub for the real-world loop.
 It loads the newest still-pending Zync Now activity and surfaces it directly

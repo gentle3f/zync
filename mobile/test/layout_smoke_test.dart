@@ -94,6 +94,14 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('onboarding-real-world-promise')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('O Zync começa no telemóvel. O importante acontece cá fora.'),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 
@@ -121,10 +129,22 @@ void main() {
 
     expect(find.text('Pick 5 things that feel like you'), findsOneWidget);
     expect(find.text('Quick picks'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('onboarding-real-world-promise')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Zync starts on your phone. The point happens outside it.'),
+      findsOneWidget,
+    );
 
     final search = find.byType(TextField).last;
     await tester.enterText(search, 'Badminton');
     await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('onboarding-real-world-promise')),
+      findsNothing,
+    );
     expect(find.text('Badminton'), findsWidgets);
 
     await tester.tap(find.text('Badminton').last);

@@ -319,6 +319,48 @@ class LocalizedDomainText {
     return _pick(locale, values);
   }
 
+  static String onboardingPromiseTitle(String locale) => _pick(locale, {
+        'en':'Zync starts on your phone. The point happens outside it.',
+        'zh-Hant':'Zync 由手機開始，但真正發生嘅嘢喺現實世界。',
+        'zh-Hans':'Zync 从手机开始，但真正发生的事在现实世界。',
+        'ja':'Zyncはスマホから始まる。でも本番は現実の世界。',
+        'ko':'Zync는 휴대폰에서 시작하지만, 진짜 일은 현실에서 일어나요.',
+        'es':'Zync empieza en tu móvil. Lo importante pasa fuera de él.',
+        'fr':'Zync commence sur ton téléphone. L’essentiel se passe dehors.',
+        'pt':'O Zync começa no telemóvel. O importante acontece cá fora.',
+      });
+
+  static String onboardingPromiseSubtitle(String locale) => _pick(locale, {
+        'en':'Meet someone, find a real thing to do, leave the screen, then come back to grow your Zync World.',
+        'zh-Hant':'遇見人、搵到一件真係想做嘅事、離開螢幕去做，再返嚟令你嘅 Zync World 成長。',
+        'zh-Hans':'遇见人、找到一件真的想做的事、离开屏幕去做，再回来让你的 Zync World 成长。',
+        'ja':'人とつながり、実際にやることを見つけ、画面を離れて体験し、戻ってZync Worldを育てよう。',
+        'ko':'사람을 만나고, 실제로 할 일을 고른 뒤 화면을 떠나 함께 해보세요. 돌아오면 Zync World가 자라요.',
+        'es':'Conoce a alguien, elegid algo real, salid de la pantalla y volved para hacer crecer vuestro Zync World.',
+        'fr':'Rencontre quelqu’un, choisissez une vraie activité, quittez l’écran, puis revenez faire grandir votre Zync World.',
+        'pt':'Conhece alguém, escolham algo real, saiam do ecrã e voltem para fazer crescer o vosso Zync World.',
+      });
+
+  static String onboardingPromiseStepConnect(String locale) => _pick(locale, {
+        'en':'Connect','zh-Hant':'連結','zh-Hans':'连接','ja':'つながる',
+        'ko':'연결','es':'Conecta','fr':'Connecte','pt':'Liga-te',
+      });
+
+  static String onboardingPromiseStepChoose(String locale) => _pick(locale, {
+        'en':'Choose','zh-Hant':'揀一件事','zh-Hans':'选一件事','ja':'選ぶ',
+        'ko':'고르기','es':'Elige','fr':'Choisis','pt':'Escolhe',
+      });
+
+  static String onboardingPromiseStepDo(String locale) => _pick(locale, {
+        'en':'Go do it','zh-Hant':'出去做','zh-Hans':'出去做','ja':'やってみる',
+        'ko':'직접 하기','es':'Hazlo','fr':'Fais-le','pt':'Vai fazer',
+      });
+
+  static String onboardingPromiseStepGrow(String locale) => _pick(locale, {
+        'en':'Come back & grow','zh-Hant':'返嚟成長','zh-Hans':'回来成长','ja':'戻って育てる',
+        'ko':'돌아와 성장','es':'Vuelve y crece','fr':'Reviens et progresse','pt':'Volta e cresce',
+      });
+
   static String quickStartTitle(String locale) => _pick(locale, {
         'en':'Pick 5 things that feel like you',
         'zh-Hant':'揀 5 樣最似你嘅興趣',

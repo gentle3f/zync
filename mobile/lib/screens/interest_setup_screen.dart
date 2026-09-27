@@ -218,6 +218,65 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
         .toList(growable: false);
   }
 
+  Widget _onboardingPromise(String locale) => KeyedSubtree(
+        key: const ValueKey('onboarding-real-world-promise'),
+        child: ZyncHeroPanel(
+          padding: const EdgeInsets.all(16),
+          startColor: const Color(0xFFFFF4EC),
+          endColor: const Color(0xFFF1EEFF),
+          accentColor: ZyncPalette.orangeDeep,
+          radius: 22,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                LocalizedDomainText.onboardingPromiseTitle(locale),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                LocalizedDomainText.onboardingPromiseSubtitle(locale),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 13),
+              Wrap(
+                spacing: 7,
+                runSpacing: 7,
+                children: [
+                  ZyncStatusPill(
+                    icon: Icons.people_alt_outlined,
+                    label: LocalizedDomainText.onboardingPromiseStepConnect(locale),
+                    foregroundColor: const Color(0xFF176B57),
+                    backgroundColor: ZyncPalette.mint,
+                  ),
+                  ZyncStatusPill(
+                    icon: Icons.lightbulb_outline_rounded,
+                    label: LocalizedDomainText.onboardingPromiseStepChoose(locale),
+                    foregroundColor: ZyncPalette.plum,
+                    backgroundColor: const Color(0xFFE9E5FF),
+                  ),
+                  ZyncStatusPill(
+                    icon: Icons.directions_walk_rounded,
+                    label: LocalizedDomainText.onboardingPromiseStepDo(locale),
+                    foregroundColor: ZyncPalette.orangeDeep,
+                    backgroundColor: ZyncPalette.peach,
+                  ),
+                  ZyncStatusPill(
+                    icon: Icons.public_rounded,
+                    label: LocalizedDomainText.onboardingPromiseStepGrow(locale),
+                    foregroundColor: const Color(0xFF315F9E),
+                    backgroundColor: const Color(0xFFE8F0FF),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -302,6 +361,10 @@ class _InterestSetupScreenState extends State<InterestSetupScreen> {
                         ),
                         const SizedBox(height: 14),
                         Text(l10n.tagline, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ZyncPalette.inkSoft)),
+                        if (quickStart && query.isEmpty) ...[
+                          const SizedBox(height: 16),
+                          _onboardingPromise(locale),
+                        ],
                         const SizedBox(height: 20),
                         TextField(
                           controller: _nickname,
