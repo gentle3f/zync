@@ -16,6 +16,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 import 'group_zync_participant_screen.dart';
 import 'match_screen.dart';
+import 'zync_now_host_screen.dart';
 import 'zync_now_participant_screen.dart';
 
 class ScanQrScreen extends StatefulWidget {
@@ -96,8 +97,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       final room = GroupJoinQrPayload.decode(raw);
       await _controller.stop();
       if (!mounted) return;
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
+      final openWorld = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
           builder: (_) => room.kind == SharedZyncRoomKind.zyncNow
               ? ZyncNowParticipantScreen(
                   profile: widget.profile,
@@ -111,6 +112,9 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
                 ),
         ),
       );
+      if (mounted) {
+        Navigator.of(context).pop(openWorld == true);
+      }
     } on FormatException catch (error) {
       if (!mounted) return;
       final expired =
@@ -224,8 +228,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
 
       await _controller.stop();
       if (!mounted) return;
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
+      final startActivity = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
           builder: (_) => MatchScreen(
             peer: peer,
             match: match,
@@ -235,9 +239,23 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
             isRepeatPeer: previous != null,
             localIsMatchMine: false,
             newAchievementIds: newAchievementIds,
+            canStartZyncNow: true,
           ),
         ),
       );
+      if (!mounted) return;
+      var openWorld = false;
+      if (startActivity == true) {
+        openWorld = await Navigator.of(context).push<bool>(
+              MaterialPageRoute<bool>(
+                builder: (_) => ZyncNowHostScreen(profile: widget.profile),
+              ),
+            ) ==
+            true;
+      }
+      if (mounted) {
+        Navigator.of(context).pop(openWorld);
+      }
     } on RelayException catch (error) {
       if (!mounted) return;
       final message = switch (error.kind) {
@@ -329,8 +347,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
 
       await _controller.stop();
       if (!mounted) return;
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
+      final startActivity = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
           builder: (_) => MatchScreen(
             peer: peer,
             match: match,
@@ -339,9 +357,23 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
             isRepeatPeer: previous != null,
             localIsMatchMine: true,
             newAchievementIds: newAchievementIds,
+            canStartZyncNow: true,
           ),
         ),
       );
+      if (!mounted) return;
+      var openWorld = false;
+      if (startActivity == true) {
+        openWorld = await Navigator.of(context).push<bool>(
+              MaterialPageRoute<bool>(
+                builder: (_) => ZyncNowHostScreen(profile: widget.profile),
+              ),
+            ) ==
+            true;
+      }
+      if (mounted) {
+        Navigator.of(context).pop(openWorld);
+      }
     } catch (_) {
       if (!mounted) return;
       setState(() {

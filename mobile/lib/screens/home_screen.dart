@@ -184,11 +184,23 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.qr_code_2_rounded,
                     label: l10n.showMyQr,
                     compact: compact,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ShowQrScreen(profile: profile),
-                      ),
-                    ),
+                    onTap: () async {
+                      final openWorld = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute<bool>(
+                          builder: (_) => ShowQrScreen(profile: profile),
+                        ),
+                      );
+                      if (openWorld == true && context.mounted) {
+                        await Navigator.of(context).push<void>(
+                          MaterialPageRoute<void>(
+                            builder: (_) => MyZyncWorldScreen(
+                              profile: profile,
+                              onProfileChanged: onProfileChanged,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -197,11 +209,23 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.qr_code_scanner_rounded,
                     label: l10n.scanSomeone,
                     compact: compact,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ScanQrScreen(profile: profile),
-                      ),
-                    ),
+                    onTap: () async {
+                      final openWorld = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute<bool>(
+                          builder: (_) => ScanQrScreen(profile: profile),
+                        ),
+                      );
+                      if (openWorld == true && context.mounted) {
+                        await Navigator.of(context).push<void>(
+                          MaterialPageRoute<void>(
+                            builder: (_) => MyZyncWorldScreen(
+                              profile: profile,
+                              onProfileChanged: onProfileChanged,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],
@@ -272,11 +296,23 @@ class HomeScreen extends StatelessWidget {
           subtitle: LocalizedDomainText.groupZyncSubtitle(
             Localizations.localeOf(context).toLanguageTag(),
           ),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => GroupZyncHostLobbyScreen(profile: profile),
-            ),
-          ),
+          onTap: () async {
+            final openWorld = await Navigator.of(context).push<bool>(
+              MaterialPageRoute<bool>(
+                builder: (_) => GroupZyncHostLobbyScreen(profile: profile),
+              ),
+            );
+            if (openWorld == true && context.mounted) {
+              await Navigator.of(context).push<void>(
+                MaterialPageRoute<void>(
+                  builder: (_) => MyZyncWorldScreen(
+                    profile: profile,
+                    onProfileChanged: onProfileChanged,
+                  ),
+                ),
+              );
+            }
+          },
         ),
         _MenuSpec(
           icon: Icons.favorite_outline_rounded,

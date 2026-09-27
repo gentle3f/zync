@@ -31,6 +31,7 @@ class MatchScreen extends StatefulWidget {
     this.isRepeatPeer = false,
     this.localIsMatchMine = true,
     this.newAchievementIds = const [],
+    this.canStartZyncNow = false,
   });
 
   final QrProfilePayload peer;
@@ -41,6 +42,7 @@ class MatchScreen extends StatefulWidget {
   final bool isRepeatPeer;
   final bool localIsMatchMine;
   final List<String> newAchievementIds;
+  final bool canStartZyncNow;
 
   @override
   State<MatchScreen> createState() => _MatchScreenState();
@@ -490,6 +492,8 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   void _finish() => Navigator.of(context).pop();
+
+  void _finishIntoZyncNow() => Navigator.of(context).pop(true);
 
   @override
   Widget build(BuildContext context) {
@@ -1555,11 +1559,27 @@ class _MatchScreenState extends State<MatchScreen> {
               ),
           ],
           const SizedBox(height: 30),
-          FilledButton.icon(
-            onPressed: _finish,
-            icon: const Icon(Icons.check_rounded),
-            label: Text(l10n.finishZync),
-          ),
+          if (widget.canStartZyncNow) ...[
+            FilledButton.icon(
+              key: const ValueKey('zync-match-start-activity'),
+              onPressed: _finishIntoZyncNow,
+              icon: const Icon(Icons.bolt_rounded),
+              label: Text(
+                LocalizedDomainText.zyncNowGroupCta(locale),
+              ),
+            ),
+            const SizedBox(height: 10),
+            OutlinedButton.icon(
+              onPressed: _finish,
+              icon: const Icon(Icons.check_rounded),
+              label: Text(l10n.finishZync),
+            ),
+          ] else
+            FilledButton.icon(
+              onPressed: _finish,
+              icon: const Icon(Icons.check_rounded),
+              label: Text(l10n.finishZync),
+            ),
         ],
       ),
     );

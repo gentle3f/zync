@@ -7,11 +7,11 @@ class ZyncNowConsensusTransportRound {
     required this.roundNumber,
     required this.method,
     required List<ZyncNowCandidate> candidates,
-  }) : candidates = List.unmodifiable(candidates),
-       _candidateByOptionId = {
-         for (var i = 0; i < candidates.length; i += 1)
-           optionIdForIndex(i): candidates[i],
-       } {
+  })  : candidates = List.unmodifiable(candidates),
+        _candidateByOptionId = {
+          for (var i = 0; i < candidates.length; i += 1)
+            optionIdForIndex(i): candidates[i],
+        } {
     if (roundNumber < 1 || roundNumber > 99) {
       throw ArgumentError.value(roundNumber, 'roundNumber');
     }
@@ -41,6 +41,13 @@ class ZyncNowConsensusTransportRound {
             (entry) => GroupBoundedOption(
               id: entry.key,
               label: entry.value.titleFor(locale),
+              activityCandidateId: entry.value.id,
+              activityRepeatKey: entry.value.repeatKey,
+              activityTemplateId: entry.value.templateId,
+              activitySourceInterestIds:
+                  List<String>.from(entry.value.sourceInterestIds),
+              activityParticipantCount: entry.value.participantCount,
+              activityMode: entry.value.mode.name,
             ),
           )
           .toList(growable: false);
@@ -208,15 +215,12 @@ class ZyncNowConsensusTransportRound {
       for (final entry in ratingsByOptionId.entries)
         candidateIdForOption(entry.key): entry.value,
     };
-    final ranking = rankedOptionIds
-        .map(candidateIdForOption)
-        .toList(growable: false);
+    final ranking =
+        rankedOptionIds.map(candidateIdForOption).toList(growable: false);
     final eliminateCandidateId = eliminateOptionId == null
         ? null
         : candidateIdForOption(eliminateOptionId);
-    final vetoes = hardVetoOptionIds
-        .map(candidateIdForOption)
-        .toSet();
+    final vetoes = hardVetoOptionIds.map(candidateIdForOption).toSet();
 
     return encodeBallot(
       ZyncNowConsensusBallot(
@@ -226,6 +230,29 @@ class ZyncNowConsensusTransportRound {
         eliminateCandidateId: eliminateCandidateId,
         hardVetoCandidateIds: vetoes,
       ),
+    );
+  }
+
+  static ZyncNowCandidate? candidateFromBoundedOption(
+    GroupBoundedOption option,
+  ) {
+    if (!option.hasActivityRecipe) return null;
+    final mode = ZyncNowMode.values.where(
+      (item) => item.name == option.activityMode,
+    );
+    if (mode.isEmpty) return null;
+
+    return ZyncNowCandidate(
+      id: option.activityCandidateId!,
+      kind: ZyncNowCandidateKind.safe,
+      mode: mode.first,
+      templateId: option.activityTemplateId!,
+      sourceInterestIds:
+          List<String>.unmodifiable(option.activitySourceInterestIds),
+      repeatKey: option.activityRepeatKey!,
+      score: 0,
+      selectedParticipantCount: 0,
+      participantCount: option.activityParticipantCount!,
     );
   }
 

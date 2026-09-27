@@ -13,6 +13,7 @@ import '../core/relay_service.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../ui/zync_design.dart';
 import 'match_screen.dart';
+import 'zync_now_host_screen.dart';
 
 class ShowQrScreen extends StatefulWidget {
   const ShowQrScreen({
@@ -237,8 +238,8 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
       _leavingForMatch = true;
       _sessionCreated = false;
       _pollTimer?.cancel();
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
+      final startActivity = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
           builder: (_) => MatchScreen(
             peer: peer,
             match: match,
@@ -248,9 +249,23 @@ class _ShowQrScreenState extends State<ShowQrScreen> with WidgetsBindingObserver
             isRepeatPeer: previous != null,
             localIsMatchMine: true,
             newAchievementIds: newAchievementIds,
+            canStartZyncNow: true,
           ),
         ),
       );
+      if (!mounted) return;
+      var openWorld = false;
+      if (startActivity == true) {
+        openWorld = await Navigator.of(context).push<bool>(
+              MaterialPageRoute<bool>(
+                builder: (_) => ZyncNowHostScreen(profile: widget.profile),
+              ),
+            ) ==
+            true;
+      }
+      if (mounted) {
+        Navigator.of(context).pop(openWorld);
+      }
     } on RelayException catch (error) {
       if (!mounted || _bootstrap?.sessionId != bootstrap.sessionId) return;
       if (error.kind == RelayFailureKind.expired) {

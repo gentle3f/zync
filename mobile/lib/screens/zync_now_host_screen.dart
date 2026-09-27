@@ -867,9 +867,10 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         ),
         const SizedBox(height: 18),
         FilledButton.icon(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.check_rounded),
-          label: Text(_isZh ? '就呢個' : 'Let’s do it'),
+          key: const ValueKey('zync-now-result-continue-world'),
+          onPressed: () => Navigator.of(context).pop(true),
+          icon: const Icon(Icons.directions_walk_rounded),
+          label: Text(_isZh ? '就呢個，出去做' : 'Let’s do it'),
         ),
       ],
     );

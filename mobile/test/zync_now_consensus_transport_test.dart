@@ -43,6 +43,36 @@ void main() {
     }
   });
 
+  test('bounded options carry a privacy-bounded activity recipe', () {
+    final round = ZyncNowConsensusTransportRound(
+      roundNumber: 2,
+      method: ZyncNowConsensusMethod.quickVote,
+      candidates: candidates,
+    );
+
+    final encoded = round.optionsFor('en').first.toJson();
+    final decoded = GroupBoundedOption.fromJson(encoded);
+    final reconstructed =
+        ZyncNowConsensusTransportRound.candidateFromBoundedOption(decoded);
+
+    expect(decoded.hasActivityRecipe, isTrue);
+    expect(reconstructed, isNotNull);
+    expect(reconstructed!.id, candidates.first.id);
+    expect(reconstructed.repeatKey, candidates.first.repeatKey);
+    expect(reconstructed.templateId, candidates.first.templateId);
+    expect(
+      reconstructed.sourceInterestIds,
+      candidates.first.sourceInterestIds,
+    );
+    expect(reconstructed.participantCount, candidates.first.participantCount);
+    expect(reconstructed.mode, candidates.first.mode);
+
+    final json = decoded.toJson().toString();
+    expect(json, isNot(contains('participantId')));
+    expect(json, isNot(contains('ballot')));
+    expect(json, isNot(contains('constraint')));
+  });
+
   test('quick vote and hard veto survive encode/decode', () {
     final round = ZyncNowConsensusTransportRound(
       roundNumber: 3,

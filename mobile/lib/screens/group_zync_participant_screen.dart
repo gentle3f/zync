@@ -6,9 +6,11 @@ import 'package:flutter/services.dart';
 import '../core/group_relay_service.dart';
 import '../core/group_zync_coordinator.dart';
 import '../core/group_zync_protocol.dart';
+import '../core/local_store.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
 import '../core/zync_now_consensus.dart';
+import '../core/zync_now_consensus_transport.dart';
 import '../ui/zync_design.dart';
 
 class GroupZyncParticipantScreen extends StatefulWidget {
@@ -37,6 +39,7 @@ class _GroupZyncParticipantScreenState
   bool _joining = true;
   bool _polling = false;
   bool _submitted = false;
+  bool _activityRecorded = false;
   String? _error;
 
   final Set<String> _selected = {};
@@ -84,6 +87,23 @@ class _GroupZyncParticipantScreenState
     }
   }
 
+  Future<void> _rememberResultActivity(GroupBoundedState state) async {
+    if (_activityRecorded || state.resultOptionId == null) return;
+    GroupBoundedOption? chosen;
+    for (final option in state.options) {
+      if (option.id == state.resultOptionId) {
+        chosen = option;
+        break;
+      }
+    }
+    if (chosen == null) return;
+    final candidate =
+        ZyncNowConsensusTransportRound.candidateFromBoundedOption(chosen);
+    if (candidate == null) return;
+    await LocalStore.recordZyncNowChoice(candidate: candidate);
+    _activityRecorded = true;
+  }
+
   void _setError() {
     if (!mounted) return;
     setState(() {
@@ -99,8 +119,7 @@ class _GroupZyncParticipantScreenState
     try {
       final next = await coordinator.poll();
       if (!mounted || next == null) return;
-      final changedRound =
-          _state == null ||
+      final changedRound = _state == null ||
           next.roundNumber != _state!.roundNumber ||
           next.phase != _state!.phase;
       final revealMoment = changedRound &&
@@ -109,6 +128,9 @@ class _GroupZyncParticipantScreenState
               next.phase == GroupRoomPhase.zyncNowResult);
       if (revealMoment) {
         HapticFeedback.mediumImpact();
+      }
+      if (next.phase == GroupRoomPhase.zyncNowResult) {
+        await _rememberResultActivity(next);
       }
       setState(() {
         _state = next;
@@ -453,8 +475,7 @@ class _GroupZyncParticipantScreenState
             ChoiceChip(
               label: Text(_eliminateLabel()),
               selected: _eliminateOptionId == option.id,
-              onSelected: (_) =>
-                  setState(() => _eliminateOptionId = option.id),
+              onSelected: (_) => setState(() => _eliminateOptionId = option.id),
             ),
           const SizedBox(height: 8),
           FilterChip(
@@ -578,6 +599,15 @@ class _GroupZyncParticipantScreenState
             ],
           ),
         ),
+        if (state.resultOptionId != null) ...[
+          const SizedBox(height: 18),
+          FilledButton.icon(
+            key: const ValueKey('group-zync-participant-continue-world'),
+            onPressed: () => Navigator.of(context).pop(true),
+            icon: const Icon(Icons.directions_walk_rounded),
+            label: Text(_isZh ? '就呢個，出去做' : 'Let’s do it'),
+          ),
+        ],
       ],
     );
   }
@@ -609,9 +639,8 @@ class _GroupZyncParticipantScreenState
                   selected
                       ? Icons.check_circle_rounded
                       : Icons.radio_button_unchecked_rounded,
-                  color: selected
-                      ? ZyncPalette.orangeDeep
-                      : ZyncPalette.inkSoft,
+                  color:
+                      selected ? ZyncPalette.orangeDeep : ZyncPalette.inkSoft,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -692,6 +721,5 @@ class _GroupZyncParticipantScreenState
 
   String _eliminateLabel() => _isZh ? '淘汰呢個' : 'Eliminate this';
 
-  String _hardVetoLabel() =>
-      _isZh ? '呢個我真係做唔到' : 'I really can’t do this';
+  String _hardVetoLabel() => _isZh ? '呢個我真係做唔到' : 'I really can’t do this';
 }

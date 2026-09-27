@@ -124,13 +124,16 @@ class _GroupZyncHostLobbyScreenState
       HapticFeedback.mediumImpact();
       _timer?.cancel();
       _handedOff = true;
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
+      final openWorld = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
           builder: (_) => GroupZyncHostSessionScreen(
             coordinator: coordinator,
           ),
         ),
       );
+      if (mounted) {
+        Navigator.of(context).pop(openWorld == true);
+      }
     } catch (_) {
       if (mounted) {
         setState(() {

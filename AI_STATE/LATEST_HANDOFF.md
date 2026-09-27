@@ -5,6 +5,25 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — FIRST-JOURNEY CONTINUITY:
+The first complete player journey no longer dead-ends after discovery. Pair Zync
+recap can now continue directly into Zync Now; choosing the real-world activity
+returns through the QR/scan route so Home opens My Zync World. Standalone Zync
+Now and Group Zync host result CTAs likewise return a positive continuation
+signal into My Zync World. QR-scanned participants now receive a privacy-bounded
+activity recipe (candidate id/repeat key/template/source-interest ids/group size/
+mode only; no participant identity, ballot or private constraints), reconstruct
+the chosen candidate locally, persist the same pending Zync Now memory once, and
+can continue to their own My Zync World. Existing Finish Zync remains optional
+and non-Zync bounded options remain backward compatible. Validation: focused
+transition/protocol regressions PASS; canonical non-golden mobile suite 342/342
+PASS; full flutter analyze No issues found. No Actions, Vercel, Production,
+Play, release, paid generation, economy/RNG/backend or Card FX changes.
+
+`AI_STATE/HANDOFF_20260927_FIRST_JOURNEY_CONTINUITY.md`
+
+Previous product checkpoint:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — FIRST-RUN PRODUCT PROMISE:
 The connected real-world loop is now taught during first-run Interest Setup
 without adding another onboarding screen. A compact localized panel says, in

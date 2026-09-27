@@ -675,9 +675,10 @@ class _GroupZyncHostSessionScreenState
           (_isZh ? '今次先放寬一個條件再試。' : 'Relax one constraint and try again.'),
       action: result?.hasDecision == true
           ? FilledButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.check_rounded),
-              label: Text(_isZh ? '完成' : 'Done'),
+              key: const ValueKey('group-zync-result-continue-world'),
+              onPressed: () => Navigator.of(context).pop(true),
+              icon: const Icon(Icons.directions_walk_rounded),
+              label: Text(_isZh ? '就呢個，出去做' : 'Let’s do it'),
             )
           : null,
     );

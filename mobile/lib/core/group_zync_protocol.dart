@@ -285,7 +285,6 @@ class GroupParticipantProfile {
   }
 }
 
-
 class GroupPrivateInput {
   const GroupPrivateInput({
     required this.roundNumber,
@@ -347,28 +346,112 @@ enum GroupRoomPhase {
   ended,
 }
 
-
 class GroupBoundedOption {
   const GroupBoundedOption({
     required this.id,
     required this.label,
+    this.activityCandidateId,
+    this.activityRepeatKey,
+    this.activityTemplateId,
+    this.activitySourceInterestIds = const [],
+    this.activityParticipantCount,
+    this.activityMode,
   });
 
   final String id;
   final String label;
 
+  /// Optional privacy-bounded Zync Now recipe metadata. This contains only the
+  /// chosen activity recipe needed for each participant to keep the same local
+  /// pending activity. It never contains participant IDs, ballots or private
+  /// constraints.
+  final String? activityCandidateId;
+  final String? activityRepeatKey;
+  final String? activityTemplateId;
+  final List<String> activitySourceInterestIds;
+  final int? activityParticipantCount;
+  final String? activityMode;
+
+  bool get hasActivityRecipe =>
+      activityCandidateId != null &&
+      activityRepeatKey != null &&
+      activityTemplateId != null &&
+      activitySourceInterestIds.isNotEmpty &&
+      activityParticipantCount != null &&
+      activityMode != null;
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'label': label,
+        if (activityCandidateId != null)
+          'activityCandidate': activityCandidateId,
+        if (activityRepeatKey != null) 'activityRepeat': activityRepeatKey,
+        if (activityTemplateId != null) 'activityTemplate': activityTemplateId,
+        if (activitySourceInterestIds.isNotEmpty)
+          'activitySources': activitySourceInterestIds,
+        if (activityParticipantCount != null)
+          'activityCount': activityParticipantCount,
+        if (activityMode != null) 'activityMode': activityMode,
       };
 
   factory GroupBoundedOption.fromJson(Map<String, dynamic> json) {
     final id = (json['id'] as String?)?.trim() ?? '';
     final label = (json['label'] as String?)?.trim() ?? '';
-    if (!_groupRoomIdPattern.hasMatch(id) || label.isEmpty || label.length > 80) {
+    if (!_groupRoomIdPattern.hasMatch(id) ||
+        label.isEmpty ||
+        label.length > 80) {
       throw const FormatException('Invalid Group Zync bounded option');
     }
-    return GroupBoundedOption(id: id, label: label);
+
+    String? optionalText(String key, int maxLength) {
+      final value = (json[key] as String?)?.trim();
+      if (value == null || value.isEmpty) return null;
+      if (value.length > maxLength) {
+        throw const FormatException('Invalid Group Zync activity metadata');
+      }
+      return value;
+    }
+
+    final activitySources = ((json['activitySources'] as List?) ?? const [])
+        .whereType<String>()
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList(growable: false);
+    if (activitySources.length > 4 ||
+        activitySources.any((value) => value.length > 160)) {
+      throw const FormatException('Invalid Group Zync activity metadata');
+    }
+
+    final activityCount = (json['activityCount'] as num?)?.toInt();
+    if (activityCount != null && (activityCount < 2 || activityCount > 8)) {
+      throw const FormatException('Invalid Group Zync activity metadata');
+    }
+
+    final option = GroupBoundedOption(
+      id: id,
+      label: label,
+      activityCandidateId: optionalText('activityCandidate', 320),
+      activityRepeatKey: optionalText('activityRepeat', 320),
+      activityTemplateId: optionalText('activityTemplate', 160),
+      activitySourceInterestIds: activitySources,
+      activityParticipantCount: activityCount,
+      activityMode: optionalText('activityMode', 48),
+    );
+
+    final metadataPieces = <bool>[
+      option.activityCandidateId != null,
+      option.activityRepeatKey != null,
+      option.activityTemplateId != null,
+      option.activitySourceInterestIds.isNotEmpty,
+      option.activityParticipantCount != null,
+      option.activityMode != null,
+    ];
+    final hasAnyMetadata = metadataPieces.any((value) => value);
+    if (hasAnyMetadata && !option.hasActivityRecipe) {
+      throw const FormatException('Incomplete Group Zync activity metadata');
+    }
+
+    return option;
   }
 }
 
@@ -421,12 +504,14 @@ class GroupBoundedState {
         if (inputKind.isNotEmpty) 'input': inputKind,
         if (requiredSelections > 0) 'required': requiredSelections,
         if (options.isNotEmpty)
-          'options': options.map((item) => item.toJson()).toList(growable: false),
+          'options':
+              options.map((item) => item.toJson()).toList(growable: false),
         if (followUp.isNotEmpty) 'followUp': followUp,
         if (resultOptionId != null) 'resultOption': resultOptionId,
         if (hiddenSubsetSize != null) 'subset': hiddenSubsetSize,
         if (revealInterestId != null) 'interest': revealInterestId,
-        if (revealParticipantIds.isNotEmpty) 'participants': revealParticipantIds,
+        if (revealParticipantIds.isNotEmpty)
+          'participants': revealParticipantIds,
       };
 
   factory GroupBoundedState.fromJson(Map<String, dynamic> json) {
@@ -558,7 +643,6 @@ class GroupCrypto {
       throw const FormatException('Invalid encrypted Group Zync participant');
     }
   }
-
 
   static Future<String> encryptPrivateInput({
     required GroupJoinQrPayload room,
@@ -712,8 +796,7 @@ class GroupCrypto {
     final envelope = Map<String, dynamic>.from(
       jsonDecode(utf8.decode(envelopeBytes)) as Map,
     );
-    final nonce =
-        _groupBase64UrlDecodeNoPad((envelope['n'] as String?) ?? '');
+    final nonce = _groupBase64UrlDecodeNoPad((envelope['n'] as String?) ?? '');
     final cipherText =
         _groupBase64UrlDecodeNoPad((envelope['c'] as String?) ?? '');
     final mac = _groupBase64UrlDecodeNoPad((envelope['m'] as String?) ?? '');
