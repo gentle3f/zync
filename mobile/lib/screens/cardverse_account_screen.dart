@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../core/apple_identity_provider.dart';
+import '../core/cardverse_apple_auth.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_google_auth.dart';
 import '../core/cardverse_proof_sync.dart';
@@ -11,9 +14,11 @@ class CardverseAccountScreen extends StatefulWidget {
   const CardverseAccountScreen({
     super.key,
     this.returnOnSignIn = false,
+    this.sessionStore,
   });
 
   final bool returnOnSignIn;
+  final CardverseSessionStore? sessionStore;
 
   @override
   State<CardverseAccountScreen> createState() =>
@@ -24,6 +29,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
   late final CardverseCloudClient _cloud;
   late final CardverseSessionStore _sessions;
   late final CardverseGoogleAuthService _auth;
+  late final CardverseAppleAuthService _appleAuth;
 
   bool _loading = true;
   bool _busy = false;
@@ -36,11 +42,13 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
   bool get _googleLinkAvailable =>
       GoogleIdentityRuntime.nativeGoogleLinkAvailable;
 
+  bool get _appleLinkAvailable => AppleIdentityRuntime.nativeIosAvailable;
+
   @override
   void initState() {
     super.initState();
     _cloud = CardverseCloudClient();
-    _sessions = CardverseSessionStore();
+    _sessions = widget.sessionStore ?? CardverseSessionStore();
     final proofSync = CardverseProofSync(
       cloud: _cloud,
       sessions: _sessions,
@@ -49,6 +57,12 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
       cloud: _cloud,
       sessions: _sessions,
       identity: const NativeGoogleIdentityProvider(),
+      syncPendingProofs: proofSync.syncPending,
+    );
+    _appleAuth = CardverseAppleAuthService(
+      cloud: _cloud,
+      sessions: _sessions,
+      identity: const NativeAppleIdentityProvider(),
       syncPendingProofs: proofSync.syncPending,
     );
     _load();
@@ -142,6 +156,87 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
         _message = _isZh
             ? '登入未完成，請稍後再試。'
             : 'Sign-in did not complete. Please try again.';
+      });
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _signInWithApple() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _message = '';
+    });
+
+    try {
+      final result = await _appleAuth.signIn();
+      if (!mounted) return;
+      setState(() {
+        _signedIn = true;
+        _message = result.auth.accountCreated
+            ? (_isZh
+                ? '你的 Zync World 已連接到 Apple 帳戶並備份到雲端。'
+                : 'Your Zync World is now connected through Apple and backed up to the cloud.')
+            : (_isZh
+                ? '已透過 Apple 恢復你原有的 Zync World。'
+                : 'Your existing Zync World has been restored through Apple.');
+      });
+
+      if (widget.returnOnSignIn && mounted) {
+        Navigator.of(context).pop(true);
+      }
+    } on AppleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _message = switch (error.code) {
+          'apple_sign_in_cancelled' => _isZh
+              ? '已取消 Apple 登入。'
+              : 'Apple sign-in was cancelled.',
+          'apple_sign_in_platform_unsupported' => _isZh
+              ? 'Apple 登入只會在 Zync iOS app 顯示。'
+              : 'Apple sign-in is available only in the Zync iOS app.',
+          'apple_sign_in_unavailable' => _isZh
+              ? '這部裝置暫時未能使用「使用 Apple 登入」。'
+              : 'Sign in with Apple is not available on this device.',
+          'apple_sign_in_plugin_missing' => _isZh
+              ? '這個 build 未載入 Apple identity plugin。'
+              : 'The Apple identity plugin is missing from this build.',
+          'apple_sign_in_token_invalid' => _isZh
+              ? 'Apple 沒有回傳可驗證的身份 token，請再試一次。'
+              : 'Apple did not return a valid identity token. Please try again.',
+          _ => _isZh
+              ? 'Apple 登入未能完成，請再試一次。'
+              : 'Apple sign-in could not be completed. Please try again.',
+        };
+      });
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.serverCode == 'cardverse_provider_audience_not_configured') {
+          _message = _isZh
+              ? 'Cardverse 伺服器尚未設定 Apple App ID。'
+              : 'Cardverse is not configured with the Apple App ID yet.';
+          return;
+        }
+        _message = switch (error.failure) {
+          CardverseCloudFailure.disabled => _isZh
+              ? '雲端收藏功能尚未在這個 build 啟用。'
+              : 'Cloud collection is not enabled in this build yet.',
+          CardverseCloudFailure.unavailable => _isZh
+              ? '暫時連接不到 Zync 雲端，請稍後再試。'
+              : 'Zync cloud is temporarily unavailable. Please try again.',
+          _ => _isZh
+              ? 'Apple 登入未能完成，請再試一次。'
+              : 'Apple sign-in did not complete. Please try again.',
+        };
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _message = _isZh
+            ? 'Apple 登入未能完成，請稍後再試。'
+            : 'Apple sign-in did not complete. Please try again.';
       });
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -331,7 +426,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                             ),
                             const SizedBox(height: 14),
                           ],
-                          if (!_signedIn)
+                          if (!_signedIn) ...[
                             FilledButton.icon(
                               key: const ValueKey(
                                 'zync-account-google-sign-in',
@@ -355,8 +450,24 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                                 backgroundColor: ZyncPalette.ink,
                                 foregroundColor: Colors.white,
                               ),
-                            )
-                          else
+                            ),
+                            if (_appleLinkAvailable) ...[
+                              const SizedBox(height: 10),
+                              SignInWithAppleButton(
+                                key: const ValueKey(
+                                  'zync-account-apple-sign-in',
+                                ),
+                                onPressed: _busy ? null : _signInWithApple,
+                                text: _isZh
+                                    ? '使用 Apple 繼續'
+                                    : 'Continue with Apple',
+                                height: 48,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(14),
+                                ),
+                              ),
+                            ],
+                          ] else
                             OutlinedButton.icon(
                               key: const ValueKey(
                                 'zync-account-sign-out',
@@ -373,7 +484,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                           Text(
                             _isZh
                                 ? 'Google 只用嚟確認係你本人。Zync 唔會因為登入而將你嘅私人 People history 或對話搬上雲端。'
-                                : 'Google is used only to confirm it is you. Signing in does not upload your private People history or conversations.',
+                                : 'Your sign-in provider is used only to confirm it is you. Signing in does not upload your private People history or conversations.',
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme

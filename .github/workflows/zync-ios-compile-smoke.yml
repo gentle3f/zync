@@ -48,20 +48,35 @@ jobs:
         run: |
           python3 mobile/tool/generate_mobile_wrapper.py ios build_app
           python3 mobile/tool/apply_ios_branding.py build_app
-          python3 mobile/tool/apply_ios_google_identity.py             build_app             --ios-client-id "$QA_GOOGLE_IOS_CLIENT_ID"
-          python3 mobile/tool/apply_ios_google_identity.py             build_app             --check-template
+          python3 mobile/tool/apply_ios_google_identity.py \
+            build_app \
+            --ios-client-id "$QA_GOOGLE_IOS_CLIENT_ID"
+          python3 mobile/tool/apply_ios_google_identity.py \
+            build_app \
+            --check-template
+          python3 mobile/tool/apply_ios_apple_identity.py build_app
+          python3 mobile/tool/apply_ios_apple_identity.py build_app --check
 
       - name: Verify iOS package contents
         shell: bash
         run: |
           test -f build_app/assets/card_fx/frames/master/zync_frame_legendary_master_v1.png
           test -f build_app/assets/card_fx/sfx/pixabay_rarity_legendary_light_478379.mp3
-          /usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName"             build_app/ios/Runner/Info.plist | grep -qx "Zync"
-          /usr/libexec/PlistBuddy -c "Print :GIDClientID"             build_app/ios/Runner/Info.plist | grep -qx "$QA_GOOGLE_IOS_CLIENT_ID"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName" \
+            build_app/ios/Runner/Info.plist | grep -qx "Zync"
+          /usr/libexec/PlistBuddy -c "Print :GIDClientID" \
+            build_app/ios/Runner/Info.plist | grep -qx "$QA_GOOGLE_IOS_CLIENT_ID"
+          /usr/libexec/PlistBuddy -c \
+            "Print :com.apple.developer.applesignin:0" \
+            build_app/ios/Runner/Runner.entitlements | grep -qx "Default"
           grep -q 'GeneratedPluginRegistrant.register' build_app/ios/Runner/AppDelegate.swift
           grep -q 'google_sign_in_ios:' build_app/pubspec.yaml
+          grep -q 'sign_in_with_apple:' build_app/pubspec.yaml
           grep -q 'InitParameters(' build_app/lib/core/google_identity_bridge.dart
           grep -q 'nonce: nonce' build_app/lib/core/google_identity_bridge.dart
+          grep -q 'nonce: nonce' build_app/lib/core/apple_identity_provider.dart
+          grep -q 'CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;' \
+            build_app/ios/Runner.xcodeproj/project.pbxproj
 
       - name: Install Flutter dependencies
         working-directory: build_app
@@ -75,12 +90,15 @@ jobs:
         working-directory: build_app
         run: flutter analyze --no-fatal-infos
 
-      - name: Test shared Google identity contract
+      - name: Test shared identity contracts
         working-directory: build_app
         run: >-
           flutter test
           test/google_identity_bridge_test.dart
           test/cardverse_google_auth_test.dart
+          test/apple_identity_provider_test.dart
+          test/cardverse_apple_auth_test.dart
+          test/cardverse_account_provider_ui_test.dart
 
       - name: Compile unsigned iOS release
         working-directory: build_app

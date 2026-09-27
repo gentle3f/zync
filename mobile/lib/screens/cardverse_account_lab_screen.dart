@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../core/apple_identity_provider.dart';
+import '../core/cardverse_apple_auth.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_google_auth.dart';
 import '../core/cardverse_proof_sync.dart';
@@ -21,6 +24,7 @@ class _CardverseAccountLabScreenState
   late final CardverseCloudClient _cloud;
   late final CardverseSessionStore _sessions;
   late final CardverseGoogleAuthService _auth;
+  late final CardverseAppleAuthService _appleAuth;
 
   bool _busy = false;
   bool _signedIn = false;
@@ -57,6 +61,12 @@ class _CardverseAccountLabScreenState
       cloud: _cloud,
       sessions: _sessions,
       identity: const NativeGoogleIdentityProvider(),
+      syncPendingProofs: proofSync.syncPending,
+    );
+    _appleAuth = CardverseAppleAuthService(
+      cloud: _cloud,
+      sessions: _sessions,
+      identity: const NativeAppleIdentityProvider(),
       syncPendingProofs: proofSync.syncPending,
     );
     _loadSession();
@@ -126,6 +136,50 @@ class _CardverseAccountLabScreenState
     }
   }
 
+  Future<void> _signInWithApple() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _status = _isZh ? '正在連接 Apple…' : 'Connecting to Apple…';
+      _lastProofSync = null;
+    });
+
+    try {
+      final result = await _appleAuth.signIn();
+      if (!mounted) return;
+      setState(() {
+        _signedIn = true;
+        _lastProofSync = result.proofSync;
+        _status = result.auth.accountCreated
+            ? (_isZh
+                ? 'Apple 登入成功，Cardverse 雲端帳戶已建立。'
+                : 'Apple sign-in succeeded and a Cardverse cloud account was created.')
+            : (_isZh
+                ? 'Apple 登入成功，已恢復原有 Cardverse 雲端帳戶。'
+                : 'Apple sign-in succeeded and the existing Cardverse cloud account was restored.');
+      });
+    } on AppleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        final base = _messageForAppleCode(error.code);
+        final detail = error.detail.trim();
+        _status = detail.isEmpty
+            ? '$base [${error.code}]'
+            : '$base [${error.code}; $detail]';
+      });
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      setState(() => _status = _messageForCloud(error));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _status = _isZh
+          ? 'Apple 登入未完成。請稍後再試。'
+          : 'Apple sign-in did not complete. Please try again.');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   Future<void> _logout() async {
     if (_busy) return;
     setState(() {
@@ -155,6 +209,11 @@ class _CardverseAccountLabScreenState
   }
 
   String _messageForCloud(CardverseCloudException error) {
+    if (error.serverCode == 'cardverse_provider_audience_not_configured') {
+      return _isZh
+          ? 'Cardverse server 未設定對應 identity provider audience。'
+          : 'The Cardverse server has no audience configured for this identity provider.';
+    }
     if (error.failure == CardverseCloudFailure.disabled) {
       return _isZh
           ? 'Cardverse staging API 仍然關閉。'
@@ -167,12 +226,39 @@ class _CardverseAccountLabScreenState
     }
     if (error.failure == CardverseCloudFailure.unauthorized) {
       return _isZh
-          ? 'Google／Cardverse 驗證被拒絕。'
-          : 'Google/Cardverse authentication was rejected.';
+          ? 'Identity provider／Cardverse 驗證被拒絕。'
+          : 'Identity-provider/Cardverse authentication was rejected.';
     }
     return _isZh
         ? 'Cardverse staging 拒絕咗今次登入要求。'
         : 'Cardverse staging rejected this sign-in request.';
+  }
+
+  String _messageForAppleCode(String code) {
+    switch (code) {
+      case 'apple_sign_in_cancelled':
+        return _isZh ? '已取消 Apple 登入。' : 'Apple sign-in was cancelled.';
+      case 'apple_sign_in_platform_unsupported':
+        return _isZh
+            ? 'Apple 登入只會在 Zync iOS app 啟用。'
+            : 'Apple sign-in is enabled only in the Zync iOS app.';
+      case 'apple_sign_in_unavailable':
+        return _isZh
+            ? '這部裝置暫時未能使用「使用 Apple 登入」。'
+            : 'Sign in with Apple is unavailable on this device.';
+      case 'apple_sign_in_plugin_missing':
+        return _isZh
+            ? 'Apple identity plugin 未載入。'
+            : 'The Apple identity plugin is missing.';
+      case 'apple_sign_in_token_invalid':
+        return _isZh
+            ? 'Apple 沒有回傳可驗證的 identity token。'
+            : 'Apple did not return a valid identity token.';
+      default:
+        return _isZh
+            ? 'Apple 登入失敗。請檢查 iOS capability／Apple App ID 設定。'
+            : 'Apple sign-in failed. Check the iOS capability and Apple App ID configuration.';
+    }
   }
 
   String _messageForCode(String code) {
@@ -223,15 +309,15 @@ class _CardverseAccountLabScreenState
                   children: [
                     Text(
                       _isZh
-                          ? '只供 QA：Google → 一次性 nonce → Cardverse session'
-                          : 'QA only: Google → one-time nonce → Cardverse session',
+                          ? '只供 QA：Google／Apple → 一次性 nonce → Cardverse session'
+                          : 'QA only: Google/Apple → one-time nonce → Cardverse session',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 10),
                     Text(
                       _isZh
-                          ? 'ID token 只會交俾 staging server 驗證；畫面、log 同本機一般儲存都唔會顯示 token。'
-                          : 'The ID token is sent only to the staging server for verification; it is never shown in this UI or ordinary local storage/logging.',
+                          ? 'Google／Apple ID token 只會交俾 staging server 驗證；畫面、log 同本機一般儲存都唔會顯示 token。'
+                          : 'Google/Apple ID tokens are sent only to the staging server for verification; they are never shown in this UI or ordinary local storage/logging.',
                     ),
                   ],
                 ),
@@ -264,6 +350,10 @@ class _CardverseAccountLabScreenState
                     Text(
                       'google_ios_client_configured='
                       '${GoogleIdentityRuntime.iosClientConfigured}',
+                    ),
+                    Text(
+                      'apple_native_ios_available='
+                      '${AppleIdentityRuntime.nativeIosAvailable}',
                     ),
                     if (kIsWeb) ...[
                       const SizedBox(height: 8),
@@ -322,6 +412,18 @@ class _CardverseAccountLabScreenState
                   _isZh ? '使用 Google 登入' : 'Sign in with Google',
                 ),
               ),
+              if (AppleIdentityRuntime.nativeIosAvailable) ...[
+                const SizedBox(height: 10),
+                SignInWithAppleButton(
+                  key: const ValueKey('cardverse-apple-sign-in'),
+                  onPressed: _busy || _signedIn ? null : _signInWithApple,
+                  text: _isZh ? '使用 Apple 登入' : 'Sign in with Apple',
+                  height: 48,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(14),
+                  ),
+                ),
+              ],
               const SizedBox(height: 10),
               OutlinedButton.icon(
                 key: const ValueKey('cardverse-sign-out'),

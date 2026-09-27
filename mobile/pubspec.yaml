@@ -24,6 +24,7 @@ dependencies:
   audioplayers: ^6.8.1
   google_sign_in_ios: ^6.3.5
   google_sign_in_platform_interface: ^3.1.0
+  sign_in_with_apple: 8.2.0
 
 dev_dependencies:
   flutter_test:

@@ -5,7 +5,28 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — REPRODUCIBLE MOBILE PACKAGING + iOS:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — SIGN IN WITH APPLE + iOS ACCOUNT:
+Zync now has a complete source-level Apple primary-account path on iOS. The app
+uses exactly pinned `sign_in_with_apple 8.2.0`; the exact Cardverse one-time
+nonce is passed unchanged into Apple's native request and the returned identity
+token is exchanged through the existing provider-auth endpoint. Challenge and
+auth responses both fail closed if the provider is not `apple`, and the
+Cardverse session is persisted only after those checks. The generated iOS wrapper
+now gets a reproducible `Runner.entitlements`, Sign in with Apple capability
+metadata and CODE_SIGN_ENTITLEMENTS wiring for Debug/Release/Profile. Production
+Account UI shows the official Apple button only on iOS; Android never exposes it.
+Account Lab includes Apple diagnostics. The manual macOS compile-smoke workflow
+remains workflow_dispatch-only and now verifies Apple capability/dependency/nonce
+wiring plus Google+Apple tests. Fresh generated iOS wrapper validation: 16/16
+identity/auth/provider-UI tests PASS. Repo focused auth/session/proof regression:
+21/21 PASS. Full Flutter analyze: No issues found. Real Apple Developer App-ID
+capability, server `ZYNC_APPLE_CLIENT_IDS`, signing/provisioning and physical
+iPhone smoke are still release gates. No backend/economy/RNG/Card FX/Play/App
+Store/Vercel/paid-generation action was taken.
+
+`AI_STATE/HANDOFF_20260928_APPLE_AUTH_IOS.md`
+
+Previous platform checkpoint — REPRODUCIBLE MOBILE PACKAGING + iOS:
 Zync now has one reproducible generated-wrapper path for Android and iOS. The
 shared generator copies lib/test/config **and mobile/assets**, closing the old
 Android packaging gap that could omit locked Card FX frames and SFX. The Android
