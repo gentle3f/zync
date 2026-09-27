@@ -202,6 +202,100 @@ void main() {
   );
 
   testWidgets(
+    'completing a pending activity refreshes the collected card lived state',
+    (tester) async {
+      tester.view.physicalSize = const Size(430, 1050);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final candidate = await _candidate();
+      await LocalStore.recordZyncNowChoice(
+        candidate: candidate,
+        chosenAt: DateTime.utc(2026, 9, 20, 10),
+      );
+
+      const profile = LocalProfile(
+        localId: 'local-live-refresh',
+        nickname: 'Tester',
+        language: 'en',
+        interests: [],
+      );
+      final sessions = CardverseSessionStore(
+        storage: _MemorySecureStore(),
+      );
+      await sessions.save(
+        CardverseSessionCredential(
+          token: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+          expiresAt: DateTime.now().toUtc().add(const Duration(days: 1)),
+        ),
+      );
+      const inventory = CardverseInventorySnapshot(
+        accountId: 'account-live-refresh',
+        ledgerCursor: 1,
+        drawTokens: 0,
+        lockedDrawTokens: 0,
+        claimedEligibilityKeys: <String>{},
+        cards: <CardverseInventoryCard>[
+          CardverseInventoryCard(
+            variant: CardVariantKey(
+              interestId: 'sports.badminton',
+              finishId: 'normal',
+              editionId: 'core_set_1',
+            ),
+            quantity: 1,
+          ),
+        ],
+        unopenedPacks: <CardverseUnopenedPack>[],
+      );
+      final cloud = _FakeCloudClient(inventory);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MyZyncWorldScreen(
+            profile: profile,
+            sessionStore: sessions,
+            cloudClient: cloud,
+            onProfileChanged: (_) async {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final livedKey = find.byKey(
+        const ValueKey(
+          'zync-world-lived-sports.badminton::normal::core_set_1',
+        ),
+      );
+      expect(livedKey, findsNothing);
+
+      await tester.tap(
+        find.byKey(const ValueKey('zync-world-pending-complete')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('You did it. It counts.'), findsOneWidget);
+
+      await tester.tap(find.text('Stay in My Zync World'));
+      await tester.pumpAndSettle();
+
+      final card = find.byKey(
+        const ValueKey(
+          'zync-world-card-sports.badminton::normal::core_set_1',
+        ),
+      );
+      await tester.scrollUntilVisible(
+        card,
+        220,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(livedKey, findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'completed real-world interest marks the collected card as lived',
     (tester) async {
       tester.view.physicalSize = const Size(430, 1050);

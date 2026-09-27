@@ -5,6 +5,27 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — COLLECTION LIVED MARKER REVIEW:
+The real production My Zync World collection grid was rendered through a
+temporary visual probe using a server-shaped owned Badminton card plus completed
+privacy-bounded Zync Now memory. The original green LIVED pill visibly competed
+with the locked top-left card plate, so presentation only was refined: the grid
+now uses a compact 26px centered green check badge with a semantics label
+(Lived in real world / 現實做過), while the full explanation remains in the
+production card-detail sheet. A second capture confirmed the marker no longer
+covers the top-left frame chrome. A new production-screen regression also proves
+the live transition pending activity -> mark complete -> dismiss progress ->
+collection reload -> owned card gains lived state. Validation: focused My Zync
+World tests 4/4 PASS; canonical non-golden suite 351/351 PASS across three local
+batches; full flutter analyze No issues found. Temporary probe artifacts were
+removed. This is an internal visual review, not final user approval. No server
+economy/RNG/receipt authority, Card FX, backend, Actions, Vercel, Production,
+Play, release or paid generation changed.
+
+`AI_STATE/HANDOFF_20260927_COLLECTION_LIVED_MARKER_REVIEW.md`
+
+Previous product checkpoint:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — COLLECTION REAL-WORLD MEMORY:
 Collected cards now visibly reflect when the corresponding interest has already
 become part of the player's real-world Zync history. My Zync World derives a

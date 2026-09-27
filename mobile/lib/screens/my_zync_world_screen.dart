@@ -1364,43 +1364,40 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                 ),
                 if (lived)
                   Positioned(
-                    left: 8,
-                    top: 8,
-                    child: Container(
-                      key: ValueKey(
-                        'zync-world-lived-${item.variant.value}',
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE7F7F0).withValues(alpha: 0.94),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(
-                          color: const Color(0xFF9FD8C2),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.check_circle_rounded,
-                            size: 14,
+                    top: 7,
+                    left: 0,
+                    right: 0,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Semantics(
+                        label: _isZh ? '現實做過' : 'Lived in real world',
+                        child: Container(
+                          key: ValueKey(
+                            'zync-world-lived-${item.variant.value}',
+                          ),
+                          width: 26,
+                          height: 26,
+                          decoration: BoxDecoration(
+                            color:
+                                const Color(0xFFE7F7F0).withValues(alpha: 0.96),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0xFF9FD8C2),
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x22000000),
+                                blurRadius: 4,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.check_rounded,
+                            size: 16,
                             color: Color(0xFF176B57),
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            _isZh ? '現實做過' : 'LIVED',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(
-                                  color: const Color(0xFF176B57),
-                                  fontWeight: FontWeight.w900,
-                                ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
