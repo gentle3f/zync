@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/card_fx/card_fx_spec.dart';
 import 'package:zync/card_fx/zync_fx_card.dart';
+import 'package:zync/card_fx/zync_fx_reveal.dart';
 import 'package:zync/core/interest_catalog.dart';
 import 'package:zync/screens/cardverse_pack_opening_lab_screen.dart';
 import 'package:zync/widgets/zync_card_preview.dart';
@@ -265,6 +266,41 @@ void main() {
 
     expect(find.text('Piano'), findsOneWidget);
     expect(find.text('4 / 5'), findsWidgets);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('each pack card reveal uses the tested turn stage',
+      (tester) async {
+    setPhone(tester);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      lab(
+        revealedCount: 1,
+        reduceMotion: false,
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('1 / 5'), findsWidgets);
+    await tester.tap(
+      find.byKey(const ValueKey('pack-lab-reveal-next-1')),
+    );
+    await tester.pump();
+
+    expect(find.byType(ZyncFxRevealStage), findsOneWidget);
+    final stage = tester.widget<ZyncFxRevealStage>(
+      find.byType(ZyncFxRevealStage),
+    );
+    expect(stage.spec.rarity, ZyncFxRarity.uncommon);
+
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+
+    expect(find.text('Coffee'), findsOneWidget);
+    expect(find.text('2 / 5'), findsWidgets);
+    expect(find.byType(ZyncFxRevealStage), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

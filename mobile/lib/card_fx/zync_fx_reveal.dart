@@ -16,6 +16,8 @@ class ZyncFxRevealStage extends StatefulWidget {
     this.speed = 1.0,
     this.respectReduceMotion = true,
     this.startFromSettledBack = false,
+    this.frontCard,
+    this.onRevealComplete,
   });
 
   final ZyncFxCardSpec spec;
@@ -28,6 +30,14 @@ class ZyncFxRevealStage extends StatefulWidget {
   /// extracted from the wrapper. Direct reveal keeps the original entrance.
   final bool startFromSettledBack;
 
+  /// Optional production card face. When omitted, the FX lab's native
+  /// [ZyncFxCard] is used. Supplying this keeps the tested turn/rarity
+  /// timeline while allowing Cardverse to reveal its locked-frame renderer.
+  final Widget? frontCard;
+
+  /// Called once the visual reveal timeline has fully settled.
+  final VoidCallback? onRevealComplete;
+
   @override
   State<ZyncFxRevealStage> createState() => _ZyncFxRevealStageState();
 }
@@ -39,6 +49,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
   Timer? _rewardBloomTimer;
   Timer? _rarityHitTimer;
   Timer? _legendaryFinaleTimer;
+  Timer? _completeTimer;
 
   @override
   void initState() {
@@ -73,10 +84,12 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     _rewardBloomTimer?.cancel();
     _rarityHitTimer?.cancel();
     _legendaryFinaleTimer?.cancel();
+    _completeTimer?.cancel();
     _flipCueTimer = null;
     _rewardBloomTimer = null;
     _rarityHitTimer = null;
     _legendaryFinaleTimer = null;
+    _completeTimer = null;
   }
 
   Future<void> _play() async {
@@ -88,6 +101,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
         (MediaQuery.maybeOf(context)?.disableAnimations ?? false);
     if (reduceMotion) {
       _controller.value = 1;
+      widget.onRevealComplete?.call();
       return;
     }
 
@@ -146,6 +160,13 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
         },
       );
     }
+    _completeTimer = Timer(
+      Duration(milliseconds: totalMs),
+      () {
+        if (!mounted) return;
+        widget.onRevealComplete?.call();
+      },
+    );
     await _controller.forward();
   }
 
@@ -261,13 +282,14 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
                   alignment: Alignment.center,
                   transform: matrix,
                   child: showFront
-                      ? ZyncFxCard(
-                          spec: widget.spec,
-                          tuning: widget.tuning,
-                          enableDragTilt: p > 0.98,
-                          revealImpact: impact,
-                          respectReduceMotion: widget.respectReduceMotion,
-                        )
+                      ? (widget.frontCard ??
+                          ZyncFxCard(
+                            spec: widget.spec,
+                            tuning: widget.tuning,
+                            enableDragTilt: p > 0.98,
+                            revealImpact: impact,
+                            respectReduceMotion: widget.respectReduceMotion,
+                          ))
                       : ZyncFxCardBack(accent: widget.spec.profile.accentColor),
                 ),
               ),

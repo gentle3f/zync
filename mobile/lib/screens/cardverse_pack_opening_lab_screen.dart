@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../card_fx/card_fx_spec.dart';
 import '../card_fx/zync_fx_reveal.dart';
@@ -87,7 +84,8 @@ class _CardversePackOpeningLabScreenState
   late bool _started;
   late bool _showRecap;
   bool _revealing = false;
-  Timer? _raritySoundTimer;
+  CardversePackRevealItem? _activeReveal;
+  int _revealToken = 0;
 
   static const _productionWrapperSpec = ZyncFxCardSpec(
     id: 'cardverse.production.pack',
@@ -114,69 +112,37 @@ class _CardversePackOpeningLabScreenState
     _showRecap = _cursor.complete;
   }
 
-  Future<void> _revealNext() async {
+  void _revealNext() {
     final next = _cursor.nextItem;
     if (next == null || _revealing) return;
 
-    setState(() => _revealing = true);
-
     final reduceMotion =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    final delay = CardverseRevealTiming.suspenseFor(
-      next.finish,
-      reduceMotion: reduceMotion,
-    );
-
-    if (delay > Duration.zero) {
-      await Future<void>.delayed(delay);
-    }
-
-    if (!mounted) return;
     final fxRarity = _fxRarity(next.finish);
     if (!reduceMotion) {
-      if (next.finish == CardFinishTier.legendary ||
-          next.finish == CardFinishTier.secret) {
-        HapticFeedback.heavyImpact();
-      } else if (next.finish == CardFinishTier.holo ||
-          next.finish == CardFinishTier.prism) {
-        HapticFeedback.mediumImpact();
-      } else if (next.finish == CardFinishTier.foil) {
-        HapticFeedback.lightImpact();
-      } else {
-        HapticFeedback.selectionClick();
-      }
-      ZyncFxSensory.play(
-        ZyncFxSensoryEvent.cardFlip,
+      // Prime browser audio on the actual Reveal button gesture. The tested
+      // RevealStage then owns flip/bloom/rarity/finale timing.
+      ZyncFxSensory.playFromUserGesture(
+        ZyncFxSensoryEvent.singleRevealStart,
         rarity: fxRarity,
         haptic: false,
       );
     }
+
     setState(() {
-      _cursor = _cursor.revealNext();
-      _revealing = false;
+      _revealing = true;
+      _activeReveal = next;
+      _revealToken += 1;
     });
-    if (!reduceMotion) {
-      ZyncFxSensory.play(
-        ZyncFxSensoryEvent.rewardBloom,
-        rarity: fxRarity,
-        haptic: false,
-      );
-      _raritySoundTimer?.cancel();
-      _raritySoundTimer = Timer(const Duration(milliseconds: 120), () {
-        if (!mounted) return;
-        ZyncFxSensory.play(
-          ZyncFxSensoryEvent.rarityHit,
-          rarity: fxRarity,
-          haptic: false,
-        );
-      });
-    }
   }
 
-  @override
-  void dispose() {
-    _raritySoundTimer?.cancel();
-    super.dispose();
+  void _finishActiveReveal() {
+    if (!mounted || !_revealing || _activeReveal == null) return;
+    setState(() {
+      _cursor = _cursor.revealNext();
+      _activeReveal = null;
+      _revealing = false;
+    });
   }
 
   @override
@@ -262,6 +228,16 @@ class _CardversePackOpeningLabScreenState
         CardFinishTier.secret =>
           ZyncFxRarity.legendary,
       };
+
+  ZyncFxCardSpec _packRevealSpec(CardversePackRevealItem item) =>
+      ZyncFxCardSpec(
+        id: 'pack-reveal-${item.variant.interestId}-${item.finish.name}',
+        title: item.variant.interestId,
+        subtitle: item.editionLabel,
+        artworkAsset: 'assets/card_fx/art/reading.jpg',
+        rarity: _fxRarity(item.finish),
+        ambientFx: ZyncAmbientFx.none,
+      );
 
   Widget _sealedPack() => ListView(
         key: const ValueKey('pack-lab-sealed'),
@@ -398,7 +374,7 @@ class _CardversePackOpeningLabScreenState
     final next = _cursor.nextItem;
 
     return ListView(
-      key: ValueKey('pack-lab-reveal-$revealedCount'),
+      key: const ValueKey('pack-lab-reveal'),
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
       children: [
         _progressHeader(),
@@ -408,6 +384,7 @@ class _CardversePackOpeningLabScreenState
             constraints: const BoxConstraints(maxWidth: 350),
             child: _revealCardStack(
               last: last,
+              active: _activeReveal,
               revealedCount: revealedCount,
             ),
           ),
@@ -507,9 +484,11 @@ class _CardversePackOpeningLabScreenState
 
   Widget _revealCardStack({
     required CardversePackRevealItem? last,
+    required CardversePackRevealItem? active,
     required int revealedCount,
   }) {
-    final remainingCount = _plan.items.length - revealedCount;
+    final remainingCount =
+        _plan.items.length - revealedCount - (active == null ? 0 : 1);
     final visibleBackCount = remainingCount > 5 ? 5 : remainingCount;
     final accent =
         ZyncCardFxProfile.forRarity(ZyncFxRarity.common).accentColor;
@@ -525,12 +504,13 @@ class _CardversePackOpeningLabScreenState
             Positioned.fill(
               child: Transform.translate(
                 offset: Offset(
-                  (depth + (last == null ? 0 : 1)) * 2.8,
-                  -(depth + (last == null ? 0 : 1)) * 4.0,
+                  (depth + (last == null || active != null ? 0 : 1)) * 2.8,
+                  -(depth + (last == null || active != null ? 0 : 1)) * 4.0,
                 ),
                 child: Transform.scale(
-                  scale:
-                      1 - (depth + (last == null ? 0 : 1)) * 0.006,
+                  scale: 1 -
+                      (depth + (last == null || active != null ? 0 : 1)) *
+                          0.006,
                   child: KeyedSubtree(
                     key: ValueKey('pack-reveal-stack-back-${depth}'),
                     child: ZyncFxCardBack(accent: accent),
@@ -538,7 +518,7 @@ class _CardversePackOpeningLabScreenState
                 ),
               ),
             ),
-          if (last != null)
+          if (last != null && active == null)
             Positioned.fill(
               child: CardverseRewardCard(
                 key: ValueKey(
@@ -550,6 +530,28 @@ class _CardversePackOpeningLabScreenState
                 locale: _locale,
                 recipe: last.recipe,
                 focused: last.focusAnimationRecommended,
+              ),
+            ),
+          if (active != null)
+            Positioned.fill(
+              child: ZyncFxRevealStage(
+                key: ValueKey('pack-active-reveal-$_revealToken'),
+                spec: _packRevealSpec(active),
+                tuning: const ZyncFxTuning(),
+                revealToken: _revealToken,
+                startFromSettledBack: true,
+                frontCard: CardverseRewardCard(
+                  key: ValueKey(
+                    'pack-revealing-card-${active.variant.interestId}',
+                  ),
+                  interestId: active.variant.interestId,
+                  finish: active.finish,
+                  editionLabel: active.editionLabel,
+                  locale: _locale,
+                  recipe: active.recipe,
+                  focused: active.focusAnimationRecommended,
+                ),
+                onRevealComplete: _finishActiveReveal,
               ),
             ),
         ],

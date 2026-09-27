@@ -5,24 +5,25 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PRODUCT CONTINUATION — FORMAL REWARD CARDS + SINGLE DRAW SFX:
-Reward reveal presentation now uses the formal locked-frame Card FX renderer
-instead of the old full-card procedural proof presentation. Single Draw, Pack
-sequential reveal and five-card recap all route through CardverseRewardCard:
-bundled accepted art is used directly where available; other canonical interests
-keep their semantic recipe only inside the locked 1024x1536 artwork window.
-The card-back Z has a -4 px optical centering correction. Single Draw now starts
-an anticipation cue synchronously from the actual Reveal user gesture so Chrome
-can authorize audio before the suspense await; the existing flip -> bloom ->
-rarity payoff timeline remains intact. B — Split Open wrapper mechanics/audio,
-receipt order, RNG/economy/backend authority, reduced-motion behavior and locked
-rarity frame definitions remain unchanged. Validation: focused reward/pack/Card FX/Reward Lab tests 15/15 PASS;
-broader adjacent reward/collection/World regression set 30/30 PASS; expanded
-non-golden card render 2/2 PASS; targeted analyze No issues found; Single Draw
-anticipation asset served HTTP 200 from the live Reward Reveal Lab; git diff
---check clean. The legacy Card Art
-golden test remains un-runnable because its baseline PNG is absent; no baseline
-was fabricated or updated.
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — REWARD REVEAL TURN + RARITY SFX:
+The formal locked-frame reward renderer remains authoritative, but the production
+reveal flows are now reconnected to the previously accepted Card FX reveal stage
+instead of directly swapping card back -> front. Single Draw and every one of the
+five Pack receipt cards now route through `ZyncFxRevealStage`: settled Z card
+back -> 3D turn -> formal `CardverseRewardCard` front -> shared reward bloom ->
+rarity-specific payoff, with the existing Legendary finale haptic path preserved.
+Browser audio is primed synchronously from the actual Reveal button gesture so
+the delayed flip/bloom/rarity cues are authorized in Chrome. Pack receipt cursor
+advancement now occurs only after the reveal timeline completes; the remaining
+face-down stack stays behind the active card. B — Split Open wrapper mechanics
+and accepted wrapper audio are unchanged. Validation: focused Single Draw/Pack/
+Card FX/Reward Lab suite 16/16 PASS; expanded card render 2/2 PASS; targeted
+Flutter analyze No issues found; git diff --check clean. No RNG/economy/backend,
+Actions, Vercel, Production, Play or paid-generation changes were made.
+
+`AI_STATE/HANDOFF_20260928_REWARD_REVEAL_TURN_RARITY_SFX.md`
+
+Previous product checkpoint — FORMAL REWARD CARDS + SINGLE DRAW SFX:
 
 `AI_STATE/HANDOFF_20260928_REWARD_REVEAL_FORMAL_CARD_SFX.md`
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zync/card_fx/card_fx_spec.dart';
 import 'package:zync/card_fx/zync_fx_card.dart';
+import 'package:zync/card_fx/zync_fx_reveal.dart';
 import 'package:zync/screens/reward_reveal_test_screen.dart';
 import 'package:zync/widgets/zync_card_preview.dart';
 
@@ -56,8 +57,9 @@ void main() {
       find.byKey(const ValueKey('single-draw-reveal-button')),
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pump(const Duration(milliseconds: 320));
+    expect(find.byType(ZyncFxRevealStage), findsOneWidget);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
 
     expect(
       find.byKey(const ValueKey('cardverse-formal-card-technology.ai')),
