@@ -58,6 +58,8 @@ class ZyncPackOpeningStage extends StatefulWidget {
     required this.openToken,
     this.speed = 1.0,
     this.respectReduceMotion = true,
+    this.revealCard = true,
+    this.onOpened,
   });
 
   final ZyncFxCardSpec spec;
@@ -66,6 +68,8 @@ class ZyncPackOpeningStage extends StatefulWidget {
   final int openToken;
   final double speed;
   final bool respectReduceMotion;
+  final bool revealCard;
+  final VoidCallback? onOpened;
 
   @override
   State<ZyncPackOpeningStage> createState() => _ZyncPackOpeningStageState();
@@ -80,6 +84,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
   bool _opening = false;
   bool _extracting = false;
   bool _revealing = false;
+  bool _openedCallbackSent = false;
 
   Timer? _revealTimer;
   Timer? _omenTimer;
@@ -117,7 +122,18 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
         if (!mounted || !_extracting || status != AnimationStatus.completed) {
           return;
         }
-        setState(() => _revealing = true);
+        if (widget.revealCard) {
+          setState(() => _revealing = true);
+          return;
+        }
+        if (_openedCallbackSent) return;
+        _openedCallbackSent = true;
+        final onOpened = widget.onOpened;
+        if (onOpened != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) onOpened();
+          });
+        }
       });
     _chargeController = AnimationController(
       vsync: this,
@@ -161,6 +177,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
     _opening = false;
     _extracting = false;
     _revealing = false;
+    _openedCallbackSent = false;
     _burstController.reset();
     _extractController.reset();
     _chargeController.reset();
@@ -355,7 +372,7 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
 
   @override
   Widget build(BuildContext context) {
-    if (_revealing) {
+    if (_revealing && widget.revealCard) {
       return ZyncFxRevealStage(
         key: ValueKey(
           'pack-reveal-${widget.spec.id}-${widget.prototype.name}-${widget.openToken}',

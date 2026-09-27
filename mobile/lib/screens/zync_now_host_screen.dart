@@ -8,6 +8,7 @@ import '../core/group_relay_service.dart';
 import '../core/local_store.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
+import '../core/quest_engine.dart';
 import '../core/zync_now_consensus.dart';
 import '../core/zync_now_constraints_transport.dart';
 import '../core/zync_now_engine.dart';
@@ -16,6 +17,7 @@ import '../core/zync_now_relaxation.dart';
 import '../core/zync_now_room_coordinator.dart';
 import '../ui/zync_design.dart';
 import '../widgets/zync_now_constraints_form.dart';
+import 'quest_board_screen.dart';
 
 class ZyncNowHostScreen extends StatefulWidget {
   const ZyncNowHostScreen({
@@ -66,8 +68,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
   void dispose() {
     _timer?.cancel();
     final coordinator = _coordinator;
-    if (coordinator != null &&
-        coordinator.stage != ZyncNowRoomStage.ended) {
+    if (coordinator != null && coordinator.stage != ZyncNowRoomStage.ended) {
       unawaited(coordinator.close());
     }
     super.dispose();
@@ -159,19 +160,140 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
     if (memory == null || status == ZyncNowActivityStatus.chosen) return;
     setState(() => _busy = true);
     try {
-      await LocalStore.recordZyncNowOutcome(
-        memoryId: memory.id,
-        status: status,
-      );
+      ZyncQuestBoardDelta? questDelta;
+      if (status == ZyncNowActivityStatus.completed) {
+        final now = DateTime.now();
+        final before = ZyncQuestEngine.evaluate(
+          events: await LocalStore.loadProgressEvents(),
+          now: now,
+          timezoneOffset: now.timeZoneOffset,
+        );
+        await LocalStore.recordZyncNowOutcome(
+          memoryId: memory.id,
+          status: status,
+          at: now,
+        );
+        final after = ZyncQuestEngine.evaluate(
+          events: await LocalStore.loadProgressEvents(),
+          now: now,
+          timezoneOffset: now.timeZoneOffset,
+        );
+        questDelta = ZyncQuestBoardDelta.between(before, after);
+      } else {
+        await LocalStore.recordZyncNowOutcome(
+          memoryId: memory.id,
+          status: status,
+        );
+      }
       if (!mounted) return;
       setState(() {
         _pendingActivity = null;
         _hidePendingFollowUp = false;
       });
+      if (status == ZyncNowActivityStatus.completed) {
+        HapticFeedback.mediumImpact();
+        await _showActivityProgress(questDelta);
+      }
     } catch (_) {
       _fail();
     } finally {
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _showActivityProgress(
+    ZyncQuestBoardDelta? delta,
+  ) async {
+    if (!mounted) return;
+    final advanced = delta?.advancedCount ?? 0;
+    final completed = delta?.newlyCompletedCount ?? 0;
+    final openBoard = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFFDFCFB),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: const EdgeInsets.fromLTRB(22, 14, 22, 28),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD7D2DE),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const ZyncIconTile(
+                icon: Icons.check_circle_rounded,
+                size: 66,
+                backgroundColor: Color(0xFFDDF5EC),
+                foregroundColor: Color(0xFF176B57),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                _isZh ? '做咗，今次有計數。' : 'You did it. It counts.',
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _isZh
+                    ? (completed > 0
+                        ? '今次真人活動推進咗 $advanced 個任務，其中 $completed 個已完成。獎勵可以去探索任務板領取。'
+                        : '今次真人活動推進咗 $advanced 個任務。再做多幾次，就會解鎖更多抽卡同卡包。')
+                    : (completed > 0
+                        ? 'This real-world activity advanced $advanced quests and completed $completed. Your rewards are waiting on the Curiosity Board.'
+                        : 'This real-world activity advanced $advanced quests. Keep going to unlock more draws and packs.'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const ValueKey('zync-now-view-quest-progress'),
+                  onPressed: () => Navigator.of(sheetContext).pop(true),
+                  icon: Icon(
+                    completed > 0
+                        ? Icons.card_giftcard_rounded
+                        : Icons.explore_outlined,
+                  ),
+                  label: Text(
+                    completed > 0
+                        ? (_isZh ? '睇任務／領獎' : 'View quests & rewards')
+                        : (_isZh ? '睇任務進度' : 'View quest progress'),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              TextButton(
+                onPressed: () => Navigator.of(sheetContext).pop(false),
+                child: Text(_isZh ? '遲啲先' : 'Later'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (openBoard == true && mounted) {
+      final rewardClaimed = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) => const QuestBoardScreen(returnOnClaim: true),
+        ),
+      );
+      if (rewardClaimed == true && mounted) {
+        Navigator.of(context).pop(true);
+      }
     }
   }
 
@@ -533,8 +655,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
   Widget _consensus(ZyncNowRoomHostCoordinator coordinator) {
     final round = coordinator.consensusRound!;
     final complete =
-        _hostBallotSubmitted &&
-        _ballotCount >= coordinator.participantCount;
+        _hostBallotSubmitted && _ballotCount >= coordinator.participantCount;
 
     if (_hostBallotSubmitted) {
       return _message(
@@ -620,9 +741,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
                     const SizedBox(height: 8),
                     FilterChip(
                       label: Text(
-                        _isZh
-                            ? '呢個真係做唔到'
-                            : 'I really can’t do this',
+                        _isZh ? '呢個真係做唔到' : 'I really can’t do this',
                       ),
                       selected: _hardVetoes.contains(optionId),
                       onSelected: (selected) {
@@ -671,9 +790,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
       final relaxations = coordinator.availableRelaxations;
       return _message(
         Icons.tune_rounded,
-        _isZh
-            ? '暫時冇一個選擇適合所有人'
-            : 'Nothing fits everyone yet',
+        _isZh ? '暫時冇一個選擇適合所有人' : 'Nothing fits everyone yet',
         subtitle: _isZh
             ? 'Zync 冇忽略任何 hard veto。只可以明確放寬一個 soft preference再試。'
             : 'Zync did not override any hard veto. Explicitly relax one soft preference to try again.',
@@ -874,9 +991,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
           children: [
             Icon(
               complete ? Icons.check_circle_rounded : icon,
-              color: complete
-                  ? const Color(0xFF176B57)
-                  : ZyncPalette.plum,
+              color: complete ? const Color(0xFF176B57) : ZyncPalette.plum,
             ),
             const SizedBox(width: 12),
             Expanded(

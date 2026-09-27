@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../card_fx/card_fx_spec.dart';
+import '../card_fx/zync_fx_sensory.dart';
+import '../card_fx/zync_pack_opening.dart';
 import '../core/cardverse_models.dart';
 import '../core/cardverse_pack_reveal.dart';
 import '../core/interest_catalog.dart';
@@ -82,6 +87,16 @@ class _CardversePackOpeningLabScreenState
   late bool _started;
   late bool _showRecap;
   bool _revealing = false;
+  Timer? _raritySoundTimer;
+
+  static const _productionWrapperSpec = ZyncFxCardSpec(
+    id: 'cardverse.production.pack',
+    title: 'Zync Pack',
+    subtitle: 'Server-locked reward pack',
+    artworkAsset: 'assets/card_fx/art/reading.jpg',
+    rarity: ZyncFxRarity.common,
+    ambientFx: ZyncAmbientFx.none,
+  );
 
   String get _locale => Localizations.localeOf(context).toLanguageTag();
   bool get _isZh => _locale.toLowerCase().startsWith('zh');
@@ -117,6 +132,7 @@ class _CardversePackOpeningLabScreenState
     }
 
     if (!mounted) return;
+    final fxRarity = _fxRarity(next.finish);
     if (!reduceMotion) {
       if (next.finish == CardFinishTier.legendary ||
           next.finish == CardFinishTier.secret) {
@@ -129,11 +145,38 @@ class _CardversePackOpeningLabScreenState
       } else {
         HapticFeedback.selectionClick();
       }
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.cardFlip,
+        rarity: fxRarity,
+        haptic: false,
+      );
     }
     setState(() {
       _cursor = _cursor.revealNext();
       _revealing = false;
     });
+    if (!reduceMotion) {
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.rewardBloom,
+        rarity: fxRarity,
+        haptic: false,
+      );
+      _raritySoundTimer?.cancel();
+      _raritySoundTimer = Timer(const Duration(milliseconds: 120), () {
+        if (!mounted) return;
+        ZyncFxSensory.play(
+          ZyncFxSensoryEvent.rarityHit,
+          rarity: fxRarity,
+          haptic: false,
+        );
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _raritySoundTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -171,7 +214,9 @@ class _CardversePackOpeningLabScreenState
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),
                   child: !_started
-                      ? _sealedPack()
+                      ? (widget.labMode
+                          ? _sealedPack()
+                          : _productionSplitOpen())
                       : _showRecap
                           ? _recap()
                           : _revealStage(),
@@ -183,6 +228,39 @@ class _CardversePackOpeningLabScreenState
       ),
     );
   }
+
+  Widget _productionSplitOpen() => Container(
+        key: const ValueKey('pack-production-split-open'),
+        color: const Color(0xFF080B11),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: ZyncPackOpeningStage(
+              spec: _productionWrapperSpec,
+              tuning: const ZyncFxTuning(),
+              prototype: ZyncOpeningPrototype.splitOpen,
+              openToken: 1,
+              revealCard: false,
+              onOpened: () {
+                if (!mounted) return;
+                setState(() => _started = true);
+              },
+            ),
+          ),
+        ),
+      );
+
+  ZyncFxRarity _fxRarity(CardFinishTier finish) => switch (finish) {
+        CardFinishTier.normal => ZyncFxRarity.common,
+        CardFinishTier.foil => ZyncFxRarity.uncommon,
+        CardFinishTier.holo => ZyncFxRarity.rare,
+        CardFinishTier.prism => ZyncFxRarity.epic,
+        CardFinishTier.legendary ||
+        CardFinishTier.secret =>
+          ZyncFxRarity.legendary,
+      };
 
   Widget _sealedPack() => ListView(
         key: const ValueKey('pack-lab-sealed'),
@@ -245,8 +323,7 @@ class _CardversePackOpeningLabScreenState
                                   .textTheme
                                   .titleMedium
                                   ?.copyWith(
-                                    color:
-                                        Colors.white.withValues(alpha: 0.84),
+                                    color: Colors.white.withValues(alpha: 0.84),
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 1.4,
                                   ),
@@ -261,8 +338,7 @@ class _CardversePackOpeningLabScreenState
                                 color: Colors.white.withValues(alpha: 0.14),
                                 borderRadius: BorderRadius.circular(999),
                                 border: Border.all(
-                                  color:
-                                      Colors.white.withValues(alpha: 0.24),
+                                  color: Colors.white.withValues(alpha: 0.24),
                                 ),
                               ),
                               child: Text(
@@ -317,9 +393,7 @@ class _CardversePackOpeningLabScreenState
 
   Widget _revealStage() {
     final revealedCount = _cursor.revealedCount;
-    final last = revealedCount == 0
-        ? null
-        : _plan.items[revealedCount - 1];
+    final last = revealedCount == 0 ? null : _plan.items[revealedCount - 1];
     final next = _cursor.nextItem;
 
     return ListView(
@@ -347,8 +421,7 @@ class _CardversePackOpeningLabScreenState
                     subtitle: _finishLabel(last.finish),
                     finish: last.finish,
                     editionLabel: last.editionLabel,
-                    cardNumberLabel:
-                        '$revealedCount / ${_plan.items.length}',
+                    cardNumberLabel: '$revealedCount / ${_plan.items.length}',
                     animateFinish: last.focusAnimationRecommended,
                   ),
           ),
@@ -439,8 +512,7 @@ class _CardversePackOpeningLabScreenState
                     ),
                   ),
                 ),
-                if (i != _plan.items.length - 1)
-                  const SizedBox(width: 6),
+                if (i != _plan.items.length - 1) const SizedBox(width: 6),
               ],
             ],
           ),
@@ -508,8 +580,7 @@ class _CardversePackOpeningLabScreenState
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _plan.items.length,
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 5 / 7,
               crossAxisSpacing: 12,
@@ -557,7 +628,7 @@ class _CardversePackOpeningLabScreenState
                 ],
               ),
             )
-          else
+          else ...[
             ZyncHeroPanel(
               padding: const EdgeInsets.all(16),
               startColor: const Color(0xFFEFFAF6),
@@ -584,6 +655,19 @@ class _CardversePackOpeningLabScreenState
                 ],
               ),
             ),
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                key: const ValueKey('pack-player-return-world'),
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.public_rounded),
+                label: Text(
+                  _isZh ? '返 My Zync World' : 'Back to My Zync World',
+                ),
+              ),
+            ),
+          ],
         ],
       );
 

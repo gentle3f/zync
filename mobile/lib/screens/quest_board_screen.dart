@@ -11,7 +11,12 @@ import '../ui/zync_design.dart';
 import 'cardverse_account_screen.dart';
 
 class QuestBoardScreen extends StatefulWidget {
-  const QuestBoardScreen({super.key});
+  const QuestBoardScreen({
+    super.key,
+    this.returnOnClaim = false,
+  });
+
+  final bool returnOnClaim;
 
   @override
   State<QuestBoardScreen> createState() => _QuestBoardScreenState();
@@ -101,9 +106,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = _isZh
-            ? '暫時讀唔到任務進度。'
-            : 'Could not load quest progress.';
+        _error = _isZh ? '暫時讀唔到任務進度。' : 'Could not load quest progress.';
       });
     }
   }
@@ -149,37 +152,39 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
       if (!mounted) return;
 
       final rewardText = switch (receipt.kind) {
-        CardverseRewardGrantKind.drawToken =>
-          _isZh ? '${receipt.amount} Draw Token 已到帳' : '${receipt.amount} Draw Token added',
-        CardverseRewardGrantKind.standardPack =>
-          _isZh ? '標準卡包已加入 My Zync World' : 'Standard Pack added to My Zync World',
-        CardverseRewardGrantKind.discoveryPack =>
-          _isZh ? '探索卡包已加入 My Zync World' : 'Discovery Pack added to My Zync World',
+        CardverseRewardGrantKind.drawToken => _isZh
+            ? '${receipt.amount} Draw Token 已到帳'
+            : '${receipt.amount} Draw Token added',
+        CardverseRewardGrantKind.standardPack => _isZh
+            ? '標準卡包已加入 My Zync World'
+            : 'Standard Pack added to My Zync World',
+        CardverseRewardGrantKind.discoveryPack => _isZh
+            ? '探索卡包已加入 My Zync World'
+            : 'Discovery Pack added to My Zync World',
       };
       HapticFeedback.mediumImpact();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(rewardText)),
       );
+      if (widget.returnOnClaim) {
+        Navigator.of(context).pop(true);
+        return;
+      }
       await _load();
     } on CardverseCloudException catch (error) {
       if (!mounted) return;
       final message = switch (error.failure) {
-        CardverseCloudFailure.disabled =>
-          _isZh
-              ? '呢個 QA 環境仲未開啟雲端任務獎勵。'
-              : 'Cloud quest rewards are not enabled in this QA environment yet.',
-        CardverseCloudFailure.unauthorized =>
-          _isZh
-              ? 'Cardverse 登入已過期，請重新登入。'
-              : 'Your Cardverse session expired. Please sign in again.',
+        CardverseCloudFailure.disabled => _isZh
+            ? '呢個 QA 環境仲未開啟雲端任務獎勵。'
+            : 'Cloud quest rewards are not enabled in this QA environment yet.',
+        CardverseCloudFailure.unauthorized => _isZh
+            ? 'Cardverse 登入已過期，請重新登入。'
+            : 'Your Cardverse session expired. Please sign in again.',
         CardverseCloudFailure.conflict =>
-          _isZh
-              ? '呢個任務獎勵已經領取。'
-              : 'This quest reward was already claimed.',
-        _ =>
-          _isZh
-              ? '今次領取未完成，請稍後再試。'
-              : 'The reward claim did not complete. Please try again.',
+          _isZh ? '呢個任務獎勵已經領取。' : 'This quest reward was already claimed.',
+        _ => _isZh
+            ? '今次領取未完成，請稍後再試。'
+            : 'The reward claim did not complete. Please try again.',
       };
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
@@ -307,9 +312,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _isZh
-                                ? '真實世界任務'
-                                : 'Real-world quests',
+                            _isZh ? '真實世界任務' : 'Real-world quests',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 4),
@@ -446,9 +449,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
 
     return ZyncSurface(
       shadow: false,
-      borderColor: complete
-          ? const Color(0xFFBDECDD)
-          : ZyncPalette.line,
+      borderColor: complete ? const Color(0xFFBDECDD) : ZyncPalette.line,
       backgroundColor: complete
           ? const Color(0xFFF1FBF7)
           : Colors.white.withValues(alpha: 0.9),
@@ -459,16 +460,11 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ZyncIconTile(
-                icon: complete
-                    ? Icons.check_circle_rounded
-                    : copy.icon,
+                icon: complete ? Icons.check_circle_rounded : copy.icon,
                 size: 42,
-                backgroundColor: complete
-                    ? ZyncPalette.mint
-                    : copy.background,
-                foregroundColor: complete
-                    ? const Color(0xFF176B57)
-                    : copy.foreground,
+                backgroundColor: complete ? ZyncPalette.mint : copy.background,
+                foregroundColor:
+                    complete ? const Color(0xFF176B57) : copy.foreground,
               ),
               const SizedBox(width: 11),
               Expanded(
@@ -546,9 +542,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             : Icon(
-                _signedIn
-                    ? Icons.card_giftcard_rounded
-                    : Icons.login_rounded,
+                _signedIn ? Icons.card_giftcard_rounded : Icons.login_rounded,
               ),
         label: Text(
           _signedIn
@@ -562,8 +556,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
   Widget _rewardChip(ZyncQuestProgress progress) {
     final reward = progress.definition.reward;
     final label = switch (reward.kind) {
-      ZyncQuestRewardKind.drawToken =>
-        '${reward.amount} Draw Token',
+      ZyncQuestRewardKind.drawToken => '${reward.amount} Draw Token',
       ZyncQuestRewardKind.standardPack =>
         _isZh ? '${reward.amount} 標準卡包' : '${reward.amount} Standard Pack',
       ZyncQuestRewardKind.discoveryPack =>
@@ -573,9 +566,7 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: progress.complete
-            ? ZyncPalette.mint
-            : const Color(0xFFFFF0E5),
+        color: progress.complete ? ZyncPalette.mint : const Color(0xFFFFF0E5),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -634,9 +625,8 @@ class _QuestBoardScreenState extends State<QuestBoardScreen> {
           background: ZyncPalette.mint,
           foreground: const Color(0xFF176B57),
           title: _isZh ? '今週 Zync 三次' : 'Three Zyncs this week',
-          description: _isZh
-              ? '完成三次真人 1:1 Zync。'
-              : 'Complete three real 1:1 Zyncs.',
+          description:
+              _isZh ? '完成三次真人 1:1 Zync。' : 'Complete three real 1:1 Zyncs.',
         ),
       'weekly_two_tried_together' => _QuestCopy(
           icon: Icons.bolt_rounded,

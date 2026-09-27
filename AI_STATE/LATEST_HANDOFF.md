@@ -5,6 +5,31 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — CORE LOOP BRIDGE:
+Card FX audio is an accepted baseline; stop micro-polishing it without fresh
+feedback. The latest round audited the whole player loop and connected the most
+important existing primitives. Standalone Zync Now completion now computes a
+before/after quest delta, explicitly tells the player that the real-world action
+counts, links directly to Curiosity Board, and if a real server reward is
+claimed returns through Home into My Zync World. QuestBoard's return-on-claim is
+opt-in, so existing callers are unchanged. The live server-receipt pack path
+(`labMode:false`) now uses the accepted B — Split Open wrapper before handing
+off to the immutable five-card receipt reveal; the wrapper is neutral Common so
+it leaks no receipt rarity. Actual receipt-card reveals now play the accepted
+flip -> shared bloom -> rarity payoff audio family. Production recap has an
+explicit Back to My Zync World CTA, after which existing inventory refresh shows
+the cards. No economy/RNG/receipt/order/finish changes. Validation: focused
+bridging tests green; canonical non-golden mobile suite 335/335 PASS; full
+`flutter analyze` No issues found. Highest remaining product gaps: surface
+pending real-world activities centrally (especially Group Zync), improve the
+single-card Draw reveal, and teach the complete earn/open/collect/next-action loop
+during onboarding. No Actions, Vercel, Production, Play, release or paid
+generation was used.
+
+`AI_STATE/HANDOFF_20260927_CORE_LOOP_BRIDGE.md`
+
+Previous Card FX reference-audio checkpoint:
+
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
 B — Split Open remains the chosen production direction. The user auditioned and
 explicitly selected a Pixabay reference set, so the B sensory path now uses those

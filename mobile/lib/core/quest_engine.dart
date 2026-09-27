@@ -114,6 +114,47 @@ class ZyncQuestBoardSnapshot {
       );
 }
 
+class ZyncQuestBoardDelta {
+  const ZyncQuestBoardDelta({
+    required this.advanced,
+    required this.newlyCompleted,
+  });
+
+  final List<ZyncQuestProgress> advanced;
+  final List<ZyncQuestProgress> newlyCompleted;
+
+  int get advancedCount => advanced.length;
+  int get newlyCompletedCount => newlyCompleted.length;
+  bool get hasProgress => advanced.isNotEmpty;
+
+  factory ZyncQuestBoardDelta.between(
+    ZyncQuestBoardSnapshot before,
+    ZyncQuestBoardSnapshot after,
+  ) {
+    final beforeById = {
+      for (final item in before.progress) item.definition.id: item,
+    };
+    final advanced = <ZyncQuestProgress>[];
+    final newlyCompleted = <ZyncQuestProgress>[];
+
+    for (final current in after.progress) {
+      final previous = beforeById[current.definition.id];
+      if (previous == null) continue;
+      if (current.current > previous.current) {
+        advanced.add(current);
+      }
+      if (!previous.complete && current.complete) {
+        newlyCompleted.add(current);
+      }
+    }
+
+    return ZyncQuestBoardDelta(
+      advanced: List.unmodifiable(advanced),
+      newlyCompleted: List.unmodifiable(newlyCompleted),
+    );
+  }
+}
+
 class ZyncQuestEngine {
   const ZyncQuestEngine._();
 
@@ -260,10 +301,10 @@ class ZyncQuestEngine {
         ..sort((a, b) => a.occurredAt.compareTo(b.occurredAt));
 
       final matched = _matchedEvents(definition.metric, windowEvents);
-      final currentValue = definition.metric ==
-              ZyncQuestMetric.distinctInterestCategories
-          ? _distinctCategories(matched).length
-          : matched.length;
+      final currentValue =
+          definition.metric == ZyncQuestMetric.distinctInterestCategories
+              ? _distinctCategories(matched).length
+              : matched.length;
 
       final complete = currentValue >= definition.target;
       progress.add(
@@ -274,8 +315,7 @@ class ZyncQuestEngine {
           cycleEnd: window.end,
           eligibility: complete
               ? ZyncQuestRewardEligibility(
-                  key:
-                      '${definition.id}:${window.start.toIso8601String()}',
+                  key: '${definition.id}:${window.start.toIso8601String()}',
                   questId: definition.id,
                   cycleStart: window.start,
                   reward: definition.reward,
@@ -317,16 +357,14 @@ class ZyncQuestEngine {
       ZyncQuestMetric.triedTogether => events
           .where(
             (event) =>
-                event.type ==
-                ZyncProgressEventType.triedTogetherCompleted,
+                event.type == ZyncProgressEventType.triedTogetherCompleted,
           )
           .toList(growable: false),
       ZyncQuestMetric.realWorldActions => events
           .where(
             (event) =>
                 event.type == ZyncProgressEventType.oneToOneZync ||
-                event.type ==
-                    ZyncProgressEventType.triedTogetherCompleted,
+                event.type == ZyncProgressEventType.triedTogetherCompleted,
           )
           .toList(growable: false),
       ZyncQuestMetric.distinctInterestCategories => events

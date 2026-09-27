@@ -23,15 +23,18 @@ Uri? _configuredPrivacyUri() {
   return uri;
 }
 
-Future<void> _openPrivacyPolicy(BuildContext context, Uri uri, String failureMessage) async {
+Future<void> _openPrivacyPolicy(
+    BuildContext context, Uri uri, String failureMessage) async {
   try {
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(failureMessage)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(failureMessage)));
     }
   } catch (_) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(failureMessage)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(failureMessage)));
     }
   }
 }
@@ -50,7 +53,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final name = profile.nickname.trim();
-    final greeting = name.isEmpty ? l10n.homeGreeting : '${l10n.homeGreeting} $name';
+    final greeting =
+        name.isEmpty ? l10n.homeGreeting : '${l10n.homeGreeting} $name';
     final privacyUri = _configuredPrivacyUri();
     final textScale = MediaQuery.textScalerOf(context).scale(1);
 
@@ -59,7 +63,9 @@ class HomeScreen extends StatelessWidget {
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final oneScreen = constraints.maxHeight >= 680 && constraints.maxWidth >= 330 && textScale <= 1.15;
+              final oneScreen = constraints.maxHeight >= 680 &&
+                  constraints.maxWidth >= 330 &&
+                  textScale <= 1.15;
               if (oneScreen) {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
@@ -79,45 +85,45 @@ class HomeScreen extends StatelessWidget {
 
   Widget _header(BuildContext context, AppLocalizations l10n) {
     return Row(
-        children: [
-          const ZyncMark(size: 38, strokeWidth: 4),
-          const SizedBox(width: 10),
-          Text('Zync', style: Theme.of(context).textTheme.titleLarge),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.alternate_email_rounded),
-            tooltip: l10n.socialLinks,
-            onPressed: () async {
-              final result = await Navigator.of(context).push<LocalProfile>(
-                MaterialPageRoute(
-                  builder: (_) => SocialLinksScreen(
-                    profile: profile,
-                    onSaved: onProfileChanged,
-                  ),
+      children: [
+        const ZyncMark(size: 38, strokeWidth: 4),
+        const SizedBox(width: 10),
+        Text('Zync', style: Theme.of(context).textTheme.titleLarge),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(Icons.alternate_email_rounded),
+          tooltip: l10n.socialLinks,
+          onPressed: () async {
+            final result = await Navigator.of(context).push<LocalProfile>(
+              MaterialPageRoute(
+                builder: (_) => SocialLinksScreen(
+                  profile: profile,
+                  onSaved: onProfileChanged,
                 ),
-              );
-              if (result != null) await onProfileChanged(result);
-            },
-          ),
-          const SizedBox(width: 4),
-          IconButton.filledTonal(
-            icon: const Icon(Icons.tune_rounded),
-            tooltip: l10n.edit,
-            onPressed: () async {
-              final result = await Navigator.of(context).push<LocalProfile>(
-                MaterialPageRoute(
-                  builder: (_) => InterestSetupScreen(
-                    profile: profile,
-                    onSaved: onProfileChanged,
-                    editing: true,
-                  ),
+              ),
+            );
+            if (result != null) await onProfileChanged(result);
+          },
+        ),
+        const SizedBox(width: 4),
+        IconButton.filledTonal(
+          icon: const Icon(Icons.tune_rounded),
+          tooltip: l10n.edit,
+          onPressed: () async {
+            final result = await Navigator.of(context).push<LocalProfile>(
+              MaterialPageRoute(
+                builder: (_) => InterestSetupScreen(
+                  profile: profile,
+                  onSaved: onProfileChanged,
+                  editing: true,
                 ),
-              );
-              if (result != null) await onProfileChanged(result);
-            },
-          ),
-        ],
-      );
+              ),
+            );
+            if (result != null) await onProfileChanged(result);
+          },
+        ),
+      ],
+    );
   }
 
   Widget _hero(
@@ -204,7 +210,9 @@ class HomeScreen extends StatelessWidget {
         ),
       );
 
-  List<_MenuSpec> _menuSpecs(BuildContext context, AppLocalizations l10n, Uri? privacyUri) => [
+  List<_MenuSpec> _menuSpecs(
+          BuildContext context, AppLocalizations l10n, Uri? privacyUri) =>
+      [
         _MenuSpec(
           icon: Icons.public_rounded,
           iconBackground: const Color(0xFFE9E5FF),
@@ -236,11 +244,23 @@ class HomeScreen extends StatelessWidget {
           subtitle: LocalizedDomainText.zyncNowGroupCta(
             Localizations.localeOf(context).toLanguageTag(),
           ),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => ZyncNowHostScreen(profile: profile),
-            ),
-          ),
+          onTap: () async {
+            final openWorld = await Navigator.of(context).push<bool>(
+              MaterialPageRoute<bool>(
+                builder: (_) => ZyncNowHostScreen(profile: profile),
+              ),
+            );
+            if (openWorld == true && context.mounted) {
+              await Navigator.of(context).push<void>(
+                MaterialPageRoute<void>(
+                  builder: (_) => MyZyncWorldScreen(
+                    profile: profile,
+                    onProfileChanged: onProfileChanged,
+                  ),
+                ),
+              );
+            }
+          },
         ),
         _MenuSpec(
           icon: Icons.groups_2_outlined,
@@ -289,7 +309,8 @@ class HomeScreen extends StatelessWidget {
           iconForeground: ZyncPalette.plum,
           title: l10n.interestDna,
           onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => InterestDnaScreen(profile: profile)),
+            MaterialPageRoute(
+                builder: (_) => InterestDnaScreen(profile: profile)),
           ),
         ),
         if (privacyUri != null)
@@ -298,11 +319,13 @@ class HomeScreen extends StatelessWidget {
             iconBackground: const Color(0xFFE8F0FF),
             iconForeground: const Color(0xFF315F9E),
             title: l10n.privacyPolicy,
-            onTap: () => _openPrivacyPolicy(context, privacyUri, l10n.privacyPolicyUnavailable),
+            onTap: () => _openPrivacyPolicy(
+                context, privacyUri, l10n.privacyPolicyUnavailable),
           ),
       ];
 
-  Widget _buildOneScreen(BuildContext context, AppLocalizations l10n, String greeting, Uri? privacyUri) {
+  Widget _buildOneScreen(BuildContext context, AppLocalizations l10n,
+      String greeting, Uri? privacyUri) {
     final specs = _menuSpecs(context, l10n, privacyUri);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,14 +364,21 @@ class HomeScreen extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(child: first == null ? const SizedBox.shrink() : _MenuTile.fromSpec(first, compact: true)),
+        Expanded(
+            child: first == null
+                ? const SizedBox.shrink()
+                : _MenuTile.fromSpec(first, compact: true)),
         const SizedBox(width: 10),
-        Expanded(child: second == null ? const SizedBox.shrink() : _MenuTile.fromSpec(second, compact: true)),
+        Expanded(
+            child: second == null
+                ? const SizedBox.shrink()
+                : _MenuTile.fromSpec(second, compact: true)),
       ],
     );
   }
 
-  List<Widget> _buildScrollable(BuildContext context, AppLocalizations l10n, String greeting, Uri? privacyUri) {
+  List<Widget> _buildScrollable(BuildContext context, AppLocalizations l10n,
+      String greeting, Uri? privacyUri) {
     final specs = _menuSpecs(context, l10n, privacyUri);
     return [
       _header(context, l10n),
@@ -389,7 +419,11 @@ class _MenuSpec {
 }
 
 class _PrimaryAction extends StatelessWidget {
-  const _PrimaryAction({required this.icon, required this.label, required this.onTap, this.compact = false});
+  const _PrimaryAction(
+      {required this.icon,
+      required this.label,
+      required this.onTap,
+      this.compact = false});
 
   final IconData icon;
   final String label;
@@ -410,7 +444,11 @@ class _PrimaryAction extends StatelessWidget {
 }
 
 class _SecondaryAction extends StatelessWidget {
-  const _SecondaryAction({required this.icon, required this.label, required this.onTap, this.compact = false});
+  const _SecondaryAction(
+      {required this.icon,
+      required this.label,
+      required this.onTap,
+      this.compact = false});
 
   final IconData icon;
   final String label;
@@ -441,7 +479,8 @@ class _MenuTile extends StatelessWidget {
     this.featured = false,
   });
 
-  factory _MenuTile.fromSpec(_MenuSpec spec, {bool compact = false}) => _MenuTile(
+  factory _MenuTile.fromSpec(_MenuSpec spec, {bool compact = false}) =>
+      _MenuTile(
         icon: spec.icon,
         iconBackground: spec.iconBackground,
         iconForeground: spec.iconForeground,
@@ -468,7 +507,8 @@ class _MenuTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(compact ? 18 : 22),
           onTap: onTap,
           child: Ink(
-            padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 16, vertical: compact ? 5 : 15),
+            padding: EdgeInsets.symmetric(
+                horizontal: compact ? 8 : 16, vertical: compact ? 5 : 15),
             decoration: BoxDecoration(
               color: featured ? null : ZyncPalette.surface,
               gradient: featured
@@ -529,15 +569,18 @@ class _MenuTile extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(title, style: Theme.of(context).textTheme.titleMedium),
+                            Text(title,
+                                style: Theme.of(context).textTheme.titleMedium),
                             if (subtitle != null) ...[
                               const SizedBox(height: 2),
-                              Text(subtitle!, style: Theme.of(context).textTheme.bodySmall),
+                              Text(subtitle!,
+                                  style: Theme.of(context).textTheme.bodySmall),
                             ],
                           ],
                         ),
                       ),
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: ZyncPalette.inkSoft),
+                      const Icon(Icons.arrow_forward_ios_rounded,
+                          size: 16, color: ZyncPalette.inkSoft),
                     ],
                   ),
           ),

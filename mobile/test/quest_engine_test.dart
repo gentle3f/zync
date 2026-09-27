@@ -56,9 +56,7 @@ void main() {
       1,
     );
     expect(
-      quest(sep19, 'daily_make_a_zync')
-          .eligibility!
-          .proofEventIds,
+      quest(sep19, 'daily_make_a_zync').eligibility!.proofEventIds,
       ['before-local-midnight'],
     );
 
@@ -72,9 +70,7 @@ void main() {
       1,
     );
     expect(
-      quest(sep20, 'daily_make_a_zync')
-          .eligibility!
-          .proofEventIds,
+      quest(sep20, 'daily_make_a_zync').eligibility!.proofEventIds,
       ['after-local-midnight'],
     );
   });
@@ -198,8 +194,7 @@ void main() {
       timezoneOffset: hkt,
     );
 
-    final eligibility =
-        quest(snapshot, 'daily_make_a_zync').eligibility!;
+    final eligibility = quest(snapshot, 'daily_make_a_zync').eligibility!;
     expect(eligibility.requiresServerValidation, isTrue);
     expect(eligibility.reward.requiresServerValidation, isTrue);
     expect(eligibility.reward.kind, ZyncQuestRewardKind.drawToken);
@@ -221,6 +216,47 @@ void main() {
     expect(
       quest(snapshot, 'weekly_five_real_world_actions').current,
       1,
+    );
+  });
+
+  test('quest delta exposes progress and newly completed rewards', () {
+    final now = DateTime.utc(2026, 9, 19, 12);
+    final before = ZyncQuestEngine.evaluate(
+      events: const [],
+      now: now,
+      timezoneOffset: hkt,
+    );
+    final after = ZyncQuestEngine.evaluate(
+      events: [
+        event(
+          id: 'did-it',
+          type: ZyncProgressEventType.triedTogetherCompleted,
+          at: DateTime.utc(2026, 9, 19, 10),
+          categories: const ['sports'],
+        ),
+      ],
+      now: now,
+      timezoneOffset: hkt,
+    );
+
+    final delta = ZyncQuestBoardDelta.between(before, after);
+
+    expect(delta.hasProgress, isTrue);
+    expect(
+      delta.advanced.map((item) => item.definition.id),
+      containsAll(<String>[
+        'daily_tried_together',
+        'weekly_two_tried_together',
+        'weekly_five_real_world_actions',
+      ]),
+    );
+    expect(
+      delta.newlyCompleted.map((item) => item.definition.id),
+      ['daily_tried_together'],
+    );
+    expect(
+      delta.newlyCompleted.single.eligibility?.reward.kind,
+      ZyncQuestRewardKind.drawToken,
     );
   });
 }

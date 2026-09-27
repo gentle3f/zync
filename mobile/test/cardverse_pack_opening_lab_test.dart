@@ -53,7 +53,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('player pack hides receipt diagnostics and uses player copy',
+  testWidgets('player pack uses production Split Open before receipt reveal',
       (tester) async {
     setPhone(tester);
     addTearDown(tester.view.resetPhysicalSize);
@@ -65,10 +65,41 @@ void main() {
     expect(find.text('RECEIPT'), findsNothing);
     expect(find.textContaining('server result locked'), findsNothing);
     expect(
-      find.text('5 cards · reveal them one by one'),
+      find.byKey(const ValueKey('pack-production-split-open')),
       findsOneWidget,
     );
-    expect(find.text('Open Pack'), findsWidgets);
+    expect(find.text('CHOOSE A PACK'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('pack-choice-1')));
+    await tester.pump();
+    expect(
+      find.byKey(const ValueKey('opening-gesture-split-open')),
+      findsOneWidget,
+    );
+
+    final splitGesture =
+        find.byKey(const ValueKey('opening-gesture-split-open'));
+    final detector = tester.widget<GestureDetector>(splitGesture);
+    detector.onHorizontalDragStart?.call(
+      DragStartDetails(globalPosition: tester.getCenter(splitGesture)),
+    );
+    detector.onHorizontalDragUpdate?.call(
+      DragUpdateDetails(
+        delta: const Offset(104, 0),
+        primaryDelta: 104,
+        globalPosition: tester.getCenter(splitGesture) + const Offset(104, 0),
+      ),
+    );
+    await tester.pump();
+    detector.onHorizontalDragEnd?.call(DragEndDetails());
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump();
+
+    expect(find.text('0 / 5'), findsOneWidget);
+    expect(
+        find.byKey(const ValueKey('pack-lab-reveal-next-0')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -186,6 +217,31 @@ void main() {
       find.byKey(const ValueKey('card-finish-animated')),
       findsOneWidget,
     );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('player recap has an explicit return to My Zync World',
+      (tester) async {
+    setPhone(tester);
+    tester.view.physicalSize = const Size(430, 1800);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: const CardversePackOpeningLabScreen(
+          initialRevealedCount: 5,
+          labMode: false,
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('pack-player-return-world')),
+      findsOneWidget,
+    );
+    expect(find.text('Back to My Zync World'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
