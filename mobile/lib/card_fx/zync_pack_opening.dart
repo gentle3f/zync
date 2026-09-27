@@ -229,13 +229,29 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
       5,
       math.max(0, ((value - 0.12) / 0.15).floor()),
     );
-    if (cueIndex <= _splitTensionCueIndex) return;
+    final previousCueIndex = _splitTensionCueIndex;
+    if (cueIndex <= previousCueIndex) return;
     _splitTensionCueIndex = cueIndex;
-    ZyncFxSensory.play(
-      ZyncFxSensoryEvent.foilTension,
-      rarity: widget.spec.rarity,
-      haptic: false,
-    );
+
+    if (previousCueIndex < 0) {
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.splitTear,
+        rarity: widget.spec.rarity,
+        haptic: false,
+      );
+    } else if (previousCueIndex == 0 && cueIndex >= 1) {
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.microAnticipation,
+        rarity: widget.spec.rarity,
+        haptic: false,
+      );
+    } else {
+      ZyncFxSensory.play(
+        ZyncFxSensoryEvent.foilTension,
+        rarity: widget.spec.rarity,
+        haptic: false,
+      );
+    }
   }
 
   void _cancelGesture() {

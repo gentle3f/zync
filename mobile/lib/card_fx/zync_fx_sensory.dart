@@ -11,12 +11,15 @@ enum ZyncFxSensoryEvent {
   chargeArm,
   tearBreak,
   foilTension,
+  splitTear,
+  microAnticipation,
   splitBreak,
   chargeBurst,
   sealUnlock,
   hiddenOmen,
   cardExtract,
   cardFlip,
+  rewardBloom,
   rarityHit,
   legendaryFinale,
 }
@@ -63,11 +66,15 @@ abstract final class ZyncFxSensory {
       case ZyncFxSensoryEvent.revealEntrance:
       case ZyncFxSensoryEvent.chargeArm:
       case ZyncFxSensoryEvent.foilTension:
+      case ZyncFxSensoryEvent.microAnticipation:
+      case ZyncFxSensoryEvent.rewardBloom:
       case ZyncFxSensoryEvent.hiddenOmen:
         await HapticFeedback.selectionClick();
       case ZyncFxSensoryEvent.tearBreak:
       case ZyncFxSensoryEvent.splitBreak:
         await HapticFeedback.mediumImpact();
+      case ZyncFxSensoryEvent.splitTear:
+        await HapticFeedback.lightImpact();
       case ZyncFxSensoryEvent.chargeBurst:
         await HapticFeedback.heavyImpact();
       case ZyncFxSensoryEvent.sealUnlock:
@@ -107,16 +114,28 @@ abstract final class ZyncFxSensory {
   ) {
     const root = 'card_fx/sfx/';
     return switch (event) {
-      ZyncFxSensoryEvent.packPick =>
-        const _SoundSpec('$root' 'pack_pick.wav', 0.34),
+      ZyncFxSensoryEvent.packPick => const _SoundSpec(
+          '$root' 'pixabay_pack_pick_next_level_114480.mp3',
+          0.42,
+        ),
       ZyncFxSensoryEvent.revealEntrance => null,
       ZyncFxSensoryEvent.chargeArm => null,
       ZyncFxSensoryEvent.tearBreak =>
         const _SoundSpec('$root' 'tear_up.wav', 0.58),
       ZyncFxSensoryEvent.foilTension =>
-        const _SoundSpec('$root' 'foil_tension.wav', 0.34),
-      ZyncFxSensoryEvent.splitBreak =>
-        const _SoundSpec('$root' 'split_open.wav', 0.84),
+        const _SoundSpec('$root' 'foil_tension.wav', 0.20),
+      ZyncFxSensoryEvent.splitTear => const _SoundSpec(
+          '$root' 'pixabay_split_tear_paper_132571.mp3',
+          0.74,
+        ),
+      ZyncFxSensoryEvent.microAnticipation => const _SoundSpec(
+          '$root' 'pixabay_anticipation_twinkle_244951.mp3',
+          0.28,
+        ),
+      ZyncFxSensoryEvent.splitBreak => const _SoundSpec(
+          '$root' 'pixabay_wrapper_opened_badge_pop_547866.mp3',
+          0.68,
+        ),
       ZyncFxSensoryEvent.chargeBurst =>
         const _SoundSpec('$root' 'charge_burst.wav', 0.70),
       ZyncFxSensoryEvent.sealUnlock =>
@@ -125,21 +144,36 @@ abstract final class ZyncFxSensory {
         const _SoundSpec('$root' 'hidden_omen.wav', 0.36),
       ZyncFxSensoryEvent.cardExtract =>
         const _SoundSpec('$root' 'card_extract.wav', 0.82),
-      ZyncFxSensoryEvent.cardFlip =>
-        const _SoundSpec('$root' 'card_flip.wav', 0.74),
-      ZyncFxSensoryEvent.legendaryFinale =>
-        const _SoundSpec('$root' 'legendary_finale.wav', 0.96),
+      ZyncFxSensoryEvent.cardFlip => const _SoundSpec(
+          '$root' 'pixabay_card_flip_35956.mp3',
+          0.78,
+        ),
+      ZyncFxSensoryEvent.rewardBloom => const _SoundSpec(
+          '$root' 'pixabay_reward_bloom_surprise_145912.mp3',
+          0.30,
+        ),
+      ZyncFxSensoryEvent.legendaryFinale => null,
       ZyncFxSensoryEvent.rarityHit => switch (rarity) {
-          ZyncFxRarity.common =>
-            const _SoundSpec('$root' 'rarity_common.wav', 0.48),
-          ZyncFxRarity.uncommon =>
-            const _SoundSpec('$root' 'rarity_uncommon.wav', 0.56),
-          ZyncFxRarity.rare =>
-            const _SoundSpec('$root' 'rarity_rare.wav', 0.68),
-          ZyncFxRarity.epic =>
-            const _SoundSpec('$root' 'rarity_epic.wav', 0.82),
-          ZyncFxRarity.legendary =>
-            const _SoundSpec('$root' 'rarity_legendary.wav', 0.98),
+          ZyncFxRarity.common => const _SoundSpec(
+              '$root' 'pixabay_rarity_common_xp_gain_453274.mp3',
+              0.56,
+            ),
+          ZyncFxRarity.uncommon => const _SoundSpec(
+              '$root' 'pixabay_rarity_uncommon_great_success_384935.mp3',
+              0.64,
+            ),
+          ZyncFxRarity.rare => const _SoundSpec(
+              '$root' 'pixabay_rarity_rare_magic_stinger_552109.mp3',
+              0.72,
+            ),
+          ZyncFxRarity.epic => const _SoundSpec(
+              '$root' 'pixabay_rarity_epic_ice_448564.mp3',
+              0.82,
+            ),
+          ZyncFxRarity.legendary => const _SoundSpec(
+              '$root' 'pixabay_rarity_legendary_light_478379.mp3',
+              0.92,
+            ),
         },
     };
   }

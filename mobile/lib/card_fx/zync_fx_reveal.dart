@@ -36,6 +36,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   Timer? _flipCueTimer;
+  Timer? _rewardBloomTimer;
   Timer? _rarityHitTimer;
   Timer? _legendaryFinaleTimer;
 
@@ -69,9 +70,11 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
 
   void _cancelCueTimers() {
     _flipCueTimer?.cancel();
+    _rewardBloomTimer?.cancel();
     _rarityHitTimer?.cancel();
     _legendaryFinaleTimer?.cancel();
     _flipCueTimer = null;
+    _rewardBloomTimer = null;
     _rarityHitTimer = null;
     _legendaryFinaleTimer = null;
   }
@@ -107,6 +110,17 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
         ZyncFxSensory.play(
           ZyncFxSensoryEvent.cardFlip,
           rarity: widget.spec.rarity,
+        );
+      },
+    );
+    _rewardBloomTimer = Timer(
+      Duration(milliseconds: (totalMs * (0.59 - start)).round()),
+      () {
+        if (!mounted) return;
+        ZyncFxSensory.play(
+          ZyncFxSensoryEvent.rewardBloom,
+          rarity: widget.spec.rarity,
+          haptic: false,
         );
       },
     );

@@ -6,23 +6,29 @@ Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-B — Split Open remains the chosen production direction and the previously
-accepted early physical card-back reveal / 70% commit threshold / sensory family
-are unchanged. The overnight round deliberately avoided subjective visual or
-audio retuning and instead hardened runtime/QA behavior. It fixed a real
-InterestLocaleRegistry typed-unmodifiable-map crash exposed by expanded pack
-tests; repaired two Unicode-slug compatibility overlays (Shōgun / Škoda), two
-legacy localized search aliases, nine new taxonomy Chinese navigation labels,
-and one stale Minecraft policy fixture; added B regression coverage for
-sub-threshold release and Replay-before-extraction; and changed reveal lifecycle
-cleanup so every new reveal cancels stale flip / rarity / Legendary sensory
-timers before Reduce Motion can short-circuit. Locked frame masters and existing
-WAV assets were not changed. Final local validation: targeted regression 61/61
-PASS; all 52 non-golden mobile test files 333/333 PASS, exit 0; `flutter analyze`
-No issues found. The literal full suite has exactly one known infrastructure
-failure because `goldens/card_art_engine_v1_flagships.png` does not exist; do
-not auto-create that baseline just to make the test green. No Actions, Vercel,
-Production, Play, release or paid generation was used.
+B — Split Open remains the chosen production direction. The user auditioned and
+explicitly selected a Pixabay reference set, so the B sensory path now uses those
+actual sources rather than the previously synthesized/guesstimated payoff family:
+Next Level for pack pick; Paper Tearing at the first real split; Magic Twinkle
+for the next anticipation beat; Achievement Badge Pop Sound #3 on the unchanged
+70% commit/open; Card Sounds on flip; Magic Surprise as a shared reward bloom;
+then XP Gain / Great Success / Magic UI Stinger / Elemental Ice / Elemental Light
+for Common through Legendary. The delayed old Legendary finale sound is disabled
+(haptic retained). Level Up 05 is source-recorded as a spare only and is not
+bundled/wired. B early physical card-back reveal, 70% threshold, extraction,
+RNG/rarity/omen behavior, locked frames and A/C/D mechanics are unchanged. The
+new bloom timer participates in the existing stale-cue cancellation lifecycle.
+Eleven selected MP3s are bundled and documented in PIXABAY_SOURCES.md; all served
+HTTP 200 from the local Flutter asset server. Validation: targeted Card FX tests
+22/22 PASS; all 52 non-golden mobile test files 333/333 PASS; full
+`flutter analyze` No issues found; `git diff --check` clean. Subjective success
+is intentionally not claimed — next gate is the user's real listen, with
+timing/gain tuning preferred before changing the selected sound language. No
+Actions, Vercel, Production, Play, release or paid generation was used.
+
+`AI_STATE/HANDOFF_20260927_CARD_FX_PIXABAY_REFERENCE_AUDIO.md`
+
+Previous overnight QA-hardening checkpoint:
 
 `AI_STATE/HANDOFF_20260927_CARD_FX_OVERNIGHT_QA_HARDENING.md`
 
