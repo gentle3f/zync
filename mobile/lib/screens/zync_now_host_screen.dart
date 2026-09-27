@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/group_relay_service.dart';
+import '../core/interest_catalog.dart';
 import '../core/local_store.dart';
 import '../core/localized_domain_text.dart';
 import '../core/models.dart';
@@ -24,10 +25,12 @@ class ZyncNowHostScreen extends StatefulWidget {
     super.key,
     required this.profile,
     this.relayClient,
+    this.preferredInterestId,
   });
 
   final LocalProfile profile;
   final GroupRelayClient? relayClient;
+  final String? preferredInterestId;
 
   @override
   State<ZyncNowHostScreen> createState() => _ZyncNowHostScreenState();
@@ -56,6 +59,19 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
 
   String get _locale => Localizations.localeOf(context).toLanguageTag();
   bool get _isZh => _locale.toLowerCase().startsWith('zh');
+
+  String? get _preferredInterestId {
+    final value = widget.preferredInterestId?.trim();
+    if (value == null || value.isEmpty) return null;
+    if (!widget.profile.interests.any((item) => item.id == value)) return null;
+    return value;
+  }
+
+  String? get _preferredInterestLabel {
+    final id = _preferredInterestId;
+    if (id == null) return null;
+    return InterestCatalog.byId(id)?.labelFor(_locale) ?? id;
+  }
 
   @override
   void initState() {
@@ -116,6 +132,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
               final prior = await LocalStore.recentZyncNowActivityKeys();
               await coordinator.prepareConsensus(
                 priorActivityKeys: prior,
+                preferredInterestId: _preferredInterestId,
                 seed: coordinator.room.roomId,
               );
               _ratings.clear();
@@ -340,6 +357,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         final prior = await LocalStore.recentZyncNowActivityKeys();
         await coordinator.prepareConsensus(
           priorActivityKeys: prior,
+          preferredInterestId: _preferredInterestId,
           seed: coordinator.room.roomId,
         );
         if (mounted) setState(() {});
@@ -532,6 +550,11 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
               ],
             ),
           ),
+          if (_preferredInterestId != null) ...[
+            const SizedBox(height: 14),
+            _preferredInterestPrompt(),
+            const SizedBox(height: 18),
+          ],
           if (_pendingActivity != null && !_hidePendingFollowUp) ...[
             _pendingFollowUp(),
             const SizedBox(height: 18),
@@ -873,6 +896,50 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
           label: Text(_isZh ? '就呢個，出去做' : 'Let’s do it'),
         ),
       ],
+    );
+  }
+
+  Widget _preferredInterestPrompt() {
+    final label = _preferredInterestLabel;
+    if (label == null) return const SizedBox.shrink();
+
+    return ZyncSurface(
+      key: const ValueKey('zync-now-preferred-interest'),
+      shadow: false,
+      backgroundColor: const Color(0xFFFFF7F2),
+      borderColor: ZyncPalette.peach,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const ZyncIconTile(
+            icon: Icons.style_outlined,
+            backgroundColor: ZyncPalette.peach,
+            foregroundColor: ZyncPalette.orangeDeep,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _isZh ? '由「$label」開始諗' : 'Starting from $label',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  _isZh
+                      ? 'Zync 會優先考慮呢個興趣，但所有人嘅私下限制同 hard veto 仍然優先。'
+                      : 'Zync will favor this interest when it fits everyone. Private limits and hard vetoes still win.',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: ZyncPalette.inkSoft),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

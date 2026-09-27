@@ -104,8 +104,7 @@ void main() {
 
     final guestRatings = <String, ZyncNowVote>{
       for (var i = 0; i < voteState.options.length; i += 1)
-        voteState.options[i].id:
-            i == 1 ? ZyncNowVote.love : ZyncNowVote.okay,
+        voteState.options[i].id: i == 1 ? ZyncNowVote.love : ZyncNowVote.okay,
     };
     await guest.submitConsensus(
       ratingsByOptionId: guestRatings,
@@ -116,8 +115,7 @@ void main() {
         participantId: host.hostParticipant.participantId,
         ratings: {
           for (var i = 0; i < finalists.length; i += 1)
-            finalists[i].id:
-                i == 1 ? ZyncNowVote.love : ZyncNowVote.okay,
+            finalists[i].id: i == 1 ? ZyncNowVote.love : ZyncNowVote.okay,
         },
       ),
     );
@@ -142,6 +140,53 @@ void main() {
       resultState.options.map((item) => item.id),
       contains(resultState.resultOptionId),
     );
+  });
+
+  test('card focus reaches room finalist scoring as a soft preference',
+      () async {
+    const familiarContext = ZyncNowPrivateContext(
+      constraints: ZyncNowConstraints(
+        duration: ActivityDurationBand.flexible,
+        setting: ActivitySetting.either,
+      ),
+      novelty: ZyncNowNoveltyPreference.familiar,
+    );
+
+    Future<List<ZyncNowCandidate>> prepare({
+      String? preferredInterestId,
+    }) async {
+      final relay = _MemoryGroupRelay();
+      final host = await ZyncNowRoomHostCoordinator.create(
+        relay: relay,
+        hostProfile: hostProfile,
+        maxParticipants: 2,
+      );
+      final guest = await ZyncNowRoomParticipantCoordinator.join(
+        relay: relay,
+        room: host.room.qr,
+        profile: guestProfile,
+      );
+      await host.refreshLobby();
+      await host.openPrivateConstraints(familiarContext);
+      await guest.poll();
+      await guest.submitPrivateContext(familiarContext);
+      return host.prepareConsensus(
+        preferredInterestId: preferredInterestId,
+        seed: 'card-focus-room',
+      );
+    }
+
+    final baseline = await prepare();
+    final focused = await prepare(preferredInterestId: 'food.coffee');
+
+    final before = baseline.firstWhere(
+      (candidate) => candidate.sourceInterestIds.contains('food.coffee'),
+    );
+    final after = focused.firstWhere(
+      (candidate) => candidate.id == before.id,
+    );
+
+    expect(after.score - before.score, closeTo(18, 0.0001));
   });
 
   test('standalone room cannot generate before every private context arrives',
@@ -192,8 +237,7 @@ void main() {
       ZyncNowConsensusBallot(
         participantId: host.hostParticipant.participantId,
         ratings: {
-          for (final candidate in finalists)
-            candidate.id: ZyncNowVote.okay,
+          for (final candidate in finalists) candidate.id: ZyncNowVote.okay,
         },
       ),
     );

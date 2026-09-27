@@ -62,7 +62,8 @@ void main() {
     expect(result.first.titleFor('zh-HK'), contains('羽毛球'));
   });
 
-  test('familiar mode is group-native rather than requiring universal overlap', () {
+  test('familiar mode is group-native rather than requiring universal overlap',
+      () {
     final result = ZyncNowEngine.generate(
       participants: [
         participant('a', [interest('sports.badminton', InterestStrength.love)]),
@@ -81,7 +82,8 @@ void main() {
           candidate.sourceInterestIds.contains('sports.tennis')),
       isTrue,
     );
-    expect(result.every((candidate) => candidate.participantCount == 4), isTrue);
+    expect(
+        result.every((candidate) => candidate.participantCount == 4), isTrue);
   });
 
   test('pass the passion treats Want to Try as an ideal learner signal', () {
@@ -138,7 +140,6 @@ void main() {
     }
   });
 
-
   test('new to everyone can prioritize a shared Want to Try interest', () {
     final result = ZyncNowEngine.generate(
       participants: [
@@ -157,8 +158,8 @@ void main() {
 
     expect(result, isNotEmpty);
     expect(
-      result.any((candidate) =>
-          candidate.sourceInterestIds.contains('wellness.yoga')),
+      result.any(
+          (candidate) => candidate.sourceInterestIds.contains('wellness.yoga')),
       isTrue,
     );
   });
@@ -242,7 +243,8 @@ void main() {
     );
   });
 
-  test('one participant private free-only budget filters paid activity for everyone',
+  test(
+      'one participant private free-only budget filters paid activity for everyone',
       () {
     final result = ZyncNowEngine.generate(
       participants: [
@@ -303,7 +305,8 @@ void main() {
     }
   });
 
-  test('private setting constraint is enforced for the whole candidate set', () {
+  test('private setting constraint is enforced for the whole candidate set',
+      () {
     final result = ZyncNowEngine.generate(
       participants: [
         participant('a', [
@@ -321,13 +324,14 @@ void main() {
     );
 
     expect(
-      result.any((candidate) =>
-          candidate.sourceInterestIds.contains('media.movies')),
+      result.any(
+          (candidate) => candidate.sourceInterestIds.contains('media.movies')),
       isFalse,
     );
   });
 
-  test('flexible time and either setting behave as no-preference wildcards', () {
+  test('flexible time and either setting behave as no-preference wildcards',
+      () {
     final result = ZyncNowEngine.generate(
       participants: [
         participant('a', [
@@ -383,8 +387,8 @@ void main() {
       isFalse,
     );
     expect(
-      result.any((candidate) =>
-          candidate.sourceInterestIds.contains('food.coffee')),
+      result.any(
+          (candidate) => candidate.sourceInterestIds.contains('food.coffee')),
       isTrue,
     );
   });
@@ -407,7 +411,9 @@ void main() {
     );
   });
 
-  test('engine can use taxonomy defaults for interests without explicit metadata', () {
+  test(
+      'engine can use taxonomy defaults for interests without explicit metadata',
+      () {
     final result = ZyncNowEngine.generate(
       participants: [
         participant('a', [
@@ -448,8 +454,7 @@ void main() {
       limit: 20,
     );
     final badminton = baseline.firstWhere(
-      (candidate) =>
-          candidate.sourceInterestIds.contains('sports.badminton'),
+      (candidate) => candidate.sourceInterestIds.contains('sports.badminton'),
     );
 
     final repeated = ZyncNowEngine.generate(
@@ -464,6 +469,131 @@ void main() {
     );
 
     expect(same.score, lessThan(badminton.score));
+  });
+
+  test('preferred card interest softly boosts a viable activity', () {
+    final participants = [
+      participant('a', [
+        interest('sports.badminton', InterestStrength.like),
+        interest('food.coffee', InterestStrength.like),
+      ]),
+      participant('b', [
+        interest('sports.badminton', InterestStrength.like),
+        interest('food.coffee', InterestStrength.like),
+      ]),
+    ];
+
+    final baseline = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      seed: 'card-focus',
+      limit: 20,
+    );
+    final focused = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      preferredInterestId: 'food.coffee',
+      seed: 'card-focus',
+      limit: 20,
+    );
+
+    final before = baseline.firstWhere(
+      (candidate) => candidate.sourceInterestIds.contains('food.coffee'),
+    );
+    final after = focused.firstWhere(
+      (candidate) => candidate.id == before.id,
+    );
+
+    expect(after.score - before.score, closeTo(18, 0.0001));
+    expect(
+      focused.indexWhere((candidate) => candidate.id == after.id),
+      lessThanOrEqualTo(
+        baseline.indexWhere((candidate) => candidate.id == before.id),
+      ),
+    );
+  });
+
+  test('preferred card interest never overrides a private hard veto', () {
+    final result = ZyncNowEngine.generate(
+      participants: [
+        participant('a', [
+          interest('sports.badminton', InterestStrength.love),
+          interest('food.coffee', InterestStrength.like),
+        ]),
+        participant('b', [
+          interest('sports.badminton', InterestStrength.like),
+          interest('food.coffee', InterestStrength.like),
+        ]),
+      ],
+      mode: ZyncNowMode.familiar,
+      preferredInterestId: 'sports.badminton',
+      participantConstraints: const {
+        'b': ZyncNowConstraints(
+          hardVetoCategories: {'sports'},
+        ),
+      },
+      seed: 'card-focus-hard-veto',
+      limit: 20,
+    );
+
+    expect(
+      result.any((candidate) =>
+          candidate.sourceInterestIds.contains('sports.badminton')),
+      isFalse,
+    );
+    expect(
+      result.any(
+        (candidate) => candidate.sourceInterestIds.contains('food.coffee'),
+      ),
+      isTrue,
+    );
+  });
+
+  test('recent-repeat penalty still wins over preferred card focus', () {
+    final participants = [
+      participant('a', [
+        interest('sports.badminton', InterestStrength.like),
+        interest('food.coffee', InterestStrength.like),
+      ]),
+      participant('b', [
+        interest('sports.badminton', InterestStrength.like),
+        interest('food.coffee', InterestStrength.like),
+      ]),
+    ];
+    final baseline = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      seed: 'card-focus-repeat',
+      limit: 20,
+    );
+    final coffee = baseline.firstWhere(
+      (candidate) => candidate.sourceInterestIds.contains('food.coffee'),
+    );
+
+    final repeated = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      priorActivityKeys: {coffee.repeatKey},
+      seed: 'card-focus-repeat',
+      limit: 20,
+    );
+    final repeatedFocused = ZyncNowEngine.generate(
+      participants: participants,
+      mode: ZyncNowMode.familiar,
+      priorActivityKeys: {coffee.repeatKey},
+      preferredInterestId: 'food.coffee',
+      seed: 'card-focus-repeat',
+      limit: 20,
+    );
+
+    final withoutFocus = repeated.firstWhere(
+      (candidate) => candidate.id == coffee.id,
+    );
+    final withFocus = repeatedFocused.firstWhere(
+      (candidate) => candidate.id == coffee.id,
+    );
+    expect(withFocus.score, withoutFocus.score);
+    expect(withFocus.score, lessThan(coffee.score));
   });
 
   test('surprise mode is deterministic for the same session seed', () {

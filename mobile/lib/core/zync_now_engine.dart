@@ -94,6 +94,7 @@ class ZyncNowEngine {
     ZyncNowConstraints constraints = const ZyncNowConstraints(),
     Map<String, ZyncNowConstraints> participantConstraints = const {},
     Set<String> priorActivityKeys = const {},
+    String? preferredInterestId,
     String seed = '',
     int limit = 3,
   }) {
@@ -131,6 +132,7 @@ class ZyncNowEngine {
             constraints: constraints,
             participantConstraints: participantConstraints,
             priorActivityKeys: priorActivityKeys,
+            preferredInterestId: preferredInterestId,
             seed: seed,
           )
         : _singleInterestCandidates(
@@ -139,6 +141,7 @@ class ZyncNowEngine {
             constraints: constraints,
             participantConstraints: participantConstraints,
             priorActivityKeys: priorActivityKeys,
+            preferredInterestId: preferredInterestId,
             seed: seed,
           );
 
@@ -203,6 +206,7 @@ class ZyncNowEngine {
     required ZyncNowConstraints constraints,
     required Map<String, ZyncNowConstraints> participantConstraints,
     required Set<String> priorActivityKeys,
+    required String? preferredInterestId,
     required String seed,
   }) {
     final result = <ZyncNowCandidate>[];
@@ -279,8 +283,10 @@ class ZyncNowEngine {
           fits.fold<double>(0, (sum, value) => sum + value) / fits.length;
       final coverage = selectedCount / participants.length;
       final repeatKey = _repeatKey(templateId, [interestId]);
-      final repeatPenalty =
-          priorActivityKeys.contains(repeatKey) ? 18.0 : 0.0;
+      final repeated = priorActivityKeys.contains(repeatKey);
+      final repeatPenalty = repeated ? 18.0 : 0.0;
+      final preferredBoost =
+          !repeated && preferredInterestId == interestId ? 18.0 : 0.0;
       final score = minFit * 30 +
           meanFit * 25 +
           coverage * 20 +
@@ -295,6 +301,7 @@ class ZyncNowEngine {
               ) *
               20 +
           5 +
+          preferredBoost +
           _jitter(
             '$seed|${mode.name}|$interestId|$templateId',
             mode == ZyncNowMode.surprise ? 8.0 : 0.8,
@@ -324,14 +331,16 @@ class ZyncNowEngine {
     required ZyncNowConstraints constraints,
     required Map<String, ZyncNowConstraints> participantConstraints,
     required Set<String> priorActivityKeys,
+    required String? preferredInterestId,
     required String seed,
   }) {
     final ids = <String>{};
     for (final participant in participants) {
       for (final interest in participant.interests) {
         final definition = InterestCatalog.byId(interest.id);
-        final activity =
-            definition == null ? null : InterestActivityResolver.resolve(definition);
+        final activity = definition == null
+            ? null
+            : InterestActivityResolver.resolve(definition);
         if (activity?.eligible ?? false) {
           ids.add(interest.id);
         }
@@ -411,23 +420,29 @@ class ZyncNowEngine {
         final meanFit =
             fits.fold<double>(0, (sum, value) => sum + value) / fits.length;
         final coverage = selectedCount / participants.length;
-        final boundedSharedTags =
-            sharedTags.isEmpty ? 1 : (sharedTags.length > 3 ? 3 : sharedTags.length);
-        final crossFit = sharedTags.isNotEmpty
-            ? 0.75 + boundedSharedTags * 0.08
-            : 0.55;
+        final boundedSharedTags = sharedTags.isEmpty
+            ? 1
+            : (sharedTags.length > 3 ? 3 : sharedTags.length);
+        final crossFit =
+            sharedTags.isNotEmpty ? 0.75 + boundedSharedTags * 0.08 : 0.55;
 
         final repeatKey = _repeatKey(
           'activity.crossover_challenge',
           [aId, bId],
         );
-        final repeatPenalty =
-            priorActivityKeys.contains(repeatKey) ? 18.0 : 0.0;
+        final repeated = priorActivityKeys.contains(repeatKey);
+        final repeatPenalty = repeated ? 18.0 : 0.0;
+        final preferredBoost = !repeated &&
+                preferredInterestId != null &&
+                (aId == preferredInterestId || bId == preferredInterestId)
+            ? 12.0
+            : 0.0;
         final score = minFit * 30 +
             meanFit * 25 +
             coverage * 20 +
             crossFit * 20 +
             5 +
+            preferredBoost +
             _jitter('$seed|crossover|$aId|$bId', 1.2) -
             repeatPenalty;
 
@@ -463,19 +478,16 @@ class ZyncNowEngine {
         fits.fold<double>(0, (sum, value) => sum + value) / fits.length;
 
     return switch (mode) {
-      ZyncNowMode.familiar =>
-        selectedStrongCount >= 2 &&
-            selectedStrongCount / participantCount >= 0.5 &&
-            meanFit >= 0.45,
-      ZyncNowMode.passThePassion =>
-        selectedStrongCount >= 1 &&
-            selectedStrongCount < participantCount &&
-            activity.peerTeachable &&
-            activity.firstTimerFriendly,
-      ZyncNowMode.newToEveryone =>
-        selectedStrongCount == 0 &&
-            activity.firstTimerFriendly &&
-            meanFit >= 0.22,
+      ZyncNowMode.familiar => selectedStrongCount >= 2 &&
+          selectedStrongCount / participantCount >= 0.5 &&
+          meanFit >= 0.45,
+      ZyncNowMode.passThePassion => selectedStrongCount >= 1 &&
+          selectedStrongCount < participantCount &&
+          activity.peerTeachable &&
+          activity.firstTimerFriendly,
+      ZyncNowMode.newToEveryone => selectedStrongCount == 0 &&
+          activity.firstTimerFriendly &&
+          meanFit >= 0.22,
       ZyncNowMode.surprise => meanFit >= 0.18,
       ZyncNowMode.meetInTheMiddle => false,
     };
@@ -496,10 +508,9 @@ class ZyncNowEngine {
           (selectedStrongCount / participantCount) * 0.4 +
               (wantToTryCount / participantCount) * 0.2 +
               (activity.peerTeachable ? 0.4 : 0),
-        ZyncNowMode.newToEveryone =>
-          activity.firstTimerFriendly
-              ? 0.6 + (wantToTryCount / participantCount) * 0.3 + meanFit * 0.1
-              : 0,
+        ZyncNowMode.newToEveryone => activity.firstTimerFriendly
+            ? 0.6 + (wantToTryCount / participantCount) * 0.3 + meanFit * 0.1
+            : 0,
         ZyncNowMode.surprise => 0.5 + meanFit * 0.5,
         ZyncNowMode.meetInTheMiddle => 0,
       };
@@ -723,9 +734,7 @@ class ZyncNowEngine {
 
   static String _candidateFamily(ZyncNowCandidate candidate) {
     if (candidate.sourceInterestIds.isEmpty) return candidate.templateId;
-    return InterestCatalog
-            .byId(candidate.sourceInterestIds.first)
-            ?.category ??
+    return InterestCatalog.byId(candidate.sourceInterestIds.first)?.category ??
         candidate.templateId;
   }
 }

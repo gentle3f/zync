@@ -75,6 +75,7 @@ class ZyncNowRoomHostCoordinator {
   ZyncNowConsensusBallot? _hostBallot;
   ZyncNowConsensusResult? _result;
   List<ZyncNowCandidate> _finalists = const [];
+  String? _preferredInterestId;
   bool _needsRelaxation = false;
 
   ZyncNowRoomStage get stage => _stage;
@@ -213,6 +214,7 @@ class ZyncNowRoomHostCoordinator {
 
   Future<List<ZyncNowCandidate>> prepareConsensus({
     Set<String> priorActivityKeys = const {},
+    String? preferredInterestId,
     String seed = '',
   }) async {
     final collection = await collectPrivateContexts();
@@ -224,6 +226,9 @@ class ZyncNowRoomHostCoordinator {
     }
 
     _contexts = collection.contexts;
+    final preferred = preferredInterestId?.trim();
+    _preferredInterestId =
+        preferred == null || preferred.isEmpty ? null : preferred;
     return _prepareFromCurrentContexts(
       priorActivityKeys: priorActivityKeys,
       seed: seed,
@@ -277,8 +282,7 @@ class ZyncNowRoomHostCoordinator {
     ];
     final privateConstraints =
         ZyncNowConstraintsTransport.engineConstraints(_contexts);
-    final modes =
-        ZyncNowConstraintsTransport.preferredModes(_contexts.values);
+    final modes = ZyncNowConstraintsTransport.preferredModes(_contexts.values);
 
     final buckets = <List<ZyncNowCandidate>>[
       for (final mode in modes)
@@ -287,6 +291,7 @@ class ZyncNowRoomHostCoordinator {
           mode: mode,
           participantConstraints: privateConstraints,
           priorActivityKeys: priorActivityKeys,
+          preferredInterestId: _preferredInterestId,
           seed: '$seed|${mode.name}',
           limit: 6,
         ),
@@ -425,8 +430,7 @@ class ZyncNowRoomHostCoordinator {
     );
 
     _result = result;
-    _needsRelaxation =
-        result.status == ZyncNowConsensusStatus.needsRelaxation;
+    _needsRelaxation = result.status == ZyncNowConsensusStatus.needsRelaxation;
     _stage = ZyncNowRoomStage.result;
     await _publishResultState();
     return result;
@@ -497,16 +501,11 @@ class ZyncNowRoomHostCoordinator {
       readyCount: participantCount,
       roundNumber: _roundNumber,
       mechanicType: 'zync_now_result',
-      title: _needsRelaxation
-          ? _copy('noFitTitle')
-          : _copy('resultTitle'),
-      prompt: _needsRelaxation
-          ? _copy('noFitPrompt')
-          : _copy('resultPrompt'),
+      title: _needsRelaxation ? _copy('noFitTitle') : _copy('resultTitle'),
+      prompt: _needsRelaxation ? _copy('noFitPrompt') : _copy('resultPrompt'),
       inputKind: round?.inputKind ?? '',
       options: round?.optionsFor(locale) ?? const [],
-      resultOptionId:
-          result == null ? null : round?.optionIdForResult(result),
+      resultOptionId: result == null ? null : round?.optionIdForResult(result),
     );
     await _publish(state);
   }
@@ -700,8 +699,7 @@ class ZyncNowRoomParticipantCoordinator {
       throw StateError('Zync Now consensus is not open');
     }
 
-    final input =
-        ZyncNowConsensusTransportRound.encodeBoundedOptionBallot(
+    final input = ZyncNowConsensusTransportRound.encodeBoundedOptionBallot(
       state: state,
       participantId: participant.participantId,
       ratingsByOptionId: ratingsByOptionId,

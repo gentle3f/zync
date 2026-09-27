@@ -5,6 +5,29 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — COLLECTION TO REAL-WORLD ACTION:
+Collected cards now have a direct gameplay purpose beyond ownership. In My Zync
+World, an activity-eligible card detail can start Zync Now with that canonical
+interest as a soft focus. If the interest is not already in Interest DNA it is
+added as Want to Try first; existing Like/Love is never downgraded. The engine
+adds a bounded preference only after normal eligibility/constraint checks
+(+18 exact-interest, +12 crossover), never overrides private/shared hard vetoes,
+and applies no focus boost to recent-repeat candidates. Focus is carried through
+the standalone room coordinator and explicit relaxation retries. The lobby
+clearly tells players that private limits and hard vetoes still win. Previous
+participant-continuity behavior now has screen-level tests proving standalone and
+Group participants persist the same chosen pending activity once and return a
+positive continuation signal. Validation: focused collection/World/Zync Now set
+36/36 PASS; canonical non-golden mobile suite 349/349 PASS; full flutter analyze
+No issues found. Main-app real-browser subjective review was not completed due a
+local web-server/session issue, so no subjective UX approval is claimed. No
+Actions, Vercel, Production, Play, release, paid generation, economy/RNG/backend
+or Card FX changes.
+
+`AI_STATE/HANDOFF_20260927_COLLECTION_TO_REAL_WORLD_ACTION.md`
+
+Previous product checkpoint:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — FIRST-JOURNEY CONTINUITY:
 The first complete player journey no longer dead-ends after discovery. Pair Zync
 recap can now continue directly into Zync Now; choosing the real-world activity

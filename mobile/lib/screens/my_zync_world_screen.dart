@@ -8,6 +8,7 @@ import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_inventory.dart';
 import '../core/cardverse_models.dart';
 import '../core/cardverse_session_store.dart';
+import '../core/interest_activity_resolver.dart';
 import '../core/interest_catalog.dart';
 import '../core/local_store.dart';
 import '../core/models.dart';
@@ -1379,11 +1380,36 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     required CardFinishTier finish,
   }) async {
     final interestId = item.variant.interestId;
+    final definition = InterestCatalog.byId(interestId);
+    final activityEligible = definition != null &&
+        (InterestActivityResolver.resolve(definition)?.eligible ?? false);
     final current =
         _profile.interests.where((entry) => entry.id == interestId).firstOrNull;
     var wantToTry = current?.strength == InterestStrength.wantToTry;
 
-    await showModalBottomSheet<void>(
+    Future<void> ensureWantToTry() async {
+      final strength = _profile.interests
+          .where((entry) => entry.id == interestId)
+          .firstOrNull
+          ?.strength;
+      if (strength == InterestStrength.wantToTry ||
+          strength == InterestStrength.like ||
+          strength == InterestStrength.love) {
+        return;
+      }
+      final nextProfile = _profile.copyWith(
+        interests: CardInterestIntentBridge.upsertWantToTry(
+          existing: _profile.interests,
+          interestId: interestId,
+        ),
+      );
+      await widget.onProfileChanged(nextProfile);
+      if (!mounted) return;
+      setState(() => _profile = nextProfile);
+      wantToTry = true;
+    }
+
+    final startActivity = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -1472,6 +1498,34 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
+                  if (activityEligible) ...[
+                    FilledButton.icon(
+                      key: const ValueKey(
+                        'zync-world-card-start-activity',
+                      ),
+                      onPressed: () async {
+                        await ensureWantToTry();
+                        if (!mounted || !sheetContext.mounted) return;
+                        Navigator.of(sheetContext).pop(true);
+                      },
+                      icon: const Icon(Icons.directions_walk_rounded),
+                      label: Text(
+                        _isZh ? '用呢個興趣搵件事做' : 'Find something to do with this',
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      _isZh
+                          ? 'Zync 會優先考慮呢個興趣，但所有人嘅私下限制同 hard veto 仍然優先。'
+                          : 'Zync will favor this interest when it fits everyone. Private limits and hard vetoes still win.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: ZyncPalette.inkSoft),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   if (stronger)
                     OutlinedButton.icon(
                       onPressed: null,
@@ -1542,6 +1596,20 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         },
       ),
     );
+
+    if (startActivity == true && mounted) {
+      final activityChosen = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) => ZyncNowHostScreen(
+            profile: _profile,
+            preferredInterestId: interestId,
+          ),
+        ),
+      );
+      if (activityChosen == true && mounted) {
+        await _load();
+      }
+    }
   }
 
   CardFinishTier _finish(String raw) => switch (raw) {
