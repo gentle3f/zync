@@ -5,7 +5,32 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PRODUCT CONTINUATION — REWARD REVEAL FLOW SPLIT:
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — REWARD REVEAL TEST LAB + GOOGLE AUTH DIAGNOSTICS:
+A dedicated local Reward Reveal Test entrypoint now exposes the two production
+presentation flows directly with immutable proof receipts: Single Draw — 1 Card
+(no wrapper; card back -> Reveal -> suspense -> flip/bloom/rarity payoff -> real
+front) and Pack Opening — 5 Cards (production B — Split Open; five-layer stack
+visible through the first physical split -> full-stack extraction -> sequential
+five-card reveal -> recap). No account/token/inventory/backend RNG/economy change
+is required to test. Google linking was also separated into its real failure
+boundaries: Chrome/web currently has no Google identity implementation and now
+fails/labels that explicitly instead of looking like a generic OAuth failure;
+production/QA account UI disables Google linking when the Android native bridge
+is unavailable. Android's historical chooser-return failure remains most strongly
+explained by old QA APKs being signed by different ephemeral debug certificates,
+while Google Android OAuth requires the Android client to match package + signing
+SHA-1. Existing fail-closed stable QA signing direction is preserved. Current
+official Android guidance confirms the wrapper's MutableContextWrapper(Activity)
+pattern is correct; nonce/JWT/session validation is unchanged. Validation:
+combined focused reward/pack/single/Google run 15/15 PASS; latest Reward Lab +
+Google auth subset 7/7 PASS; targeted flutter analyze No issues; Android wrapper
+self-test PASS; git diff --check clean. Local Reward Reveal Lab served HTTP 200
+on port 7358. No Android device/emulator was attached, so no fresh native
+credential exchange is claimed.
+
+`AI_STATE/HANDOFF_20260927_REWARD_REVEAL_LAB_GOOGLE_AUTH_DIAGNOSTICS.md`
+
+Previous product checkpoint — REWARD REVEAL FLOW SPLIT:
 Production reward presentation is now explicitly separated into two flows.
 Single Draw stays a dedicated one-card reveal with no booster wrapper or pack
 stack: one card back -> Reveal -> suspense -> flip -> shared bloom -> rarity

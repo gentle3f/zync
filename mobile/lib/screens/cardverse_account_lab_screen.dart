@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/cardverse_cloud_client.dart';
@@ -28,6 +29,20 @@ class _CardverseAccountLabScreenState
 
   bool get _isZh =>
       Localizations.localeOf(context).toLanguageTag().startsWith('zh');
+
+  bool get _apiConfigured =>
+      const String.fromEnvironment('ZYNC_API_BASE').trim().isNotEmpty;
+
+  bool get _googleClientConfigured => const String.fromEnvironment(
+        'ZYNC_GOOGLE_SERVER_CLIENT_ID',
+      )
+          .trim()
+          .endsWith('.apps.googleusercontent.com');
+
+  String get _runtimeLabel {
+    if (kIsWeb) return 'web';
+    return defaultTargetPlatform.name;
+  }
 
   @override
   void initState() {
@@ -173,6 +188,14 @@ class _CardverseAccountLabScreenState
         return _isZh
             ? 'Google 登入視窗已經開緊。'
             : 'A Google sign-in request is already active.';
+      case 'google_sign_in_platform_unsupported':
+        return _isZh
+            ? '呢個 build 嘅 Google identity bridge 只支援 Android；Chrome／Web 未實作。'
+            : 'This build has an Android-only Google identity bridge; Chrome/web is not implemented.';
+      case 'google_sign_in_native_bridge_missing':
+        return _isZh
+            ? 'Android Google identity bridge 未載入；請確認 build 經 Zync Android wrapper 生成。'
+            : 'The Android Google identity bridge is missing; build with the Zync Android wrapper.';
       default:
         return _isZh
             ? 'Google 登入失敗。請確認 Android OAuth 設定。'
@@ -214,6 +237,42 @@ class _CardverseAccountLabScreenState
                 ),
               ),
               const SizedBox(height: 18),
+              ZyncSurface(
+                key: const ValueKey('cardverse-google-diagnostic-state'),
+                shadow: false,
+                borderColor: const Color(0xFFE0D9FF),
+                backgroundColor: const Color(0xFFF9F8FC),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Runtime diagnostics',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text('runtime=$_runtimeLabel'),
+                    Text('api_base_configured=$_apiConfigured'),
+                    Text('google_web_client_configured=$_googleClientConfigured'),
+                    Text(
+                      'native_android_bridge_available='
+                      '${GoogleIdentityRuntime.nativeAndroidBridgeAvailable}',
+                    ),
+                    if (kIsWeb) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        'Chrome can exercise UI, but Google linking is not '
+                        'implemented on web in this build. Use an Android wrapper '
+                        'for the native Credential Manager smoke.',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: ZyncPalette.inkSoft),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
@@ -239,7 +298,11 @@ class _CardverseAccountLabScreenState
               const SizedBox(height: 22),
               FilledButton.icon(
                 key: const ValueKey('cardverse-google-sign-in'),
-                onPressed: _busy || _signedIn ? null : _signIn,
+                onPressed: _busy ||
+                        _signedIn ||
+                        !GoogleIdentityRuntime.nativeAndroidBridgeAvailable
+                    ? null
+                    : _signIn,
                 icon: _busy && !_signedIn
                     ? const SizedBox(
                         width: 18,

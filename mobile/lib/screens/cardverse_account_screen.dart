@@ -33,6 +33,9 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
   bool get _isZh =>
       Localizations.localeOf(context).toLanguageTag().startsWith('zh');
 
+  bool get _googleLinkAvailable =>
+      GoogleIdentityRuntime.nativeAndroidBridgeAvailable;
+
   @override
   void initState() {
     super.initState();
@@ -93,13 +96,23 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
     } on GoogleIdentityException catch (error) {
       if (!mounted) return;
       setState(() {
-        _message = error.code == 'google_sign_in_cancelled'
-            ? (_isZh
-                ? '你取消咗 Google 登入。'
-                : 'Google sign-in was cancelled.')
-            : (_isZh
-                ? '今次未能完成 Google 登入，請再試。'
-                : 'Google sign-in could not be completed. Please try again.');
+        _message = switch (error.code) {
+          'google_sign_in_cancelled' => _isZh
+              ? '你取消咗 Google 登入。'
+              : 'Google sign-in was cancelled.',
+          'google_sign_in_platform_unsupported' => _isZh
+              ? '呢個版本暫時只支援 Android Google linking；Chrome／Web 未有 identity bridge。'
+              : 'This build currently supports Google linking on Android only; the Chrome/web identity bridge is not implemented.',
+          'google_sign_in_native_bridge_missing' => _isZh
+              ? 'Android Google identity bridge 未載入；請用已套用 Zync Android wrapper 嘅 build。'
+              : 'The Android Google identity bridge is missing from this build. Use a build generated with the Zync Android wrapper.',
+          'google_sign_in_configuration_invalid' => _isZh
+              ? 'Google 登入設定無效；請檢查 Web Client ID。'
+              : 'Google sign-in configuration is invalid. Check the Web client ID.',
+          _ => _isZh
+              ? '今次未能完成 Google 登入，請再試。'
+              : 'Google sign-in could not be completed. Please try again.',
+        };
       });
     } on CardverseGoogleAuthException {
       if (!mounted) return;
@@ -291,12 +304,40 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                             ),
                             const SizedBox(height: 14),
                           ],
+                          if (!_signedIn && !_googleLinkAvailable) ...[
+                            ZyncSurface(
+                              key: const ValueKey(
+                                'zync-account-google-platform-note',
+                              ),
+                              shadow: false,
+                              padding: const EdgeInsets.all(14),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.phone_android_rounded,
+                                    color: ZyncPalette.plum,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      _isZh
+                                          ? 'Google 連結目前使用 Android 原生 Credential Manager；Chrome／Web 呢個 build 未實作 Google identity。請喺 Android build 連結帳戶。'
+                                          : 'Google linking currently uses Android Credential Manager. This build has no Chrome/web Google identity flow; link the account from an Android build.',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                          ],
                           if (!_signedIn)
                             FilledButton.icon(
                               key: const ValueKey(
                                 'zync-account-google-sign-in',
                               ),
-                              onPressed: _busy ? null : _signIn,
+                              onPressed:
+                                  _busy || !_googleLinkAvailable ? null : _signIn,
                               icon: _busy
                                   ? const SizedBox.square(
                                       dimension: 18,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class GoogleIdentityException implements Exception {
@@ -17,6 +18,18 @@ abstract interface class GoogleIdentityProvider {
   });
 }
 
+class GoogleIdentityRuntime {
+  const GoogleIdentityRuntime._();
+
+  static bool get nativeAndroidBridgeAvailable =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
+  static String get label {
+    if (kIsWeb) return 'web';
+    return defaultTargetPlatform.name;
+  }
+}
+
 class NativeGoogleIdentityProvider implements GoogleIdentityProvider {
   const NativeGoogleIdentityProvider({
     MethodChannel channel = const MethodChannel('zync/google_identity'),
@@ -29,6 +42,12 @@ class NativeGoogleIdentityProvider implements GoogleIdentityProvider {
     required String serverClientId,
     required String nonce,
   }) async {
+    if (!GoogleIdentityRuntime.nativeAndroidBridgeAvailable) {
+      throw const GoogleIdentityException(
+        'google_sign_in_platform_unsupported',
+      );
+    }
+
     final cleanClientId = serverClientId.trim();
     final cleanNonce = nonce.trim();
     if (!cleanClientId.endsWith('.apps.googleusercontent.com') ||
@@ -52,6 +71,10 @@ class NativeGoogleIdentityProvider implements GoogleIdentityProvider {
         throw const GoogleIdentityException('google_sign_in_token_invalid');
       }
       return token;
+    } on MissingPluginException {
+      throw const GoogleIdentityException(
+        'google_sign_in_native_bridge_missing',
+      );
     } on PlatformException catch (error) {
       final details = error.details;
       String detail = '';
