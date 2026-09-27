@@ -12,22 +12,27 @@ import '../core/interest_catalog.dart';
 import '../core/local_store.dart';
 import '../core/models.dart';
 import '../core/quest_engine.dart';
+import '../core/zync_now_memory.dart';
 import '../ui/zync_design.dart';
+import '../widgets/cardverse_single_draw_reveal.dart';
 import '../widgets/zync_card_preview.dart';
 import 'achievement_screen.dart';
 import 'cardverse_account_screen.dart';
 import 'cardverse_pack_opening_lab_screen.dart';
 import 'quest_board_screen.dart';
+import 'zync_now_host_screen.dart';
 
 class MyZyncWorldScreen extends StatefulWidget {
   const MyZyncWorldScreen({
     super.key,
     required this.profile,
     required this.onProfileChanged,
+    this.sessionStore,
   });
 
   final LocalProfile profile;
   final Future<void> Function(LocalProfile profile) onProfileChanged;
+  final CardverseSessionStore? sessionStore;
 
   @override
   State<MyZyncWorldScreen> createState() => _MyZyncWorldScreenState();
@@ -42,11 +47,13 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   CardverseInventorySnapshot? _inventory;
   AchievementSnapshot? _achievement;
   ZyncQuestBoardSnapshot? _quests;
+  ZyncNowActivityMemory? _pendingActivity;
   bool _loading = true;
   String _error = '';
   String? _openingPackId;
   bool _claimingDaily = false;
   bool _drawingCard = false;
+  bool _pendingActivityBusy = false;
 
   bool get _isZh =>
       Localizations.localeOf(context).toLanguageTag().startsWith('zh');
@@ -56,7 +63,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   void initState() {
     super.initState();
     _cloud = CardverseCloudClient();
-    _sessions = CardverseSessionStore();
+    _sessions = widget.sessionStore ?? CardverseSessionStore();
     _profile = widget.profile;
     _load();
   }
@@ -77,6 +84,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
 
     final history = await LocalStore.loadHistory();
     final events = await LocalStore.loadProgressEvents();
+    final pendingActivity = await LocalStore.loadPendingZyncNowActivity();
     final achievement = AchievementService.evaluate(
       history,
       events: events,
@@ -95,6 +103,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _inventory = null;
         _achievement = achievement;
         _quests = quests;
+        _pendingActivity = pendingActivity;
         _loading = false;
       });
       return;
@@ -108,6 +117,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _inventory = inventory;
         _achievement = achievement;
         _quests = quests;
+        _pendingActivity = pendingActivity;
         _loading = false;
       });
     } on CardverseCloudException catch (error) {
@@ -118,6 +128,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
           _session = null;
           _inventory = null;
           _achievement = achievement;
+          _quests = quests;
+          _pendingActivity = pendingActivity;
           _loading = false;
         });
         return;
@@ -128,6 +140,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _inventory = null;
         _achievement = achievement;
         _quests = quests;
+        _pendingActivity = pendingActivity;
         _loading = false;
         _error = _isZh
             ? '暫時連接唔到你嘅 Cardverse 收藏。'
@@ -145,6 +158,202 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       ),
     );
     await _load();
+  }
+
+  Future<void> _startZyncNow() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => ZyncNowHostScreen(profile: _profile),
+      ),
+    );
+    if (mounted) {
+      await _load();
+    }
+  }
+
+  void _keepPendingActivity() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _isZh
+              ? '保留喺「下一件事」，做完再返嚟就得。'
+              : 'Kept in Next Up. Come back when you have done it.',
+        ),
+      ),
+    );
+  }
+
+  Future<void> _recordPendingActivityOutcome(
+    ZyncNowActivityStatus status,
+  ) async {
+    final memory = _pendingActivity;
+    if (memory == null || _pendingActivityBusy) return;
+    if (status == ZyncNowActivityStatus.chosen) {
+      _keepPendingActivity();
+      return;
+    }
+
+    setState(() => _pendingActivityBusy = true);
+    try {
+      if (status == ZyncNowActivityStatus.skipped) {
+        await LocalStore.recordZyncNowOutcome(
+          memoryId: memory.id,
+          status: status,
+        );
+        if (!mounted) return;
+        setState(() => _pendingActivity = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _isZh ? '已從「下一件事」移除。' : 'Removed from Next Up.',
+            ),
+          ),
+        );
+        return;
+      }
+
+      final now = DateTime.now();
+      final before = ZyncQuestEngine.evaluate(
+        events: await LocalStore.loadProgressEvents(),
+        now: now,
+        timezoneOffset: now.timeZoneOffset,
+      );
+      final updated = await LocalStore.recordZyncNowOutcome(
+        memoryId: memory.id,
+        status: ZyncNowActivityStatus.completed,
+        at: now,
+      );
+      if (updated == null) {
+        await _load();
+        return;
+      }
+      final after = ZyncQuestEngine.evaluate(
+        events: await LocalStore.loadProgressEvents(),
+        now: now,
+        timezoneOffset: now.timeZoneOffset,
+      );
+      final delta = ZyncQuestBoardDelta.between(before, after);
+      if (!mounted) return;
+      setState(() {
+        _pendingActivity = null;
+        _quests = after;
+      });
+      HapticFeedback.mediumImpact();
+
+      final openBoard = await _showActivityProgress(delta);
+      if (!mounted) return;
+      if (openBoard == true) {
+        await Navigator.of(context).push<bool>(
+          MaterialPageRoute<bool>(
+            builder: (_) => const QuestBoardScreen(returnOnClaim: true),
+          ),
+        );
+      }
+      if (mounted) {
+        await _load();
+      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _isZh
+                ? '今次更新未完成，請再試。'
+                : 'That update did not finish. Please try again.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _pendingActivityBusy = false);
+      }
+    }
+  }
+
+  Future<bool?> _showActivityProgress(
+    ZyncQuestBoardDelta delta,
+  ) {
+    final advanced = delta.advancedCount;
+    final completed = delta.newlyCompletedCount;
+    return showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFFDFCFB),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: const EdgeInsets.fromLTRB(22, 14, 22, 28),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD7D2DE),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const ZyncIconTile(
+                icon: Icons.check_circle_rounded,
+                size: 66,
+                backgroundColor: Color(0xFFDDF5EC),
+                foregroundColor: Color(0xFF176B57),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                _isZh ? '做咗，今次有計數。' : 'You did it. It counts.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _isZh
+                    ? (completed > 0
+                        ? '今次真人活動推進咗 $advanced 個任務，其中 $completed 個已完成。'
+                        : '今次真人活動推進咗 $advanced 個任務。')
+                    : (completed > 0
+                        ? 'This real-world activity advanced $advanced quests and completed $completed.'
+                        : 'This real-world activity advanced $advanced quests.'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ZyncPalette.inkSoft),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const ValueKey('zync-world-view-quest-progress'),
+                  onPressed: () => Navigator.of(sheetContext).pop(true),
+                  icon: Icon(
+                    completed > 0
+                        ? Icons.card_giftcard_rounded
+                        : Icons.explore_outlined,
+                  ),
+                  label: Text(
+                    completed > 0
+                        ? (_isZh ? '睇任務／領獎' : 'View quests & rewards')
+                        : (_isZh ? '睇任務進度' : 'View quest progress'),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              TextButton(
+                onPressed: () => Navigator.of(sheetContext).pop(false),
+                child:
+                    Text(_isZh ? '留喺 My Zync World' : 'Stay in My Zync World'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   DateTime _dailyCycleStart() {
@@ -178,8 +387,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       final cycle = _dailyCycleStart();
       await _cloud.claimDailyLogin(
         sessionToken: session.token,
-        idempotencyKey:
-            'daily-login:${cycle.millisecondsSinceEpoch}',
+        idempotencyKey: 'daily-login:${cycle.millisecondsSinceEpoch}',
         timezoneOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes,
       );
       if (!mounted) return;
@@ -187,9 +395,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _isZh
-                ? '今日卡牌抽取 +1。'
-                : 'Your daily card draw is ready.',
+            _isZh ? '今日卡牌抽取 +1。' : 'Your daily card draw is ready.',
           ),
         ),
       );
@@ -197,9 +403,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     } on CardverseCloudException catch (error) {
       if (!mounted) return;
       final message = switch (error.failure) {
-        CardverseCloudFailure.conflict => _isZh
-            ? '今日嘅登入獎勵已經領取。'
-            : 'Today\'s login reward is already claimed.',
+        CardverseCloudFailure.conflict =>
+          _isZh ? '今日嘅登入獎勵已經領取。' : 'Today\'s login reward is already claimed.',
         CardverseCloudFailure.disabled => _isZh
             ? 'Daily Draw 喺呢個環境仲未開啟。'
             : 'Daily Draw is not enabled in this environment yet.',
@@ -220,9 +425,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     CardverseInventorySnapshot inventory,
   ) async {
     final session = _session;
-    if (session == null ||
-        _drawingCard ||
-        inventory.availableDrawTokens < 1) {
+    if (session == null || _drawingCard || inventory.availableDrawTokens < 1) {
       return;
     }
 
@@ -236,7 +439,6 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         ),
       );
       if (!mounted) return;
-      HapticFeedback.heavyImpact();
       await _showSingleDraw(receipt);
       await _load();
     } on CardverseCloudException catch (error) {
@@ -263,94 +465,12 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
 
   Future<void> _showSingleDraw(
     CardverseSingleDrawReceipt receipt,
-  ) async {
-    final item = receipt.item;
-    final recipe =
-        CardVisualRecipeResolver.resolve(item.variant.interestId);
-    final interest = InterestCatalog.byId(item.variant.interestId);
-    final title =
-        interest?.labelFor(_locale) ?? item.variant.interestId;
-    final finish = _finish(item.variant.finishId);
-
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) => Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFFDFCFB),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        padding: const EdgeInsets.fromLTRB(22, 14, 22, 30),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 44,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD7D2DE),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                _isZh ? '你抽到一張新卡' : 'You drew a card',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                _isZh
-                    ? '結果由 Cardverse server 決定；1 個 Draw Token 已經使用。'
-                    : 'The Cardverse server decided this result; 1 Draw Token was used.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: ZyncPalette.inkSoft),
-              ),
-              const SizedBox(height: 18),
-              if (recipe != null)
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 330),
-                  child: AspectRatio(
-                    aspectRatio: 5 / 7,
-                    child: ZyncCardPreview(
-                      recipe: recipe,
-                      title: title,
-                      subtitle: _finishLabel(finish),
-                      finish: finish,
-                      editionLabel: _edition(item.variant.editionId),
-                      cardNumberLabel: 'NEW',
-                      animateFinish: true,
-                    ),
-                  ),
-                )
-              else
-                ZyncSurface(
-                  shadow: false,
-                  child: ListTile(
-                    leading: const Icon(Icons.style_outlined),
-                    title: Text(title),
-                    subtitle: Text(_finishLabel(finish)),
-                  ),
-                ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => Navigator.of(sheetContext).pop(),
-                  child: Text(_isZh ? '加入收藏' : 'Add to collection'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  ) =>
+      showCardverseSingleDrawReveal(
+        context: context,
+        receipt: receipt,
+        locale: _locale,
+      );
 
   Future<void> _openPack(CardverseUnopenedPack pack) async {
     final session = _session;
@@ -442,6 +562,10 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 36),
         children: [
           _hero(),
+          const SizedBox(height: 16),
+          _pendingActivity != null
+              ? _pendingActivityPanel()
+              : _nextActivityPanel(),
           const SizedBox(height: 18),
           _progressHub(),
           const SizedBox(height: 18),
@@ -490,6 +614,10 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         padding: const EdgeInsets.all(24),
         children: [
           _hero(),
+          const SizedBox(height: 16),
+          _pendingActivity != null
+              ? _pendingActivityPanel()
+              : _nextActivityPanel(),
           const SizedBox(height: 18),
           ZyncSurface(
             child: Column(
@@ -515,6 +643,10 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
       children: [
         _hero(inventory: inventory),
+        const SizedBox(height: 16),
+        _pendingActivity != null
+            ? _pendingActivityPanel()
+            : _nextActivityPanel(),
         const SizedBox(height: 16),
         _dailyDrawPanel(inventory),
         const SizedBox(height: 16),
@@ -543,6 +675,188 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         else
           _collectionGrid(inventory),
       ],
+    );
+  }
+
+  Widget _nextActivityPanel() => KeyedSubtree(
+        key: const ValueKey('zync-world-next-activity'),
+        child: ZyncHeroPanel(
+          padding: const EdgeInsets.all(18),
+          startColor: const Color(0xFFFFF5D9),
+          endColor: const Color(0xFFFFE8D8),
+          accentColor: ZyncPalette.orangeDeep,
+          radius: 24,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ZyncIconTile(
+                icon: Icons.explore_rounded,
+                size: 50,
+                backgroundColor: Colors.white,
+                foregroundColor: ZyncPalette.orangeDeep,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isZh ? '下一步，唔係再望住個畫面' : 'Next step: leave the screen',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      _isZh
+                          ? '叫 Zync 幫你哋揀一件真係出去做嘅事。做完返嚟，進度、獎勵同收藏會接住落去。'
+                          : 'Let Zync pick something real to do together. Come back after doing it and your progress, rewards and collection continue from here.',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: ZyncPalette.inkSoft),
+                    ),
+                    const SizedBox(height: 14),
+                    FilledButton.icon(
+                      key: const ValueKey('zync-world-start-next-activity'),
+                      onPressed: _startZyncNow,
+                      icon: const Icon(Icons.bolt_rounded),
+                      label: Text(
+                        _isZh ? '搵下一件事做' : 'Find something to do',
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: ZyncPalette.ink,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _pendingActivityPanel() {
+    final memory = _pendingActivity;
+    if (memory == null) return const SizedBox.shrink();
+    final candidate = memory.toCandidate();
+    final people = memory.groupSize.clamp(2, 99);
+
+    return KeyedSubtree(
+      key: const ValueKey('zync-world-pending-activity'),
+      child: ZyncHeroPanel(
+        padding: const EdgeInsets.all(18),
+        startColor: const Color(0xFFEFFAF6),
+        endColor: const Color(0xFFF1EEFF),
+        accentColor: const Color(0xFF176B57),
+        radius: 24,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const ZyncIconTile(
+                  icon: Icons.directions_walk_rounded,
+                  size: 50,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Color(0xFF176B57),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isZh ? '下一件真實世界嘅事' : 'Your next real-world move',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        _isZh
+                            ? '上次大家揀咗呢樣。做完返嚟，Zync 會幫你計入任務進度。'
+                            : 'This is what you picked together. Come back after doing it and Zync will count the progress.',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: ZyncPalette.inkSoft),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              candidate.titleFor(_locale),
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 7),
+            Text(
+              candidate.instructionFor(_locale),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 13),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ZyncStatusPill(
+                  icon: Icons.people_alt_outlined,
+                  label: _isZh ? '$people 人一齊' : '$people people',
+                  foregroundColor: ZyncPalette.plum,
+                  backgroundColor: Colors.white.withValues(alpha: 0.78),
+                ),
+                ZyncStatusPill(
+                  icon: Icons.schedule_rounded,
+                  label: _isZh ? '待完成' : 'Pending',
+                  foregroundColor: const Color(0xFF8B5A00),
+                  backgroundColor: const Color(0xFFFFF5D9),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 9,
+              runSpacing: 9,
+              children: [
+                FilledButton.icon(
+                  key: const ValueKey('zync-world-pending-complete'),
+                  onPressed: _pendingActivityBusy
+                      ? null
+                      : () => _recordPendingActivityOutcome(
+                            ZyncNowActivityStatus.completed,
+                          ),
+                  icon: _pendingActivityBusy
+                      ? const SizedBox.square(
+                          dimension: 17,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.check_circle_outline_rounded),
+                  label: Text(_isZh ? '做咗' : 'Yes, we did it'),
+                ),
+                OutlinedButton(
+                  key: const ValueKey('zync-world-pending-keep'),
+                  onPressed: _pendingActivityBusy
+                      ? null
+                      : () => _recordPendingActivityOutcome(
+                            ZyncNowActivityStatus.chosen,
+                          ),
+                  child: Text(_isZh ? '未做住' : 'Not yet'),
+                ),
+                TextButton(
+                  key: const ValueKey('zync-world-pending-skip'),
+                  onPressed: _pendingActivityBusy
+                      ? null
+                      : () => _recordPendingActivityOutcome(
+                            ZyncNowActivityStatus.skipped,
+                          ),
+                  child: Text(_isZh ? '最後冇做' : 'We skipped it'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -633,14 +947,12 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         : '${achievement.unlockedCount} / ${achievement.progress.length}';
     final daily = quests?.progress
             .where(
-              (item) =>
-                  item.definition.cadence == ZyncQuestCadence.daily,
+              (item) => item.definition.cadence == ZyncQuestCadence.daily,
             )
             .toList(growable: false) ??
         const <ZyncQuestProgress>[];
     final dailyDone = daily.where((item) => item.complete).length;
-    final dailyValue =
-        daily.isEmpty ? '—' : '$dailyDone / ${daily.length}';
+    final dailyValue = daily.isEmpty ? '—' : '$dailyDone / ${daily.length}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -788,9 +1100,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                 label: claimed
                     ? (_isZh ? '今日已領' : 'Claimed today')
                     : (_isZh ? '今日 +1 Draw' : '+1 draw today'),
-                foregroundColor: claimed
-                    ? const Color(0xFF176B57)
-                    : const Color(0xFF8B5A00),
+                foregroundColor:
+                    claimed ? const Color(0xFF176B57) : const Color(0xFF8B5A00),
                 backgroundColor: claimed
                     ? const Color(0xFFDDF5EC)
                     : Colors.white.withValues(alpha: 0.72),
@@ -808,9 +1119,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
               width: double.infinity,
               child: FilledButton.icon(
                 key: const ValueKey('daily-card-draw-claim'),
-                onPressed: _claimingDaily
-                    ? null
-                    : () => _claimDailyDraw(inventory),
+                onPressed:
+                    _claimingDaily ? null : () => _claimDailyDraw(inventory),
                 icon: _claimingDaily
                     ? const SizedBox.square(
                         dimension: 18,
@@ -818,9 +1128,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                       )
                     : const Icon(Icons.card_giftcard_rounded),
                 label: Text(
-                  _isZh
-                      ? '領取今日抽卡'
-                      : 'Claim today\'s draw',
+                  _isZh ? '領取今日抽卡' : 'Claim today\'s draw',
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: ZyncPalette.ink,
@@ -858,8 +1166,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     );
   }
 
-  Widget _sectionTitle(String title, IconData icon) =>
-      ZyncSectionHeading(
+  Widget _sectionTitle(String title, IconData icon) => ZyncSectionHeading(
         icon: icon,
         title: title,
       );
@@ -896,21 +1203,18 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     final discovery = pack.packType == 'discovery';
     return ZyncSurface(
       shadow: false,
-      borderColor: discovery
-          ? const Color(0xFFE0D9FF)
-          : const Color(0xFFFFD9BE),
-      backgroundColor: discovery
-          ? const Color(0xFFF7F5FF)
-          : const Color(0xFFFFF7F2),
+      borderColor:
+          discovery ? const Color(0xFFE0D9FF) : const Color(0xFFFFD9BE),
+      backgroundColor:
+          discovery ? const Color(0xFFF7F5FF) : const Color(0xFFFFF7F2),
       child: Row(
         children: [
           ZyncIconTile(
             icon: discovery
                 ? Icons.travel_explore_rounded
                 : Icons.auto_awesome_rounded,
-            backgroundColor: discovery
-                ? const Color(0xFFE9E5FF)
-                : ZyncPalette.peach,
+            backgroundColor:
+                discovery ? const Color(0xFFE9E5FF) : ZyncPalette.peach,
             foregroundColor:
                 discovery ? ZyncPalette.plum : ZyncPalette.orangeDeep,
           ),
@@ -926,9 +1230,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
-                  _isZh
-                      ? '5 張 · 開包結果已安全鎖定'
-                      : '5 cards · result safely locked',
+                  _isZh ? '5 張 · 開包結果已安全鎖定' : '5 cards · result safely locked',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -1027,14 +1329,14 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                   onTap: () => _openCardDetail(
                     item: item,
                     recipe: recipe,
-                    title: interest?.labelFor(_locale) ??
-                        item.variant.interestId,
+                    title:
+                        interest?.labelFor(_locale) ?? item.variant.interestId,
                     finish: finish,
                   ),
                   child: ZyncCardPreview(
                     recipe: recipe,
-                    title: interest?.labelFor(_locale) ??
-                        item.variant.interestId,
+                    title:
+                        interest?.labelFor(_locale) ?? item.variant.interestId,
                     subtitle: _finishLabel(finish),
                     finish: finish,
                     editionLabel: _edition(item.variant.editionId),
@@ -1077,11 +1379,9 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     required CardFinishTier finish,
   }) async {
     final interestId = item.variant.interestId;
-    final current = _profile.interests
-        .where((entry) => entry.id == interestId)
-        .firstOrNull;
-    var wantToTry =
-        current?.strength == InterestStrength.wantToTry;
+    final current =
+        _profile.interests.where((entry) => entry.id == interestId).firstOrNull;
+    var wantToTry = current?.strength == InterestStrength.wantToTry;
 
     await showModalBottomSheet<void>(
       context: context,
@@ -1103,8 +1403,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
             builder: (context, controller) => Container(
               decoration: const BoxDecoration(
                 color: Color(0xFFFDFCFB),
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(28)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
               ),
               child: ListView(
                 controller: controller,
@@ -1221,12 +1520,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                       ),
                       label: Text(
                         wantToTry
-                            ? (_isZh
-                                ? '已加入 Want to Try'
-                                : 'In Want to Try')
-                            : (_isZh
-                                ? '加入 Want to Try'
-                                : 'Add to Want to Try'),
+                            ? (_isZh ? '已加入 Want to Try' : 'In Want to Try')
+                            : (_isZh ? '加入 Want to Try' : 'Add to Want to Try'),
                       ),
                     ),
                   const SizedBox(height: 10),

@@ -18,12 +18,14 @@ class LocalStore {
   static const _progressEventKey = 'zync.progress.events.v1';
   static const _uuid = Uuid();
 
-  static Future<LocalProfile> loadOrCreateProfile({required String language}) async {
+  static Future<LocalProfile> loadOrCreateProfile(
+      {required String language}) async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_profileKey);
     if (raw != null) {
       try {
-        final stored = LocalProfile.fromJson(Map<String, dynamic>.from(jsonDecode(raw) as Map));
+        final stored = LocalProfile.fromJson(
+            Map<String, dynamic>.from(jsonDecode(raw) as Map));
         if (stored.language != language) {
           final updated = stored.copyWith(language: language);
           await saveProfile(updated);
@@ -34,7 +36,11 @@ class LocalStore {
         // Fall through and create a clean local profile if old local data is malformed.
       }
     }
-    final profile = LocalProfile(localId: _uuid.v4(), nickname: '', language: language, interests: const []);
+    final profile = LocalProfile(
+        localId: _uuid.v4(),
+        nickname: '',
+        language: language,
+        interests: const []);
     await saveProfile(profile);
     return profile;
   }
@@ -52,7 +58,8 @@ class LocalStore {
       final decoded = jsonDecode(raw) as List;
       return decoded
           .whereType<Map>()
-          .map((item) => ZyncHistoryEntry.fromJson(Map<String, dynamic>.from(item)))
+          .map((item) =>
+              ZyncHistoryEntry.fromJson(Map<String, dynamic>.from(item)))
           .toList()
         ..sort((a, b) => b.lastZyncAt.compareTo(a.lastZyncAt));
     } catch (_) {
@@ -176,8 +183,7 @@ class LocalStore {
       recentQuestions: questions,
       seenConversationModes: <String>{
         ...previous.seenConversationModes,
-        if (memory.mode.trim().isNotEmpty)
-          memory.mode.trim().toLowerCase(),
+        if (memory.mode.trim().isNotEmpty) memory.mode.trim().toLowerCase(),
       }.toList(growable: false),
     );
     await prefs.setString(
@@ -185,7 +191,6 @@ class LocalStore {
       jsonEncode(history.map((entry) => entry.toJson()).toList()),
     );
   }
-
 
   static Future<List<ZyncNowActivityMemory>> loadZyncNowActivities() async {
     final prefs = await SharedPreferences.getInstance();
@@ -204,6 +209,16 @@ class LocalStore {
     } catch (_) {
       return const [];
     }
+  }
+
+  static Future<ZyncNowActivityMemory?> loadPendingZyncNowActivity() async {
+    final history = await loadZyncNowActivities();
+    for (final memory in history) {
+      if (memory.status == ZyncNowActivityStatus.chosen) {
+        return memory;
+      }
+    }
+    return null;
   }
 
   static Future<ZyncNowActivityMemory> recordZyncNowChoice({

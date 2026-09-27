@@ -5,6 +5,31 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — WORLD HUB + SINGLE DRAW:
+My Zync World is now the central continuation hub for the real-world loop.
+It loads the newest still-pending Zync Now activity and surfaces it directly
+under the World hero even without Cardverse sign-in. The player can mark it
+Done / Not yet / Skipped there. Done reuses the existing privacy-bounded
+Tried Together progress event, computes quest delta, shows progress, and can
+open Curiosity Board for server-validated rewards; returning reloads inventory.
+When no activity is pending, that same slot becomes “Next step: leave the
+screen” with a direct Find something to do CTA into Zync Now, then reloads on
+return so the chosen activity becomes the next pending real-world move.
+
+Single-card Draw no longer reveals its server receipt result immediately. The
+server still decides and returns the immutable receipt first; presentation now
+starts face-down, waits for player Reveal, then renders the actual scalable
+Cardverse recipe and uses the accepted flip -> shared bloom -> rarity payoff
+sensory family. Reduce Motion suppresses suspense/audio/haptic only. No sample
+Card FX artwork is substituted into the real draw. Validation: canonical
+non-golden mobile suite 340/340 PASS; full flutter analyze No issues found.
+No Actions, Vercel, Production, Play, release, paid generation, economy/RNG or
+backend changes.
+
+`AI_STATE/HANDOFF_20260927_WORLD_HUB_SINGLE_DRAW.md`
+
+Previous product checkpoint:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — CORE LOOP BRIDGE:
 Card FX audio is an accepted baseline; stop micro-polishing it without fresh
 feedback. The latest round audited the whole player loop and connected the most

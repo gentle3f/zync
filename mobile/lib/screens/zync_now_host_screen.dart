@@ -81,14 +81,7 @@ class _ZyncNowHostScreenState extends State<ZyncNowHostScreen> {
         hostProfile: widget.profile,
         maxParticipants: 8,
       );
-      final memories = await LocalStore.loadZyncNowActivities();
-      ZyncNowActivityMemory? pending;
-      for (final memory in memories) {
-        if (memory.status == ZyncNowActivityStatus.chosen) {
-          pending = memory;
-          break;
-        }
-      }
+      final pending = await LocalStore.loadPendingZyncNowActivity();
       if (!mounted) return;
       setState(() {
         _coordinator = coordinator;

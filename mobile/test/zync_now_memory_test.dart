@@ -134,6 +134,40 @@ void main() {
     );
   });
 
+  test('latest pending activity ignores newer completed memories', () async {
+    final candidate = await _candidate();
+    final older = await LocalStore.recordZyncNowChoice(
+      candidate: candidate,
+      chosenAt: DateTime.utc(2026, 9, 19, 9),
+    );
+    final newer = await LocalStore.recordZyncNowChoice(
+      candidate: candidate,
+      chosenAt: DateTime.utc(2026, 9, 19, 10),
+    );
+    await LocalStore.recordZyncNowOutcome(
+      memoryId: newer.id,
+      status: ZyncNowActivityStatus.completed,
+      at: DateTime.utc(2026, 9, 19, 11),
+    );
+
+    final pending = await LocalStore.loadPendingZyncNowActivity();
+
+    expect(pending, isNotNull);
+    expect(pending!.id, older.id);
+    expect(pending.status, ZyncNowActivityStatus.chosen);
+  });
+
+  test('pending activity becomes null when no chosen memory remains', () async {
+    final candidate = await _candidate();
+    final memory = await LocalStore.recordZyncNowChoice(candidate: candidate);
+    await LocalStore.recordZyncNowOutcome(
+      memoryId: memory.id,
+      status: ZyncNowActivityStatus.skipped,
+    );
+
+    expect(await LocalStore.loadPendingZyncNowActivity(), isNull);
+  });
+
   test('malformed local activity memory fails safely', () async {
     SharedPreferences.setMockInitialValues({
       'zync.zync_now.activities.v1': '{not-json',
