@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zync/core/cardverse_cloud_client.dart';
+import 'package:zync/core/cardverse_inventory.dart';
+import 'package:zync/core/cardverse_models.dart';
 import 'package:zync/core/cardverse_session_store.dart';
 import 'package:zync/core/local_store.dart';
 import 'package:zync/core/models.dart';
@@ -8,6 +11,18 @@ import 'package:zync/core/progress_event.dart';
 import 'package:zync/core/zync_now_engine.dart';
 import 'package:zync/core/zync_now_memory.dart';
 import 'package:zync/screens/my_zync_world_screen.dart';
+
+class _FakeCloudClient extends CardverseCloudClient {
+  _FakeCloudClient(this.snapshot);
+
+  final CardverseInventorySnapshot snapshot;
+
+  @override
+  Future<CardverseInventorySnapshot> fetchInventorySnapshot(
+    String sessionToken,
+  ) async =>
+      snapshot;
+}
 
 class _MemorySecureStore implements SecureKeyValueStore {
   final Map<String, String> _values = {};
@@ -183,6 +198,107 @@ void main() {
         ),
         hasLength(1),
       );
+    },
+  );
+
+  testWidgets(
+    'completed real-world interest marks the collected card as lived',
+    (tester) async {
+      tester.view.physicalSize = const Size(430, 1050);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final candidate = await _candidate();
+      final memory = await LocalStore.recordZyncNowChoice(
+        candidate: candidate,
+        chosenAt: DateTime.utc(2026, 9, 20, 10),
+      );
+      await LocalStore.recordZyncNowOutcome(
+        memoryId: memory.id,
+        status: ZyncNowActivityStatus.completed,
+        at: DateTime.utc(2026, 9, 20, 12),
+      );
+
+      const profile = LocalProfile(
+        localId: 'local-lived-card',
+        nickname: 'Tester',
+        language: 'en',
+        interests: [],
+      );
+      final sessions = CardverseSessionStore(
+        storage: _MemorySecureStore(),
+      );
+      await sessions.save(
+        CardverseSessionCredential(
+          token: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+          expiresAt: DateTime.now().toUtc().add(const Duration(days: 1)),
+        ),
+      );
+
+      const inventory = CardverseInventorySnapshot(
+        accountId: 'account-lived-card',
+        ledgerCursor: 1,
+        drawTokens: 0,
+        lockedDrawTokens: 0,
+        claimedEligibilityKeys: <String>{},
+        cards: <CardverseInventoryCard>[
+          CardverseInventoryCard(
+            variant: CardVariantKey(
+              interestId: 'sports.badminton',
+              finishId: 'normal',
+              editionId: 'core_set_1',
+            ),
+            quantity: 1,
+          ),
+        ],
+        unopenedPacks: <CardverseUnopenedPack>[],
+      );
+      final cloud = _FakeCloudClient(inventory);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MyZyncWorldScreen(
+            profile: profile,
+            sessionStore: sessions,
+            cloudClient: cloud,
+            onProfileChanged: (_) async {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final card = find.byKey(
+        const ValueKey(
+          'zync-world-card-sports.badminton::normal::core_set_1',
+        ),
+      );
+      await tester.scrollUntilVisible(
+        card,
+        220,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(
+        find.byKey(
+          const ValueKey(
+            'zync-world-lived-sports.badminton::normal::core_set_1',
+          ),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('zync-world-card-real-life-status')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('You have lived this beyond the card'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
     },
   );
 }

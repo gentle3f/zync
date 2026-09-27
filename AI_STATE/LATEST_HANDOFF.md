@@ -5,6 +5,26 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — COLLECTION REAL-WORLD MEMORY:
+Collected cards now visibly reflect when the corresponding interest has already
+become part of the player's real-world Zync history. My Zync World derives a
+local lived-interest set only from completed privacy-bounded Zync Now activity
+memory. Matching owned cards get a compact LIVED / 現實做過 marker in the real
+production collection grid, and their production detail sheet explains that the
+interest has moved beyond ownership into the player's real Zync World. Eligible
+but not-yet-lived cards are framed as a real-world next move and retain the
+existing soft-focus CTA. MyZyncWorldScreen now accepts an optional injected cloud
+client solely to make the real production collection screen testable; production
+still owns its normal client. Validation: canonical non-golden mobile tests
+350/350 PASS across three local batches; full flutter analyze No issues found.
+No server economy/RNG/receipt authority, Card FX, backend, Actions, Vercel,
+Production, Play, release or paid generation changed. Visual usefulness of the
+compact marker is not subjectively approved yet; next gate is real-device review.
+
+`AI_STATE/HANDOFF_20260927_COLLECTION_REAL_WORLD_MEMORY.md`
+
+Previous product checkpoint:
+
 CURRENT AUTHORITATIVE PRODUCT CONTINUATION — COLLECTION TO REAL-WORLD ACTION:
 Collected cards now have a direct gameplay purpose beyond ownership. In My Zync
 World, an activity-eligible card detail can start Zync Now with that canonical

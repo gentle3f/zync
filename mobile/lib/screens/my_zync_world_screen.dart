@@ -29,11 +29,13 @@ class MyZyncWorldScreen extends StatefulWidget {
     required this.profile,
     required this.onProfileChanged,
     this.sessionStore,
+    this.cloudClient,
   });
 
   final LocalProfile profile;
   final Future<void> Function(LocalProfile profile) onProfileChanged;
   final CardverseSessionStore? sessionStore;
+  final CardverseCloudClient? cloudClient;
 
   @override
   State<MyZyncWorldScreen> createState() => _MyZyncWorldScreenState();
@@ -42,6 +44,7 @@ class MyZyncWorldScreen extends StatefulWidget {
 class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   late final CardverseCloudClient _cloud;
   late final CardverseSessionStore _sessions;
+  late final bool _ownsCloudClient;
   late LocalProfile _profile;
 
   CardverseSessionCredential? _session;
@@ -49,6 +52,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   AchievementSnapshot? _achievement;
   ZyncQuestBoardSnapshot? _quests;
   ZyncNowActivityMemory? _pendingActivity;
+  Set<String> _livedInterestIds = const {};
   bool _loading = true;
   String _error = '';
   String? _openingPackId;
@@ -63,7 +67,8 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
   @override
   void initState() {
     super.initState();
-    _cloud = CardverseCloudClient();
+    _ownsCloudClient = widget.cloudClient == null;
+    _cloud = widget.cloudClient ?? CardverseCloudClient();
     _sessions = widget.sessionStore ?? CardverseSessionStore();
     _profile = widget.profile;
     _load();
@@ -71,7 +76,9 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
 
   @override
   void dispose() {
-    _cloud.close();
+    if (_ownsCloudClient) {
+      _cloud.close();
+    }
     super.dispose();
   }
 
@@ -85,7 +92,13 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
 
     final history = await LocalStore.loadHistory();
     final events = await LocalStore.loadProgressEvents();
+    final activityHistory = await LocalStore.loadZyncNowActivities();
     final pendingActivity = await LocalStore.loadPendingZyncNowActivity();
+    final livedInterestIds = <String>{
+      for (final memory in activityHistory)
+        if (memory.status == ZyncNowActivityStatus.completed)
+          ...memory.sourceInterestIds,
+    };
     final achievement = AchievementService.evaluate(
       history,
       events: events,
@@ -105,6 +118,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _achievement = achievement;
         _quests = quests;
         _pendingActivity = pendingActivity;
+        _livedInterestIds = Set<String>.unmodifiable(livedInterestIds);
         _loading = false;
       });
       return;
@@ -119,6 +133,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _achievement = achievement;
         _quests = quests;
         _pendingActivity = pendingActivity;
+        _livedInterestIds = Set<String>.unmodifiable(livedInterestIds);
         _loading = false;
       });
     } on CardverseCloudException catch (error) {
@@ -131,6 +146,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
           _achievement = achievement;
           _quests = quests;
           _pendingActivity = pendingActivity;
+          _livedInterestIds = Set<String>.unmodifiable(livedInterestIds);
           _loading = false;
         });
         return;
@@ -142,6 +158,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
         _achievement = achievement;
         _quests = quests;
         _pendingActivity = pendingActivity;
+        _livedInterestIds = Set<String>.unmodifiable(livedInterestIds);
         _loading = false;
         _error = _isZh
             ? '暫時連接唔到你嘅 Cardverse 收藏。'
@@ -1320,6 +1337,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                 CardVisualRecipeResolver.resolve(item.variant.interestId)!;
             final interest = InterestCatalog.byId(item.variant.interestId);
             final finish = _finish(item.variant.finishId);
+            final lived = _livedInterestIds.contains(item.variant.interestId);
             return Stack(
               fit: StackFit.expand,
               children: [
@@ -1344,6 +1362,48 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                     cardNumberLabel: '×${item.quantity}',
                   ),
                 ),
+                if (lived)
+                  Positioned(
+                    left: 8,
+                    top: 8,
+                    child: Container(
+                      key: ValueKey(
+                        'zync-world-lived-${item.variant.value}',
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE7F7F0).withValues(alpha: 0.94),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: const Color(0xFF9FD8C2),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            size: 14,
+                            color: Color(0xFF176B57),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            _isZh ? '現實做過' : 'LIVED',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: const Color(0xFF176B57),
+                                  fontWeight: FontWeight.w900,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 if (item.quantity > 1)
                   Positioned(
                     right: 8,
@@ -1383,6 +1443,7 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
     final definition = InterestCatalog.byId(interestId);
     final activityEligible = definition != null &&
         (InterestActivityResolver.resolve(definition)?.eligible ?? false);
+    final lived = _livedInterestIds.contains(interestId);
     final current =
         _profile.interests.where((entry) => entry.id == interestId).firstOrNull;
     var wantToTry = current?.strength == InterestStrength.wantToTry;
@@ -1499,6 +1560,70 @@ class _MyZyncWorldScreenState extends State<MyZyncWorldScreen> {
                   ),
                   const SizedBox(height: 14),
                   if (activityEligible) ...[
+                    KeyedSubtree(
+                      key: const ValueKey(
+                        'zync-world-card-real-life-status',
+                      ),
+                      child: ZyncSurface(
+                        shadow: false,
+                        backgroundColor: lived
+                            ? const Color(0xFFEFF9F5)
+                            : const Color(0xFFFFF7F2),
+                        borderColor: lived
+                            ? const Color(0xFFB8E2D1)
+                            : const Color(0xFFFFD9BE),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ZyncIconTile(
+                              icon: lived
+                                  ? Icons.check_circle_rounded
+                                  : Icons.directions_walk_rounded,
+                              backgroundColor: Colors.white,
+                              foregroundColor: lived
+                                  ? const Color(0xFF176B57)
+                                  : ZyncPalette.orangeDeep,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    lived
+                                        ? (_isZh
+                                            ? '呢張卡你已經喺現實世界做過'
+                                            : 'You have lived this beyond the card')
+                                        : (_isZh
+                                            ? '呢張卡可以變成下一件真係去做嘅事'
+                                            : 'Turn this card into something you actually do'),
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    lived
+                                        ? (_isZh
+                                            ? '收藏唔只代表擁有；呢個興趣已經成為你真實 Zync World 嘅一部分。'
+                                            : 'This interest is already part of your real Zync World, not just your collection.')
+                                        : (_isZh
+                                            ? 'Zync 可以由呢個興趣出發，搵一件適合大家嘅真實活動。'
+                                            : 'Zync can use this interest as a starting point for a real activity that fits everyone.'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: ZyncPalette.inkSoft,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     FilledButton.icon(
                       key: const ValueKey(
                         'zync-world-card-start-activity',
