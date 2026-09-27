@@ -7,6 +7,7 @@ import 'card_fx_spec.dart';
 
 enum ZyncFxSensoryEvent {
   packPick,
+  singleRevealStart,
   revealEntrance,
   chargeArm,
   tearBreak,
@@ -39,6 +40,41 @@ abstract final class ZyncFxSensory {
     if (sound) unawaited(_playSound(event, rarity));
   }
 
+  /// Starts audio before yielding to an async boundary.
+  ///
+  /// This is used for browser button/gesture entry points so Chrome's media
+  /// policy sees the first sound inside the actual user activation. Later
+  /// flip/bloom/rarity cues can then play after suspense timers.
+  static void playFromUserGesture(
+    ZyncFxSensoryEvent event, {
+    required ZyncFxRarity rarity,
+    bool sound = true,
+    bool haptic = true,
+  }) {
+    if (haptic) unawaited(_playHaptic(event, rarity));
+    if (sound) unawaited(_playSoundFromUserGesture(event, rarity));
+  }
+
+  static Future<void> _playSoundFromUserGesture(
+    ZyncFxSensoryEvent event,
+    ZyncFxRarity rarity,
+  ) async {
+    final spec = _soundSpec(event, rarity);
+    if (spec == null) return;
+    try {
+      final player = _players[_nextPlayer++ % _players.length];
+      // Deliberately invoke play() before any await. Awaiting stop() first
+      // loses browser user activation and makes delayed single-draw audio
+      // appear completely silent in Chrome.
+      await player.play(
+        AssetSource(spec.asset),
+        volume: spec.volume,
+      );
+    } catch (_) {
+      // Sensory audio must never interrupt reveal flow or widget tests.
+    }
+  }
+
   static Future<void> _playSound(
     ZyncFxSensoryEvent event,
     ZyncFxRarity rarity,
@@ -63,6 +99,7 @@ abstract final class ZyncFxSensory {
   ) async {
     switch (event) {
       case ZyncFxSensoryEvent.packPick:
+      case ZyncFxSensoryEvent.singleRevealStart:
       case ZyncFxSensoryEvent.revealEntrance:
       case ZyncFxSensoryEvent.chargeArm:
       case ZyncFxSensoryEvent.foilTension:
@@ -117,6 +154,10 @@ abstract final class ZyncFxSensory {
       ZyncFxSensoryEvent.packPick => const _SoundSpec(
           '$root' 'pixabay_pack_pick_next_level_114480.mp3',
           0.42,
+        ),
+      ZyncFxSensoryEvent.singleRevealStart => const _SoundSpec(
+          '$root' 'pixabay_anticipation_twinkle_244951.mp3',
+          0.26,
         ),
       ZyncFxSensoryEvent.revealEntrance => null,
       ZyncFxSensoryEvent.chargeArm => null,

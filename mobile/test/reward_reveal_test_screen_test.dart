@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/card_fx/card_fx_spec.dart';
+import 'package:zync/card_fx/zync_fx_card.dart';
 import 'package:zync/screens/reward_reveal_test_screen.dart';
+import 'package:zync/widgets/zync_card_preview.dart';
 
 void main() {
   void setPhone(WidgetTester tester) {
@@ -48,6 +51,23 @@ void main() {
       findsNothing,
     );
     expect(find.text('One card is ready'), findsOneWidget);
+
+    await tester.tap(
+      find.byKey(const ValueKey('single-draw-reveal-button')),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump(const Duration(milliseconds: 320));
+
+    expect(
+      find.byKey(const ValueKey('cardverse-formal-card-technology.ai')),
+      findsOneWidget,
+    );
+    final formalCard = tester.widget<ZyncFxCard>(find.byType(ZyncFxCard));
+    expect(formalCard.spec.artworkAsset, 'assets/card_fx/art/ai.jpg');
+    expect(formalCard.spec.resolvedFrameAsset, ZyncFrameAssets.rare);
+    expect(formalCard.artworkOverride, isNull);
+    expect(find.byType(ZyncCardPreview), findsNothing);
   });
 
   testWidgets('five-card test enters production Split Open with five-card stack',

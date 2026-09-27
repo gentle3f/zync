@@ -9,9 +9,8 @@ import '../card_fx/zync_fx_sensory.dart';
 import '../card_fx/zync_pack_opening.dart';
 import '../core/cardverse_models.dart';
 import '../core/cardverse_pack_reveal.dart';
-import '../core/interest_catalog.dart';
 import '../ui/zync_design.dart';
-import '../widgets/zync_card_preview.dart';
+import '../widgets/cardverse_reward_card.dart';
 
 class CardversePackOpeningLabScreen extends StatefulWidget {
   const CardversePackOpeningLabScreen({
@@ -517,7 +516,7 @@ class _CardversePackOpeningLabScreenState
 
     return AspectRatio(
       key: const ValueKey('pack-reveal-stack'),
-      aspectRatio: 5 / 7,
+      aspectRatio: 2 / 3,
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
@@ -541,20 +540,16 @@ class _CardversePackOpeningLabScreenState
             ),
           if (last != null)
             Positioned.fill(
-              child: ZyncCardPreview(
+              child: CardverseRewardCard(
                 key: ValueKey(
                   'pack-revealed-card-${last.variant.interestId}',
                 ),
-                recipe: last.recipe,
-                title: InterestCatalog.byId(
-                  last.variant.interestId,
-                )!
-                    .labelFor(_locale),
-                subtitle: _finishLabel(last.finish),
+                interestId: last.variant.interestId,
                 finish: last.finish,
                 editionLabel: last.editionLabel,
-                cardNumberLabel: '$revealedCount / ${_plan.items.length}',
-                animateFinish: last.focusAnimationRecommended,
+                locale: _locale,
+                recipe: last.recipe,
+                focused: last.focusAnimationRecommended,
               ),
             ),
         ],
@@ -596,25 +591,21 @@ class _CardversePackOpeningLabScreenState
             itemCount: _plan.items.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 5 / 7,
+              childAspectRatio: 2 / 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 14,
             ),
             itemBuilder: (context, index) {
               final item = _plan.items[index];
-              return ZyncCardPreview(
+              return CardverseRewardCard(
                 key: ValueKey(
                   'pack-recap-card-${item.variant.interestId}',
                 ),
-                recipe: item.recipe,
-                title: InterestCatalog.byId(
-                  item.variant.interestId,
-                )!
-                    .labelFor(_locale),
-                subtitle: _finishLabel(item.finish),
+                interestId: item.variant.interestId,
                 finish: item.finish,
                 editionLabel: item.editionLabel,
-                cardNumberLabel: '${index + 1} / ${_plan.items.length}',
+                locale: _locale,
+                recipe: item.recipe,
               );
             },
           ),
@@ -685,14 +676,6 @@ class _CardversePackOpeningLabScreenState
         ],
       );
 
-  String _finishLabel(CardFinishTier finish) => switch (finish) {
-        CardFinishTier.normal => 'Normal',
-        CardFinishTier.foil => 'Foil',
-        CardFinishTier.holo => 'Holo',
-        CardFinishTier.prism => 'Prism',
-        CardFinishTier.legendary => 'Legendary',
-        CardFinishTier.secret => 'Secret',
-      };
 }
 
 class _ReceiptBadge extends StatelessWidget {

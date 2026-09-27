@@ -12,6 +12,7 @@ class ZyncFxCard extends StatefulWidget {
     this.enableDragTilt = true,
     this.revealImpact = 0.0,
     this.respectReduceMotion = true,
+    this.artworkOverride,
   });
 
   final ZyncFxCardSpec spec;
@@ -24,6 +25,7 @@ class ZyncFxCard extends StatefulWidget {
   /// Keep true in production. The isolated FX Lab sets this false so system
   /// accessibility settings cannot silently disable the animation preview.
   final bool respectReduceMotion;
+  final Widget? artworkOverride;
 
   @override
   State<ZyncFxCard> createState() => _ZyncFxCardState();
@@ -206,11 +208,12 @@ class _ZyncFxCardState extends State<ZyncFxCard> with TickerProviderStateMixin {
           offset: Offset(dx, dy),
           child: Transform.scale(
             scale: parallaxScale,
-            child: Image.asset(
-              widget.spec.artworkAsset,
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.high,
-            ),
+            child: widget.artworkOverride ??
+                Image.asset(
+                  widget.spec.artworkAsset,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
           ),
         ),
       ),

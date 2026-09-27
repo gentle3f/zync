@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/card_fx/card_fx_spec.dart';
+import 'package:zync/card_fx/zync_fx_card.dart';
 import 'package:zync/core/interest_catalog.dart';
 import 'package:zync/screens/cardverse_pack_opening_lab_screen.dart';
+import 'package:zync/widgets/zync_card_preview.dart';
 
 Widget lab({
   int revealedCount = 0,
@@ -265,7 +268,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('focused Holo reveal uses animated finish with motion enabled',
+  testWidgets('focused Holo reveal uses the formal locked-frame renderer',
       (tester) async {
     setPhone(tester);
     addTearDown(tester.view.resetPhysicalSize);
@@ -281,9 +284,15 @@ void main() {
 
     expect(find.text('Bouldering'), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('card-finish-animated')),
+      find.byKey(
+        const ValueKey('cardverse-formal-card-outdoors.bouldering'),
+      ),
       findsOneWidget,
     );
+    final focusedCard = tester.widget<ZyncFxCard>(find.byType(ZyncFxCard));
+    expect(focusedCard.spec.resolvedFrameAsset, ZyncFrameAssets.rare);
+    expect(focusedCard.artworkOverride, isNotNull);
+    expect(find.byType(ZyncCardPreview), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -337,6 +346,8 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(find.byType(ZyncFxCard), findsNWidgets(5));
+    expect(find.byType(ZyncCardPreview), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

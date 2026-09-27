@@ -5,6 +5,34 @@ import 'package:flutter/material.dart';
 import '../core/card_visual_recipe.dart';
 import '../core/cardverse_models.dart';
 
+/// Artwork-only semantic fallback for interests whose accepted production
+/// image asset has not yet been bundled into the mobile app.
+///
+/// This deliberately paints only the scene. Production reward cards place it
+/// inside the locked frame artwork window instead of using the old procedural
+/// full-card mockup.
+class ZyncCardArtwork extends StatelessWidget {
+  const ZyncCardArtwork({
+    super.key,
+    required this.recipe,
+  });
+
+  final CardVisualRecipe recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _CardPalette.forRecipe(recipe);
+    return SizedBox.expand(
+      child: CustomPaint(
+        painter: _CardScenePainter(
+          recipe: recipe,
+          palette: palette,
+        ),
+      ),
+    );
+  }
+}
+
 class ZyncCardPreview extends StatelessWidget {
   const ZyncCardPreview({
     super.key,

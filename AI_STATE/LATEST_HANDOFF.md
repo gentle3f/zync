@@ -5,7 +5,28 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PRODUCT CONTINUATION — REWARD REVEAL TEST LAB + GOOGLE AUTH DIAGNOSTICS:
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — FORMAL REWARD CARDS + SINGLE DRAW SFX:
+Reward reveal presentation now uses the formal locked-frame Card FX renderer
+instead of the old full-card procedural proof presentation. Single Draw, Pack
+sequential reveal and five-card recap all route through CardverseRewardCard:
+bundled accepted art is used directly where available; other canonical interests
+keep their semantic recipe only inside the locked 1024x1536 artwork window.
+The card-back Z has a -4 px optical centering correction. Single Draw now starts
+an anticipation cue synchronously from the actual Reveal user gesture so Chrome
+can authorize audio before the suspense await; the existing flip -> bloom ->
+rarity payoff timeline remains intact. B — Split Open wrapper mechanics/audio,
+receipt order, RNG/economy/backend authority, reduced-motion behavior and locked
+rarity frame definitions remain unchanged. Validation: focused reward/pack/Card FX/Reward Lab tests 15/15 PASS;
+broader adjacent reward/collection/World regression set 30/30 PASS; expanded
+non-golden card render 2/2 PASS; targeted analyze No issues found; Single Draw
+anticipation asset served HTTP 200 from the live Reward Reveal Lab; git diff
+--check clean. The legacy Card Art
+golden test remains un-runnable because its baseline PNG is absent; no baseline
+was fabricated or updated.
+
+`AI_STATE/HANDOFF_20260928_REWARD_REVEAL_FORMAL_CARD_SFX.md`
+
+Previous product checkpoint — REWARD REVEAL TEST LAB + GOOGLE AUTH DIAGNOSTICS:
 A dedicated local Reward Reveal Test entrypoint now exposes the two production
 presentation flows directly with immutable proof receipts: Single Draw — 1 Card
 (no wrapper; card back -> Reveal -> suspense -> flip/bloom/rarity payoff -> real

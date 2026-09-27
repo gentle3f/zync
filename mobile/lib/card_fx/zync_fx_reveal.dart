@@ -435,13 +435,18 @@ class ZyncFxCardBack extends StatelessWidget {
                     width: 2,
                   ),
                 ),
-                child: const Text(
-                  'Z',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 58,
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.italic,
+                child: Transform.translate(
+                  key: const ValueKey('card-back-z-optical-center'),
+                  offset: const Offset(-4, 0),
+                  child: const Text(
+                    'Z',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 58,
+                      height: 1,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ),

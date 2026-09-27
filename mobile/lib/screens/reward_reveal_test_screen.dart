@@ -16,12 +16,62 @@ class RewardRevealTestScreen extends StatelessWidget {
         rolledAt: DateTime.utc(2026, 9, 27, 12),
         item: const CardversePackResultItem(
           variant: CardVariantKey(
-            interestId: 'sports.badminton',
+            interestId: 'technology.ai',
             finishId: 'holo',
             editionId: 'core_set_1',
           ),
           quantity: 1,
         ),
+      );
+
+  static CardversePackOpenReceipt proofPackReceipt() =>
+      CardversePackOpenReceipt.serverValidated(
+        packId: 'reward-lab-pack-1',
+        serverRollId: 'reward-lab-pack-roll-1',
+        idempotencyKey: 'reward-lab-pack-idempotency-1',
+        rolledAt: DateTime.utc(2026, 9, 27, 12, 5),
+        items: const [
+          CardversePackResultItem(
+            variant: CardVariantKey(
+              interestId: 'books.reading',
+              finishId: 'normal',
+              editionId: 'core_set_1',
+            ),
+            quantity: 1,
+          ),
+          CardversePackResultItem(
+            variant: CardVariantKey(
+              interestId: 'food.coffee',
+              finishId: 'foil',
+              editionId: 'core_set_1',
+            ),
+            quantity: 1,
+          ),
+          CardversePackResultItem(
+            variant: CardVariantKey(
+              interestId: 'technology.ai',
+              finishId: 'holo',
+              editionId: 'core_set_1',
+            ),
+            quantity: 1,
+          ),
+          CardversePackResultItem(
+            variant: CardVariantKey(
+              interestId: 'books.reading',
+              finishId: 'prism',
+              editionId: 'discovery',
+            ),
+            quantity: 1,
+          ),
+          CardversePackResultItem(
+            variant: CardVariantKey(
+              interestId: 'food.coffee',
+              finishId: 'legendary',
+              editionId: 'core_set_1',
+            ),
+            quantity: 1,
+          ),
+        ],
       );
 
   bool get _apiConfigured =>
@@ -86,7 +136,7 @@ class RewardRevealTestScreen extends StatelessWidget {
                 onPressed: () => Navigator.of(context).push<void>(
                   MaterialPageRoute(
                     builder: (_) => CardversePackOpeningLabScreen(
-                      receipt: CardversePackOpeningLabScreen.proofReceipt(),
+                      receipt: proofPackReceipt(),
                       labMode: false,
                     ),
                   ),

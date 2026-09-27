@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zync/card_fx/card_fx_spec.dart';
+import 'package:zync/card_fx/zync_fx_card.dart';
 import 'package:zync/core/cardverse_models.dart';
 import 'package:zync/widgets/cardverse_single_draw_reveal.dart';
+import 'package:zync/widgets/zync_card_preview.dart';
 
 void main() {
   testWidgets('single draw stays face-down until the player reveals it',
@@ -60,6 +63,10 @@ void main() {
       find.byKey(const ValueKey('single-draw-card-front')),
       findsNothing,
     );
+    final zCorrection = tester.widget<Transform>(
+      find.byKey(const ValueKey('card-back-z-optical-center')),
+    );
+    expect(zCorrection.transform.storage[12], closeTo(-4, 0.01));
     expect(
       find.byKey(const ValueKey('pack-production-split-open')),
       findsNothing,
@@ -78,7 +85,9 @@ void main() {
     await tester.tap(
       find.byKey(const ValueKey('single-draw-reveal-button')),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(milliseconds: 320));
 
     expect(
       find.byKey(const ValueKey('single-draw-card-back')),
@@ -88,6 +97,14 @@ void main() {
       find.byKey(const ValueKey('single-draw-card-front')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey('cardverse-formal-card-sports.badminton')),
+      findsOneWidget,
+    );
+    final formalCard = tester.widget<ZyncFxCard>(find.byType(ZyncFxCard));
+    expect(formalCard.spec.resolvedFrameAsset, ZyncFrameAssets.common);
+    expect(formalCard.artworkOverride, isA<ZyncCardArtwork>());
+    expect(find.byType(ZyncCardPreview), findsNothing);
     expect(find.text('Badminton'), findsOneWidget);
     expect(find.text('You drew a card'), findsOneWidget);
     expect(

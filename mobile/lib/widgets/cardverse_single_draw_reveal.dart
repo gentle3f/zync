@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import '../card_fx/card_fx_spec.dart';
 import '../card_fx/zync_fx_reveal.dart';
 import '../card_fx/zync_fx_sensory.dart';
-import '../core/card_visual_recipe.dart';
 import '../core/cardverse_models.dart';
 import '../core/cardverse_pack_reveal.dart';
-import '../core/interest_catalog.dart';
 import '../ui/zync_design.dart';
-import 'zync_card_preview.dart';
+import 'cardverse_reward_card.dart';
 
 Future<void> showCardverseSingleDrawReveal({
   required BuildContext context,
@@ -18,11 +16,8 @@ Future<void> showCardverseSingleDrawReveal({
   required String locale,
 }) async {
   final item = receipt.item;
-  final recipe = CardVisualRecipeResolver.resolve(item.variant.interestId);
-  final interest = InterestCatalog.byId(item.variant.interestId);
-  final title = interest?.labelFor(locale) ?? item.variant.interestId;
   final finish = _finish(item.variant.finishId);
-  final rarity = _fxRarity(finish);
+  final rarity = rewardFxRarity(finish);
   final isZh = locale.toLowerCase().startsWith('zh');
   Timer? rarityTimer;
   var revealed = false;
@@ -41,6 +36,13 @@ Future<void> showCardverseSingleDrawReveal({
 
             final reduceMotion =
                 MediaQuery.maybeOf(sheetContext)?.disableAnimations ?? false;
+            if (!reduceMotion) {
+              ZyncFxSensory.playFromUserGesture(
+                ZyncFxSensoryEvent.singleRevealStart,
+                rarity: rarity,
+              );
+            }
+
             final delay = CardverseRevealTiming.suspenseFor(
               finish,
               reduceMotion: reduceMotion,
@@ -127,33 +129,18 @@ Future<void> showCardverseSingleDrawReveal({
                       child: revealed
                           ? KeyedSubtree(
                               key: const ValueKey('single-draw-card-front'),
-                              child: recipe != null
-                                  ? ConstrainedBox(
-                                      constraints:
-                                          const BoxConstraints(maxWidth: 330),
-                                      child: AspectRatio(
-                                        aspectRatio: 5 / 7,
-                                        child: ZyncCardPreview(
-                                          recipe: recipe,
-                                          title: title,
-                                          subtitle: _finishLabel(finish),
-                                          finish: finish,
-                                          editionLabel:
-                                              _edition(item.variant.editionId),
-                                          cardNumberLabel: 'NEW',
-                                          animateFinish: true,
-                                        ),
-                                      ),
-                                    )
-                                  : ZyncSurface(
-                                      shadow: false,
-                                      child: ListTile(
-                                        leading:
-                                            const Icon(Icons.style_outlined),
-                                        title: Text(title),
-                                        subtitle: Text(_finishLabel(finish)),
-                                      ),
-                                    ),
+                              child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 330),
+                                child: CardverseRewardCard(
+                                  interestId: item.variant.interestId,
+                                  finish: finish,
+                                  editionLabel:
+                                      _edition(item.variant.editionId),
+                                  locale: locale,
+                                  focused: true,
+                                ),
+                              ),
                             )
                           : SizedBox(
                               key: const ValueKey('single-draw-card-back'),
@@ -218,25 +205,6 @@ CardFinishTier _finish(String raw) => switch (raw) {
       'legendary' => CardFinishTier.legendary,
       'secret' => CardFinishTier.secret,
       _ => CardFinishTier.normal,
-    };
-
-ZyncFxRarity _fxRarity(CardFinishTier finish) => switch (finish) {
-      CardFinishTier.normal => ZyncFxRarity.common,
-      CardFinishTier.foil => ZyncFxRarity.uncommon,
-      CardFinishTier.holo => ZyncFxRarity.rare,
-      CardFinishTier.prism => ZyncFxRarity.epic,
-      CardFinishTier.legendary ||
-      CardFinishTier.secret =>
-        ZyncFxRarity.legendary,
-    };
-
-String _finishLabel(CardFinishTier finish) => switch (finish) {
-      CardFinishTier.normal => 'Normal',
-      CardFinishTier.foil => 'Foil',
-      CardFinishTier.holo => 'Holo',
-      CardFinishTier.prism => 'Prism',
-      CardFinishTier.legendary => 'Legendary',
-      CardFinishTier.secret => 'Secret',
     };
 
 String _edition(String raw) {
