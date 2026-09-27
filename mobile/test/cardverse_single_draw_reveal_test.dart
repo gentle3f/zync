@@ -60,6 +60,18 @@ void main() {
       find.byKey(const ValueKey('single-draw-card-front')),
       findsNothing,
     );
+    expect(
+      find.byKey(const ValueKey('pack-production-split-open')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('opening-card-stack-5')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('pack-reveal-stack')),
+      findsNothing,
+    );
     expect(find.text('Badminton'), findsNothing);
     expect(find.text('One card is ready'), findsOneWidget);
 

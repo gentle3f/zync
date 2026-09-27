@@ -59,6 +59,7 @@ class ZyncPackOpeningStage extends StatefulWidget {
     this.speed = 1.0,
     this.respectReduceMotion = true,
     this.revealCard = true,
+    this.cardStackCount = 1,
     this.onOpened,
   });
 
@@ -69,6 +70,7 @@ class ZyncPackOpeningStage extends StatefulWidget {
   final double speed;
   final bool respectReduceMotion;
   final bool revealCard;
+  final int cardStackCount;
   final VoidCallback? onOpened;
 
   @override
@@ -546,7 +548,8 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
               child: SizedBox(
                 width: 390,
                 height: 585,
-                child: ZyncFxCardBack(
+                child: _PackCardBackStack(
+                  count: widget.cardStackCount,
                   accent: widget.spec.profile.accentColor,
                 ),
               ),
@@ -742,7 +745,9 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
         Text(
           _opening
               ? (_extracting
-                  ? 'DRAWING CARD'
+                  ? (widget.cardStackCount > 1
+                      ? 'DRAWING STACK'
+                      : 'DRAWING CARD')
                   : (_hasHiddenOmen ? '...' : 'OPENING'))
               : progressLabel,
           style: TextStyle(
@@ -761,6 +766,39 @@ class _ZyncPackOpeningStageState extends State<ZyncPackOpeningStage>
           icon: const Icon(Icons.arrow_back_rounded, size: 16),
           label: const Text('Choose another pack'),
         ),
+      ],
+    );
+  }
+}
+
+class _PackCardBackStack extends StatelessWidget {
+  const _PackCardBackStack({
+    required this.count,
+    required this.accent,
+  });
+
+  final int count;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleCount = count.clamp(1, 5).toInt();
+    return Stack(
+      key: ValueKey('opening-card-stack-${count}'),
+      alignment: Alignment.center,
+      clipBehavior: Clip.none,
+      children: [
+        for (var depth = visibleCount - 1; depth >= 0; depth--)
+          Transform.translate(
+            offset: Offset(depth * 2.8, -depth * 4.0),
+            child: Transform.scale(
+              scale: 1 - depth * 0.006,
+              child: KeyedSubtree(
+                key: ValueKey('opening-card-stack-layer-${depth}'),
+                child: ZyncFxCardBack(accent: accent),
+              ),
+            ),
+          ),
       ],
     );
   }

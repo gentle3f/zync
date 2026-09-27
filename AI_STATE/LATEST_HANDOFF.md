@@ -5,7 +5,27 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PRODUCT CONTINUATION — COLLECTION LIVED MARKER REVIEW:
+CURRENT AUTHORITATIVE PRODUCT CONTINUATION — REWARD REVEAL FLOW SPLIT:
+Production reward presentation is now explicitly separated into two flows.
+Single Draw stays a dedicated one-card reveal with no booster wrapper or pack
+stack: one card back -> Reveal -> suspense -> flip -> shared bloom -> rarity
+payoff -> real immutable receipt card front. Production Pack Opening stays B —
+Split Open and now treats its immutable five-card receipt as a physical stack:
+five layered card backs are already present through the first real center split,
+the full stack extracts at the unchanged 70% commit threshold, then the receipt
+cards reveal sequentially one at a time with the remaining face-down stack
+visible behind the active card before the existing five-card recap. The early
+production regression checks an actual ~14% B pull (>10 px gap) with all five
+stack layers present. Existing accepted B audio, flip/bloom/payoff family,
+reduced-motion behavior, RNG, rarity, receipt order/semantics, backend, economy,
+locked frames, My Zync World/onboarding work and release systems are unchanged.
+Validation: focused reward/Card FX tests 12/12 PASS; targeted flutter analyze
+No issues found; git diff --check clean. The current branch remains outside
+push-triggered workflow branch filters and Vercel stays disabled.
+
+`AI_STATE/HANDOFF_20260927_REWARD_REVEAL_FLOW_SPLIT.md`
+
+Previous product checkpoint — COLLECTION LIVED MARKER REVIEW:
 The real production My Zync World collection grid was rendered through a
 temporary visual probe using a server-shaped owned Badminton card plus completed
 privacy-bounded Zync Now memory. The original green LIVED pill visibly competed

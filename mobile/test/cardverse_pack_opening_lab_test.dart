@@ -85,19 +85,66 @@ void main() {
     );
     detector.onHorizontalDragUpdate?.call(
       DragUpdateDetails(
-        delta: const Offset(104, 0),
-        primaryDelta: 104,
+        delta: const Offset(20, 0),
+        primaryDelta: 20,
+        globalPosition: tester.getCenter(splitGesture) + const Offset(20, 0),
+      ),
+    );
+    await tester.pump();
+
+    final splitWindow =
+        find.byKey(const ValueKey('opening-split-card-window'));
+    final earlyClip = tester
+        .widget<ClipRect>(splitWindow)
+        .clipper!
+        .getClip(const Size(390, 620));
+    expect(earlyClip.width, greaterThan(10));
+    expect(earlyClip.width, lessThan(40));
+    expect(
+      find.byKey(const ValueKey('opening-split-preextract-back')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('opening-card-stack-5')),
+      findsOneWidget,
+    );
+    for (var depth = 0; depth < 5; depth++) {
+      expect(
+        find.byKey(ValueKey('opening-card-stack-layer-${depth}')),
+        findsOneWidget,
+      );
+    }
+
+    detector.onHorizontalDragUpdate?.call(
+      DragUpdateDetails(
+        delta: const Offset(84, 0),
+        primaryDelta: 84,
         globalPosition: tester.getCenter(splitGesture) + const Offset(104, 0),
       ),
     );
     await tester.pump();
+
     detector.onHorizontalDragEnd?.call(DragEndDetails());
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsOneWidget,
+    );
+    expect(find.text('DRAWING STACK'), findsOneWidget);
+
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pump();
 
     expect(find.text('0 / 5'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('pack-reveal-stack')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('pack-reveal-stack-back-4')),
+      findsOneWidget,
+    );
     expect(
         find.byKey(const ValueKey('pack-lab-reveal-next-0')), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -116,6 +163,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('0 / 5'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('pack-reveal-stack')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('pack-reveal-stack-back-4')),
+      findsOneWidget,
+    );
 
     final expected = [
       for (final id in const [
@@ -133,10 +188,22 @@ void main() {
         find.byKey(ValueKey('pack-lab-reveal-next-$i')),
       );
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.text(expected[i]), findsOneWidget);
       expect(find.text('${i + 1} / 5'), findsWidgets);
+      final remaining = expected.length - (i + 1);
+      if (remaining > 0) {
+        expect(
+          find.byKey(ValueKey('pack-reveal-stack-back-${remaining - 1}')),
+          findsOneWidget,
+        );
+      } else {
+        expect(
+          find.byKey(const ValueKey('pack-reveal-stack-back-0')),
+          findsNothing,
+        );
+      }
       expect(tester.takeException(), isNull);
     }
 

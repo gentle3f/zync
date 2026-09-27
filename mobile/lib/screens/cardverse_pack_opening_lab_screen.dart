@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../card_fx/card_fx_spec.dart';
+import '../card_fx/zync_fx_reveal.dart';
 import '../card_fx/zync_fx_sensory.dart';
 import '../card_fx/zync_pack_opening.dart';
 import '../core/cardverse_models.dart';
@@ -243,6 +244,7 @@ class _CardversePackOpeningLabScreenState
               prototype: ZyncOpeningPrototype.splitOpen,
               openToken: 1,
               revealCard: false,
+              cardStackCount: _plan.items.length,
               onOpened: () {
                 if (!mounted) return;
                 setState(() => _started = true);
@@ -405,25 +407,10 @@ class _CardversePackOpeningLabScreenState
         Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 350),
-            child: last == null
-                ? _faceDownCard(
-                    index: 1,
-                  )
-                : ZyncCardPreview(
-                    key: ValueKey(
-                      'pack-revealed-card-${last.variant.interestId}',
-                    ),
-                    recipe: last.recipe,
-                    title: InterestCatalog.byId(
-                      last.variant.interestId,
-                    )!
-                        .labelFor(_locale),
-                    subtitle: _finishLabel(last.finish),
-                    finish: last.finish,
-                    editionLabel: last.editionLabel,
-                    cardNumberLabel: '$revealedCount / ${_plan.items.length}',
-                    animateFinish: last.focusAnimationRecommended,
-                  ),
+            child: _revealCardStack(
+              last: last,
+              revealedCount: revealedCount,
+            ),
           ),
         ),
         const SizedBox(height: 22),
@@ -519,34 +506,61 @@ class _CardversePackOpeningLabScreenState
         ],
       );
 
-  Widget _faceDownCard({required int index}) => AspectRatio(
-        aspectRatio: 5 / 7,
-        child: Container(
-          key: ValueKey('pack-face-down-$index'),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(26),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF2F294A),
-                Color(0xFF5C4A7B),
-                Color(0xFF244B59),
-              ],
+  Widget _revealCardStack({
+    required CardversePackRevealItem? last,
+    required int revealedCount,
+  }) {
+    final remainingCount = _plan.items.length - revealedCount;
+    final visibleBackCount = remainingCount > 5 ? 5 : remainingCount;
+    final accent =
+        ZyncCardFxProfile.forRarity(ZyncFxRarity.common).accentColor;
+
+    return AspectRatio(
+      key: const ValueKey('pack-reveal-stack'),
+      aspectRatio: 5 / 7,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          for (var depth = visibleBackCount - 1; depth >= 0; depth--)
+            Positioned.fill(
+              child: Transform.translate(
+                offset: Offset(
+                  (depth + (last == null ? 0 : 1)) * 2.8,
+                  -(depth + (last == null ? 0 : 1)) * 4.0,
+                ),
+                child: Transform.scale(
+                  scale:
+                      1 - (depth + (last == null ? 0 : 1)) * 0.006,
+                  child: KeyedSubtree(
+                    key: ValueKey('pack-reveal-stack-back-${depth}'),
+                    child: ZyncFxCardBack(accent: accent),
+                  ),
+                ),
+              ),
             ),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.62),
-              width: 2,
+          if (last != null)
+            Positioned.fill(
+              child: ZyncCardPreview(
+                key: ValueKey(
+                  'pack-revealed-card-${last.variant.interestId}',
+                ),
+                recipe: last.recipe,
+                title: InterestCatalog.byId(
+                  last.variant.interestId,
+                )!
+                    .labelFor(_locale),
+                subtitle: _finishLabel(last.finish),
+                finish: last.finish,
+                editionLabel: last.editionLabel,
+                cardNumberLabel: '$revealedCount / ${_plan.items.length}',
+                animateFinish: last.focusAnimationRecommended,
+              ),
             ),
-          ),
-          child: const Center(
-            child: ZyncMark(
-              size: 92,
-              strokeWidth: 7,
-            ),
-          ),
-        ),
-      );
+        ],
+      ),
+    );
+  }
 
   Widget _recap() => ListView(
         key: const ValueKey('pack-lab-recap'),
