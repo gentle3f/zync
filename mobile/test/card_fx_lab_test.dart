@@ -206,6 +206,48 @@ void main() {
     splitDetector.onHorizontalDragEnd?.call(DragEndDetails());
     await tester.pump();
 
+    // Releasing below the 70% commit threshold must close the physical gap
+    // immediately and must not start extraction.
+    expect(currentSplitClip().width, 0);
+    expect(find.text('KEEP GOING'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsNothing,
+    );
+
+    // A committed B drag enters opening, but Replay must be able to tear down
+    // that pending timer chain before extraction begins. This protects against
+    // stale card/audio callbacks firing into a newly replayed pack.
+    final commitDetector = tester.widget<GestureDetector>(splitGesture);
+    commitDetector.onHorizontalDragStart?.call(
+      DragStartDetails(globalPosition: tester.getCenter(splitGesture)),
+    );
+    commitDetector.onHorizontalDragUpdate?.call(
+      DragUpdateDetails(
+        delta: const Offset(104, 0),
+        primaryDelta: 104,
+        globalPosition: tester.getCenter(splitGesture) + const Offset(104, 0),
+      ),
+    );
+    await tester.pump();
+    commitDetector.onHorizontalDragEnd?.call(DragEndDetails());
+    await tester.pump();
+    expect(find.text('OPENING'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsNothing,
+    );
+
+    await tester.tap(replayButton);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('pack-choice-1')), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.byKey(const ValueKey('pack-choice-1')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('opening-card-extraction-back')),
+      findsNothing,
+    );
+
     expect(tester.takeException(), isNull);
   });
 }

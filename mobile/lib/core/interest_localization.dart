@@ -165,9 +165,9 @@ class InterestLocaleRegistry {
     addGeneric(kInterestLocaleFinalCRaw);
     addGeneric(kInterestLocaleFinalDRaw);
 
-    return Map.unmodifiable({
+    return Map<String, Map<String, String>>.unmodifiable({
       for (final entry in result.entries)
-        entry.key: Map.unmodifiable(entry.value),
+        entry.key: Map<String, String>.unmodifiable(entry.value),
     });
   }
 
@@ -200,9 +200,9 @@ class InterestLocaleRegistry {
     addAliases(kInterestLocaleAliasesLaunchV2Raw);
     addAliases(kInterestLocaleAliasesLaunchV3Raw);
 
-    return Map.unmodifiable({
+    return Map<String, Map<String, List<String>>>.unmodifiable({
       for (final entry in result.entries)
-        entry.key: Map.unmodifiable(entry.value),
+        entry.key: Map<String, List<String>>.unmodifiable(entry.value),
     });
   }
 }

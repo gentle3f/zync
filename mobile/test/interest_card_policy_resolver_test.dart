@@ -20,7 +20,7 @@ void main() {
       'transport.car_brand.porsche',
       'entertainment.youtube',
       'entertainment.classic_film.the_godfather',
-      'gaming.franchise.minecraft',
+      'gaming.minecraft',
       'anime.jojo',
       'wellness.crossfit',
       'technology.chatgpt',

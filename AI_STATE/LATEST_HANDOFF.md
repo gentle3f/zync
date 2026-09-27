@@ -6,26 +6,27 @@ Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
 Separate Card FX checkpoint — CURRENT AUTHORITATIVE CARD-FX CONTINUATION:
-B — Split Open remains the chosen production direction. Based on fresh real
-Chrome feedback, the old ~30% pre-commit card-reveal gate is gone: the first
-~12% remains seam/tension only, but once the foil physically separates the real
-card back is immediately visible through the actual widening center clip. At
-~14% pull the regression now requires >10 px of visible card clip, and Chrome
-held review shows the card occupying most of the opening while still showing
-`KEEP GOING`; the 70% commit threshold is unchanged and there is no fade cheat.
-Pack-selection audio was rebuilt as a short stereo tactile foil/tick cue, and all
-five rarity payoff WAVs were rebuilt into one premium physical-impact / metal /
-air family. Epic/Legendary tails are now shorter and cleaner; Legendary keeps
-its existing stronger two-stage hit + delayed finale. The accepted B tear,
-card extraction and card flip cues were not redesigned this round. Fresh Chrome
-runs reached Common, Uncommon, Rare, Epic and Legendary payoff files with no
-relevant runtime/audio errors; the clean Legendary chain is pack_pick ->
-foil_tension -> split_open -> card_extract -> card_flip -> rarity_legendary ->
-legendary_finale. Targeted tests are 4/4 PASS, analyze is clean and diff-check is
-clean. RNG, rarity behavior, hidden omen, reduced-motion override, accepted icon
-position, locked PNG masters, card-art pipeline, backend and A/C/D reference
-mechanics remain unchanged. No Actions, Vercel deployment, release or paid
-generation was used.
+B — Split Open remains the chosen production direction and the previously
+accepted early physical card-back reveal / 70% commit threshold / sensory family
+are unchanged. The overnight round deliberately avoided subjective visual or
+audio retuning and instead hardened runtime/QA behavior. It fixed a real
+InterestLocaleRegistry typed-unmodifiable-map crash exposed by expanded pack
+tests; repaired two Unicode-slug compatibility overlays (Shōgun / Škoda), two
+legacy localized search aliases, nine new taxonomy Chinese navigation labels,
+and one stale Minecraft policy fixture; added B regression coverage for
+sub-threshold release and Replay-before-extraction; and changed reveal lifecycle
+cleanup so every new reveal cancels stale flip / rarity / Legendary sensory
+timers before Reduce Motion can short-circuit. Locked frame masters and existing
+WAV assets were not changed. Final local validation: targeted regression 61/61
+PASS; all 52 non-golden mobile test files 333/333 PASS, exit 0; `flutter analyze`
+No issues found. The literal full suite has exactly one known infrastructure
+failure because `goldens/card_art_engine_v1_flagships.png` does not exist; do
+not auto-create that baseline just to make the test green. No Actions, Vercel,
+Production, Play, release or paid generation was used.
+
+`AI_STATE/HANDOFF_20260927_CARD_FX_OVERNIGHT_QA_HARDENING.md`
+
+Previous B early-reveal / audio-payoff checkpoint:
 
 `AI_STATE/HANDOFF_20260927_CARD_FX_B_EARLY_REVEAL_AUDIO_PAYOFF.md`
 

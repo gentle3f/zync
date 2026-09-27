@@ -570,6 +570,7 @@ entertainment.tv_drama.rome|Rome|Rome|Rome|Rome|Rome|Rome|Rome
 entertainment.tv_drama.sex_education|Sex Education|Sex Education|Sex Education|Sex Education|Sex Education|Sex Education|Sex Education
 entertainment.tv_drama.sharp_objects|Sharp Objects|Sharp Objects|Sharp Objects|Sharp Objects|Sharp Objects|Sharp Objects|Sharp Objects
 entertainment.tv_drama.shogun|幕府將軍|将軍|Shōgun|Shōgun|Shōgun|Shōgun|Shōgun
+entertainment.tv_drama.sh_gun|幕府將軍|将軍|Shōgun|Shōgun|Shōgun|Shōgun|Shōgun
 entertainment.tv_drama.signal|信號|信号|Signal|Signal|Signal|Signal|Signal
 entertainment.tv_drama.silent|Silent|Silent|Silent|Silent|Silent|Silent|Silent
 entertainment.tv_drama.skins|Skins|Skins|Skins|Skins|Skins|Skins|Skins
@@ -1824,6 +1825,7 @@ transport.car_brand.rivian|Rivian|Rivian|Rivian|Rivian|Rivian|Rivian|Rivian
 transport.car_brand.rolls_royce|Rolls-Royce|Rolls-Royce|Rolls-Royce|Rolls-Royce|Rolls-Royce|Rolls-Royce|Rolls-Royce
 transport.car_brand.seat|SEAT|SEAT|SEAT|SEAT|SEAT|SEAT|SEAT
 transport.car_brand.skoda|Škoda|Škoda|Škoda|Škoda|Škoda|Škoda|Škoda
+transport.car_brand.koda|Škoda|Škoda|Škoda|Škoda|Škoda|Škoda|Škoda
 transport.car_brand.smart|smart|smart|smart|smart|smart|smart|smart
 transport.car_brand.subaru|Subaru|Subaru|Subaru|Subaru|Subaru|Subaru|Subaru
 transport.car_brand.suzuki|Suzuki|Suzuki|Suzuki|Suzuki|Suzuki|Suzuki|Suzuki

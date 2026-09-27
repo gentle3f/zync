@@ -67,7 +67,20 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     }
   }
 
+  void _cancelCueTimers() {
+    _flipCueTimer?.cancel();
+    _rarityHitTimer?.cancel();
+    _legendaryFinaleTimer?.cancel();
+    _flipCueTimer = null;
+    _rarityHitTimer = null;
+    _legendaryFinaleTimer = null;
+  }
+
   Future<void> _play() async {
+    // A replay/spec change must invalidate the previous sensory timeline even
+    // when the new reveal resolves instantly under Reduce Motion.
+    _cancelCueTimers();
+
     final reduceMotion = widget.respectReduceMotion &&
         (MediaQuery.maybeOf(context)?.disableAnimations ?? false);
     if (reduceMotion) {
@@ -87,9 +100,6 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
     }
 
     final totalMs = _duration.inMilliseconds;
-    _flipCueTimer?.cancel();
-    _rarityHitTimer?.cancel();
-    _legendaryFinaleTimer?.cancel();
     _flipCueTimer = Timer(
       Duration(milliseconds: (totalMs * (0.48 - start)).round()),
       () {
@@ -127,9 +137,7 @@ class _ZyncFxRevealStageState extends State<ZyncFxRevealStage>
 
   @override
   void dispose() {
-    _flipCueTimer?.cancel();
-    _rarityHitTimer?.cancel();
-    _legendaryFinaleTimer?.cancel();
+    _cancelCueTimers();
     _controller.dispose();
     super.dispose();
   }

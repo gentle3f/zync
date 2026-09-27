@@ -28,6 +28,8 @@ wellness.calisthenics|es|entrenamiento con peso corporal
 wellness.spin_class|es|clase de spinning
 wellness.stretching|es|estirar
 wellness.meditation|es|meditar
+food.sichuan|es|Cocina de Sichuan
+gaming.subgenre.life_sim|ko|라이프 시뮬레이션
 transport.driving|zh-Hant|揸車
 transport.classic_cars|zh-Hant|老爺車
 transport.car_detailing|zh-Hant|洗車美容
