@@ -32,9 +32,24 @@ assert.match(script, /if track != ALLOWED_TRACK:/, 'track guard must reject anyt
 // Must consume a pre-existing signed AAB, never build or sign one itself.
 assert.match(workflow, /download-artifact@v4/, 'workflow must download an existing artifact rather than building an AAB');
 assert.match(workflow, /zync-v1-play-signed-aab/, 'workflow must consume the existing signed-release artifact');
-assert.match(workflow, /jarsigner -verify -strict/, 'workflow must re-verify the AAB signature before publishing');
+assert.ok(
+  workflow.includes('jarsigner -verify "$aab"'),
+  'workflow must re-verify the AAB JAR signature before publishing',
+);
+assert.ok(
+  !workflow.includes('jarsigner -verify -strict'),
+  'workflow must not use jarsigner -strict because current Android bundles can produce non-security JarInputStream warnings with a nonzero strict exit',
+);
+assert.match(workflow, /verify_signed_aab\.py/, 'workflow must verify signed-release provenance sidecars');
+assert.match(workflow, /app-release-build\.txt/, 'workflow must require release metadata sidecar');
+assert.match(workflow, /app-release\.sha256\.txt/, 'workflow must require SHA-256 sidecar');
+assert.match(workflow, /--expected-run-id/, 'workflow must bind provenance to the selected signed-release run id');
 assert.match(script, /def require_signed_aab/, 'publishing script must have a signed-AAB guard function');
-assert.match(script, /jarsigner", "-verify", "-strict"/, 'publishing script must verify the JAR signature itself');
+assert.ok(
+  script.includes('["jarsigner", "-verify", str(aab_path)]'),
+  'publishing script must verify the JAR signature itself',
+);
+assert.ok(!script.includes('"-strict"'), 'publishing script must not reintroduce strict-mode false failures');
 assert.ok(
   !/flutter build appbundle|keytool -genkey|keytool -genkeypair/.test(workflow) &&
   !/flutter build appbundle|keytool -genkey|keytool -genkeypair/.test(script),

@@ -10,7 +10,9 @@ Safety properties (enforced in code, not only by workflow config):
 - `--track` must be exactly `internal`. Any other value is a hard failure.
 - `--package` must be exactly `com.gmail.gentle3f.myproject`.
 - The AAB must exist, be non-empty, and carry a valid JAR signature
-  (`jarsigner -verify -strict`) before any Play API call is made.
+  (`jarsigner -verify`) before any Play API call is made. The workflow separately
+  verifies release-run provenance, signer SHA-1 and SHA-256 sidecars before this
+  script is invoked.
 - The credentials file path is read from `GOOGLE_APPLICATION_CREDENTIALS` (or
   `--credentials`); its contents are never printed, logged, or returned.
 - A Play "edit" is committed only after upload + track update + validate all
@@ -73,7 +75,7 @@ def require_signed_aab(aab_path: Path) -> None:
 
     try:
         subprocess.run(
-            ["jarsigner", "-verify", "-strict", str(aab_path)],
+            ["jarsigner", "-verify", str(aab_path)],
             check=True,
             capture_output=True,
             text=True,

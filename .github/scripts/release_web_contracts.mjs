@@ -129,11 +129,15 @@ assert.match(signedRelease, /live_api_smoke\.mjs/);
 assert.match(signedRelease, /ZYNC_PRIVACY_URL/);
 assert.match(signedRelease, /--dart-define=ZYNC_ANALYTICS_ENABLED=false/);
 assert.match(signedRelease, /--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true/);
-assert.match(signedRelease, /jarsigner -verify -strict/);
+assert.ok(signedRelease.includes('jarsigner -verify "$aab"'));
+assert.ok(!signedRelease.includes('jarsigner -verify -strict'));
+assert.match(signedRelease, /verify_signed_aab\.py/);
+assert.match(signedRelease, /app-release-build\.txt/);
+assert.match(signedRelease, /app-release\.sha256\.txt/);
 
 console.log('✓ Zync landing page matches the frozen local-first V1 product scope');
 console.log('✓ public legal pages disclose the short-lived encrypted relay and remain browser-readable');
 console.log('✓ relay source keeps TTL, server-only configuration, no payload logging and on-device AES-GCM');
 console.log('✓ stable /privacy, /terms and /disclaimer routes are configured');
 console.log('✓ public V1 product analytics stay off while regional interest learning is aggregate-only');
-console.log('✓ signed release keeps live smoke, privacy URL, analytics-off and strict signature verification');
+console.log('??signed release keeps live smoke, privacy URL, analytics-off, signature verification and provenance sidecars');

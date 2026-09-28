@@ -96,6 +96,9 @@ jobs:
       - name: Test public release web contracts
         run: node .github/scripts/release_web_contracts.mjs
 
+      - name: Test signed AAB provenance guard
+        run: python3 .github/scripts/verify_signed_aab.py --self-test
+
       - name: Smoke production API and privacy policy
         run: node .github/scripts/live_api_smoke.mjs
 
@@ -166,18 +169,54 @@ jobs:
           "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
           "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
 
-      - name: Verify AAB signature
+      - name: Verify and describe signed AAB
         shell: bash
         run: |
           aab="build_app/build/app/outputs/bundle/release/app-release.aab"
+          metadata="build_app/build/app/outputs/bundle/release/app-release-build.txt"
+          sha_file="build_app/build/app/outputs/bundle/release/app-release.sha256.txt"
           test -s "$aab"
-          jarsigner -verify -strict "$aab" >/dev/null
-          echo "AAB JAR signature verification passed"
+
+          if ! jarsigner -verify "$aab" >"$RUNNER_TEMP/zync-aab-jarsigner.txt" 2>&1; then
+            cat "$RUNNER_TEMP/zync-aab-jarsigner.txt"
+            echo "AAB JAR signature verification failed."
+            exit 1
+          fi
+
+          raw_sha1="$(keytool -printcert -jarfile "$aab" | awk -F': ' '/SHA1:/ {print $2; exit}')"
+          compact_sha1="$(printf '%s' "$raw_sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
+          test "${#compact_sha1}" -eq 40
+          signer_sha1="$(printf '%s' "$compact_sha1" | sed 's/../&:/g; s/:$//')"
+
+          aab_sha256="$(sha256sum "$aab" | awk '{print toupper($1)}')"
+          test "${#aab_sha256}" -eq 64
+          printf '%s  app-release.aab\n' "$aab_sha256" > "$sha_file"
+          {
+            echo "package=com.gmail.gentle3f.myproject"
+            echo "signer_sha1=$signer_sha1"
+            echo "aab_sha256=$aab_sha256"
+            echo "run_id=$GITHUB_RUN_ID"
+            echo "source_sha=$GITHUB_SHA"
+            echo "version=1.0.0+6"
+          } > "$metadata"
+
+          python3 .github/scripts/verify_signed_aab.py \
+            --aab "$aab" \
+            --metadata "$metadata" \
+            --sha256-file "$sha_file" \
+            --expected-package com.gmail.gentle3f.myproject \
+            --expected-run-id "$GITHUB_RUN_ID" \
+            --actual-signer-sha1 "$signer_sha1"
+
+          echo "AAB signature and provenance verification passed."
 
       - name: Upload signed Play AAB
         uses: actions/upload-artifact@v4
         with:
           name: zync-v1-play-signed-aab
-          path: build_app/build/app/outputs/bundle/release/app-release.aab
+          path: |
+            build_app/build/app/outputs/bundle/release/app-release.aab
+            build_app/build/app/outputs/bundle/release/app-release.sha256.txt
+            build_app/build/app/outputs/bundle/release/app-release-build.txt
           if-no-files-found: error
           retention-days: 14

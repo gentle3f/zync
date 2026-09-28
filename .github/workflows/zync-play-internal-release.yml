@@ -66,6 +66,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test signed AAB provenance guard
+        run: python3 .github/scripts/verify_signed_aab.py --self-test
+
       - name: Download signed AAB from the specified signed-release run
         uses: actions/download-artifact@v4
         with:
@@ -74,22 +82,39 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: signed-aab
 
-      - name: Verify a signed AAB was actually downloaded
+      - name: Verify signed AAB provenance
         shell: bash
         run: |
           aab="signed-aab/app-release.aab"
-          if [ ! -s "$aab" ]; then
-            echo "No signed AAB found in the '$SIGNED_AAB_ARTIFACT' artifact from run ${{ inputs.signed_release_run_id }}."
-            echo "This workflow never builds or signs an AAB itself; it only publishes an existing signed one."
+          metadata="signed-aab/app-release-build.txt"
+          sha_file="signed-aab/app-release.sha256.txt"
+          for file in "$aab" "$metadata" "$sha_file"; do
+            if [ ! -s "$file" ]; then
+              echo "Signed-release artifact from run ${{ inputs.signed_release_run_id }} is incomplete: missing $file"
+              exit 1
+            fi
+          done
+
+          if ! jarsigner -verify "$aab" >"$RUNNER_TEMP/zync-aab-jarsigner.txt" 2>&1; then
+            cat "$RUNNER_TEMP/zync-aab-jarsigner.txt"
+            echo "AAB JAR signature verification failed."
             exit 1
           fi
-          jarsigner -verify -strict "$aab"
-          echo "Confirmed signed AAB is present and its JAR signature verifies."
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+          raw_sha1="$(keytool -printcert -jarfile "$aab" | awk -F': ' '/SHA1:/ {print $2; exit}')"
+          compact_sha1="$(printf '%s' "$raw_sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
+          test "${#compact_sha1}" -eq 40
+          signer_sha1="$(printf '%s' "$compact_sha1" | sed 's/../&:/g; s/:$//')"
+
+          python3 .github/scripts/verify_signed_aab.py \
+            --aab "$aab" \
+            --metadata "$metadata" \
+            --sha256-file "$sha_file" \
+            --expected-package "$PACKAGE_NAME" \
+            --expected-run-id "${{ inputs.signed_release_run_id }}" \
+            --actual-signer-sha1 "$signer_sha1"
+
+          echo "Confirmed signed AAB signature, hash, signer and source-run provenance."
 
       - name: Install Google API client
         run: pip install --quiet google-api-python-client google-auth

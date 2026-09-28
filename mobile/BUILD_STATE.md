@@ -116,6 +116,45 @@ The active local gcloud account cannot see Google project number
 project.
 
 Production upload signing remains separate and unopened.
+
+## Stable QA AAB + Play provenance
+
+Current stable QA App Bundle:
+
+`C:\Users\FUJITSU\Zync-QA-Stable-20260928.aab`
+
+Verified:
+
+- size: 80,351,983 bytes
+- stable QA signer SHA-1:
+  `E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D`
+- AAB SHA-256:
+  `5D7BCDC16ABE6F20E47A5CDC047E36A72FD6F5933688513C0899B5261A248DAE`
+- real Google Web/server client ID is embedded in all release ABI app binaries
+
+This proves the current source/toolchain can produce a stable-signed release AAB.
+It is a QA package/signing artifact, not a production Play artifact.
+
+A real current AAB exposed a release-pipeline bug: normal
+`jarsigner -verify` succeeds, while `jarsigner -verify -strict` exits 4 due to
+current Android bundle JarInputStream compatibility warnings. The previous
+signed-release and Play Internal workflows would therefore reject a valid AAB.
+
+The Play handoff is now hardened:
+
+- `verify_signed_aab.py` verifies AAB SHA-256, signer SHA-1, package, release
+  version, source commit SHA and selected signed-release run ID
+- signed-release emits AAB + SHA-256 sidecar + build metadata sidecar
+- Play Internal requires all three from the exact operator-selected run
+- both workflows use normal JAR signature verification before provenance checks
+- runtime `jarsigner -verify -strict` references are removed
+- the publisher still independently enforces exact production package,
+  `internal` track, signature presence/verification, credentials and safe edit
+  lifecycle
+
+Both release workflows remain `workflow_dispatch` only. No Actions run or Play
+upload was performed while validating this path.
+
 ## iOS native foundation
 
 `apply_ios_branding.py` configures Zync naming, bundle-ID baseline, iOS 15,

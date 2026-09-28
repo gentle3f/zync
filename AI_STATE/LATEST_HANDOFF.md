@@ -5,7 +5,37 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — STABLE ANDROID QA SIGNING:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — STABLE QA AAB + PLAY PROVENANCE:
+Current Zync source and the dedicated stable QA signer now produce a real release
+Android App Bundle at
+`C:\Users\FUJITSU\Zync-QA-Stable-20260928.aab` (80,351,983 bytes), signed by
+the stable QA certificate SHA-1
+`E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D`, with AAB
+SHA-256
+`5D7BCDC16ABE6F20E47A5CDC047E36A72FD6F5933688513C0899B5261A248DAE`.
+Direct inspection confirms the real Google Web/server client ID is embedded in
+the release app binaries. This AAB exposed a real release-pipeline bug:
+`jarsigner -verify` succeeds, but `jarsigner -verify -strict` exits 4 on the
+current Android bundle due to non-security JarFile/JarInputStream warnings, so
+the previous signed-release and Play Internal workflows would reject a valid
+bundle. A new `.github/scripts/verify_signed_aab.py` now verifies SHA-256,
+signer SHA-1, package, version, source SHA and selected signed-release run ID.
+The signed-release workflow uploads the AAB plus SHA-256/build-metadata sidecars;
+Play Internal requires all three from the exact selected run, re-verifies the
+JAR signature, extracts the actual signer and validates provenance before any
+Play API call. The publisher keeps its independent exact-package/internal-track/
+signature/credentials/edit-cleanup guards. Runtime strict-jarsigner references
+are now zero. Validation includes verifier self-test, publisher self-test, a real
+stable AAB through both guards, wrong-package and wrong-run rejection, Play
+release contracts, JavaScript syntax, all 8 workflow YAML files and diff check.
+The full release_web_contracts suite is not runnable on this card-art branch
+because it lacks api/v1/interest-popularity.js; its modified file passes syntax
+and the signed-release assertions were checked directly. No Actions workflow,
+Play upload, Vercel or production deployment was run.
+
+`AI_STATE/HANDOFF_20260928_PLAY_AAB_PROVENANCE_GUARD.md`
+
+Previous platform checkpoint — STABLE ANDROID QA SIGNING:
 Android QA now has a dedicated stable signer, separate from production signing. The local keystore is `C:\Users\FUJITSU\.zync\qa-signing\zync-qa.jks`, protected by explicit non-inherited ACLs and never source-controlled. Stable QA signer SHA-1 is `E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D` (valid to 2054-02-13). A current stable-signed release APK was built successfully at `C:\Users\FUJITSU\Zync-QA-Stable-20260928.apk`, package `com.gmail.gentle3f.myproject.qa`, label `Zync QA Local`, 90,520,315 bytes, APK Signature Scheme v2 verified, APK SHA-256 `A7FFC73FD6D63E61F276DC14DB3DB412E485FF3AC322EA80A42FF121C061F121`. Direct APK inspection confirms the real Google server client ID is embedded in the release app binaries. `configure_android_signing.py` was fixed for two real current-toolchain issues: Gradle 9/Kotlin DSL `java` extension shadowing of `java.util/java.io`, and Windows `key.properties` backslash escaping that corrupted absolute keystore paths. QA preview signing is now separated from production with dedicated `ZYNC_ANDROID_QA_*` secrets plus pinned variable `ZYNC_ANDROID_QA_SHA1`; the workflow fails if the built signer does not match the pinned OAuth certificate. Production still uses separate `ZYNC_ANDROID_*` names and does not consume the QA key. The non-secret QA SHA-1 variable is already set in GitHub. All four QA-only signing secrets are now configured in GitHub under the dedicated `ZYNC_ANDROID_QA_*` namespace, and the pinned `ZYNC_ANDROID_QA_SHA1` variable is present. Their values were piped directly from the protected local signer and were never printed or committed. Production `ZYNC_ANDROID_*` signing secrets were not populated or changed. Secret/variable installation triggered no GitHub Actions run. The active local gcloud account cannot see Google project number `809680073916`, so no OAuth client was created or changed in the wrong project. Remaining Android QA gates are Google Android OAuth registration/verification for the stable package/SHA-1 pair and physical-device Google/session/provider-link/reward smoke.
 
 `AI_STATE/HANDOFF_20260928_ANDROID_STABLE_QA_SIGNING.md`
