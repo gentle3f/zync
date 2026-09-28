@@ -38,16 +38,37 @@ Android generated wrappers apply:
 Google auth uses Android Credential Manager and binds the Cardverse one-time
 challenge nonce into the Google ID-token request.
 
-A current local debug compile reached `assembleDebug` but the background shell
-ended without an exit marker and emitted no APK. Local APK compile proof remains
-open.
+A fresh current-source QA wrapper now compiles successfully on GEN-FUJI.
 
-A true Google-auth QA APK still requires:
+Current installable artifact:
+
+`C:\Users\FUJITSU\Zync-QA-Google-Current-20260928.apk`
+
+Verified:
+
+- package `com.gmail.gentle3f.myproject.qa`
+- label `Zync QA Local`
+- minSdk 24 / targetSdk 36
+- APK Signature Scheme v2 valid
+- real repository `ZYNC_GOOGLE_SERVER_CLIENT_ID` is embedded in the Flutter
+  kernel blob
+- current debug signer certificate SHA-1:
+  `10:F4:27:CD:6E:CF:A5:38:0C:E3:3B:A5:0F:63:98:37:FB:69:8B:A8`
+- APK SHA-256:
+  `EA731AD3076C0ED60D3BAFBC58D5D22903976AF9903F237588A45D23778F5146`
+
+The previous Gradle failures were traced to duplicate concurrent
+`assembleDebug` processes racing on `mergeDebugAssets`, not a Zync compile
+error. A clean single-process build succeeds.
+
+Local APK compile proof is therefore **closed**.
+
+A true Google-auth QA/release path still requires:
 
 1. stable QA signing key/secrets
-2. stable QA signer SHA-1 registered with Google Android OAuth
-3. current signed QA APK
-4. physical chooser-return/session/reward-loop smoke
+2. Android OAuth client registration for the chosen stable signer SHA-1
+3. stable signed QA APK
+4. physical chooser-return/session/reward-loop/provider-link smoke
 
 ## iOS native foundation
 
@@ -200,11 +221,10 @@ Fresh generated iOS wrapper:
 
 Android:
 
-1. local APK compile proof
-2. stable QA signing
-3. Android OAuth SHA-1 registration
-4. signed QA APK
-5. physical Android Google/session/reward-loop smoke
+1. stable QA signing
+2. Android OAuth SHA-1 registration for the stable QA signer
+3. stable signed QA APK
+4. physical Android Google/session/reward-loop/provider-link smoke
 
 iOS:
 

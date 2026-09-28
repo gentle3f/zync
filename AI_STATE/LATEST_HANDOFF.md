@@ -5,7 +5,33 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — SAME-WORLD PROVIDER LINKING:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — CURRENT ANDROID QA APK:
+The old Android compile-proof blocker is now closed. A fresh current-source QA
+wrapper from HEAD `711d0b3` successfully builds an installable APK on GEN-FUJI.
+The successful artifact is
+`C:\Users\FUJITSU\Zync-QA-Google-Current-20260928.apk`, package
+`com.gmail.gentle3f.myproject.qa`, label `Zync QA Local`, minSdk 24,
+targetSdk 36. APK Signature Scheme v2 verifies. The real repository
+`ZYNC_GOOGLE_SERVER_CLIENT_ID`
+(`809680073916-4a0girebokh8qdqqho1jr92b74vov7on.apps.googleusercontent.com`)
+was injected, and direct APK inspection confirms that client ID is present in
+`assets/flutter_assets/kernel_blob.bin`. Current debug signer certificate SHA-1
+is `10:F4:27:CD:6E:CF:A5:38:0C:E3:3B:A5:0F:63:98:37:FB:69:8B:A8`; APK
+SHA-256 is
+`EA731AD3076C0ED60D3BAFBC58D5D22903976AF9903F237588A45D23778F5146`.
+Earlier Android build failures were traced to duplicate concurrent
+`assembleDebug` processes racing on `mergeDebugAssets`; a clean single-process
+build succeeds. No Android device was attached, so Google chooser/session and
+reward/provider-link physical smoke are not claimed. Repository secret names
+currently do not include the four expected Zync Android signing secrets, so the
+remaining Android release gates are stable QA signing, Google Android OAuth
+registration for the chosen stable signer SHA-1, a stable signed QA APK and
+physical-device smoke. No Actions, Vercel, Play or production deployment was
+used.
+
+`AI_STATE/HANDOFF_20260928_ANDROID_QA_APK_COMPILE.md`
+
+Previous platform checkpoint — SAME-WORLD PROVIDER LINKING:
 Zync now supports server-authoritative Google/Apple provider linking for an
 already signed-in Cardverse-backed Zync World. Linking requires the existing
 secure bearer session, a fresh provider-specific one-time challenge and fresh
