@@ -197,6 +197,84 @@ used historically. The current environment cannot query production Play history
 without the external release authorization path.
 
 
+
+## iOS privacy manifest + App Store submission audit
+
+Zync now has a source-controlled app-level iOS privacy declaration:
+
+`mobile/app_store_privacy_details.json`
+
+Current production declaration:
+
+- tracking: false
+- no tracking domains
+- collected for App Functionality:
+  - Email Address
+  - User ID
+  - Product Interaction
+- all linked to the user
+- none used for tracking
+- production analytics disabled
+
+`mobile/tool/apply_ios_privacy_manifest.py` generates and integrates
+`Runner/PrivacyInfo.xcprivacy` into the real Runner Resources phase for every
+fresh wrapper.
+
+A real current Flutter iOS wrapper at:
+
+`C:\Users\FUJITSU\zync_ios_release_probe`
+
+was used to prove the manifest file, Runner group/Resources integration and
+idempotent re-application.
+
+`mobile/tool/audit_ios_privacy_dependencies.py` audits the actual resolved iOS
+plugin graph. Current required plugin privacy manifests pass, including
+`shared_preferences_foundation` with UserDefaults required-reason declaration
+`CA92.1`.
+
+Both iOS workflows now:
+
+- apply/check the app-level privacy manifest
+- audit plugin privacy manifests
+- run the App Store privacy/submission audit
+- compile with `ZYNC_ANALYTICS_ENABLED=false`
+
+The unsigned compile path checks the compiled Runner.app manifest. The signed IPA
+path checks the manifest inside the exported app.
+
+Public source legal copy was corrected in:
+
+- `privacy.html`
+- `terms.html`
+- `index.html`
+
+It now distinguishes local/core Zync data from optional Google/Apple-backed
+Cardverse account state and covers both Android and iOS.
+
+These legal-page changes are source-only and were **not deployed live** because
+Vercel/production remained closed.
+
+App Store strict-submission readiness is intentionally still blocked.
+
+Current deterministic blockers are exactly:
+
+1. `account_deletion_flow_missing`
+2. `apple_token_revocation_not_verifiable`
+
+The audit confirms:
+
+- privacy contract: clean
+- account creation: present
+- account deletion: absent
+- Apple revoke runtime evidence: absent
+
+Any future actual App Store upload path must run
+`audit_ios_app_store_submission.py --strict-submission`.
+
+The next implementation milestone is therefore a real server-authoritative
+account-deletion flow with Apple authorization revocation, not a local-only fake
+delete button.
+
 ## iOS signed archive / IPA foundation
 
 A manual-only signed App Store Connect archive/export path now exists:

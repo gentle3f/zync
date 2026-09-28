@@ -56,6 +56,8 @@ jobs:
             --check-template
           python3 mobile/tool/apply_ios_apple_identity.py build_app
           python3 mobile/tool/apply_ios_apple_identity.py build_app --check
+          python3 mobile/tool/apply_ios_privacy_manifest.py build_app
+          python3 mobile/tool/apply_ios_privacy_manifest.py build_app --check
 
       - name: Verify iOS package contents
         shell: bash
@@ -77,10 +79,25 @@ jobs:
           grep -q 'nonce: nonce' build_app/lib/core/apple_identity_provider.dart
           grep -q 'CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;' \
             build_app/ios/Runner.xcodeproj/project.pbxproj
+          test -f build_app/ios/Runner/PrivacyInfo.xcprivacy
+          grep -q 'PrivacyInfo.xcprivacy in Resources' \
+            build_app/ios/Runner.xcodeproj/project.pbxproj
+          python3 mobile/tool/apply_ios_privacy_manifest.py \
+            --check-manifest build_app/ios/Runner/PrivacyInfo.xcprivacy
 
       - name: Install Flutter dependencies
         working-directory: build_app
         run: flutter pub get
+
+      - name: Audit iOS plugin privacy manifests
+        run: >-
+          python3 mobile/tool/audit_ios_privacy_dependencies.py
+          build_app/.dart_tool/package_config.json
+
+      - name: Audit App Store privacy and submission readiness
+        run: |
+          node .github/scripts/ios_privacy_submission_contracts.mjs
+          python3 mobile/tool/audit_ios_app_store_submission.py
 
       - name: Generate localization sources
         working-directory: build_app
@@ -113,6 +130,14 @@ jobs:
           "--dart-define=ZYNC_GOOGLE_SERVER_CLIENT_ID=${QA_GOOGLE_SERVER_CLIENT_ID}"
           "--dart-define=ZYNC_GOOGLE_IOS_CLIENT_ID=${QA_GOOGLE_IOS_CLIENT_ID}"
           "--dart-define=ZYNC_QA_DEBUG=true"
+
+      - name: Verify compiled privacy manifest
+        shell: bash
+        run: |
+          test -d build_app/build/ios/iphoneos/Runner.app
+          python3 mobile/tool/apply_ios_privacy_manifest.py \
+            --check-manifest \
+            build_app/build/ios/iphoneos/Runner.app/PrivacyInfo.xcprivacy
 
       - name: Package compile-smoke app
         shell: bash

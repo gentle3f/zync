@@ -5,7 +5,43 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — IOS SIGNED ARCHIVE FOUNDATION:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — IOS PRIVACY + SUBMISSION READINESS:
+Zync now has a source-controlled App Store privacy source of truth at
+`mobile/app_store_privacy_details.json` and a deterministic
+`apply_ios_privacy_manifest.py` that generates `Runner/PrivacyInfo.xcprivacy`
+and adds it to the real Runner Resources phase for every generated wrapper.
+Current app-level declaration is tracking=false, no tracking domains, production
+analytics=false, and Email Address / User ID / Product Interaction collected for
+App Functionality, linked to the user and not used for tracking. A real current
+Flutter iOS wrapper at `C:\Users\FUJITSU\zync_ios_release_probe` proves the
+manifest integration and idempotence. A new dependency privacy audit resolves
+the actual package graph and verifies current native plugin manifests; the real
+graph passes, including shared_preferences_foundation UserDefaults reason
+CA92.1. Both iOS workflows now apply/check the app manifest, audit plugin
+privacy manifests, run the App Store privacy/submission audit and keep
+ZYNC_ANALYTICS_ENABLED=false; unsigned compile checks compiled Runner.app and
+signed archive checks the exported app. Public source privacy.html, terms.html
+and index.html were corrected from obsolete Android-only/no-account/no-cloud
+claims to the current local-core + optional Google/Apple Cardverse account
+model. Those legal changes were NOT deployed live because Vercel/production
+remained closed. The source-controlled submission audit is clean for privacy
+(problems=[]), detects account creation, and now only accepts Apple-revoke
+evidence from runtime mobile/lib/api/server source. Strict submission currently
+fails for exactly two real blockers: `account_deletion_flow_missing` and
+`apple_token_revocation_not_verifiable`; no Apple revoke runtime source exists.
+No fake delete button or fake endpoint was added. Validation includes helper
+syntax/self-tests, real wrapper manifest integration, real plugin privacy audit,
+privacy/submission contracts, signed-archive contract, exact blocker regression,
+all 9 workflow YAML files and diff check. The full release_web contract remains
+unrunnable on this branch because api/v1/interest-popularity.js is absent; the
+modified script passes syntax and privacy-specific contracts run independently.
+Next authoritative work: real authenticated backend account deletion +
+account-linked Cardverse cleanup + Apple authorization revocation + destructive
+mobile UX/session cleanup + tests, until strict submission turns green.
+
+`AI_STATE/HANDOFF_20260928_IOS_PRIVACY_SUBMISSION_READINESS.md`
+
+Previous platform checkpoint — IOS SIGNED ARCHIVE FOUNDATION:
 Zync now has a source-controlled manual-only signed App Store Connect
 archive/export path. The new workflow `.github/workflows/zync-ios-signed-archive.yml`
 has only `workflow_dispatch`, requires explicit `BUILD_SIGNED_IPA` confirmation

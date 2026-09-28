@@ -66,6 +66,18 @@ assert.match(privacy, /local Zync history on your device/i);
 assert.match(privacy, /play\.google\.com\/store\/apps\/details\?id=com\.gmail\.gentle3f\.myproject/);
 assert.match(privacy, /Retention and deletion/i);
 assert.match(privacy, /Security/i);
+assert.match(privacy, /Android and iOS apps/i);
+assert.match(privacy, /Core use does not require an account/i);
+assert.match(privacy, /Optional Google \/ Apple account and Cardverse cloud state/i);
+assert.match(privacy, /cards, packs, rewards/i);
+assert.match(privacy, /private People history/i);
+assert.match(privacy, /camera access only when you choose to scan/i);
+for (const obsolete of [
+  'Zync V1 has no permanent cloud user profile',
+  'Because Zync V1 has no account',
+]) {
+  assert.ok(!privacy.includes(obsolete), `privacy contains obsolete account claim: ${obsolete}`);
+}
 assert.ok(
   !/QR body is not uploaded to Zync's backend as part of scanning or matching/i.test(privacy),
   'privacy policy has regressed to the obsolete direct-transfer-only statement',
@@ -77,6 +89,9 @@ assert.match(terms, /short-lived encrypted relay/i);
 assert.match(terms, /Privacy Policy/i);
 assert.match(terms, /public social-profile links/i);
 assert.match(terms, /Only enable this option if you are comfortable/i);
+assert.match(terms, /Optional account and cloud collection/i);
+assert.match(terms, /cards, packs, rewards/i);
+assert.ok(!terms.includes('Zync V1 has no permanent cloud user profile'));
 
 assert.match(disclaimer, /<title>Zync Disclaimer<\/title>/i);
 assert.match(disclaimer, /AI-generated content/i);

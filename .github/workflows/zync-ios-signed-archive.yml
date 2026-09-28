@@ -254,6 +254,8 @@ jobs:
             build_app \
             --bundle-id "$BUNDLE_ID"
           python3 mobile/tool/apply_ios_apple_identity.py build_app --check
+          python3 mobile/tool/apply_ios_privacy_manifest.py build_app
+          python3 mobile/tool/apply_ios_privacy_manifest.py build_app --check
           python3 mobile/tool/configure_ios_signing.py \
             build_app \
             --bundle-id "$BUNDLE_ID" \
@@ -288,11 +290,26 @@ jobs:
             build_app/ios/Runner.xcodeproj/project.pbxproj
           grep -Fq '"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";' \
             build_app/ios/Runner.xcodeproj/project.pbxproj
+          test -f build_app/ios/Runner/PrivacyInfo.xcprivacy
+          grep -q 'PrivacyInfo.xcprivacy in Resources' \
+            build_app/ios/Runner.xcodeproj/project.pbxproj
+          python3 mobile/tool/apply_ios_privacy_manifest.py \
+            --check-manifest build_app/ios/Runner/PrivacyInfo.xcprivacy
           plutil -lint build_app/ios/ExportOptions.plist
 
       - name: Install Flutter dependencies
         working-directory: build_app
         run: flutter pub get
+
+      - name: Audit iOS plugin privacy manifests
+        run: >-
+          python3 mobile/tool/audit_ios_privacy_dependencies.py
+          build_app/.dart_tool/package_config.json
+
+      - name: Audit App Store privacy and submission readiness
+        run: |
+          node .github/scripts/ios_privacy_submission_contracts.mjs
+          python3 mobile/tool/audit_ios_app_store_submission.py
 
       - name: Generate localization sources
         working-directory: build_app
@@ -363,6 +380,9 @@ jobs:
 
           /usr/libexec/PlistBuddy -c "Print :GIDClientID" \
             "$app/Info.plist" | grep -qx "$ZYNC_GOOGLE_IOS_CLIENT_ID"
+
+          python3 mobile/tool/apply_ios_privacy_manifest.py \
+            --check-manifest "$app/PrivacyInfo.xcprivacy"
 
           app_entitlements="$RUNNER_TEMP/zync-signed-entitlements.plist"
           codesign -d --entitlements :- "$app" > "$app_entitlements" 2>/dev/null

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "tracking": false,
+  "trackingDomains": [],
+  "collectedData": [
+    {
+      "appleType": "NSPrivacyCollectedDataTypeEmailAddress",
+      "linkedToUser": true,
+      "tracking": false,
+      "purposes": [
+        "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+      ],
+      "basis": [
+        "Sign in with Apple requests the email scope.",
+        "Provider identity tokens are sent to the Zync account backend for authentication and account linking."
+      ]
+    },
+    {
+      "appleType": "NSPrivacyCollectedDataTypeProductInteraction",
+      "linkedToUser": true,
+      "tracking": false,
+      "purposes": [
+        "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+      ],
+      "basis": [
+        "Server-authoritative account reward state includes daily-login claims, quest claims, pack opening, and inventory operations."
+      ]
+    },
+    {
+      "appleType": "NSPrivacyCollectedDataTypeUserID",
+      "linkedToUser": true,
+      "tracking": false,
+      "purposes": [
+        "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+      ],
+      "basis": [
+        "Google/Apple provider identities are exchanged for a Zync account ID and secure session."
+      ]
+    }
+  ],
+  "appRequiredReasonApis": [],
+  "permissions": {
+    "camera": {
+      "required": true,
+      "purpose": "Scan a Zync QR code chosen by the user.",
+      "collectedOffDevice": false
+    },
+    "trackingTransparency": {
+      "required": false
+    },
+    "location": {
+      "required": false
+    },
+    "photos": {
+      "required": false
+    },
+    "contacts": {
+      "required": false
+    }
+  },
+  "productionAnalytics": {
+    "enabled": false,
+    "note": "Production release workflows compile ZYNC_ANALYTICS_ENABLED=false. The analytics service exits before creating identifiers or sending network requests when disabled."
+  },
+  "privacyPolicy": {
+    "requiredForRelease": true,
+    "source": "ZYNC_PRIVACY_URL"
+  },
+  "notes": [
+    "This file covers Zync app-level collection. Third-party SDKs are responsible for their own privacy manifests.",
+    "Re-audit this declaration whenever production analytics, account sync, permissions, or third-party SDKs change."
+  ]
+}
