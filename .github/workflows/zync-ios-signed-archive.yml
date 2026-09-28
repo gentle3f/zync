@@ -1,0 +1,463 @@
+name: Zync iOS Signed Archive
+
+# Builds and exports a signed App Store Connect IPA, but NEVER uploads it.
+# This is a packaging/signing proof and artifact handoff only.
+#
+# Required GitHub configuration:
+# Variables:
+#   ZYNC_API_BASE
+#   ZYNC_PRIVACY_URL
+#   ZYNC_GOOGLE_SERVER_CLIENT_ID
+#   ZYNC_GOOGLE_IOS_CLIENT_ID
+# Secrets:
+#   ZYNC_IOS_DISTRIBUTION_P12_BASE64
+#   ZYNC_IOS_DISTRIBUTION_P12_PASSWORD
+#   ZYNC_IOS_APP_STORE_PROFILE_BASE64
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_signed_archive:
+        description: >-
+          Type BUILD_SIGNED_IPA to confirm you intend to consume a macOS runner
+          and build a signed IPA artifact. This workflow does not upload it.
+        required: true
+      version_name:
+        description: 'Release version name (numeric major.minor.patch, e.g. 1.0.1).'
+        required: true
+      build_number:
+        description: 'iOS build number. Use a new positive integer for each App Store Connect build.'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zync-ios-signed-archive
+  cancel-in-progress: false
+
+jobs:
+  signed-ios-archive:
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      BUNDLE_ID: com.gmail.gentle3f.myproject
+      RELEASE_VERSION_NAME: ${{ inputs.version_name }}
+      RELEASE_BUILD_NUMBER: ${{ inputs.build_number }}
+      ZYNC_API_BASE: ${{ vars.ZYNC_API_BASE }}
+      ZYNC_PRIVACY_URL: ${{ vars.ZYNC_PRIVACY_URL }}
+      ZYNC_GOOGLE_SERVER_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_SERVER_CLIENT_ID }}
+      ZYNC_GOOGLE_IOS_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_IOS_CLIENT_ID }}
+      IOS_P12_B64: ${{ secrets.ZYNC_IOS_DISTRIBUTION_P12_BASE64 }}
+      IOS_P12_PASSWORD: ${{ secrets.ZYNC_IOS_DISTRIBUTION_P12_PASSWORD }}
+      IOS_PROFILE_B64: ${{ secrets.ZYNC_IOS_APP_STORE_PROFILE_BASE64 }}
+
+    steps:
+      - name: Require explicit signed-archive confirmation
+        shell: bash
+        run: |
+          if [ "${{ inputs.confirm_signed_archive }}" != "BUILD_SIGNED_IPA" ]; then
+            echo "Refusing to run: confirm_signed_archive must be exactly BUILD_SIGNED_IPA."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate release version inputs
+        run: |
+          python3 .github/scripts/release_version.py --self-test
+          python3 .github/scripts/release_version.py \
+            --version-name "$RELEASE_VERSION_NAME" \
+            --version-code "$RELEASE_BUILD_NUMBER"
+
+      - name: Require production URLs and iOS OAuth identity
+        shell: bash
+        run: |
+          missing=0
+          for name in ZYNC_API_BASE ZYNC_PRIVACY_URL; do
+            if [ -z "${!name}" ]; then
+              echo "$name repository variable is required."
+              missing=1
+              continue
+            fi
+            case "${!name}" in
+              https://*) ;;
+              *)
+                echo "$name must be an https:// URL."
+                missing=1
+                ;;
+            esac
+          done
+
+          for name in ZYNC_GOOGLE_SERVER_CLIENT_ID ZYNC_GOOGLE_IOS_CLIENT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "$name repository variable is required."
+              missing=1
+              continue
+            fi
+            case "${!name}" in
+              *.apps.googleusercontent.com) ;;
+              *)
+                echo "$name is not a Google OAuth client ID."
+                missing=1
+                ;;
+            esac
+          done
+
+          if [ "$ZYNC_GOOGLE_SERVER_CLIENT_ID" = "$ZYNC_GOOGLE_IOS_CLIENT_ID" ]; then
+            echo "Use a dedicated Google iOS OAuth client; do not reuse the Web/server client ID."
+            missing=1
+          fi
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Require iOS signing secrets
+        shell: bash
+        run: |
+          missing=0
+          for name in IOS_P12_B64 IOS_P12_PASSWORD IOS_PROFILE_B64; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required iOS signing secret for $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Configure the App Store distribution certificate/profile before running this workflow."
+            exit 1
+          fi
+
+      - name: Test signed-archive safety contract
+        run: node .github/scripts/ios_signed_archive_contracts.mjs
+
+      - name: Test iOS signing and IPA provenance helpers
+        run: |
+          python3 mobile/tool/apply_ios_branding.py --self-test
+          python3 mobile/tool/apply_ios_apple_identity.py --self-test
+          python3 mobile/tool/ios_provisioning_profile.py --self-test
+          python3 mobile/tool/configure_ios_signing.py --self-test
+          python3 .github/scripts/verify_signed_ipa.py --self-test
+
+      - name: Decode and validate App Store provisioning profile
+        id: profile
+        shell: bash
+        run: |
+          umask 077
+          profile_bin="$RUNNER_TEMP/zync-app-store.mobileprovision"
+          profile_plist="$RUNNER_TEMP/zync-app-store-profile.plist"
+          PROFILE_BIN="$profile_bin" python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          Path(os.environ["PROFILE_BIN"]).write_bytes(
+              base64.b64decode(os.environ["IOS_PROFILE_B64"], validate=True)
+          )
+          PY
+          test -s "$profile_bin"
+          security cms -D -i "$profile_bin" > "$profile_plist"
+          python3 mobile/tool/ios_provisioning_profile.py \
+            --plist "$profile_plist" \
+            --expected-bundle-id "$BUNDLE_ID" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Install temporary Apple Distribution identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          p12="$RUNNER_TEMP/zync-distribution.p12"
+          keychain="$RUNNER_TEMP/zync-build.keychain-db"
+          keychain_password="$(openssl rand -hex 32)"
+
+          P12_PATH="$p12" python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          Path(os.environ["P12_PATH"]).write_bytes(
+              base64.b64decode(os.environ["IOS_P12_B64"], validate=True)
+          )
+          PY
+          test -s "$p12"
+
+          security list-keychains -d user > "$RUNNER_TEMP/zync-original-keychains.txt"
+
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          security import "$p12" \
+            -k "$keychain" \
+            -P "$IOS_P12_PASSWORD" \
+            -T /usr/bin/codesign \
+            -T /usr/bin/security
+          security set-key-partition-list \
+            -S apple-tool:,apple: \
+            -s \
+            -k "$keychain_password" \
+            "$keychain"
+
+          existing_keychains=()
+          while IFS= read -r keychain_line; do
+            keychain_line="${keychain_line#*\"}"
+            keychain_line="${keychain_line%\"}"
+            existing_keychains+=("$keychain_line")
+          done < <(security list-keychains -d user)
+          security list-keychains -d user -s "$keychain" "${existing_keychains[@]}"
+
+          if ! security find-identity -v -p codesigning "$keychain" \
+            | grep -q '"Apple Distribution:'; then
+            echo "Imported P12 does not expose an Apple Distribution signing identity."
+            exit 1
+          fi
+
+          echo "ZYNC_TEMP_KEYCHAIN=$keychain" >> "$GITHUB_ENV"
+          echo "ZYNC_TEMP_P12=$p12" >> "$GITHUB_ENV"
+
+      - name: Install validated provisioning profile
+        shell: bash
+        run: |
+          profile_source="$RUNNER_TEMP/zync-app-store.mobileprovision"
+          profile_dir="$HOME/Library/MobileDevice/Provisioning Profiles"
+          profile_dest="$profile_dir/${{ steps.profile.outputs.profile_uuid }}.mobileprovision"
+          mkdir -p "$profile_dir"
+          cp "$profile_source" "$profile_dest"
+          chmod 600 "$profile_dest"
+          echo "ZYNC_INSTALLED_PROFILE=$profile_dest" >> "$GITHUB_ENV"
+
+      - name: Setup Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate production iOS wrapper
+        run: |
+          python3 mobile/tool/generate_mobile_wrapper.py ios build_app
+          python3 mobile/tool/apply_ios_branding.py \
+            build_app \
+            --bundle-id "$BUNDLE_ID"
+          python3 mobile/tool/apply_ios_google_identity.py \
+            build_app \
+            --ios-client-id "$ZYNC_GOOGLE_IOS_CLIENT_ID"
+          python3 mobile/tool/apply_ios_google_identity.py \
+            build_app \
+            --check-template
+          python3 mobile/tool/apply_ios_apple_identity.py \
+            build_app \
+            --bundle-id "$BUNDLE_ID"
+          python3 mobile/tool/apply_ios_apple_identity.py build_app --check
+          python3 mobile/tool/configure_ios_signing.py \
+            build_app \
+            --bundle-id "$BUNDLE_ID" \
+            --team-id "${{ steps.profile.outputs.team_id }}" \
+            --profile-uuid "${{ steps.profile.outputs.profile_uuid }}" \
+            --profile-name "${{ steps.profile.outputs.profile_name }}" \
+            --export-options build_app/ios/ExportOptions.plist
+          python3 mobile/tool/configure_ios_signing.py \
+            build_app \
+            --bundle-id "$BUNDLE_ID" \
+            --team-id "${{ steps.profile.outputs.team_id }}" \
+            --profile-uuid "${{ steps.profile.outputs.profile_uuid }}" \
+            --profile-name "${{ steps.profile.outputs.profile_name }}" \
+            --export-options build_app/ios/ExportOptions.plist \
+            --check
+
+      - name: Verify generated iOS package identity
+        shell: bash
+        run: |
+          test -f build_app/assets/card_fx/frames/master/zync_frame_legendary_master_v1.png
+          test -f build_app/assets/card_fx/sfx/pixabay_rarity_legendary_light_478379.mp3
+          /usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName" \
+            build_app/ios/Runner/Info.plist | grep -qx "Zync"
+          /usr/libexec/PlistBuddy -c "Print :GIDClientID" \
+            build_app/ios/Runner/Info.plist | grep -qx "$ZYNC_GOOGLE_IOS_CLIENT_ID"
+          /usr/libexec/PlistBuddy -c \
+            "Print :com.apple.developer.applesignin:0" \
+            build_app/ios/Runner/Runner.entitlements | grep -qx "Default"
+          grep -q "PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;" \
+            build_app/ios/Runner.xcodeproj/project.pbxproj
+          grep -q "CODE_SIGN_STYLE = Manual;" \
+            build_app/ios/Runner.xcodeproj/project.pbxproj
+          grep -Fq '"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";' \
+            build_app/ios/Runner.xcodeproj/project.pbxproj
+          plutil -lint build_app/ios/ExportOptions.plist
+
+      - name: Install Flutter dependencies
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: Generate localization sources
+        working-directory: build_app
+        run: flutter gen-l10n
+
+      - name: Analyze
+        working-directory: build_app
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test iOS identity and account contracts
+        working-directory: build_app
+        run: >-
+          flutter test
+          test/google_identity_bridge_test.dart
+          test/cardverse_google_auth_test.dart
+          test/apple_identity_provider_test.dart
+          test/cardverse_apple_auth_test.dart
+          test/cardverse_cloud_client_test.dart
+          test/cardverse_identity_link_test.dart
+          test/cardverse_account_provider_ui_test.dart
+
+      - name: Build and export signed IPA
+        working-directory: build_app
+        run: >-
+          flutter build ipa --release --no-pub
+          "--build-name=${RELEASE_VERSION_NAME}"
+          "--build-number=${RELEASE_BUILD_NUMBER}"
+          "--export-options-plist=ios/ExportOptions.plist"
+          "--dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}"
+          "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PRIVACY_URL}"
+          "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
+          "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
+          "--dart-define=ZYNC_GOOGLE_SERVER_CLIENT_ID=${ZYNC_GOOGLE_SERVER_CLIENT_ID}"
+          "--dart-define=ZYNC_GOOGLE_IOS_CLIENT_ID=${ZYNC_GOOGLE_IOS_CLIENT_ID}"
+
+      - name: Verify signed IPA and create provenance
+        id: verify_ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+          ipa_source="$(find build_app/build/ios/ipa -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          if [ -z "$ipa_source" ] || [ ! -s "$ipa_source" ]; then
+            echo "Signed IPA was not produced."
+            exit 1
+          fi
+
+          ipa="Zync-iOS-signed.ipa"
+          cp "$ipa_source" "$ipa"
+
+          extract_dir="$RUNNER_TEMP/zync-ipa"
+          rm -rf "$extract_dir"
+          mkdir -p "$extract_dir"
+          ditto -x -k "$ipa" "$extract_dir"
+
+          app="$(find "$extract_dir/Payload" -maxdepth 1 -type d -name '*.app' -print -quit)"
+          if [ -z "$app" ]; then
+            echo "IPA contains no Payload/*.app bundle."
+            exit 1
+          fi
+
+          codesign --verify --deep --strict --verbose=2 "$app"
+
+          python3 .github/scripts/release_version.py \
+            --version-name "$RELEASE_VERSION_NAME" \
+            --version-code "$RELEASE_BUILD_NUMBER" \
+            --ios-info-plist "$app/Info.plist" \
+            --expected-bundle-id "$BUNDLE_ID"
+
+          /usr/libexec/PlistBuddy -c "Print :GIDClientID" \
+            "$app/Info.plist" | grep -qx "$ZYNC_GOOGLE_IOS_CLIENT_ID"
+
+          app_entitlements="$RUNNER_TEMP/zync-signed-entitlements.plist"
+          codesign -d --entitlements :- "$app" > "$app_entitlements" 2>/dev/null
+          plutil -lint "$app_entitlements"
+
+          /usr/libexec/PlistBuddy -c \
+            "Print :com.apple.developer.applesignin:0" \
+            "$app_entitlements" | grep -qx "Default"
+
+          actual_team_id="$(/usr/libexec/PlistBuddy -c \
+            'Print :com.apple.developer.team-identifier' \
+            "$app_entitlements")"
+          test "$actual_team_id" = "${{ steps.profile.outputs.team_id }}"
+
+          actual_app_id="$(/usr/libexec/PlistBuddy -c \
+            'Print :application-identifier' \
+            "$app_entitlements")"
+          test "$actual_app_id" = "$actual_team_id.$BUNDLE_ID"
+
+          embedded_profile="$app/embedded.mobileprovision"
+          test -s "$embedded_profile"
+          embedded_plist="$RUNNER_TEMP/zync-embedded-profile.plist"
+          security cms -D -i "$embedded_profile" > "$embedded_plist"
+          python3 mobile/tool/ios_provisioning_profile.py \
+            --plist "$embedded_plist" \
+            --expected-bundle-id "$BUNDLE_ID"
+
+          actual_profile_uuid="$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$embedded_plist")"
+          test "$actual_profile_uuid" = "${{ steps.profile.outputs.profile_uuid }}"
+
+          ipa_sha256="$(shasum -a 256 "$ipa" | awk '{print toupper($1)}')"
+          test "${#ipa_sha256}" -eq 64
+          printf '%s  Zync-iOS-signed.ipa\n' "$ipa_sha256" \
+            > Zync-iOS-signed.sha256.txt
+
+          {
+            echo "bundle_id=$BUNDLE_ID"
+            echo "version_name=$RELEASE_VERSION_NAME"
+            echo "build_number=$RELEASE_BUILD_NUMBER"
+            echo "team_id=$actual_team_id"
+            echo "profile_uuid=$actual_profile_uuid"
+            echo "ipa_sha256=$ipa_sha256"
+            echo "run_id=$GITHUB_RUN_ID"
+            echo "source_sha=$GITHUB_SHA"
+          } > Zync-iOS-signed-build.txt
+
+          python3 .github/scripts/verify_signed_ipa.py \
+            --ipa "$ipa" \
+            --metadata Zync-iOS-signed-build.txt \
+            --sha256-file Zync-iOS-signed.sha256.txt \
+            --expected-bundle-id "$BUNDLE_ID" \
+            --expected-run-id "$GITHUB_RUN_ID" \
+            --actual-team-id "$actual_team_id" \
+            --actual-profile-uuid "$actual_profile_uuid"
+
+          echo "ipa_sha256=$ipa_sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Package iOS debug symbols
+        shell: bash
+        run: |
+          archive="build_app/build/ios/archive/Runner.xcarchive"
+          test -d "$archive/dSYMs"
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$archive/dSYMs" \
+            Zync-iOS-dSYMs.zip
+          shasum -a 256 Zync-iOS-dSYMs.zip \
+            > Zync-iOS-dSYMs.sha256.txt
+
+      - name: Upload signed IPA handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: zync-ios-signed-archive
+          path: |
+            Zync-iOS-signed.ipa
+            Zync-iOS-signed.sha256.txt
+            Zync-iOS-signed-build.txt
+            Zync-iOS-dSYMs.zip
+            Zync-iOS-dSYMs.sha256.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Remove temporary signing material
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${ZYNC_INSTALLED_PROFILE:-}" ]; then
+            rm -f "$ZYNC_INSTALLED_PROFILE"
+          fi
+          if [ -n "${ZYNC_TEMP_P12:-}" ]; then
+            rm -f "$ZYNC_TEMP_P12"
+          fi
+          rm -f "$RUNNER_TEMP/zync-app-store.mobileprovision"
+          rm -f "$RUNNER_TEMP/zync-app-store-profile.plist"
+          rm -f "$RUNNER_TEMP/zync-embedded-profile.plist"
+          rm -f "$RUNNER_TEMP/zync-signed-entitlements.plist"
+          if [ -n "${ZYNC_TEMP_KEYCHAIN:-}" ]; then
+            security delete-keychain "$ZYNC_TEMP_KEYCHAIN" || true
+          fi

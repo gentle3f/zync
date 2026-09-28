@@ -196,6 +196,71 @@ Google Play remains authoritative for whether a versionCode has already been
 used historically. The current environment cannot query production Play history
 without the external release authorization path.
 
+
+## iOS signed archive / IPA foundation
+
+A manual-only signed App Store Connect archive/export path now exists:
+
+`.github/workflows/zync-ios-signed-archive.yml`
+
+It does **not** upload to App Store Connect.
+
+The workflow requires explicit `BUILD_SIGNED_IPA` confirmation before consuming
+a macOS runner and requires explicit version name/build number with no defaults.
+
+Source-controlled helpers now cover:
+
+- App Store provisioning-profile validation
+  (`mobile/tool/ios_provisioning_profile.py`)
+- deterministic manual Apple Distribution signing + ExportOptions
+  (`mobile/tool/configure_ios_signing.py`)
+- final signed IPA provenance
+  (`.github/scripts/verify_signed_ipa.py`)
+- final exported iOS Info.plist bundle/version/build validation through the
+  shared `release_version.py`
+
+The profile validator rejects:
+
+- expired profiles
+- development/Ad Hoc device-bound profiles
+- enterprise profiles
+- wrong TeamIdentifier/application-identifier
+- `get-task-allow != false`
+- profiles missing Sign in with Apple `Default`
+
+The manual signing helper has been exercised against a fresh current Flutter iOS
+wrapper. All three Runner configurations receive exact Manual / Apple
+Distribution / team / profile settings, and generated ExportOptions uses
+`method=app-store-connect` with
+`manageAppVersionAndBuildNumber=false`.
+
+A successful future run will:
+
+1. decode/validate profile
+2. import the P12 into a temporary keychain
+3. generate the production iOS wrapper
+4. apply Google + Apple identities/capabilities
+5. analyze/test
+6. build/export the signed IPA
+7. run real macOS `codesign --verify`
+8. verify signed entitlements + embedded profile
+9. verify bundle/version/build/hash/run/source provenance
+10. upload IPA + SHA-256 + metadata + matching dSYMs as a GitHub artifact
+11. always restore/remove temporary signing material
+
+Current external blockers are explicit:
+
+- repository variable `ZYNC_GOOGLE_IOS_CLIENT_ID` is not configured
+- no `ZYNC_IOS_DISTRIBUTION_P12_BASE64` secret
+- no `ZYNC_IOS_DISTRIBUTION_P12_PASSWORD` secret
+- no `ZYNC_IOS_APP_STORE_PROFILE_BASE64` secret
+- real Apple Developer App ID / Sign in with Apple / provisioning state remains
+  unverified
+
+No P12/mobileprovision was found locally, so no credential was invented.
+
+No signed IPA has yet been claimed or produced.
+
 ## iOS native foundation
 
 `apply_ios_branding.py` configures Zync naming, bundle-ID baseline, iOS 15,

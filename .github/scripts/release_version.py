@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import plistlib
 import re
 import tempfile
 from pathlib import Path
@@ -38,6 +39,39 @@ def validate_version_code(value: str | int) -> int:
             f"version code must be between 1 and {MAX_ANDROID_VERSION_CODE}"
         )
     return code
+
+
+def verify_ios_info_plist(
+    path: Path,
+    *,
+    expected_bundle_id: str,
+    expected_version_name: str,
+    expected_build_number: str | int,
+) -> None:
+    if not path.is_file():
+        raise ValueError(f"iOS Info.plist missing: {path}")
+    try:
+        with path.open("rb") as handle:
+            info = plistlib.load(handle)
+    except (plistlib.InvalidFileException, OSError) as error:
+        raise ValueError(f"invalid iOS Info.plist: {error}") from error
+
+    version_name = validate_version_name(expected_version_name)
+    build_number = validate_version_code(expected_build_number)
+
+    if info.get("CFBundleIdentifier") != expected_bundle_id:
+        raise ValueError(
+            f"iOS bundle ID mismatch: {info.get('CFBundleIdentifier')} != {expected_bundle_id}"
+        )
+    if str(info.get("CFBundleShortVersionString", "")) != version_name:
+        raise ValueError(
+            "iOS versionName mismatch: "
+            f"{info.get('CFBundleShortVersionString')} != {version_name}"
+        )
+    if str(info.get("CFBundleVersion", "")) != str(build_number):
+        raise ValueError(
+            f"iOS build number mismatch: {info.get('CFBundleVersion')} != {build_number}"
+        )
 
 
 def verify_android_output_metadata(
@@ -123,6 +157,23 @@ def self_test() -> None:
             expected_version_code=7,
         )
 
+        ios_info = Path(tmp) / "Info.plist"
+        with ios_info.open("wb") as handle:
+            plistlib.dump(
+                {
+                    "CFBundleIdentifier": "com.gmail.gentle3f.myproject",
+                    "CFBundleShortVersionString": "1.0.1",
+                    "CFBundleVersion": "7",
+                },
+                handle,
+            )
+        verify_ios_info_plist(
+            ios_info,
+            expected_bundle_id="com.gmail.gentle3f.myproject",
+            expected_version_name="1.0.1",
+            expected_build_number=7,
+        )
+
         try:
             verify_android_output_metadata(
                 metadata,
@@ -145,6 +196,8 @@ def main() -> None:
     parser.add_argument("--version-code")
     parser.add_argument("--android-metadata")
     parser.add_argument("--expected-package")
+    parser.add_argument("--ios-info-plist")
+    parser.add_argument("--expected-bundle-id")
     args = parser.parse_args()
 
     if args.self_test:
@@ -165,6 +218,15 @@ def main() -> None:
                 expected_package=args.expected_package,
                 expected_version_name=name,
                 expected_version_code=code,
+            )
+        if args.ios_info_plist:
+            if not args.expected_bundle_id:
+                parser.error("--expected-bundle-id is required with --ios-info-plist")
+            verify_ios_info_plist(
+                Path(args.ios_info_plist),
+                expected_bundle_id=args.expected_bundle_id,
+                expected_version_name=name,
+                expected_build_number=code,
             )
     except ValueError as error:
         parser.exit(1, f"Release version validation failed: {error}\n")

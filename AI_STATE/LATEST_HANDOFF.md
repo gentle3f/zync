@@ -5,7 +5,38 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — EXPLICIT RELEASE VERSIONING:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — IOS SIGNED ARCHIVE FOUNDATION:
+Zync now has a source-controlled manual-only signed App Store Connect
+archive/export path. The new workflow `.github/workflows/zync-ios-signed-archive.yml`
+has only `workflow_dispatch`, requires explicit `BUILD_SIGNED_IPA` confirmation
+before consuming a macOS runner, requires explicit version_name/build_number,
+and contains no App Store upload path. New helpers validate App Store-shaped
+provisioning profiles, deterministically patch all three Runner configs for
+Manual + Apple Distribution + exact team/profile signing, generate
+`method=app-store-connect` ExportOptions with
+`manageAppVersionAndBuildNumber=false`, and verify signed IPA provenance after
+real macOS `codesign --verify`. Provisioning validation rejects expired,
+device-bound/Ad Hoc, enterprise, get-task-allow, wrong team/application ID and
+missing Sign in with Apple profiles. A fresh current Flutter iOS wrapper was
+generated on GEN-FUJI and the manual-signing helper/ExportOptions were applied
+and checked successfully against the real current template. The shared release
+version helper now validates final iOS Info.plist CFBundleIdentifier,
+CFBundleShortVersionString and CFBundleVersion. A successful future deliberate
+run will also verify signed entitlements, embedded profile UUID, IPA SHA-256,
+run/source provenance and will retain matching dSYMs; signing material is kept
+in a temporary keychain/profile path and removed/restored on every exit path.
+Local validation: helper syntax/self-tests, provisioning GitHub-output fixture,
+fresh-wrapper signing check, signed-IPA provenance self-test, iOS
+release-version positive/negative fixtures, release-version contracts, signed
+archive safety contract, all 9 workflow YAML files and diff check PASS. A real
+signed IPA is NOT yet claimed: `ZYNC_GOOGLE_IOS_CLIENT_ID` is not configured,
+the three required iOS signing secrets are absent, and no local P12/mobileprovision
+was found. No macOS Actions run, App Store upload, Play action, Vercel or
+production deployment was performed.
+
+`AI_STATE/HANDOFF_20260928_IOS_SIGNED_ARCHIVE_FOUNDATION.md`
+
+Previous platform checkpoint — EXPLICIT RELEASE VERSIONING:
 Production signed-release runs now require explicit version_name + version_code;
 there are no defaults. Flutter receives them through --build-name/--build-number,
 and a new release_version.py validates numeric major.minor.patch names,

@@ -44,6 +44,10 @@ assert.match(
 assert.match(version, /MAX_ANDROID_VERSION_CODE = 2_100_000_000/, 'versionCode upper bound must stay explicit');
 assert.match(version, /major\.minor\.patch/, 'versionName format must stay explicit');
 assert.match(version, /verify_android_output_metadata/, 'version helper must verify actual AGP output metadata');
+assert.match(version, /verify_ios_info_plist/, 'version helper must verify final iOS app Info.plist');
+assert.match(version, /CFBundleIdentifier/, 'iOS version verification must bind the bundle identifier');
+assert.match(version, /CFBundleShortVersionString/, 'iOS version verification must bind versionName');
+assert.match(version, /CFBundleVersion/, 'iOS version verification must bind build number');
 assert.match(version, /Android versionCode mismatch/, 'version helper must reject an actual build/output versionCode mismatch');
 
 console.log('Zync release-version contract checks passed');
