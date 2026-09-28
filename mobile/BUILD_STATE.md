@@ -155,6 +155,47 @@ The Play handoff is now hardened:
 Both release workflows remain `workflow_dispatch` only. No Actions run or Play
 upload was performed while validating this path.
 
+
+## Explicit release versioning
+
+Production signed-release runs no longer inherit the repository development
+baseline `1.0.0+6` as an implicit release identity.
+
+The manual signed-release workflow now requires explicit:
+
+- `version_name`
+- `version_code`
+
+and passes them to Flutter with `--build-name` / `--build-number`.
+
+`.github/scripts/release_version.py` validates numeric `major.minor.patch`
+version names and Android versionCodes, and also verifies AGP's actual
+packaged-manifest `output-metadata.json` against the expected package/version.
+
+A real stable-signed QA proof was built as:
+
+`C:\Users\FUJITSU\Zync-QA-Version-Proof-1.0.1-7-20260928.apk`
+
+Verified:
+
+- package `com.gmail.gentle3f.myproject.qa`
+- versionName `1.0.1`
+- versionCode `7`
+- stable QA signer SHA-1
+  `E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D`
+- APK SHA-256
+  `BBB1AFEDE45E9DDE81F2523D37E7CEAD3D7A93759F69D8BCF6B1EBC1E804F1DA`
+
+Signed-AAB provenance now records separate `version_name` / `version_code`.
+The Play Internal workflow exports the verified versionCode from provenance and
+passes it to the publisher. The publisher compares it with the versionCode
+returned by Google Play after upload; a mismatch aborts before track update and
+the existing failure path deletes the edit.
+
+Google Play remains authoritative for whether a versionCode has already been
+used historically. The current environment cannot query production Play history
+without the external release authorization path.
+
 ## iOS native foundation
 
 `apply_ios_branding.py` configures Zync naming, bundle-ID baseline, iOS 15,

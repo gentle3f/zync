@@ -74,6 +74,9 @@ jobs:
       - name: Test signed AAB provenance guard
         run: python3 .github/scripts/verify_signed_aab.py --self-test
 
+      - name: Test release version contracts
+        run: node .github/scripts/release_version_contracts.mjs
+
       - name: Download signed AAB from the specified signed-release run
         uses: actions/download-artifact@v4
         with:
@@ -83,6 +86,7 @@ jobs:
           path: signed-aab
 
       - name: Verify signed AAB provenance
+        id: verify_aab
         shell: bash
         run: |
           aab="signed-aab/app-release.aab"
@@ -112,7 +116,8 @@ jobs:
             --sha256-file "$sha_file" \
             --expected-package "$PACKAGE_NAME" \
             --expected-run-id "${{ inputs.signed_release_run_id }}" \
-            --actual-signer-sha1 "$signer_sha1"
+            --actual-signer-sha1 "$signer_sha1" \
+            --github-output "$GITHUB_OUTPUT"
 
           echo "Confirmed signed AAB signature, hash, signer and source-run provenance."
 
@@ -142,6 +147,7 @@ jobs:
             --package "$PACKAGE_NAME" \
             --track "$TRACK" \
             --aab "signed-aab/app-release.aab" \
+            --expected-version-code "${{ steps.verify_aab.outputs.version_code }}" \
             --release-notes "${{ inputs.release_notes }}"
 
       - name: Remove ephemeral credentials file

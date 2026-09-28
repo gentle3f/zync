@@ -2,6 +2,13 @@ name: Zync V1 Signed Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Release version name (numeric major.minor.patch, e.g. 1.0.1).'
+        required: true
+      version_code:
+        description: 'Android versionCode. Must be greater than every versionCode previously uploaded to Play.'
+        required: true
 
 permissions:
   contents: read
@@ -21,10 +28,20 @@ jobs:
       STORE_PASSWORD: ${{ secrets.ZYNC_ANDROID_STORE_PASSWORD }}
       KEY_ALIAS: ${{ secrets.ZYNC_ANDROID_KEY_ALIAS }}
       KEY_PASSWORD: ${{ secrets.ZYNC_ANDROID_KEY_PASSWORD }}
+      RELEASE_VERSION_NAME: ${{ inputs.version_name }}
+      RELEASE_VERSION_CODE: ${{ inputs.version_code }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate explicit release version
+        shell: bash
+        run: |
+          python3 .github/scripts/release_version.py --self-test
+          python3 .github/scripts/release_version.py \
+            --version-name "$RELEASE_VERSION_NAME" \
+            --version-code "$RELEASE_VERSION_CODE"
 
       - name: Require production release URLs
         shell: bash
@@ -99,6 +116,9 @@ jobs:
       - name: Test signed AAB provenance guard
         run: python3 .github/scripts/verify_signed_aab.py --self-test
 
+      - name: Test release version contracts
+        run: node .github/scripts/release_version_contracts.mjs
+
       - name: Smoke production API and privacy policy
         run: node .github/scripts/live_api_smoke.mjs
 
@@ -134,7 +154,7 @@ jobs:
         shell: bash
         run: |
           grep -R "com.gmail.gentle3f.myproject" build_app/android/app/build.gradle* >/dev/null
-          grep -q "version: 1.0.0+6" build_app/pubspec.yaml
+          grep -q '^version:' build_app/pubspec.yaml
           grep -q 'android:label="Zync"' build_app/android/app/src/main/AndroidManifest.xml
           grep -R "zyncRelease" build_app/android/app/build.gradle* >/dev/null
           test -f build_app/assets/card_fx/frames/master/zync_frame_legendary_master_v1.png
@@ -164,10 +184,26 @@ jobs:
         working-directory: build_app
         run: >-
           flutter build appbundle --release
+          "--build-name=${RELEASE_VERSION_NAME}"
+          "--build-number=${RELEASE_VERSION_CODE}"
           "--dart-define=ZYNC_API_BASE=${ZYNC_API_BASE}"
           "--dart-define=ZYNC_PRIVACY_URL=${ZYNC_PRIVACY_URL}"
           "--dart-define=ZYNC_ANALYTICS_ENABLED=false"
           "--dart-define=ZYNC_INTEREST_LEARNING_ENABLED=true"
+
+      - name: Verify built Android release identity
+        shell: bash
+        run: |
+          metadata="$(find build_app/build/app/intermediates/packaged_manifests/release -name output-metadata.json -print -quit)"
+          if [ -z "$metadata" ]; then
+            echo "Android packaged-manifest metadata was not produced."
+            exit 1
+          fi
+          python3 .github/scripts/release_version.py \
+            --version-name "$RELEASE_VERSION_NAME" \
+            --version-code "$RELEASE_VERSION_CODE" \
+            --android-metadata "$metadata" \
+            --expected-package com.gmail.gentle3f.myproject
 
       - name: Verify and describe signed AAB
         shell: bash
@@ -197,7 +233,8 @@ jobs:
             echo "aab_sha256=$aab_sha256"
             echo "run_id=$GITHUB_RUN_ID"
             echo "source_sha=$GITHUB_SHA"
-            echo "version=1.0.0+6"
+            echo "version_name=$RELEASE_VERSION_NAME"
+            echo "version_code=$RELEASE_VERSION_CODE"
           } > "$metadata"
 
           python3 .github/scripts/verify_signed_aab.py \
@@ -206,7 +243,9 @@ jobs:
             --sha256-file "$sha_file" \
             --expected-package com.gmail.gentle3f.myproject \
             --expected-run-id "$GITHUB_RUN_ID" \
-            --actual-signer-sha1 "$signer_sha1"
+            --actual-signer-sha1 "$signer_sha1" \
+            --expected-version-name "$RELEASE_VERSION_NAME" \
+            --expected-version-code "$RELEASE_VERSION_CODE"
 
           echo "AAB signature and provenance verification passed."
 

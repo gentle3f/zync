@@ -37,6 +37,8 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+from release_version import validate_version_code
+
 ALLOWED_TRACK = "internal"
 EXPECTED_PACKAGE = "com.gmail.gentle3f.myproject"
 
@@ -86,6 +88,13 @@ def require_signed_aab(aab_path: Path) -> None:
         raise GuardError(f"jarsigner signature verification failed for {aab_path}: {exc.stderr.strip()}") from exc
 
 
+def require_expected_version_code(value: str | int) -> int:
+    try:
+        return validate_version_code(value)
+    except ValueError as error:
+        raise GuardError(f"Invalid expected versionCode: {error}") from error
+
+
 def require_credentials_file(path: Path) -> None:
     if not path.is_file() or path.stat().st_size == 0:
         raise GuardError(
@@ -100,12 +109,14 @@ def publish_internal_release(
     aab_path: Path,
     credentials_path: Path,
     release_notes: str,
+    expected_version_code: int,
     dry_run: bool = False,
 ) -> None:
     require_expected_package(package_name)
     require_internal_track(ALLOWED_TRACK)
     require_signed_aab(aab_path)
     require_credentials_file(credentials_path)
+    expected_version_code = require_expected_version_code(expected_version_code)
 
     if dry_run:
         print("[dry-run] All pre-flight guards passed. No Play API call made.")
@@ -129,8 +140,13 @@ def publish_internal_release(
             editId=edit_id,
             media_body=media,
         ).execute()
-        version_code = bundle["versionCode"]
+        version_code = require_expected_version_code(bundle["versionCode"])
         print(f"Uploaded AAB as versionCode {version_code}")
+        if version_code != expected_version_code:
+            raise GuardError(
+                "Uploaded Play versionCode does not match signed-release provenance: "
+                f"{version_code} != {expected_version_code}"
+            )
 
         service.edits().tracks().update(
             packageName=package_name,
@@ -176,6 +192,17 @@ def self_test() -> None:
 
     # Package guard: only the exact Zync package may pass.
     require_expected_package(EXPECTED_PACKAGE)
+    assert require_expected_version_code("7") == 7
+    for bad_code in ("0", "-1", "abc"):
+        try:
+            require_expected_version_code(bad_code)
+        except GuardError:
+            pass
+        else:
+            raise AssertionError(
+                f"require_expected_version_code must reject {bad_code!r}"
+            )
+
     for bad_package in ("com.example.other", "com.gmail.gentle3f.myproject.debug", ""):
         try:
             require_expected_package(bad_package)
@@ -239,6 +266,7 @@ def self_test() -> None:
                 aab_path=unsigned_zip,
                 credentials_path=empty_creds,
                 release_notes="test",
+                expected_version_code=7,
                 dry_run=True,
             )
         except GuardError:
@@ -258,6 +286,7 @@ def main() -> None:
     parser.add_argument("--aab", type=Path)
     parser.add_argument("--credentials", type=Path, default=None)
     parser.add_argument("--release-notes", default="Internal testing build.")
+    parser.add_argument("--expected-version-code")
     args = parser.parse_args()
 
     if args.self_test:
@@ -266,6 +295,8 @@ def main() -> None:
 
     if args.aab is None:
         parser.error("--aab is required unless --self-test is given")
+    if args.expected_version_code is None:
+        parser.error("--expected-version-code is required unless --self-test is given")
 
     credentials_path = args.credentials or Path(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""))
 
@@ -276,6 +307,7 @@ def main() -> None:
             aab_path=args.aab,
             credentials_path=credentials_path,
             release_notes=args.release_notes,
+            expected_version_code=require_expected_version_code(args.expected_version_code),
             dry_run=args.dry_run,
         )
     except GuardError as exc:

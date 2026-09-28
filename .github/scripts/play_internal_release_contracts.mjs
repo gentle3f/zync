@@ -44,7 +44,20 @@ assert.match(workflow, /verify_signed_aab\.py/, 'workflow must verify signed-rel
 assert.match(workflow, /app-release-build\.txt/, 'workflow must require release metadata sidecar');
 assert.match(workflow, /app-release\.sha256\.txt/, 'workflow must require SHA-256 sidecar');
 assert.match(workflow, /--expected-run-id/, 'workflow must bind provenance to the selected signed-release run id');
+assert.match(workflow, /id:\s*verify_aab/, 'workflow must expose verified signed-release metadata as step outputs');
+assert.match(workflow, /--github-output "\$GITHUB_OUTPUT"/, 'workflow must export only verified provenance fields');
+assert.match(
+  workflow,
+  /--expected-version-code "\$\{\{ steps\.verify_aab\.outputs\.version_code \}\}"/,
+  'publisher must receive versionCode from verified signed-release provenance',
+);
 assert.match(script, /def require_signed_aab/, 'publishing script must have a signed-AAB guard function');
+assert.match(script, /def require_expected_version_code/, 'publishing script must validate expected Play versionCode');
+assert.match(
+  script,
+  /Uploaded Play versionCode does not match signed-release provenance/,
+  'publishing script must abort if Play returns a different versionCode',
+);
 assert.ok(
   script.includes('["jarsigner", "-verify", str(aab_path)]'),
   'publishing script must verify the JAR signature itself',

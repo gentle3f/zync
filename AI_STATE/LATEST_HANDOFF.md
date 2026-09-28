@@ -5,7 +5,35 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — STABLE QA AAB + PLAY PROVENANCE:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — EXPLICIT RELEASE VERSIONING:
+Production signed-release runs now require explicit version_name + version_code;
+there are no defaults. Flutter receives them through --build-name/--build-number,
+and a new release_version.py validates numeric major.minor.patch names,
+versionCode bounds and AGP's actual packaged-manifest output. A real stable-signed
+QA proof APK was built as
+C:\Users\FUJITSU\Zync-QA-Version-Proof-1.0.1-7-20260928.apk and independently
+verified as package com.gmail.gentle3f.myproject.qa, versionName 1.0.1,
+versionCode 7, stable QA signer SHA-1
+E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D, APK SHA-256
+BBB1AFEDE45E9DDE81F2523D37E7CEAD3D7A93759F69D8BCF6B1EBC1E804F1DA.
+Signed-AAB metadata now carries separate version_name/version_code, the
+provenance verifier validates them and can export only validated values to
+GitHub step outputs, and Play Internal passes that verified versionCode to the
+publisher. After upload, the publisher compares Google's returned versionCode
+with signed-release provenance; mismatch aborts before track update and the
+existing failure path deletes the edit. release_version_contracts.mjs locks the
+full chain and Play contracts also require the versionCode handoff. Validation:
+release-version self-test, real AGP metadata 1.0.1+7, real final APK 1.0.1+7,
+stable signer verification, provenance self-test including wrong-version
+rejection, GitHub-output probe using the real stable AAB, publisher self-test,
+release-version contracts, Play contracts, workflow YAML and diff checks all
+PASS. Google Play remains the final authority for historical versionCode
+uniqueness. No Actions run, Play upload, Vercel or production deployment was
+performed.
+
+`AI_STATE/HANDOFF_20260928_RELEASE_VERSIONING.md`
+
+Previous platform checkpoint — STABLE QA AAB + PLAY PROVENANCE:
 Current Zync source and the dedicated stable QA signer now produce a real release
 Android App Bundle at
 `C:\Users\FUJITSU\Zync-QA-Stable-20260928.aab` (80,351,983 bytes), signed by

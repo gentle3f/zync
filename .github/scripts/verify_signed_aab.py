@@ -15,6 +15,8 @@ import re
 import tempfile
 from pathlib import Path
 
+from release_version import validate_version_code, validate_version_name
+
 
 _SHA1_RE = re.compile(r"^[0-9A-F]{40}$")
 _SHA256_RE = re.compile(r"^[0-9A-F]{64}$")
@@ -57,7 +59,8 @@ def read_metadata(path: Path) -> dict[str, str]:
         "aab_sha256",
         "run_id",
         "source_sha",
-        "version",
+        "version_name",
+        "version_code",
     }
     missing = sorted(required - values.keys())
     if missing:
@@ -92,6 +95,8 @@ def verify(
     expected_package: str,
     expected_run_id: str,
     actual_signer_sha1: str,
+    expected_version_name: str | None = None,
+    expected_version_code: str | int | None = None,
 ) -> dict[str, str]:
     metadata = read_metadata(metadata_path)
     actual_hash = file_sha256(aab)
@@ -119,8 +124,22 @@ def verify(
     if not _SOURCE_SHA_RE.fullmatch(metadata["source_sha"]):
         raise ValueError("invalid source SHA in metadata")
 
-    if not metadata["version"]:
-        raise ValueError("release version is empty")
+    version_name = validate_version_name(metadata["version_name"])
+    version_code = validate_version_code(metadata["version_code"])
+
+    if expected_version_name is not None:
+        expected_name = validate_version_name(expected_version_name)
+        if version_name != expected_name:
+            raise ValueError(
+                f"version-name mismatch: {version_name} != {expected_name}"
+            )
+
+    if expected_version_code is not None:
+        expected_code = validate_version_code(expected_version_code)
+        if version_code != expected_code:
+            raise ValueError(
+                f"version-code mismatch: {version_code} != {expected_code}"
+            )
 
     return {
         "package": metadata["package"],
@@ -130,7 +149,8 @@ def verify(
         "aab_sha256": actual_hash,
         "run_id": metadata["run_id"],
         "source_sha": metadata["source_sha"],
-        "version": metadata["version"],
+        "version_name": version_name,
+        "version_code": str(version_code),
     }
 
 
@@ -150,7 +170,8 @@ def self_test() -> None:
                     f"aab_sha256={digest}",
                     "run_id=12345",
                     "source_sha=" + "b" * 40,
-                    "version=1.0.0+6",
+                    "version_name=1.0.0",
+                    "version_code=7",
                 ]
             )
             + "\n",
@@ -169,8 +190,28 @@ def self_test() -> None:
             expected_package="com.gmail.gentle3f.myproject",
             expected_run_id="12345",
             actual_signer_sha1=signer,
+            expected_version_name="1.0.0",
+            expected_version_code="7",
         )
         assert result["aab_sha256"] == digest
+        assert result["version_name"] == "1.0.0"
+        assert result["version_code"] == "7"
+
+        try:
+            verify(
+                aab=aab,
+                metadata_path=metadata,
+                sha256_path=sidecar,
+                expected_package="com.gmail.gentle3f.myproject",
+                expected_run_id="12345",
+                actual_signer_sha1=signer,
+                expected_version_name="1.0.0",
+                expected_version_code="8",
+            )
+        except ValueError as error:
+            assert "version-code mismatch" in str(error)
+        else:
+            raise AssertionError("version-code mismatch was not rejected")
 
         try:
             verify(
@@ -219,6 +260,9 @@ def main() -> None:
     parser.add_argument("--expected-package")
     parser.add_argument("--expected-run-id")
     parser.add_argument("--actual-signer-sha1")
+    parser.add_argument("--expected-version-name")
+    parser.add_argument("--expected-version-code")
+    parser.add_argument("--github-output")
     args = parser.parse_args()
 
     if args.self_test:
@@ -245,6 +289,8 @@ def main() -> None:
             expected_package=args.expected_package,
             expected_run_id=args.expected_run_id,
             actual_signer_sha1=args.actual_signer_sha1,
+            expected_version_name=args.expected_version_name,
+            expected_version_code=args.expected_version_code,
         )
     except ValueError as error:
         parser.exit(
@@ -252,9 +298,19 @@ def main() -> None:
             "Signed AAB verification failed: " + str(error) + "\n",
         )
 
+    if args.github_output:
+        output_path = Path(args.github_output)
+        with output_path.open("a", encoding="utf-8") as handle:
+            handle.write(f"version_name={result['version_name']}\n")
+            handle.write(f"version_code={result['version_code']}\n")
+            handle.write(f"source_sha={result['source_sha']}\n")
+            handle.write(f"aab_sha256={result['aab_sha256']}\n")
+            handle.write(f"signer_sha1={result['signer_sha1']}\n")
+
     print(
         "Signed AAB provenance verified: "
         f"package={result['package']} "
+        f"version={result['version_name']}+{result['version_code']} "
         f"run_id={result['run_id']} "
         f"signer_sha1={result['signer_sha1']} "
         f"sha256={result['aab_sha256']}"
