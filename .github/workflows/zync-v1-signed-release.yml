@@ -110,6 +110,7 @@ jobs:
           python3 mobile/tool/generate_mobile_wrapper.py android build_app
           python3 mobile/tool/apply_android_branding.py build_app
           python3 mobile/tool/apply_android_google_identity.py build_app
+          python3 mobile/tool/configure_android_signing.py --check-template build_app
 
       - name: Install ephemeral upload keystore
         shell: bash

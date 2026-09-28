@@ -15,16 +15,23 @@ Modes:
 
 from __future__ import annotations
 
+import re
 import sys
+import tempfile
 from pathlib import Path
 
 
-KTS_PROPERTIES = """val zyncKeystoreProperties = java.util.Properties()
+KTS_IMPORTS = """import java.io.FileInputStream
+import java.util.Properties
+
+"""
+
+KTS_PROPERTIES = """val zyncKeystoreProperties = Properties()
 val zyncKeystorePropertiesFile = rootProject.file("key.properties")
 if (!zyncKeystorePropertiesFile.exists()) {
     throw org.gradle.api.GradleException("Missing android/key.properties for Zync release signing")
 }
-zyncKeystoreProperties.load(java.io.FileInputStream(zyncKeystorePropertiesFile))
+zyncKeystoreProperties.load(FileInputStream(zyncKeystorePropertiesFile))
 
 """
 
@@ -65,6 +72,15 @@ REQUIRED_KEYS = {"storePassword", "keyPassword", "keyAlias", "storeFile"}
 
 
 def patch_kts(text: str) -> str:
+    # Flutter/AGP 9 exposes a top-level Gradle `java` extension that can shadow
+    # the JVM package root in Kotlin DSL. Use explicit imports rather than
+    # java.util/java.io references so generated wrappers compile on current
+    # Flutter stable. Imports are valid before the plugins block.
+    text = text.replace("java.util.Properties()", "Properties()")
+    text = text.replace("java.io.FileInputStream(", "FileInputStream(")
+    if "import java.util.Properties" not in text:
+        text = KTS_IMPORTS + text
+
     if 'create("zyncRelease")' in text:
         return text
     if "android {" not in text:
@@ -72,9 +88,6 @@ def patch_kts(text: str) -> str:
     if 'signingConfig = signingConfigs.getByName("debug")' not in text:
         raise ValueError("Could not find Flutter template debug release signing line")
 
-    # Keep Gradle's plugins block first. Arbitrary top-level statements before
-    # plugins are rejected, so signing properties are inserted just before the
-    # android block instead.
     text = text.replace("android {", KTS_PROPERTIES + "android {\n" + KTS_SIGNING, 1)
     text = text.replace(
         'signingConfig = signingConfigs.getByName("debug")',
@@ -112,6 +125,37 @@ def gradle_file(root: Path) -> tuple[Path, str]:
     raise SystemExit("No Android app Gradle file found")
 
 
+def normalize_key_properties(path: Path) -> None:
+    """Make storeFile safe for Java Properties + Gradle on Windows.
+
+    Java Properties treats backslashes as escape characters. A raw Windows path
+    written with backslashes is therefore corrupted when Gradle loads
+    key.properties. Forward slashes are accepted by Java/Gradle on Windows and
+    preserve the absolute path.
+    """
+    if not path.exists():
+        return
+
+    raw_bytes = path.read_bytes()
+    had_bom = raw_bytes.startswith(b"\xef\xbb\xbf")
+    lines = raw_bytes.decode("utf-8-sig").splitlines()
+    changed = had_bom
+    output: list[str] = []
+    for raw in lines:
+        if raw.startswith("storeFile="):
+            key, value = raw.split("=", 1)
+            value = value.strip()
+            if re.match(r"^[A-Za-z]:[\\/]", value) and "\\" in value:
+                value = value.replace("\\", "/")
+                changed = True
+            output.append(f"{key}={value}")
+        else:
+            output.append(raw)
+
+    if changed:
+        path.write_text("\n".join(output) + "\n", encoding="utf-8")
+
+
 def validate_key_properties(path: Path) -> None:
     if not path.exists():
         raise SystemExit(f"Signing properties not found: {path}")
@@ -128,7 +172,15 @@ def validate_key_properties(path: Path) -> None:
     if missing:
         raise SystemExit("Missing signing properties: " + ", ".join(missing))
 
-    store_file = Path(values["storeFile"])
+    raw_store_file = values["storeFile"]
+    if "\\" in raw_store_file:
+        raise SystemExit(
+            "storeFile must use forward slashes in key.properties "
+            "(for example C:/Users/.../zync-qa.jks); "
+            "Java properties treat backslashes as escapes"
+        )
+
+    store_file = Path(raw_store_file)
     if not store_file.is_absolute():
         store_file = path.parent / store_file
     if not store_file.exists():
@@ -148,7 +200,9 @@ def check_template(root: Path) -> None:
 
 def configure(root: Path) -> None:
     android = root / "android"
-    validate_key_properties(android / "key.properties")
+    properties_path = android / "key.properties"
+    normalize_key_properties(properties_path)
+    validate_key_properties(properties_path)
     path, flavor = gradle_file(root)
     original = path.read_text(encoding="utf-8")
     patched = patch_kts(original) if flavor == "kts" else patch_groovy(original)
@@ -159,7 +213,10 @@ def configure(root: Path) -> None:
 def self_test() -> None:
     kts = """plugins { id(\"com.android.application\") }\nandroid {\n    buildTypes {\n        release {\n            signingConfig = signingConfigs.getByName(\"debug\")\n        }\n    }\n}\n"""
     patched_kts = patch_kts(kts)
-    assert patched_kts.startswith('plugins {')
+    assert patched_kts.startswith("import java.io.FileInputStream\n")
+    assert "import java.util.Properties" in patched_kts
+    assert "java.util.Properties()" not in patched_kts
+    assert "java.io.FileInputStream(" not in patched_kts
     assert 'create("zyncRelease")' in patched_kts
     assert 'signingConfig = signingConfigs.getByName("zyncRelease")' in patched_kts
     assert 'signingConfig = signingConfigs.getByName("debug")' not in patched_kts
@@ -172,6 +229,33 @@ def self_test() -> None:
     assert "signingConfig signingConfigs.zyncRelease" in patched_groovy
     assert "signingConfig signingConfigs.debug" not in patched_groovy
     assert patched_groovy.index("zyncKeystoreProperties") < patched_groovy.index("android {")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        properties = Path(tmp) / "key.properties"
+        properties.write_bytes(
+            b"\xef\xbb\xbfstorePassword=test\n"
+            b"keyPassword=test\n"
+            b"keyAlias=zyncQa\n"
+            b"storeFile=C:\\Users\\FUJITSU\\.zync\\qa-signing\\zync-qa.jks\n"
+        )
+        normalize_key_properties(properties)
+        normalized = properties.read_text(encoding="utf-8")
+        assert not properties.read_bytes().startswith(b"\xef\xbb\xbf")
+        assert (
+            "storeFile=C:/Users/FUJITSU/.zync/qa-signing/zync-qa.jks"
+            in normalized
+        )
+
+        bom_forward = Path(tmp) / "key-forward.properties"
+        bom_forward.write_bytes(
+            b"\xef\xbb\xbfstorePassword=test\n"
+            b"keyPassword=test\n"
+            b"keyAlias=zyncQa\n"
+            b"storeFile=C:/Users/FUJITSU/.zync/qa-signing/zync-qa.jks\n"
+        )
+        normalize_key_properties(bom_forward)
+        assert not bom_forward.read_bytes().startswith(b"\xef\xbb\xbf")
+        assert "storePassword=test" in bom_forward.read_text(encoding="utf-8")
 
     print("Zync signing-config helper self-test passed")
 

@@ -33,16 +33,30 @@ Android generated wrappers apply:
 - `apply_android_branding.py`
 - `apply_android_variant_identity.py`
 - `apply_android_google_identity.py`
-- signing patches where required by release workflows
+- `configure_android_signing.py` for stable signed release/QA wrappers
 
 Google auth uses Android Credential Manager and binds the Cardverse one-time
 challenge nonce into the Google ID-token request.
 
-A fresh current-source QA wrapper now compiles successfully on GEN-FUJI.
+### Current stable QA signer
 
-Current installable artifact:
+A dedicated QA-only signer now exists locally at:
 
-`C:\Users\FUJITSU\Zync-QA-Google-Current-20260928.apk`
+`C:\Users\FUJITSU\.zync\qa-signing\zync-qa.jks`
+
+It is not source-controlled and is protected with non-inherited ACLs.
+
+Stable QA signer SHA-1:
+
+`E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D`
+
+Certificate validity ends 2054-02-13.
+
+### Stable-signed current QA APK
+
+Current stable-signed artifact:
+
+`C:\Users\FUJITSU\Zync-QA-Stable-20260928.apk`
 
 Verified:
 
@@ -50,26 +64,58 @@ Verified:
 - label `Zync QA Local`
 - minSdk 24 / targetSdk 36
 - APK Signature Scheme v2 valid
-- real repository `ZYNC_GOOGLE_SERVER_CLIENT_ID` is embedded in the Flutter
-  kernel blob
-- current debug signer certificate SHA-1:
-  `10:F4:27:CD:6E:CF:A5:38:0C:E3:3B:A5:0F:63:98:37:FB:69:8B:A8`
+- real repository `ZYNC_GOOGLE_SERVER_CLIENT_ID` is embedded in the release app binaries
+- signer SHA-1 exactly matches the stable QA certificate above
 - APK SHA-256:
-  `EA731AD3076C0ED60D3BAFBC58D5D22903976AF9903F237588A45D23778F5146`
+  `A7FFC73FD6D63E61F276DC14DB3DB412E485FF3AC322EA80A42FF121C061F121`
 
-The previous Gradle failures were traced to duplicate concurrent
-`assembleDebug` processes racing on `mergeDebugAssets`, not a Zync compile
-error. A clean single-process build succeeds.
+The signing helper was hardened for the current Flutter/AGP/Gradle toolchain:
 
-Local APK compile proof is therefore **closed**.
+- explicit Kotlin imports avoid Gradle 9 `java`-extension shadowing
+- Windows `storeFile` paths are normalized to forward slashes before Java Properties/Gradle consume them
+- the self-test covers Windows path normalization and BOM-prefixed properties
 
-A true Google-auth QA/release path still requires:
+The fixed helper produced the stable-signed release APK successfully.
 
-1. stable QA signing key/secrets
-2. Android OAuth client registration for the chosen stable signer SHA-1
-3. stable signed QA APK
-4. physical chooser-return/session/reward-loop/provider-link smoke
+### QA vs production signing
 
+QA preview signing now uses dedicated names:
+
+- variable `ZYNC_ANDROID_QA_SHA1`
+- secrets `ZYNC_ANDROID_QA_KEYSTORE_BASE64`
+- `ZYNC_ANDROID_QA_STORE_PASSWORD`
+- `ZYNC_ANDROID_QA_KEY_ALIAS`
+- `ZYNC_ANDROID_QA_KEY_PASSWORD`
+
+Production release continues to use separate `ZYNC_ANDROID_*` signing secrets.
+
+The non-secret QA SHA-1 variable is already configured in GitHub and the QA
+workflow verifies the final APK signer exactly matches it.
+
+All four QA-only signing secrets are now configured in GitHub:
+
+- `ZYNC_ANDROID_QA_KEYSTORE_BASE64`
+- `ZYNC_ANDROID_QA_STORE_PASSWORD`
+- `ZYNC_ANDROID_QA_KEY_ALIAS`
+- `ZYNC_ANDROID_QA_KEY_PASSWORD`
+
+They were uploaded directly from the protected local signer without printing
+their values. Production `ZYNC_ANDROID_*` signing secrets were not populated or
+changed. Secret/variable installation triggered no workflow run.
+
+Stable local QA signing, stable signed APK generation and GitHub QA-signing
+configuration are therefore **closed**.
+
+Remaining Android QA gates:
+
+1. register/verify Google Android OAuth for package `com.gmail.gentle3f.myproject.qa` + stable SHA-1 `E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D`
+2. physical Google chooser/session/provider-link/reward-loop smoke
+
+The active local gcloud account cannot see Google project number
+`809680073916`, so no OAuth client was created or changed in a different
+project.
+
+Production upload signing remains separate and unopened.
 ## iOS native foundation
 
 `apply_ios_branding.py` configures Zync naming, bundle-ID baseline, iOS 15,
@@ -221,10 +267,13 @@ Fresh generated iOS wrapper:
 
 Android:
 
-1. stable QA signing
-2. Android OAuth SHA-1 registration for the stable QA signer
-3. stable signed QA APK
-4. physical Android Google/session/reward-loop/provider-link smoke
+1. Android OAuth registration/verification for package
+   `com.gmail.gentle3f.myproject.qa` + stable QA signer SHA-1
+   `E9:00:0B:0A:A3:AE:B6:2E:FF:5D:C3:C9:D1:3E:9B:7B:61:81:1F:1D`
+2. physical Android Google/session/reward-loop/provider-link smoke
+
+Stable QA signing, stable signed APK generation and GitHub QA-signing secret
+configuration are closed.
 
 iOS:
 

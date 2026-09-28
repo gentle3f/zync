@@ -23,10 +23,11 @@ jobs:
       QA_API_BASE: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app
       QA_PRIVACY_URL: https://zync-git-zync-v1-rebuild-20260917-gens-projects-4f99f8b9.vercel.app/privacy
       QA_GOOGLE_SERVER_CLIENT_ID: ${{ vars.ZYNC_GOOGLE_SERVER_CLIENT_ID }}
-      QA_KEYSTORE_B64: ${{ secrets.ZYNC_ANDROID_KEYSTORE_BASE64 }}
-      QA_STORE_PASSWORD: ${{ secrets.ZYNC_ANDROID_STORE_PASSWORD }}
-      QA_KEY_ALIAS: ${{ secrets.ZYNC_ANDROID_KEY_ALIAS }}
-      QA_KEY_PASSWORD: ${{ secrets.ZYNC_ANDROID_KEY_PASSWORD }}
+      QA_EXPECTED_SHA1: ${{ vars.ZYNC_ANDROID_QA_SHA1 }}
+      QA_KEYSTORE_B64: ${{ secrets.ZYNC_ANDROID_QA_KEYSTORE_BASE64 }}
+      QA_STORE_PASSWORD: ${{ secrets.ZYNC_ANDROID_QA_STORE_PASSWORD }}
+      QA_KEY_ALIAS: ${{ secrets.ZYNC_ANDROID_QA_KEY_ALIAS }}
+      QA_KEY_PASSWORD: ${{ secrets.ZYNC_ANDROID_QA_KEY_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -52,12 +53,16 @@ jobs:
           missing=0
           for name in QA_KEYSTORE_B64 QA_STORE_PASSWORD QA_KEY_ALIAS QA_KEY_PASSWORD; do
             if [ -z "${!name}" ]; then
-              echo "Missing required GitHub secret for $name"
+              echo "Missing required GitHub QA signing secret for $name"
               missing=1
             fi
           done
+          if [ -z "$QA_EXPECTED_SHA1" ]; then
+            echo "Missing repository variable ZYNC_ANDROID_QA_SHA1"
+            missing=1
+          fi
           if [ "$missing" -ne 0 ]; then
-            echo "A stable QA signing certificate is required for Google Android OAuth package/SHA-1 registration."
+            echo "A stable QA signing certificate and pinned SHA-1 are required for Google Android OAuth."
             exit 1
           fi
 
@@ -70,6 +75,7 @@ jobs:
             --application-id com.gmail.gentle3f.myproject.qa \
             --label "Zync QA"
           python3 mobile/tool/apply_android_google_identity.py build_app
+          python3 mobile/tool/configure_android_signing.py --check-template build_app
 
       - name: Install stable QA signing key
         shell: bash
@@ -149,6 +155,12 @@ jobs:
           compact_sha1="$(printf '%s' "$raw_sha1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
           test "${#compact_sha1}" -eq 40
           qa_sha1="$(printf '%s' "$compact_sha1" | sed 's/../&:/g; s/:$//')"
+          expected_compact="$(printf '%s' "$QA_EXPECTED_SHA1" | tr -d ':' | tr '[:lower:]' '[:upper:]')"
+          test "${#expected_compact}" -eq 40
+          if [ "$compact_sha1" != "$expected_compact" ]; then
+            echo "QA signer SHA-1 mismatch: expected $QA_EXPECTED_SHA1, got $qa_sha1"
+            exit 1
+          fi
           cp "$apk" Zync-QA-preview.apk
           sha256sum Zync-QA-preview.apk | tee Zync-QA-preview.sha256.txt
           {
@@ -162,7 +174,7 @@ jobs:
             echo "google_server_client_id_configured=$([ -n "$QA_GOOGLE_SERVER_CLIENT_ID" ] && echo true || echo false)"
             echo "android_oauth_package=com.gmail.gentle3f.myproject.qa"
             echo "android_oauth_sha1=$qa_sha1"
-            echo "signing=stable-zync-upload-key"
+            echo "signing=stable-zync-qa-key"
             echo "source_sha=$GITHUB_SHA"
           } > Zync-QA-preview-build.txt
 
