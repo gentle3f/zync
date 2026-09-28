@@ -3,14 +3,20 @@ import 'cardverse_cloud_client.dart';
 import 'cardverse_session_store.dart';
 import 'google_identity_bridge.dart';
 
-class CardverseIdentityLinkException implements Exception {
-  const CardverseIdentityLinkException(this.code);
+class CardverseAccountDeletionException implements Exception {
+  const CardverseAccountDeletionException(this.code);
 
   final String code;
 }
 
-class CardverseIdentityLinkService {
-  CardverseIdentityLinkService({
+abstract interface class CardverseAccountDeletionController {
+  Future<void> deleteWithGoogle();
+  Future<void> deleteWithApple();
+}
+
+class CardverseAccountDeletionService
+    implements CardverseAccountDeletionController {
+  CardverseAccountDeletionService({
     required CardverseCloudClient cloud,
     required CardverseSessionStore sessions,
     required GoogleIdentityProvider googleIdentity,
@@ -33,9 +39,9 @@ class CardverseIdentityLinkService {
   bool get googleConfigured =>
       _googleServerClientId.endsWith('.apps.googleusercontent.com');
 
-  Future<CardverseProviderLinkResult> linkGoogle() async {
+  Future<void> deleteWithGoogle() async {
     if (!googleConfigured) {
-      throw const CardverseIdentityLinkException(
+      throw const CardverseAccountDeletionException(
         'google_server_client_id_not_configured',
       );
     }
@@ -46,7 +52,8 @@ class CardverseIdentityLinkService {
       serverClientId: _googleServerClientId,
       nonce: challenge.nonce,
     );
-    return _link(
+
+    await _delete(
       session: session,
       provider: 'google',
       challenge: challenge,
@@ -54,25 +61,27 @@ class CardverseIdentityLinkService {
     );
   }
 
-  Future<CardverseProviderLinkResult> linkApple() async {
+  Future<void> deleteWithApple() async {
     final session = await _requireSession();
     final challenge = await _challengeFor('apple');
     final credential = await _appleIdentity.authenticate(
       nonce: challenge.nonce,
     );
-    return _link(
+
+    await _delete(
       session: session,
       provider: 'apple',
       challenge: challenge,
       idToken: credential.idToken,
+      authorizationCode: credential.authorizationCode,
     );
   }
 
   Future<CardverseSessionCredential> _requireSession() async {
     final session = await _sessions.load();
     if (session == null) {
-      throw const CardverseIdentityLinkException(
-        'cardverse_link_session_missing',
+      throw const CardverseAccountDeletionException(
+        'cardverse_delete_session_missing',
       );
     }
     return session;
@@ -88,18 +97,20 @@ class CardverseIdentityLinkService {
     return challenge;
   }
 
-  Future<CardverseProviderLinkResult> _link({
+  Future<void> _delete({
     required CardverseSessionCredential session,
     required String provider,
     required CardverseAuthChallenge challenge,
     required String idToken,
+    String? authorizationCode,
   }) async {
     try {
-      return await _cloud.linkProviderIdentity(
+      await _cloud.deleteAccount(
         sessionToken: session.token,
         provider: provider,
         challengeId: challenge.challengeId,
         idToken: idToken,
+        authorizationCode: authorizationCode,
       );
     } on CardverseCloudException catch (error) {
       if (error.failure == CardverseCloudFailure.unauthorized) {
@@ -107,5 +118,10 @@ class CardverseIdentityLinkService {
       }
       rethrow;
     }
+
+    // The backend removes all account sessions on successful deletion. Remove
+    // the local bearer credential only after the destructive transaction has
+    // definitely completed.
+    await _sessions.clear();
   }
 }

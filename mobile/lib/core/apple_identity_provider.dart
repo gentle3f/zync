@@ -12,14 +12,24 @@ class AppleIdentityException implements Exception {
   final String detail;
 }
 
+class AppleIdentityCredential {
+  const AppleIdentityCredential({
+    required this.idToken,
+    required this.authorizationCode,
+  });
+
+  final String idToken;
+  final String authorizationCode;
+}
+
 abstract interface class AppleIdentityProvider {
-  Future<String> authenticate({
+  Future<AppleIdentityCredential> authenticate({
     required String nonce,
   });
 }
 
 abstract interface class AppleIdentityClient {
-  Future<String> authenticate({
+  Future<AppleIdentityCredential> authenticate({
     required String nonce,
   });
 }
@@ -28,7 +38,7 @@ class PluginAppleIdentityClient implements AppleIdentityClient {
   const PluginAppleIdentityClient();
 
   @override
-  Future<String> authenticate({
+  Future<AppleIdentityCredential> authenticate({
     required String nonce,
   }) async {
     final available = await SignInWithApple.isAvailable();
@@ -44,10 +54,19 @@ class PluginAppleIdentityClient implements AppleIdentityClient {
         nonce: nonce,
       );
       final token = credential.identityToken?.trim();
+      final authorizationCode = credential.authorizationCode.trim();
       if (token == null || token.isEmpty || token.split('.').length != 3) {
         throw const AppleIdentityException('apple_sign_in_token_invalid');
       }
-      return token;
+      if (authorizationCode.isEmpty || authorizationCode.length > 4096) {
+        throw const AppleIdentityException(
+          'apple_sign_in_authorization_code_invalid',
+        );
+      }
+      return AppleIdentityCredential(
+        idToken: token,
+        authorizationCode: authorizationCode,
+      );
     } on SignInWithAppleAuthorizationException catch (error) {
       final code = switch (error.code) {
         AuthorizationErrorCode.canceled => 'apple_sign_in_cancelled',
@@ -92,7 +111,7 @@ class NativeAppleIdentityProvider implements AppleIdentityProvider {
   final AppleIdentityClient _client;
 
   @override
-  Future<String> authenticate({
+  Future<AppleIdentityCredential> authenticate({
     required String nonce,
   }) async {
     if (!AppleIdentityRuntime.nativeIosAvailable) {
@@ -108,10 +127,21 @@ class NativeAppleIdentityProvider implements AppleIdentityProvider {
       );
     }
 
-    final token = (await _client.authenticate(nonce: cleanNonce)).trim();
+    final credential = await _client.authenticate(nonce: cleanNonce);
+    final token = credential.idToken.trim();
+    final authorizationCode = credential.authorizationCode.trim();
     if (token.isEmpty || token.split('.').length != 3) {
       throw const AppleIdentityException('apple_sign_in_token_invalid');
     }
-    return token;
+    if (authorizationCode.isEmpty || authorizationCode.length > 4096) {
+      throw const AppleIdentityException(
+        'apple_sign_in_authorization_code_invalid',
+      );
+    }
+
+    return AppleIdentityCredential(
+      idToken: token,
+      authorizationCode: authorizationCode,
+    );
   }
 }

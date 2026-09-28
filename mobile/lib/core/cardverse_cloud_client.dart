@@ -256,6 +256,31 @@ class CardverseCloudClient {
     );
   }
 
+  Future<void> deleteAccount({
+    required String sessionToken,
+    required String provider,
+    required String challengeId,
+    required String idToken,
+    String? authorizationCode,
+  }) async {
+    final cleanProvider = provider.trim();
+    final cleanAuthorizationCode = authorizationCode?.trim() ?? '';
+    await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/account/delete',
+      bearerToken: sessionToken,
+      successStatuses: const {204},
+      body: {
+        'confirmation': 'DELETE_ACCOUNT_V2',
+        'provider': cleanProvider,
+        'challengeId': challengeId,
+        'idToken': idToken,
+        if (cleanAuthorizationCode.isNotEmpty)
+          'authorizationCode': cleanAuthorizationCode,
+      },
+    );
+  }
+
   Future<Map<String, dynamic>> fetchInventory(String sessionToken) =>
       _send(
         method: 'GET',

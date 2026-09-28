@@ -5,7 +5,14 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — IOS PRIVACY + SUBMISSION READINESS:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — ACCOUNT DELETION + APPLE REVOKE INTEGRATION:
+Mobile now has a real destructive cloud-account deletion flow. Native Apple identity returns both ID token and fresh authorization code; daily Apple sign-in/link still uses only the ID token, while deletion alone forwards the fresh code. CardverseCloudClient and a new account-deletion service use a versioned fail-closed destructive contract, `DELETE_ACCOUNT_V2`, with fresh provider challenge/re-auth, successful-session cleanup, 401 stale-session cleanup, and preservation of session state when deletion/revocation did not authoritatively succeed. The signed-in Account screen exposes a visible two-step destructive flow: explicit deletion confirmation, then explicit Google/Apple verification; Apple-required conflicts tell the user to retry with Apple instead of silently launching a second provider sheet. Local-first People history/private conversations are clearly separated from cloud-account deletion. Mobile validation: focused deletion/Apple/cloud 35/35 PASS; broader account/auth/session/cloud 52/52 PASS; 63 mobile test files excluding the known-missing golden run 392/392 PASS; full flutter analyze 0 issues; diff check clean. The literal full mobile suite has exactly one unrelated infrastructure failure because `mobile/test/goldens/card_art_engine_v1_flagships.png` is absent and not tracked on current HEAD, not because of a render mismatch. iOS submission audit now detects account deletion; the only remaining strict blocker is `apple_token_revocation_not_verifiable`.
+
+A real backend implementation exists in a separate local-only production-lineage worktree at `C:\Users\FUJITSU\zync_backend_account_delete_20260928`, local commit `4a0ee67862f1ee8300c21601aaaf8ffbb3928740`. It implements fresh Apple authorization-code exchange + token revoke, mandatory Apple re-auth when linked, identity/session removal, deleted-account tombstone with de-identified immutable economy ledger retained, readiness fail-closed checks, and accepts only `DELETE_ACCOUNT_V2`. All 11 Cardverse backend contract scripts PASS. This backend commit is NOT pushed and NOT deployed. Required secrets are `ZYNC_APPLE_TEAM_ID`, `ZYNC_APPLE_KEY_ID`, `ZYNC_APPLE_TOKEN_CLIENT_ID`, and `ZYNC_APPLE_PRIVATE_KEY_P8_BASE64`. Deployment order is backend V2 + readiness first, then mobile V2; do not weaken the iOS audit or release mobile deletion against the legacy server.
+
+`AI_STATE/HANDOFF_20260928_ACCOUNT_DELETE_APPLE_REVOKE_INTEGRATION.md`
+
+Previous platform checkpoint — IOS PRIVACY + SUBMISSION READINESS:
 Zync now has a source-controlled App Store privacy source of truth at
 `mobile/app_store_privacy_details.json` and a deterministic
 `apply_ios_privacy_manifest.py` that generates `Runner/PrivacyInfo.xcprivacy`

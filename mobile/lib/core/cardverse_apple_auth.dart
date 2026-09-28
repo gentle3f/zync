@@ -52,13 +52,13 @@ class CardverseAppleAuthService {
       );
     }
 
-    final idToken = await _identity.authenticate(
+    final credential = await _identity.authenticate(
       nonce: challenge.nonce,
     );
     final auth = await _cloud.authenticateProvider(
       provider: 'apple',
       challengeId: challenge.challengeId,
-      idToken: idToken,
+      idToken: credential.idToken,
     );
     if (auth.provider != 'apple') {
       throw const CardverseCloudException(

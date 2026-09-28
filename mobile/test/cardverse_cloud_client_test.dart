@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -154,6 +154,92 @@ void main() {
               (error) => error.serverCode,
               'serverCode',
               'cardverse_identity_already_linked',
+            ),
+      ),
+    );
+  });
+
+  test('account delete sends destructive confirmation and Apple code only when provided', () async {
+    final requests = <http.Request>[];
+    final client = CardverseCloudClient(
+      baseUrl: 'https://zync.example',
+      httpClient: MockClient((request) async {
+        requests.add(request);
+        return http.Response('', 204);
+      }),
+    );
+
+    await client.deleteAccount(
+      sessionToken: 'D' * 43,
+      provider: 'google',
+      challengeId: 'challenge-delete-google',
+      idToken: 'google.header.signature',
+    );
+    await client.deleteAccount(
+      sessionToken: 'D' * 43,
+      provider: 'apple',
+      challengeId: 'challenge-delete-apple',
+      idToken: 'apple.header.signature',
+      authorizationCode: 'fresh-apple-code',
+    );
+
+    expect(requests, hasLength(2));
+    for (final request in requests) {
+      expect(request.url.path, '/api/v1/cardverse/account/delete');
+      expect(request.headers['authorization'], 'Bearer ${'D' * 43}');
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+      expect(body['confirmation'], 'DELETE_ACCOUNT_V2');
+      expect(body.containsKey('accountId'), isFalse);
+    }
+
+    final google = jsonDecode(requests[0].body) as Map<String, dynamic>;
+    expect(google, {
+      'confirmation': 'DELETE_ACCOUNT_V2',
+      'provider': 'google',
+      'challengeId': 'challenge-delete-google',
+      'idToken': 'google.header.signature',
+    });
+
+    final apple = jsonDecode(requests[1].body) as Map<String, dynamic>;
+    expect(apple, {
+      'confirmation': 'DELETE_ACCOUNT_V2',
+      'provider': 'apple',
+      'challengeId': 'challenge-delete-apple',
+      'idToken': 'apple.header.signature',
+      'authorizationCode': 'fresh-apple-code',
+    });
+  });
+
+  test('account delete preserves Apple reauth server code', () async {
+    final client = CardverseCloudClient(
+      baseUrl: 'https://zync.example',
+      httpClient: MockClient(
+        (_) async => http.Response(
+          jsonEncode({'error': 'cardverse_apple_reauth_required'}),
+          409,
+          headers: {'content-type': 'application/json'},
+        ),
+      ),
+    );
+
+    await expectLater(
+      client.deleteAccount(
+        sessionToken: 'E' * 43,
+        provider: 'google',
+        challengeId: 'challenge-delete',
+        idToken: 'google.header.signature',
+      ),
+      throwsA(
+        isA<CardverseCloudException>()
+            .having(
+              (error) => error.failure,
+              'failure',
+              CardverseCloudFailure.conflict,
+            )
+            .having(
+              (error) => error.serverCode,
+              'serverCode',
+              'cardverse_apple_reauth_required',
             ),
       ),
     );

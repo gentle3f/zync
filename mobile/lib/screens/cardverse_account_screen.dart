@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../core/apple_identity_provider.dart';
+import '../core/cardverse_account_deletion.dart';
 import '../core/cardverse_apple_auth.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_google_auth.dart';
@@ -16,10 +17,12 @@ class CardverseAccountScreen extends StatefulWidget {
     super.key,
     this.returnOnSignIn = false,
     this.sessionStore,
+    this.accountDeletionController,
   });
 
   final bool returnOnSignIn;
   final CardverseSessionStore? sessionStore;
+  final CardverseAccountDeletionController? accountDeletionController;
 
   @override
   State<CardverseAccountScreen> createState() =>
@@ -32,6 +35,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
   late final CardverseGoogleAuthService _auth;
   late final CardverseAppleAuthService _appleAuth;
   late final CardverseIdentityLinkService _identityLinks;
+  late final CardverseAccountDeletionController _accountDeletion;
 
   bool _loading = true;
   bool _busy = false;
@@ -75,6 +79,13 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
       googleIdentity: const NativeGoogleIdentityProvider(),
       appleIdentity: const NativeAppleIdentityProvider(),
     );
+    _accountDeletion = widget.accountDeletionController ??
+        CardverseAccountDeletionService(
+          cloud: _cloud,
+          sessions: _sessions,
+          googleIdentity: const NativeGoogleIdentityProvider(),
+          appleIdentity: const NativeAppleIdentityProvider(),
+        );
     _load();
   }
 
@@ -372,6 +383,194 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
         setState(() {
           _busy = false;
           _linkingProvider = null;
+        });
+      }
+    }
+  }
+
+  Future<bool> _confirmAccountDeletion() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          _isZh ? '刪除 Zync 帳戶？' : 'Delete Zync account?',
+        ),
+        content: Text(
+          _isZh
+              ? '呢個操作會永久解除 Google／Apple 登入同你雲端 Zync World 嘅連結，並令呢個雲端帳戶無法再使用。你部機入面 local-first 嘅 People history 同私人對話係另一層資料，唔會因為刪除雲端帳戶而自動清除。'
+              : 'This permanently disconnects Google/Apple sign-ins from your cloud Zync World and makes that cloud account unusable. Your local-first People history and private conversations are separate device data and are not automatically erased by deleting the cloud account.',
+        ),
+        actions: [
+          TextButton(
+            key: const ValueKey('zync-account-delete-cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(_isZh ? '取消' : 'Cancel'),
+          ),
+          FilledButton(
+            key: const ValueKey('zync-account-delete-confirm'),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFB3261E),
+              foregroundColor: Colors.white,
+            ),
+            child: Text(_isZh ? '繼續刪除' : 'Continue'),
+          ),
+        ],
+      ),
+    );
+    return confirmed == true;
+  }
+
+  Future<String?> _chooseDeletionProvider() async {
+    final googleAvailable = _googleLinkAvailable;
+    final appleAvailable = _appleLinkAvailable;
+    if (!googleAvailable && !appleAvailable) return null;
+
+    return showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          _isZh ? '驗證身份先刪除' : 'Verify before deleting',
+        ),
+        content: Text(
+          _isZh
+              ? '為咗防止其他人誤刪帳戶，你要用已連接嘅登入方式重新驗證。若呢個 Zync World 連接咗 Apple，伺服器可能會要求你一定要用 Apple 完成最後驗證同撤銷授權。'
+              : 'To prevent accidental or unauthorized deletion, verify again with a linked sign-in method. If this Zync World has Apple linked, the server may require Apple for the final verification and authorization revocation.',
+        ),
+        actions: [
+          TextButton(
+            key: const ValueKey('zync-account-delete-provider-cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(_isZh ? '取消' : 'Cancel'),
+          ),
+          if (googleAvailable)
+            TextButton(
+              key: const ValueKey('zync-account-delete-google'),
+              onPressed: () => Navigator.of(dialogContext).pop('google'),
+              child: Text(_isZh ? '用 Google 驗證' : 'Verify with Google'),
+            ),
+          if (appleAvailable)
+            TextButton(
+              key: const ValueKey('zync-account-delete-apple'),
+              onPressed: () => Navigator.of(dialogContext).pop('apple'),
+              child: Text(_isZh ? '用 Apple 驗證' : 'Verify with Apple'),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    if (_busy) return;
+    final confirmed = await _confirmAccountDeletion();
+    if (!mounted || !confirmed) return;
+
+    final provider = await _chooseDeletionProvider();
+    if (!mounted) return;
+    if (provider == null) {
+      setState(() {
+        _message = _isZh
+            ? '呢個裝置而家冇可用嘅登入驗證方式，所以未有刪除任何資料。'
+            : 'No supported identity verification method is available on this device. Nothing was deleted.';
+      });
+      return;
+    }
+
+    setState(() {
+      _busy = true;
+      _message = '';
+    });
+
+    try {
+      if (provider == 'apple') {
+        await _accountDeletion.deleteWithApple();
+      } else {
+        await _accountDeletion.deleteWithGoogle();
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _signedIn = false;
+        _linkedThisVisit.clear();
+        _message = _isZh
+            ? 'Zync 雲端帳戶已刪除，登入連結同雲端 session 已解除。People history 同私人對話仍然只留喺你呢部裝置。'
+            : 'Your Zync cloud account was deleted and its sign-in links and cloud sessions were removed. Your local People history and private conversations remain on this device.';
+      });
+    } on CardverseAccountDeletionException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.code == 'cardverse_delete_session_missing') {
+          _signedIn = false;
+          _message = _isZh
+              ? '登入狀態已失效。請重新登入先可以刪除帳戶。'
+              : 'Your session has expired. Sign in again before deleting the account.';
+        } else if (error.code == 'google_server_client_id_not_configured') {
+          _message = _isZh
+              ? '呢個 build 未完成 Google 驗證設定，帳戶冇被刪除。'
+              : 'Google verification is not configured for this build. The account was not deleted.';
+        } else {
+          _message = _isZh
+              ? '暫時未能開始刪除帳戶，冇任何資料被改動。'
+              : 'Account deletion could not start. Nothing was changed.';
+        }
+      });
+    } on GoogleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _message = error.code == 'google_sign_in_cancelled'
+            ? (_isZh
+                ? '你取消咗 Google 驗證，帳戶冇被刪除。'
+                : 'Google verification was cancelled. The account was not deleted.')
+            : (_isZh
+                ? 'Google 驗證未完成，帳戶冇被刪除。'
+                : 'Google verification did not complete. The account was not deleted.');
+      });
+    } on AppleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _message = error.code == 'apple_sign_in_cancelled'
+            ? (_isZh
+                ? '你取消咗 Apple 驗證，帳戶冇被刪除。'
+                : 'Apple verification was cancelled. The account was not deleted.')
+            : (_isZh
+                ? 'Apple 驗證未完成，帳戶冇被刪除。'
+                : 'Apple verification did not complete. The account was not deleted.');
+      });
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.failure == CardverseCloudFailure.unauthorized) {
+          _signedIn = false;
+          _message = _isZh
+              ? '登入狀態已失效。請重新登入先再刪除帳戶。'
+              : 'Your session has expired. Sign in again before deleting the account.';
+        } else if (error.serverCode == 'cardverse_apple_reauth_required') {
+          _message = _isZh
+              ? '呢個 Zync World 連接咗 Apple。請重新揀「刪除帳戶」，並用 Apple 完成最後驗證；今次冇刪除任何資料。'
+              : 'This Zync World has Apple linked. Start deletion again and verify with Apple to finish; nothing was deleted this time.';
+        } else if (error.serverCode == 'cardverse_apple_revoke_failed' ||
+            error.serverCode == 'cardverse_apple_token_exchange_failed' ||
+            error.serverCode == 'cardverse_apple_revocation_not_configured') {
+          _message = _isZh
+              ? '暫時未能安全撤銷 Apple 授權，所以帳戶冇被刪除。請稍後再試。'
+              : 'Apple authorization could not be safely revoked, so the account was not deleted. Please try again later.';
+        } else {
+          _message = _isZh
+              ? '帳戶刪除未完成，冇任何資料被改動。請稍後再試。'
+              : 'Account deletion did not complete. Nothing was changed. Please try again.';
+        }
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _message = _isZh
+            ? '帳戶刪除未完成，冇任何資料被改動。'
+            : 'Account deletion did not complete. Nothing was changed.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
         });
       }
     }
@@ -764,6 +963,22 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                                 _isZh
                                     ? '喺呢部裝置登出'
                                     : 'Sign out on this device',
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextButton.icon(
+                              key: const ValueKey(
+                                'zync-account-delete-account',
+                              ),
+                              onPressed: _busy ? null : _deleteAccount,
+                              icon: const Icon(Icons.delete_forever_rounded),
+                              label: Text(
+                                _isZh
+                                    ? '永久刪除 Zync 帳戶'
+                                    : 'Permanently delete Zync account',
+                              ),
+                              style: TextButton.styleFrom(
+                                foregroundColor: const Color(0xFFB3261E),
                               ),
                             ),
                           ],

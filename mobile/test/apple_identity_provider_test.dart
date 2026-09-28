@@ -30,11 +30,12 @@ void main() {
     final client = _FakeAppleIdentityClient();
     final provider = NativeAppleIdentityProvider(client: client);
 
-    final token = await provider.authenticate(
+    final credential = await provider.authenticate(
       nonce: 'server-issued-single-use-nonce',
     );
 
-    expect(token, 'header.payload.signature');
+    expect(credential.idToken, 'header.payload.signature');
+    expect(credential.authorizationCode, 'fresh-apple-authorization-code');
     expect(client.calls, 1);
     expect(client.nonce, 'server-issued-single-use-nonce');
   });
@@ -71,7 +72,7 @@ void main() {
   test('Apple identity rejects a malformed token returned by the plugin',
       () async {
     debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    final client = _FakeAppleIdentityClient(token: 'not-a-jwt');
+    final client = _FakeAppleIdentityClient(idToken: 'not-a-jwt');
     final provider = NativeAppleIdentityProvider(client: client);
 
     await expectLater(
@@ -85,23 +86,45 @@ void main() {
       ),
     );
   });
+
+  test('Apple identity rejects a missing authorization code', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    final client = _FakeAppleIdentityClient(authorizationCode: '');
+    final provider = NativeAppleIdentityProvider(client: client);
+
+    await expectLater(
+      provider.authenticate(nonce: 'server-nonce'),
+      throwsA(
+        isA<AppleIdentityException>().having(
+          (error) => error.code,
+          'code',
+          'apple_sign_in_authorization_code_invalid',
+        ),
+      ),
+    );
+  });
 }
 
 class _FakeAppleIdentityClient implements AppleIdentityClient {
   _FakeAppleIdentityClient({
-    this.token = 'header.payload.signature',
+    this.idToken = 'header.payload.signature',
+    this.authorizationCode = 'fresh-apple-authorization-code',
   });
 
-  final String token;
+  final String idToken;
+  final String authorizationCode;
   int calls = 0;
   String? nonce;
 
   @override
-  Future<String> authenticate({
+  Future<AppleIdentityCredential> authenticate({
     required String nonce,
   }) async {
     calls += 1;
     this.nonce = nonce;
-    return token;
+    return AppleIdentityCredential(
+      idToken: idToken,
+      authorizationCode: authorizationCode,
+    );
   }
 }

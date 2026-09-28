@@ -87,12 +87,15 @@ class _FakeAppleIdentity implements AppleIdentityProvider {
   int calls = 0;
 
   @override
-  Future<String> authenticate({
+  Future<AppleIdentityCredential> authenticate({
     required String nonce,
   }) async {
     calls += 1;
     this.nonce = nonce;
-    return 'apple.header.signature';
+    return const AppleIdentityCredential(
+      idToken: 'apple.header.signature',
+      authorizationCode: 'fresh-apple-authorization-code',
+    );
   }
 }
 
