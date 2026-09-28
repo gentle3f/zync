@@ -56,6 +56,18 @@ class CardverseAuthResult {
   final CardverseSessionCredential session;
 }
 
+class CardverseProviderLinkResult {
+  const CardverseProviderLinkResult({
+    required this.provider,
+    required this.linked,
+    required this.restored,
+  });
+
+  final String provider;
+  final bool linked;
+  final bool restored;
+}
+
 class CardverseCloudClient {
   CardverseCloudClient({
     this.baseUrl = const String.fromEnvironment('ZYNC_API_BASE'),
@@ -210,6 +222,37 @@ class CardverseCloudClient {
         token: sessionToken,
         expiresAt: sessionExpiresAt,
       ),
+    );
+  }
+
+  Future<CardverseProviderLinkResult> linkProviderIdentity({
+    required String sessionToken,
+    required String provider,
+    required String challengeId,
+    required String idToken,
+  }) async {
+    final body = await _send(
+      method: 'POST',
+      path: '/api/v1/cardverse/auth/link',
+      bearerToken: sessionToken,
+      body: {
+        'provider': provider,
+        'challengeId': challengeId,
+        'idToken': idToken,
+      },
+    );
+    final returnedProvider = (body['provider'] as String?)?.trim() ?? '';
+    if (returnedProvider.isEmpty ||
+        body['linked'] != true ||
+        returnedProvider != provider.trim()) {
+      throw const CardverseCloudException(
+        failure: CardverseCloudFailure.invalidResponse,
+      );
+    }
+    return CardverseProviderLinkResult(
+      provider: returnedProvider,
+      linked: true,
+      restored: body['restored'] == true,
     );
   }
 

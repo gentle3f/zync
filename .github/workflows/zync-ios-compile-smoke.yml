@@ -98,6 +98,8 @@ jobs:
           test/cardverse_google_auth_test.dart
           test/apple_identity_provider_test.dart
           test/cardverse_apple_auth_test.dart
+          test/cardverse_cloud_client_test.dart
+          test/cardverse_identity_link_test.dart
           test/cardverse_account_provider_ui_test.dart
 
       - name: Compile unsigned iOS release

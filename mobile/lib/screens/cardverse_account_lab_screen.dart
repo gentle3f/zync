@@ -6,6 +6,7 @@ import '../core/apple_identity_provider.dart';
 import '../core/cardverse_apple_auth.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_google_auth.dart';
+import '../core/cardverse_identity_link.dart';
 import '../core/cardverse_proof_sync.dart';
 import '../core/cardverse_session_store.dart';
 import '../core/google_identity_bridge.dart';
@@ -25,6 +26,7 @@ class _CardverseAccountLabScreenState
   late final CardverseSessionStore _sessions;
   late final CardverseGoogleAuthService _auth;
   late final CardverseAppleAuthService _appleAuth;
+  late final CardverseIdentityLinkService _identityLinks;
 
   bool _busy = false;
   bool _signedIn = false;
@@ -68,6 +70,12 @@ class _CardverseAccountLabScreenState
       sessions: _sessions,
       identity: const NativeAppleIdentityProvider(),
       syncPendingProofs: proofSync.syncPending,
+    );
+    _identityLinks = CardverseIdentityLinkService(
+      cloud: _cloud,
+      sessions: _sessions,
+      googleIdentity: const NativeGoogleIdentityProvider(),
+      appleIdentity: const NativeAppleIdentityProvider(),
     );
     _loadSession();
   }
@@ -175,6 +183,74 @@ class _CardverseAccountLabScreenState
       setState(() => _status = _isZh
           ? 'Apple 登入未完成。請稍後再試。'
           : 'Apple sign-in did not complete. Please try again.');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _linkGoogle() => _linkProvider(
+        provider: 'google',
+        action: _identityLinks.linkGoogle,
+      );
+
+  Future<void> _linkApple() => _linkProvider(
+        provider: 'apple',
+        action: _identityLinks.linkApple,
+      );
+
+  Future<void> _linkProvider({
+    required String provider,
+    required Future<CardverseProviderLinkResult> Function() action,
+  }) async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _status = 'link_start provider=${provider}';
+    });
+
+    try {
+      final result = await action();
+      if (!mounted) return;
+      setState(() {
+        _status =
+            'link_ok provider=${result.provider} restored=${result.restored}';
+      });
+    } on CardverseIdentityLinkException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.code == 'cardverse_link_session_missing') {
+          _signedIn = false;
+        }
+        _status =
+            'link_client_error provider=${provider} code=${error.code}';
+      });
+    } on GoogleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        final detail = error.detail.trim();
+        _status = detail.isEmpty
+            ? 'link_identity_error provider=google code=${error.code}'
+            : 'link_identity_error provider=google code=${error.code} detail=${detail}';
+      });
+    } on AppleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        final detail = error.detail.trim();
+        _status = detail.isEmpty
+            ? 'link_identity_error provider=apple code=${error.code}'
+            : 'link_identity_error provider=apple code=${error.code} detail=${detail}';
+      });
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.failure == CardverseCloudFailure.unauthorized) {
+          _signedIn = false;
+        }
+        final status = error.statusCode?.toString() ?? 'none';
+        final code = error.serverCode.isEmpty ? 'none' : error.serverCode;
+        _status =
+            'link_server_error provider=${provider} failure=${error.failure.name} status=${status} code=${code}';
+      });
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -423,6 +499,36 @@ class _CardverseAccountLabScreenState
                     Radius.circular(14),
                   ),
                 ),
+              ],
+              if (_signedIn) ...[
+                const SizedBox(height: 18),
+                Text(
+                  'Provider-link diagnostics',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  key: const ValueKey('cardverse-link-google'),
+                  onPressed: _busy ||
+                          !GoogleIdentityRuntime.nativeGoogleLinkAvailable
+                      ? null
+                      : _linkGoogle,
+                  icon: const Icon(Icons.link_rounded),
+                  label: Text(
+                    _isZh ? '驗證並連接 Google' : 'Verify & link Google',
+                  ),
+                ),
+                if (AppleIdentityRuntime.nativeIosAvailable) ...[
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    key: const ValueKey('cardverse-link-apple'),
+                    onPressed: _busy ? null : _linkApple,
+                    icon: const Icon(Icons.link_rounded),
+                    label: Text(
+                      _isZh ? '驗證並連接 Apple' : 'Verify & link Apple',
+                    ),
+                  ),
+                ],
               ],
               const SizedBox(height: 10),
               OutlinedButton.icon(

@@ -24,14 +24,25 @@ class _MemorySecureStore implements SecureKeyValueStore {
 Future<void> _pumpAccount(
   WidgetTester tester, {
   required TargetPlatform platform,
+  bool signedIn = false,
 }) async {
   debugDefaultTargetPlatformOverride = platform;
+  final store = CardverseSessionStore(
+    storage: _MemorySecureStore(),
+  );
+  if (signedIn) {
+    await store.save(
+      CardverseSessionCredential(
+        token: 'S' * 43,
+        expiresAt: DateTime.utc(2099, 1, 1),
+      ),
+    );
+  }
+
   await tester.pumpWidget(
     MaterialApp(
       home: CardverseAccountScreen(
-        sessionStore: CardverseSessionStore(
-          storage: _MemorySecureStore(),
-        ),
+        sessionStore: store,
       ),
     ),
   );
@@ -50,6 +61,10 @@ void main() {
       expect(
         find.byKey(const ValueKey('zync-account-apple-sign-in')),
         findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('zync-account-provider-recovery')),
+        findsNothing,
       );
     } finally {
       debugDefaultTargetPlatformOverride = null;
@@ -70,6 +85,58 @@ void main() {
       );
       expect(
         find.byKey(const ValueKey('zync-account-google-sign-in')),
+        findsOneWidget,
+      );
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  testWidgets('iOS signed-in account exposes provider recovery surface',
+      (tester) async {
+    try {
+      await _pumpAccount(
+        tester,
+        platform: TargetPlatform.iOS,
+        signedIn: true,
+      );
+
+      expect(
+        find.byKey(const ValueKey('zync-account-provider-recovery')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('zync-account-link-apple')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('zync-account-apple-sign-in')),
+        findsNothing,
+      );
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  testWidgets('Android signed-in account keeps recovery surface hidden',
+      (tester) async {
+    try {
+      await _pumpAccount(
+        tester,
+        platform: TargetPlatform.android,
+        signedIn: true,
+      );
+
+      expect(
+        find.byKey(const ValueKey('zync-account-provider-recovery')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('zync-account-link-apple')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('zync-account-sign-out')),
         findsOneWidget,
       );
     } finally {

@@ -2,9 +2,9 @@
 
 Date: 2026-09-28
 
-Zync keeps its Flutter UI/business source under `mobile/`. Android and iOS
-native projects are generated as disposable wrappers instead of being committed
-as long-lived platform trees.
+Zync keeps Flutter UI/business source under `mobile/`. Android and iOS native
+projects are generated as disposable wrappers rather than committed as long-lived
+platform trees.
 
 ## Shared wrapper
 
@@ -23,162 +23,196 @@ The generator copies:
 - `mobile/pubspec.yaml`
 - `mobile/l10n.yaml`
 
-Copying `mobile/assets/` is mandatory because Card FX depends on locked frame
-PNGs and bundled reveal/rarity SFX.
-
-The generator handles Windows `flutter.bat` and retries transient generated-tree
-cleanup races.
+Copying `mobile/assets/` is mandatory because Card FX uses locked frame PNGs and
+bundled reveal/rarity SFX.
 
 ## Android
 
-Android remains the more mature native packaging path.
-
-Generated wrappers apply:
+Android generated wrappers apply:
 
 - `apply_android_branding.py`
-- `apply_android_variant_identity.py` for QA/diagnostic package + label variants
+- `apply_android_variant_identity.py`
 - `apply_android_google_identity.py`
 - signing patches where required by release workflows
 
-Google authentication uses the existing Android Credential Manager bridge and
-binds the Cardverse server's one-time challenge nonce into the Google ID-token
-request.
+Google auth uses Android Credential Manager and binds the Cardverse one-time
+challenge nonce into the Google ID-token request.
 
-The Android QA/CI/release workflows use the shared wrapper generator and verify
-representative Card FX frame/SFX assets exist in the build tree.
-
-A previous QA APK predates current reward/Card FX source. A current local debug
-compile reached `assembleDebug` but the background shell ended without an exit
-marker and emitted no APK. Local APK compile proof therefore remains open.
+A current local debug compile reached `assembleDebug` but the background shell
+ended without an exit marker and emitted no APK. Local APK compile proof remains
+open.
 
 A true Google-auth QA APK still requires:
 
 1. stable QA signing key/secrets
 2. stable QA signer SHA-1 registered with Google Android OAuth
-3. a current signed QA APK
+3. current signed QA APK
 4. physical chooser-return/session/reward-loop smoke
 
-## iOS wrapper foundation
+## iOS native foundation
 
-`apply_ios_branding.py` configures:
+`apply_ios_branding.py` configures Zync naming, bundle-ID baseline, iOS 15,
+camera permission, deterministic icons and deterministic LaunchScreen branding.
 
-- Zync display/bundle name
-- bundle-ID baseline `com.gmail.gentle3f.myproject`
-- iOS minimum target 15.0
-- camera permission copy
-- deterministic iPhone/iPad/App Store icons
-- deterministic cream + orange/plum linked-ring LaunchScreen
-
-Google identity uses the official Flutter `google_sign_in_ios` plugin from Dart.
-The generated AppDelegate remains Flutter-default with
-`GeneratedPluginRegistrant`.
+Google iOS auth uses `google_sign_in_ios` from Dart. The generated AppDelegate
+remains Flutter-default.
 
 `apply_ios_google_identity.py` configures:
 
 - dedicated iOS `GIDClientID`
 - reversed Google URL scheme
 
-Dart passes the dedicated iOS client ID, Web/server client ID and exact Cardverse
-one-time nonce into every iOS Google sign-in.
+Dart passes the iOS client ID, Web/server client ID and exact Cardverse one-time
+nonce into every iOS Google sign-in.
 
 ## Sign in with Apple
 
-The iOS app now has a complete source-level Apple identity path.
-
 Dependency:
 
-- `sign_in_with_apple: 8.2.0` (exactly pinned because the repo does not commit
-  `pubspec.lock`)
+`sign_in_with_apple: 8.2.0`
 
-New Dart identity/provider path:
+Apple identity uses the exact Cardverse server challenge nonce. The installed
+plugin's native Swift was verified to forward it directly:
 
-- `apple_identity_provider.dart`
-- `cardverse_apple_auth.dart`
+`appleIDRequest.nonce = nonce`
 
-The flow is:
+`apply_ios_apple_identity.py` reproducibly adds:
 
-1. request Cardverse challenge with provider `apple`
-2. pass the exact server-issued nonce into Sign in with Apple
-3. require a structurally valid Apple identity token
-4. post provider/challenge/token to Cardverse
-5. reject any challenge/auth response whose provider is not `apple`
-6. save the returned Cardverse session only after validation
-7. sync pending privacy-bounded proof tickets without invalidating a successful
-   login if proof maintenance fails
+- `Runner.entitlements`
+- `com.apple.developer.applesignin = [Default]`
+- `CODE_SIGN_ENTITLEMENTS` in Debug/Release/Profile
+- Runner target Sign in with Apple capability metadata
 
-The installed plugin's native Swift was inspected and forwards the nonce directly
-with `appleIDRequest.nonce = nonce`; it does not hash or rewrite the Cardverse
-challenge.
+The production Account screen shows the official Apple button only on native iOS.
 
-`apply_ios_apple_identity.py` makes the native capability reproducible:
+## Same-world provider linking / recovery
 
-- writes `ios/Runner/Runner.entitlements`
-- adds `com.apple.developer.applesignin = [Default]`
-- attaches the entitlements file to Debug/Release/Profile
-- enables `com.apple.SignInWithApple` on the Runner target
+Cardverse production-lineage already exposes:
 
-The production Account screen now shows the official Apple button only on native
-iOS. Android does not expose the Apple button. The QA Account Lab also exposes
-Apple runtime/errors alongside Google diagnostics.
+`POST /api/v1/cardverse/auth/link`
 
-The Cardverse backend lineage already supports:
+The mobile app now uses that route through:
 
-- provider `apple`
-- issuer `https://appleid.apple.com`
-- Apple JWKS
-- `ZYNC_APPLE_CLIENT_IDS`
-- nonce verification
-- one-time challenge consumption
+- `CardverseCloudClient.linkProviderIdentity(...)`
+- `CardverseIdentityLinkService`
 
-For native iOS, the server audience must include the real app/bundle ID used by
-the signed build.
+Linking always requires:
+
+1. an existing valid Cardverse bearer session
+2. a fresh provider-specific one-time challenge
+3. fresh Google/Apple re-verification using the exact challenge nonce
+4. authenticated server-side link transaction
+
+The client never sends accountId in the link request.
+
+Important conflict behavior is preserved:
+
+- `cardverse_identity_already_linked` — identity belongs to another Zync World
+- `cardverse_provider_already_linked` — current world already has a different
+  identity for the same provider
+
+Neither conflict triggers account merging or replacement.
+
+A 401 clears the stale local session. A 409 preserves the current session.
+
+### Production UX
+
+On signed-in iOS, Account shows:
+
+**Keep one Zync World across devices**
+
+It can verify/link Google and Apple to the Zync World already open.
+
+The UI explicitly states that:
+
+- another existing Zync World is not automatically merged
+- People history/private conversations are not uploaded
+- identity ownership conflicts make no data changes
+
+Successful links are shown only as **linked this visit**. This is intentionally
+not persisted as provider inventory because the server currently exposes no
+authoritative linked-provider list endpoint.
+
+Android keeps this recovery surface hidden because Zync's current Apple identity
+path is iOS-only.
+
+### QA Lab
+
+Signed-in Account Lab can run provider-link actions and reports provider,
+client/provider error, cloud failure, HTTP status, serverCode and restored flag.
+
+No ID token is displayed.
+
+## Unlink deliberately not exposed
+
+The backend also has `auth/unlink`, but a successful unlink:
+
+- requires provider re-verification
+- refuses to remove the last linked identity
+- revokes all active account sessions
+
+Unlink therefore needs a separate destructive-action / re-auth UX and was not
+added to the normal Account screen.
 
 ## Manual iOS compile smoke
 
 `.github/workflows/zync-ios-compile-smoke.yml` remains
 **workflow_dispatch only**.
 
-It now also:
+It checks:
 
-- applies/checks the Apple entitlement generator
-- verifies `sign_in_with_apple` is bundled
-- verifies the Runner entitlement/capability wiring
-- runs Google + Apple identity/auth + provider-UI tests
-- builds an unsigned iOS release when intentionally invoked on macOS
+- Zync branding
+- Google iOS metadata
+- Apple entitlement/capability
+- representative Card FX assets
+- Google + Apple identity
+- provider-link cloud/service contracts
+- production provider UI
+- unsigned iOS release compilation when deliberately run on macOS
 
-It was not run during this work.
+It has not been run during these Windows/local checkpoints.
 
-## Validation
+## Current validation
 
-Confirmed:
+Repo:
 
-- Apple identity/auth unit tests: PASS
-- production provider UI regression: iOS shows Apple, Android does not
-- final focused auth/session/proof regression: **21 / 21 PASS**
-- final full Flutter analyze: **No issues found**
-- fresh generated iOS wrapper capability checks: PASS
-- fresh generated iOS wrapper final Google + Apple identity/provider UI suite:
-  **16 / 16 PASS**
-- all workflow YAML files parse successfully
-- `git diff --check`: clean
-- earlier complete non-golden regression baseline remains **360 / 360 PASS**
-- legacy Card Art golden remains blocked only because
-  `goldens/card_art_engine_v1_flagships.png` does not exist; do not fabricate it
+- focused identity/link/session/proof suite: **34 / 34 PASS**
+- full Flutter analyze: **No issues found**
+- canonical non-golden regression:
+  - **62 files**
+  - **379 tests PASS** across three batches
+- legacy Card Art golden remains excluded only because
+  `goldens/card_art_engine_v1_flagships.png` does not exist
 
-## iOS release gates still closed
+Fresh generated iOS wrapper:
 
-1. create/configure the real Google iOS OAuth client ID
-2. enable Sign in with Apple for the real Apple App ID in Apple Developer
-3. configure server `ZYNC_APPLE_CLIENT_IDS` for the real iOS bundle ID
-4. deliberately run the manual macOS unsigned compile smoke when justified
-5. configure Apple signing/provisioning
-6. physical iPhone smoke:
-   - Google sign-in
-   - Sign in with Apple
-   - QR/camera
-   - app background/return lifecycle
-   - audio
-   - Single Draw
-   - five-card Pack reveal
+`C:\Users\FUJITSU\zync_ios_link_probe_20260928`
+
+- wrapper generation: PASS
+- branding: PASS
+- Google metadata: PASS
+- Apple capability: PASS
+- shared generator copied provider-link source/tests: PASS
+- Google + Apple + link + production provider UI: **29 / 29 PASS**
+- analyzer: no errors/warnings; INFO-only template lint output
+
+## Release gates still closed
+
+Android:
+
+1. local APK compile proof
+2. stable QA signing
+3. Android OAuth SHA-1 registration
+4. signed QA APK
+5. physical Android Google/session/reward-loop smoke
+
+iOS:
+
+1. real Google iOS OAuth client ID
+2. enable Sign in with Apple on real Apple App ID
+3. configure server `ZYNC_APPLE_CLIENT_IDS`
+4. manual macOS unsigned compile smoke
+5. Apple signing/provisioning
+6. physical iPhone Google/Apple/provider-link/QR/audio/lifecycle/reveal smoke
 
 Production, Google Play, App Store, Vercel and paid generation remain closed.

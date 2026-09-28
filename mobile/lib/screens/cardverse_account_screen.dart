@@ -5,6 +5,7 @@ import '../core/apple_identity_provider.dart';
 import '../core/cardverse_apple_auth.dart';
 import '../core/cardverse_cloud_client.dart';
 import '../core/cardverse_google_auth.dart';
+import '../core/cardverse_identity_link.dart';
 import '../core/cardverse_proof_sync.dart';
 import '../core/cardverse_session_store.dart';
 import '../core/google_identity_bridge.dart';
@@ -30,11 +31,14 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
   late final CardverseSessionStore _sessions;
   late final CardverseGoogleAuthService _auth;
   late final CardverseAppleAuthService _appleAuth;
+  late final CardverseIdentityLinkService _identityLinks;
 
   bool _loading = true;
   bool _busy = false;
   bool _signedIn = false;
   String _message = '';
+  String? _linkingProvider;
+  final Set<String> _linkedThisVisit = <String>{};
 
   bool get _isZh =>
       Localizations.localeOf(context).toLanguageTag().startsWith('zh');
@@ -64,6 +68,12 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
       sessions: _sessions,
       identity: const NativeAppleIdentityProvider(),
       syncPendingProofs: proofSync.syncPending,
+    );
+    _identityLinks = CardverseIdentityLinkService(
+      cloud: _cloud,
+      sessions: _sessions,
+      googleIdentity: const NativeGoogleIdentityProvider(),
+      appleIdentity: const NativeAppleIdentityProvider(),
     );
     _load();
   }
@@ -243,6 +253,130 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
     }
   }
 
+  String _providerName(String provider) =>
+      provider == 'apple' ? 'Apple' : 'Google';
+
+  Future<void> _linkGoogle() => _linkProvider(
+        provider: 'google',
+        action: _identityLinks.linkGoogle,
+      );
+
+  Future<void> _linkApple() => _linkProvider(
+        provider: 'apple',
+        action: _identityLinks.linkApple,
+      );
+
+  Future<void> _linkProvider({
+    required String provider,
+    required Future<CardverseProviderLinkResult> Function() action,
+  }) async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _linkingProvider = provider;
+      _message = '';
+    });
+
+    final providerName = _providerName(provider);
+    try {
+      final result = await action();
+      if (!mounted) return;
+      setState(() {
+        _linkedThisVisit.add(provider);
+        _message = result.restored
+            ? (_isZh
+                ? '已重新連接 $providerName。之後可以用這個方式返回同一個 Zync World。'
+                : '$providerName was re-linked. You can use it to return to this same Zync World.')
+            : (_isZh
+                ? '已確認並連接 $providerName。之後可以用這個方式返回同一個 Zync World。'
+                : '$providerName is now verified and linked to this Zync World.');
+      });
+    } on CardverseIdentityLinkException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.code == 'cardverse_link_session_missing') {
+          _signedIn = false;
+          _message = _isZh
+              ? '登入狀態已失效。請先重新登入，再連接另一個登入方式。'
+              : 'Your session has expired. Sign in again before adding another sign-in method.';
+        } else if (error.code == 'google_server_client_id_not_configured') {
+          _message = _isZh
+              ? '這個 build 尚未設定 Google 登入。'
+              : 'Google sign-in is not configured for this build.';
+        } else {
+          _message = _isZh
+              ? '未能連接 $providerName，請再試一次。'
+              : 'Could not link $providerName. Please try again.';
+        }
+      });
+    } on GoogleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _message = switch (error.code) {
+          'google_sign_in_cancelled' => _isZh
+              ? '已取消 Google 驗證，帳戶沒有任何改動。'
+              : 'Google verification was cancelled. Nothing was changed.',
+          'google_sign_in_configuration_invalid' => _isZh
+              ? 'Google 登入設定未完成，帳戶沒有任何改動。'
+              : 'Google sign-in is not configured correctly. Nothing was changed.',
+          _ => _isZh
+              ? 'Google 驗證未能完成，帳戶沒有任何改動。'
+              : 'Google verification could not be completed. Nothing was changed.',
+        };
+      });
+    } on AppleIdentityException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _message = switch (error.code) {
+          'apple_sign_in_cancelled' => _isZh
+              ? '已取消 Apple 驗證，帳戶沒有任何改動。'
+              : 'Apple verification was cancelled. Nothing was changed.',
+          'apple_sign_in_unavailable' ||
+          'apple_sign_in_platform_unsupported' => _isZh
+              ? '這部裝置暫時未能使用 Apple 驗證，帳戶沒有任何改動。'
+              : 'Apple verification is unavailable on this device. Nothing was changed.',
+          _ => _isZh
+              ? 'Apple 驗證未能完成，帳戶沒有任何改動。'
+              : 'Apple verification could not be completed. Nothing was changed.',
+        };
+      });
+    } on CardverseCloudException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        if (error.failure == CardverseCloudFailure.unauthorized) {
+          _signedIn = false;
+          _message = _isZh
+              ? '登入狀態已失效。請重新登入；沒有連接任何新帳戶。'
+              : 'Your session has expired. Sign in again; no new identity was linked.';
+        } else if (error.serverCode == 'cardverse_identity_already_linked') {
+          _message = _isZh
+              ? '這個 $providerName 身份已屬於另一個 Zync World。系統沒有合併或改動任何帳戶。你可以登出後用該身份進入原有 Zync World，或者改用另一個身份。'
+              : 'This $providerName identity already belongs to another Zync World. Nothing was merged or changed. Sign out and use that identity to open its existing world, or use another identity.';
+        } else if (error.serverCode == 'cardverse_provider_already_linked') {
+          _message = _isZh
+              ? '這個 Zync World 已經連接了另一個 $providerName 身份。系統沒有覆蓋原有連接。'
+              : 'This Zync World already has a different $providerName identity linked. The existing link was not replaced.';
+        } else if (error.serverCode ==
+            'cardverse_provider_audience_not_configured') {
+          _message = _isZh
+              ? '$providerName 尚未在 Zync 伺服器完成設定，帳戶沒有任何改動。'
+              : '$providerName is not fully configured on Zync yet. Nothing was changed.';
+        } else {
+          _message = _isZh
+              ? '暫時未能連接 $providerName，帳戶沒有任何改動。'
+              : 'Could not link $providerName right now. Nothing was changed.';
+        }
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _linkingProvider = null;
+        });
+      }
+    }
+  }
+
   Future<void> _signOut() async {
     if (_busy) return;
     setState(() {
@@ -264,6 +398,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
     setState(() {
       _signedIn = false;
       _busy = false;
+      _linkedThisVisit.clear();
       _message = _isZh
           ? '已經喺呢部裝置登出。你嘅雲端收藏唔會被刪除。'
           : 'Signed out on this device. Your cloud collection was not deleted.';
@@ -467,7 +602,158 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                                 ),
                               ),
                             ],
-                          ] else
+                          ] else ...[
+                            if (_appleLinkAvailable) ...[
+                              ZyncSurface(
+                                key: const ValueKey(
+                                  'zync-account-provider-recovery',
+                                ),
+                                shadow: false,
+                                borderColor: const Color(0xFFE0D9FF),
+                                backgroundColor: const Color(0xFFF9F8FF),
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const ZyncIconTile(
+                                          icon: Icons.key_rounded,
+                                          size: 42,
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: ZyncPalette.plum,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                _isZh
+                                                    ? '讓同一個 Zync World 跟你去不同裝置'
+                                                    : 'Keep one Zync World across devices',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                _isZh
+                                                    ? '再驗證一個登入方式，會把它連接到你目前已登入的 Zync World。系統不會自動合併另一個 Zync World，也不會上傳你的 People history 或私人對話。'
+                                                    : 'Verify another sign-in method and attach it to the Zync World you are already using. Zync will not automatically merge a different Zync World or upload your People history or private conversations.',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.copyWith(
+                                                      color:
+                                                          ZyncPalette.inkSoft,
+                                                      height: 1.4,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (_linkedThisVisit.isNotEmpty) ...[
+                                      const SizedBox(height: 12),
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          for (final provider
+                                              in _linkedThisVisit)
+                                            ZyncStatusPill(
+                                              icon: Icons.verified_rounded,
+                                              label: _isZh
+                                                  ? '${_providerName(provider)} 已在今次確認連接'
+                                                  : '${_providerName(provider)} linked this visit',
+                                              foregroundColor:
+                                                  const Color(0xFF176B57),
+                                              backgroundColor:
+                                                  const Color(0xFFDDF5EC),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                    if (_linkingProvider != null) ...[
+                                      const SizedBox(height: 12),
+                                      Row(
+                                        children: [
+                                          const SizedBox.square(
+                                            dimension: 16,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            _isZh
+                                                ? '正在驗證 ${_providerName(_linkingProvider!)}…'
+                                                : 'Verifying ${_providerName(_linkingProvider!)}…',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                    const SizedBox(height: 14),
+                                    if (_googleLinkAvailable)
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: OutlinedButton.icon(
+                                          key: const ValueKey(
+                                            'zync-account-link-google',
+                                          ),
+                                          onPressed:
+                                              _busy ? null : _linkGoogle,
+                                          icon: const Icon(
+                                            Icons.link_rounded,
+                                          ),
+                                          label: Text(
+                                            _isZh
+                                                ? '使用 Google 驗證並連接'
+                                                : 'Verify & link Google',
+                                          ),
+                                        ),
+                                      ),
+                                    if (_googleLinkAvailable)
+                                      const SizedBox(height: 10),
+                                    SignInWithAppleButton(
+                                      key: const ValueKey(
+                                        'zync-account-link-apple',
+                                      ),
+                                      onPressed: _busy ? null : _linkApple,
+                                      text: _isZh
+                                          ? '使用 Apple 繼續'
+                                          : 'Continue with Apple',
+                                      height: 48,
+                                      borderRadius:
+                                          const BorderRadius.all(
+                                        Radius.circular(14),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      _isZh
+                                          ? '如果這個 Google／Apple 身份已屬於另一個 Zync World，連接會停止；兩邊資料都不會被合併或覆蓋。'
+                                          : 'If that Google or Apple identity already belongs to another Zync World, linking stops. Neither world is merged or overwritten.',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: ZyncPalette.inkSoft,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                            ],
                             OutlinedButton.icon(
                               key: const ValueKey(
                                 'zync-account-sign-out',
@@ -480,6 +766,7 @@ class _CardverseAccountScreenState extends State<CardverseAccountScreen> {
                                     : 'Sign out on this device',
                               ),
                             ),
+                          ],
                           const SizedBox(height: 18),
                           Text(
                             _isZh

@@ -5,7 +5,33 @@
 Read and obey `AI_STATE/OPERATING_RULES.md` before any write, commit, push, PR,
 CI, Vercel, deployment or external-infrastructure action.
 
-CURRENT AUTHORITATIVE PLATFORM CONTINUATION — SIGN IN WITH APPLE + iOS ACCOUNT:
+CURRENT AUTHORITATIVE PLATFORM CONTINUATION — SAME-WORLD PROVIDER LINKING:
+Zync now supports server-authoritative Google/Apple provider linking for an
+already signed-in Cardverse-backed Zync World. Linking requires the existing
+secure bearer session, a fresh provider-specific one-time challenge and fresh
+provider verification using the exact nonce, then calls the existing
+`/api/v1/cardverse/auth/link` route. The client never sends accountId. 401 clears
+the stale local session; 409 preserves the current session. The two backend
+conflicts stay distinct: `cardverse_identity_already_linked` means that exact
+identity belongs to another Zync World, while `cardverse_provider_already_linked`
+means this world already has another identity for the same provider. Zync does
+not automatically merge or overwrite either world. Signed-in iOS Account now
+shows “Keep one Zync World across devices” with Google/Apple re-verification;
+privacy copy says People history/private conversations remain local-first. Since
+the backend has no linked-provider inventory endpoint, the UI only shows
+“linked this visit” after a successful link and does not persist a fake provider
+list. QA Account Lab exposes provider-link diagnostics. Server unlink exists but
+revokes all active sessions and forbids removing the last identity, so destructive
+unlink UI is deliberately deferred. Validation: focused identity/link/session/
+proof suite 34/34 PASS; full Flutter analyze No issues; canonical non-golden
+regression 379/379 PASS across 62 files; fresh generated iOS wrapper Google +
+Apple + link + provider UI suite 29/29 PASS. Manual iOS compile-smoke remains
+workflow_dispatch-only and was not run. No backend/economy/RNG/Card FX/Vercel/
+Actions/Play/App Store/paid-generation action was taken.
+
+`AI_STATE/HANDOFF_20260928_PROVIDER_LINK_RECOVERY.md`
+
+Previous platform checkpoint — SIGN IN WITH APPLE + iOS ACCOUNT:
 Zync now has a complete source-level Apple primary-account path on iOS. The app
 uses exactly pinned `sign_in_with_apple 8.2.0`; the exact Cardverse one-time
 nonce is passed unchanged into Apple's native request and the returned identity

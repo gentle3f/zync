@@ -83,4 +83,80 @@ void main() {
       ),
     );
   });
+
+  test('provider link sends session bearer and provider proof only', () async {
+    late http.Request seen;
+    final sessionToken = 'L' * 43;
+    final client = CardverseCloudClient(
+      baseUrl: 'https://zync.example',
+      httpClient: MockClient((request) async {
+        seen = request;
+        return http.Response(
+          jsonEncode({
+            'provider': 'apple',
+            'linked': true,
+            'restored': false,
+          }),
+          200,
+          headers: {'content-type': 'application/json'},
+        );
+      }),
+    );
+
+    final result = await client.linkProviderIdentity(
+      sessionToken: sessionToken,
+      provider: 'apple',
+      challengeId: 'challenge-link-1',
+      idToken: 'header.payload.signature',
+    );
+
+    expect(seen.url.path, '/api/v1/cardverse/auth/link');
+    expect(seen.headers['authorization'], 'Bearer $sessionToken');
+    final body = jsonDecode(seen.body) as Map<String, dynamic>;
+    expect(body, {
+      'provider': 'apple',
+      'challengeId': 'challenge-link-1',
+      'idToken': 'header.payload.signature',
+    });
+    expect(body.containsKey('accountId'), isFalse);
+    expect(result.provider, 'apple');
+    expect(result.linked, isTrue);
+    expect(result.restored, isFalse);
+  });
+
+  test('provider link preserves 409 ownership conflict code', () async {
+    final client = CardverseCloudClient(
+      baseUrl: 'https://zync.example',
+      httpClient: MockClient(
+        (_) async => http.Response(
+          jsonEncode({'error': 'cardverse_identity_already_linked'}),
+          409,
+          headers: {'content-type': 'application/json'},
+        ),
+      ),
+    );
+
+    await expectLater(
+      client.linkProviderIdentity(
+        sessionToken: 'M' * 43,
+        provider: 'google',
+        challengeId: 'challenge-link-2',
+        idToken: 'header.payload.signature',
+      ),
+      throwsA(
+        isA<CardverseCloudException>()
+            .having(
+              (error) => error.failure,
+              'failure',
+              CardverseCloudFailure.conflict,
+            )
+            .having(
+              (error) => error.serverCode,
+              'serverCode',
+              'cardverse_identity_already_linked',
+            ),
+      ),
+    );
+  });
+
 }
